@@ -2004,9 +2004,7 @@ public class CobolPrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
         visitSpace(parenthesized.getPrefix(), p);
         visitMarkers(parenthesized.getMarkers(), p);
         visit(parenthesized.getLeftParen(), p);
-        for(Cobol c : parenthesized.getContents()) {
-            visit(c, p);
-        }
+        visit(parenthesized.getContents(), p);
         visit(parenthesized.getRightParen(), p);
         return parenthesized;
     }
@@ -3559,7 +3557,7 @@ public class CobolPrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
         visitSpace(subscript.getPrefix(), p);
         visitMarkers(subscript.getMarkers(), p);
         visit(subscript.getFirst(), p);
-        visit(subscript.getIntegerLiteral(), p);
+        visit(subscript.getSecond(), p);
         return subscript;
     }
 

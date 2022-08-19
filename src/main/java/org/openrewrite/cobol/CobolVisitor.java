@@ -3499,7 +3499,7 @@ public class CobolVisitor<P> extends TreeVisitor<Cobol, P> {
         s = s.withPrefix(visitSpace(s.getPrefix(), p));
         s = s.withMarkers(visitMarkers(s.getMarkers(), p));
         s = s.withFirst(visit(s.getFirst(), p));
-        s = s.withIntegerLiteral((Cobol.Word) visit(s.getIntegerLiteral(), p));
+        s = s.withSecond((Cobol.Word) visit(s.getSecond(), p));
         return s;
     }
 

@@ -1,4 +1,4 @@
-      *HEADER,COBOL,CM202M                                                            
+      *HEADER,COBOL,CM202M
 000100 IDENTIFICATION DIVISION.                                         CM2024.2
 000200 PROGRAM-ID.                                                      CM2024.2
 000300     CM202M.                                                      CM2024.2
@@ -6,7 +6,7 @@
 000500     FEDERAL COMPILER TESTING CENTER.                             CM2024.2
 000600 INSTALLATION.                                                    CM2024.2
 000700     GENERAL SERVICES ADMINISTRATION                              CM2024.2
-000800*     AUTOMATED DATA AND TELECOMMUNICATION SERVICE.                CM2024.2
+000800     AUTOMATED DATA AND TELECOMMUNICATION SERVICE.                CM2024.2
 000900     SOFTWARE DEVELOPMENT OFFICE.                                 CM2024.2
 001000     5203 LEESBURG PIKE  SUITE 1100                               CM2024.2
 001100     FALLS CHURCH VIRGINIA 22041.                                 CM2024.2
@@ -641,4 +641,4 @@
 064000         AFTER 5 LINES.                                           CM2024.2
 064100     MOVE HYPHEN-LINE TO PRINT-REC.                               CM2024.2
 064200     PERFORM WRITE-LINE.                                          CM2024.2
-      *END-OF,CM202M                                                                  
+      *END-OF,CM202M

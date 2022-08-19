@@ -5697,7 +5697,9 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 randomId(),
                 whitespace(),
                 Markers.EMPTY,
-                visit(ctx.ALL(), ctx.qualifiedDataName(), ctx.indexName(), ctx.arithmeticExpression()),
+                ctx.ALL() == null && ctx.qualifiedDataName() == null &&
+                        ctx.indexName() == null && ctx.arithmeticExpression() == null ? null :
+                        visit(ctx.ALL(), ctx.qualifiedDataName(), ctx.indexName(), ctx.arithmeticExpression()),
                 visitNullable(ctx.integerLiteral())
         );
     }
