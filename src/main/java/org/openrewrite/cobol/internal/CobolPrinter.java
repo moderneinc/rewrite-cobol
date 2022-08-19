@@ -669,6 +669,7 @@ public class CobolPrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
         visitSpace(dataOccursClause.getPrefix(), p);
         visitMarkers(dataOccursClause.getMarkers(), p);
         visit(dataOccursClause.getOccurs(), p);
+        visit(dataOccursClause.getName(), p);
         visit(dataOccursClause.getDataOccursTo(), p);
         visit(dataOccursClause.getTimes(), p);
         visit(dataOccursClause.getDataOccursDepending(), p);
