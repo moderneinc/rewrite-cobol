@@ -6425,7 +6425,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
             text = text.substring(5);
         }
 
-        Space prefix = whitespace();
+        Space prefix = isCommentEntry ? Space.EMPTY : whitespace();
         cursor += text.length();
 
         int saveCursor = cursor;
