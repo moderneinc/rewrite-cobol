@@ -2090,6 +2090,7 @@ public class CobolPrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
     public Cobol visitPerformVaryingPhrase(Cobol.PerformVaryingPhrase performVaryingPhrase, PrintOutputCapture<P> p) {
         visitSpace(performVaryingPhrase.getPrefix(), p);
         visitMarkers(performVaryingPhrase.getMarkers(), p);
+        visit(performVaryingPhrase.getName(), p);
         visit(performVaryingPhrase.getFrom(), p);
         visit(performVaryingPhrase.getBy(), p);
         visit(performVaryingPhrase.getUntil(), p);
