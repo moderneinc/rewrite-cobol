@@ -5214,7 +5214,8 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 whitespace(),
                 Markers.EMPTY,
                 visit(ctx.identifier(), ctx.literal()),
-                visit(ctx.LINE(), ctx.LINES())
+                ctx.LINE() != null ? (Cobol.Word) visit(ctx.LINE()) :
+                        ctx.LINES() != null ? (Cobol.Word) visit(ctx.LINES()) : null
         );
     }
 

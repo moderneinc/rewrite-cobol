@@ -7872,6 +7872,8 @@ public interface Cobol extends Tree {
         Space prefix;
         Markers markers;
         Name name;
+
+        @Nullable
         Word lines;
 
         @Override
