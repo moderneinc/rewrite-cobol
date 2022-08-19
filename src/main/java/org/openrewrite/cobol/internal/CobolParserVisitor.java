@@ -3416,16 +3416,16 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                     randomId(),
                     whitespace(),
                     Markers.EMPTY,
-                    (Cobol) visit(ctx.performVaryingClause()),
-                    visitNullable(ctx.performTestClause())
+                    (Cobol) visit(ctx.performTestClause()),
+                    (Cobol) visit(ctx.performVaryingClause())
             );
         }
         return new Cobol.PerformVarying(
                 randomId(),
                 whitespace(),
                 Markers.EMPTY,
-                (Cobol) visit(ctx.performTestClause()),
-                (Cobol) visit(ctx.performVaryingClause())
+                (Cobol) visit(ctx.performVaryingClause()),
+                visitNullable(ctx.performTestClause())
         );
     }
 
@@ -3448,7 +3448,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 whitespace(),
                 Markers.EMPTY,
                 visit(ctx.identifier(), ctx.literal()),
-                (Cobol.PerformFrom) visit(ctx.performFrom()),
+                (Cobol.Performable) visit(ctx.performFrom()),
                 (Cobol.Performable) visit(ctx.performBy()),
                 (Cobol.PerformUntil) visit(ctx.performUntil())
         );

@@ -4886,24 +4886,6 @@ public interface Cobol extends Tree {
     @Value
     @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
-    class PerformFrom implements Cobol {
-        @EqualsAndHashCode.Include
-        UUID id;
-
-        Space prefix;
-        Markers markers;
-        Word words;
-        Cobol from;
-
-        @Override
-        public <P> Cobol acceptCobol(CobolVisitor<P> v, P p) {
-            return v.visitPerformFrom(this, p);
-        }
-    }
-
-    @Value
-    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
-    @With
     class PerformInlineStatement implements Cobol {
 
         @EqualsAndHashCode.Include
@@ -5059,7 +5041,7 @@ public interface Cobol extends Tree {
         Space prefix;
         Markers markers;
         Name name;
-        PerformFrom from;
+        Performable from;
         Performable by;
         PerformUntil until;
 

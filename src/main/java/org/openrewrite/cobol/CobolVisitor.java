@@ -1995,14 +1995,6 @@ public class CobolVisitor<P> extends TreeVisitor<Cobol, P> {
         return pp;
     }
 
-    public Cobol visitPerformFrom(Cobol.PerformFrom performFrom, P p) {
-        Cobol.PerformFrom pp = performFrom;
-        pp = pp.withPrefix(visitSpace(pp.getPrefix(), p));
-        pp = pp.withMarkers(visitMarkers(pp.getMarkers(), p));
-        pp = pp.withFrom(visit(pp.getFrom(), p));
-        return pp;
-    }
-
     public Cobol visitPerformInlineStatement(Cobol.PerformInlineStatement performInlineStatement, P p) {
         Cobol.PerformInlineStatement pp = performInlineStatement;
         pp = pp.withPrefix(visitSpace(pp.getPrefix(), p));
@@ -2067,7 +2059,7 @@ public class CobolVisitor<P> extends TreeVisitor<Cobol, P> {
         Cobol.PerformVaryingPhrase pp = performVaryingPhrase;
         pp = pp.withPrefix(visitSpace(pp.getPrefix(), p));
         pp = pp.withMarkers(visitMarkers(pp.getMarkers(), p));
-        pp = pp.withFrom((Cobol.PerformFrom) visit(pp.getFrom(), p));
+        pp = pp.withFrom((Cobol.Performable) visit(pp.getFrom(), p));
         pp = pp.withBy((Cobol.Performable) visit(pp.getBy(), p));
         pp = pp.withUntil((Cobol.PerformUntil) visit(pp.getUntil(), p));
         return pp;

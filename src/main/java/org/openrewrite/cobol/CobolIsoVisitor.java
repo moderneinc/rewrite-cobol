@@ -1180,11 +1180,6 @@ public class CobolIsoVisitor<P> extends CobolVisitor<P> {
     }
 
     @Override
-    public Cobol.PerformFrom visitPerformFrom(Cobol.PerformFrom performFrom, P p) {
-        return (Cobol.PerformFrom) super.visitPerformFrom(performFrom, p);
-    }
-
-    @Override
     public Cobol.PerformInlineStatement visitPerformInlineStatement(Cobol.PerformInlineStatement performInlineStatement, P p) {
         return (Cobol.PerformInlineStatement) super.visitPerformInlineStatement(performInlineStatement, p);
     }

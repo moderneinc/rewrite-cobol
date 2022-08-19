@@ -2027,14 +2027,6 @@ public class CobolPrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
         return perform;
     }
 
-    public Cobol visitPerformFrom(Cobol.PerformFrom performFrom, PrintOutputCapture<P> p) {
-        visitSpace(performFrom.getPrefix(), p);
-        visitMarkers(performFrom.getMarkers(), p);
-        visit(performFrom.getWords(), p);
-        visit(performFrom.getFrom(), p);
-        return performFrom;
-    }
-
     public Cobol visitPerformInlineStatement(Cobol.PerformInlineStatement performInlineStatement, PrintOutputCapture<P> p) {
         visitSpace(performInlineStatement.getPrefix(), p);
         visitMarkers(performInlineStatement.getMarkers(), p);
