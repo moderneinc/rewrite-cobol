@@ -235,11 +235,6 @@ public class CobolIsoVisitor<P> extends CobolVisitor<P> {
     }
 
     @Override
-    public Cobol.Word visitCobolWord(Cobol.Word word, P p) {
-        return (Cobol.Word) super.visitCobolWord(word, p);
-    }
-
-    @Override
     public Cobol.CodeSetClause visitCodeSetClause(Cobol.CodeSetClause codeSetClause, P p) {
         return (Cobol.CodeSetClause) super.visitCodeSetClause(codeSetClause, p);
     }
@@ -480,6 +475,16 @@ public class CobolIsoVisitor<P> extends CobolVisitor<P> {
     }
 
     @Override
+    public Cobol visitDataValueInterval(Cobol.DataValueInterval dataValueInterval, P p) {
+        return super.visitDataValueInterval(dataValueInterval, p);
+    }
+
+    @Override
+    public Cobol visitDataValueIntervalTo(Cobol.DataValueIntervalTo dataValueIntervalTo, P p) {
+        return super.visitDataValueIntervalTo(dataValueIntervalTo, p);
+    }
+
+    @Override
     public Cobol.DataWithLowerBoundsClause visitDataWithLowerBoundsClause(Cobol.DataWithLowerBoundsClause dataWithLowerBoundsClause, P p) {
         return (Cobol.DataWithLowerBoundsClause) super.visitDataWithLowerBoundsClause(dataWithLowerBoundsClause, p);
     }
@@ -652,6 +657,11 @@ public class CobolIsoVisitor<P> extends CobolVisitor<P> {
     @Override
     public Cobol.ExternalClause visitExternalClause(Cobol.ExternalClause externalClause, P p) {
         return (Cobol.ExternalClause) super.visitExternalClause(externalClause, p);
+    }
+
+    @Override
+    public Cobol visitFigurativeConstant(Cobol.FigurativeConstant figurativeConstant, P p) {
+        return super.visitFigurativeConstant(figurativeConstant, p);
     }
 
     @Override
@@ -2167,6 +2177,11 @@ public class CobolIsoVisitor<P> extends CobolVisitor<P> {
     @Override
     public Cobol.ValuedObjectComputerClause visitValuedObjectComputerClause(Cobol.ValuedObjectComputerClause valuedObjectComputerClause, P p) {
         return (Cobol.ValuedObjectComputerClause) super.visitValuedObjectComputerClause(valuedObjectComputerClause, p);
+    }
+
+    @Override
+    public Cobol.Word visitWord(Cobol.Word word, P p) {
+        return (Cobol.Word) super.visitWord(word, p);
     }
 
     @Override
