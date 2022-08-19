@@ -1,19 +1,19 @@
-      *HEADER,COBOL,CM102M                                                            
+      *HEADER,COBOL,CM102M
 000100 IDENTIFICATION DIVISION.                                         CM1024.2
 000200 PROGRAM-ID.                                                      CM1024.2
 000300     CM102M.                                                      CM1024.2
 000400 AUTHOR.                                                          CM1024.2
 000500     FEDERAL COMPILER TESTING CENTER.                             CM1024.2
-000600* INSTALLATION.                                                    CM1024.2
-000700*     GENERAL SERVICES ADMINISTRATION                              CM1024.2
-000800**     AUTOMATED DATA AND TELECOMMUNICATION SERVICE.                CM1024.2
-000900*     SOFTWARE DEVELOPMENT OFFICE.                                 CM1024.2
-001000*     5203 LEESBURG PIKE  SUITE 1100                               CM1024.2
-001100*     FALLS CHURCH VIRGINIA 22041.                                 CM1024.2
-001200*                                                                  CM1024.2
-001300*     PHONE   (703) 756-6153                                       CM1024.2
-001400*                                                                  CM1024.2
-001500*     " HIGH       ".                                              CM1024.2
+000600 INSTALLATION.                                                    CM1024.2
+000700     GENERAL SERVICES ADMINISTRATION                              CM1024.2
+000800     AUTOMATED DATA AND TELECOMMUNICATION SERVICE.                CM1024.2
+000900     SOFTWARE DEVELOPMENT OFFICE.                                 CM1024.2
+001000     5203 LEESBURG PIKE  SUITE 1100                               CM1024.2
+001100     FALLS CHURCH VIRGINIA 22041.                                 CM1024.2
+001200                                                                  CM1024.2
+001300     PHONE   (703) 756-6153                                       CM1024.2
+001400                                                                  CM1024.2
+001500     " HIGH       ".                                              CM1024.2
 001600 DATE-WRITTEN.                                                    CM1024.2
 001700     CCVS-74 VERSION 4.0 - 1980 JULY 1.                           CM1024.2
 001800     CREATION DATE     /    VALIDATION DATE                       CM1024.2
@@ -964,4 +964,4 @@
 096300         AFTER 5 LINES.                                           CM1024.2
 096400     MOVE HYPHEN-LINE TO PRINT-REC.                               CM1024.2
 096500     PERFORM WRITE-LINE.                                          CM1024.2
-      *END-OF,CM102M                                                                  
+      *END-OF,CM102M
