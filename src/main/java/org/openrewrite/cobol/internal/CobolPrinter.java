@@ -3845,7 +3845,6 @@ public class CobolPrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
             if (continuation.get().getContinuations().containsKey(0)) {
                 Markers markers = continuation.get().getContinuations().get(0);
                 Optional<SequenceArea> sequenceArea = markers.findFirst(SequenceArea.class);
-                sequenceArea.ifPresent(it -> visitSpace(it.getPrefix(), p));
                 sequenceArea.ifPresent(it -> p.append(it.getSequence()));
 
                 Optional<IndicatorArea> indicatorArea = markers.findFirst(IndicatorArea.class);
@@ -3860,9 +3859,9 @@ public class CobolPrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
                     Optional<CommentArea> commentArea = markers.findFirst(CommentArea.class);
                     commentArea.ifPresent(it -> p.append(it.getComment()));
                     commentArea.ifPresent(it -> visitSpace(it.getPrefix(), p));
+                    commentArea.ifPresent(it -> visitSpace(it.getEndLine(), p));
 
                     Optional<SequenceArea> sequenceArea = markers.findFirst(SequenceArea.class);
-                    sequenceArea.ifPresent(it -> visitSpace(it.getPrefix(), p));
                     sequenceArea.ifPresent(it -> p.append(it.getSequence()));
 
                     Optional<IndicatorArea> indicatorArea = markers.findFirst(IndicatorArea.class);
@@ -3876,15 +3875,16 @@ public class CobolPrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
                     .filter(it -> it.getKey() > word.getWord().length())
                     .map(Map.Entry::getValue)
                     .collect(Collectors.toList());
+
             if (!lastMarkers.isEmpty()) {
                 Markers markers = lastMarkers.get(0);
                 Optional<CommentArea> commentArea = markers.findFirst(CommentArea.class);
                 commentArea.ifPresent(it -> visitSpace(it.getPrefix(), p));
                 commentArea.ifPresent(it -> p.append(it.getComment()));
+                commentArea.ifPresent(it -> visitSpace(it.getEndLine(), p));
             }
         } else {
             Optional<SequenceArea> sequenceArea = word.getMarkers().findFirst(SequenceArea.class);
-            sequenceArea.ifPresent(it -> visitSpace(it.getPrefix(), p));
             sequenceArea.ifPresent(it -> p.append(it.getSequence()));
 
             Optional<IndicatorArea> indicatorArea = word.getMarkers().findFirst(IndicatorArea.class);
@@ -3896,6 +3896,7 @@ public class CobolPrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
             Optional<CommentArea> commentArea = word.getMarkers().findFirst(CommentArea.class);
             commentArea.ifPresent(it -> visitSpace(it.getPrefix(), p));
             commentArea.ifPresent(it -> p.append(it.getComment()));
+            commentArea.ifPresent(it -> visitSpace(it.getEndLine(), p));
         }
 
         return word;

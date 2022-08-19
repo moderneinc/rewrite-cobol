@@ -6310,11 +6310,114 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
      * Markers consist of COBOL areas that are removed during preprocessing.
      */
     private Space processTokenText(String text, List<Marker> markers) {
-        Space prefix = Space.EMPTY;
 
         Character delimiter = null;
         if (text.startsWith("'") || text.startsWith("\"")) {
             delimiter = text.charAt(0);
+        }
+
+        String current = delimiter == null ? null : source.substring(source.indexOf(delimiter));
+        // Detect a literal continued on a new line.
+        if (current != null &&
+                current.length() > text.length() &&
+                !current.substring(0, current.substring(1).indexOf(delimiter) + 2).equals(text)) {
+            return processLiteral(text, markers, delimiter);
+        }
+
+        return processText(text, markers);
+    }
+
+    private Space processLiteral(String text, List<Marker> markers, Character delimiter) {
+        Map<Integer, Markers> continuations = new HashMap<>();
+        List<Marker> continuation = new ArrayList<>(2);
+
+        String sequenceArea = sequenceArea();
+        if (sequenceArea != null) {
+            continuation.add(new SequenceArea(randomId(), sequenceArea));
+        }
+
+        String indicatorArea = indicatorArea(null);
+        if (indicatorArea != null) {
+            continuation.add(new IndicatorArea(randomId(), indicatorArea));
+        }
+
+        Space prefix = whitespace();
+
+        if (!continuation.isEmpty()) {
+            continuations.put(0, Markers.build(continuation));
+        }
+
+        int matchedCount = 0;
+        int iterations = 0;
+        while (matchedCount < text.length() && iterations < 1000) {
+            continuation = new ArrayList<>(3);
+
+            String current = source.substring(cursor);
+            char[] charArray = text.substring(matchedCount).toCharArray();
+            char[] sourceArray = current.toCharArray();
+
+            int end = 0;
+            for (; end < charArray.length; end++) {
+                if (charArray[end] != sourceArray[end]) {
+                    break;
+                }
+            }
+
+            String matchedText = current.substring(0, end);
+            cursor += matchedText.length();
+            matchedCount += matchedText.length();
+
+            int saveCursor = cursor;
+            Space after = whitespace();
+            String commentArea = commentArea();
+            // Ensure the last whitespace is added to the ASt.
+            Space endLine = commentArea != null ? whitespace() : Space.EMPTY;
+            if (!after.getWhitespace().isEmpty() || commentArea != null) {
+                continuation.add(new CommentArea(randomId(), after, commentArea == null ? "" : commentArea, endLine));
+            } else {
+                cursor = saveCursor;
+            }
+
+            if (matchedText.endsWith(String.valueOf(delimiter))) {
+                if (!continuation.isEmpty()) {
+                    continuations.put(text.length() + 1, Markers.build(continuation));
+                }
+                break;
+            }
+
+            sequenceArea = sequenceArea();
+            if (sequenceArea != null) {
+                continuation.add(new SequenceArea(randomId(), sequenceArea));
+            }
+
+            indicatorArea = indicatorArea(delimiter);
+            if (indicatorArea != null) {
+                continuation.add(new IndicatorArea(randomId(), indicatorArea));
+            }
+
+            if (!continuation.isEmpty()) {
+                continuations.put(matchedCount, Markers.build(continuation));
+            }
+
+            if (matchedText.endsWith(String.valueOf(delimiter))) {
+                break;
+            }
+            iterations++;
+        }
+
+        markers.add(new Continuation(randomId(), continuations));
+        return prefix;
+    }
+
+    private Space processText(String text, List<Marker> markers) {
+        String sequenceArea = sequenceArea();
+        if (sequenceArea != null) {
+            markers.add(new SequenceArea(randomId(), sequenceArea));
+        }
+
+        String indicatorArea = indicatorArea(null);
+        if (indicatorArea != null) {
+            markers.add(new IndicatorArea(randomId(), indicatorArea));
         }
 
         boolean isCommentEntry = text.startsWith("*>CE ");
@@ -6322,111 +6425,19 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
             text = text.substring(5);
         }
 
-        Space before = whitespace();
-        String current = source.substring(cursor);
-        // Detect a literal continued on a new line.
-        if (isCommentEntry ||
-                delimiter != null &&
-                current.length() > text.length() &&
-                !current.substring(0, current.substring(1).indexOf(delimiter) + 2).equals(text)) {
+        Space prefix = whitespace();
+        cursor += text.length();
 
-            Map<Integer, Markers> continuations = new HashMap<>();
-            List<Marker> continuation = new ArrayList<>(2);
-            String sequenceArea = sequenceArea();
-            if (sequenceArea != null) {
-                continuation.add(new SequenceArea(randomId(), before, sequenceArea));
-                before = Space.EMPTY;
-            }
+        int saveCursor = cursor;
+        Space after = whitespace();
+        String commentArea = commentArea();
 
-            String indicatorArea = indicatorArea(null);
-            if (indicatorArea != null) {
-                continuation.add(new IndicatorArea(randomId(), indicatorArea));
-            }
-
-            if (!continuation.isEmpty()) {
-                continuations.put(0, Markers.build(continuation));
-            }
-
-            int matchedCount = 0;
-            int iterations = 0;
-            while (matchedCount < text.length() && iterations < 1000) {
-                continuation = new ArrayList<>(3);
-                current = source.substring(cursor);
-
-                char[] charArray = text.substring(matchedCount).toCharArray();
-                char[] sourceArray = current.toCharArray();
-                int end = 0;
-                for (; end < charArray.length; end++) {
-                    if (charArray[end] != sourceArray[end]) {
-                        break;
-                    }
-                }
-
-                String matchedText = current.substring(0, end);
-                cursor += matchedText.length();
-                matchedCount += matchedText.length();
-                if (sequenceArea != null && prefix == Space.EMPTY && before != Space.EMPTY) {
-                    prefix = before;
-                }
-
-                int saveCursor = cursor;
-                Space after = whitespace();
-                String commentArea = commentArea();
-                // Comment areas are optional spaces that extend passed COBOL's end column.
-                if (after.getWhitespace().contains("\n") || commentArea != null) {
-                    continuation.add(new CommentArea(randomId(), after, commentArea == null ? "" : commentArea));
-                } else {
-                    cursor = saveCursor;
-                }
-
-                if (isCommentEntry || matchedText.endsWith(String.valueOf(delimiter))) {
-                    if (!continuation.isEmpty()) {
-                        continuations.put(text.length() + 1, Markers.build(continuation));
-                    }
-                    break;
-                }
-
-                before = whitespace();
-                sequenceArea = sequenceArea();
-                if (sequenceArea != null) {
-                    continuation.add(new SequenceArea(randomId(), before, sequenceArea));
-                }
-
-                indicatorArea = indicatorArea(delimiter);
-                if (indicatorArea != null) {
-                    continuation.add(new IndicatorArea(randomId(), indicatorArea));
-                }
-
-                if (!continuation.isEmpty()) {
-                    continuations.put(matchedCount, Markers.build(continuation));
-                }
-
-                iterations++;
-            }
-
-            markers.add(new Continuation(randomId(), continuations));
+        // Ensure the last whitespace is added to the ASt.
+        Space endLine = commentArea != null ? whitespace() : Space.EMPTY;
+        if (!after.getWhitespace().isEmpty() || commentArea != null) {
+            markers.add(new CommentArea(randomId(), after, commentArea == null ? "" : commentArea, endLine));
         } else {
-            String sequenceArea = sequenceArea();
-            if (sequenceArea != null) {
-                markers.add(new SequenceArea(randomId(), before, sequenceArea));
-            }
-
-            String indicatorArea = indicatorArea(null);
-            if (indicatorArea != null) {
-                markers.add(new IndicatorArea(randomId(), indicatorArea));
-            }
-
-            prefix = sequenceArea == null ? before : whitespace();
-            cursor += text.length();
-
-            int saveCursor = cursor;
-            Space after = whitespace();
-            String commentArea = commentArea();
-            if (after.getWhitespace().contains("\n") || commentArea != null) {
-                markers.add(new CommentArea(randomId(), after, commentArea == null ? "" : commentArea));
-            } else {
-                cursor = saveCursor;
-            }
+            cursor = saveCursor;
         }
 
         return prefix;
