@@ -1793,6 +1793,17 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     }
 
     @Override
+    public Object visitErrorKeyClause(CobolParser.ErrorKeyClauseContext ctx) {
+        return new Cobol.ErrorKeyClause(
+                randomId(),
+                whitespace(),
+                Markers.EMPTY,
+                wordsList(ctx.ERROR(), ctx.KEY(), ctx.IS()),
+                (Name) visit(ctx.dataDescName())
+        );
+    }
+
+    @Override
     public Object visitEvaluateAlsoCondition(CobolParser.EvaluateAlsoConditionContext ctx) {
         return new Cobol.EvaluateAlsoCondition(
                 randomId(),

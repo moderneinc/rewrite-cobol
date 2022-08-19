@@ -1010,6 +1010,15 @@ public class CobolVisitor<P> extends TreeVisitor<Cobol, P> {
         return e;
     }
 
+    public Cobol visitErrorKeyClause(Cobol.ErrorKeyClause errorKeyClause, P p) {
+        Cobol.ErrorKeyClause e = errorKeyClause;
+        e = e.withPrefix(visitSpace(e.getPrefix(), p));
+        e = e.withMarkers(visitMarkers(e.getMarkers(), p));
+        e = e.withWords(ListUtils.map(e.getWords(), it -> (Cobol.Word) visit(it, p)));
+        e = e.withName((Name) visit(e.getName(), p));
+        return e;
+    }
+
     public Cobol visitEvaluateAlsoCondition(Cobol.EvaluateAlsoCondition evaluateAlsoCondition, P p) {
         Cobol.EvaluateAlsoCondition e = evaluateAlsoCondition;
         e = e.withPrefix(visitSpace(e.getPrefix(), p));

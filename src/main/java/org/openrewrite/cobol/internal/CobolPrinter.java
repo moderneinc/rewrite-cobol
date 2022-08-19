@@ -1031,6 +1031,14 @@ public class CobolPrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
         return evaluateAlso;
     }
 
+    public Cobol visitErrorKeyClause(Cobol.ErrorKeyClause errorKeyClause, PrintOutputCapture<P> p) {
+        visitSpace(errorKeyClause.getPrefix(), p);
+        visitMarkers(errorKeyClause.getMarkers(), p);
+        visit(errorKeyClause.getWords(), p);
+        visit(errorKeyClause.getName(), p);
+        return errorKeyClause;
+    }
+
     public Cobol visitEvaluateAlsoCondition(Cobol.EvaluateAlsoCondition evaluateAlsoCondition, PrintOutputCapture<P> p) {
         visitSpace(evaluateAlsoCondition.getPrefix(), p);
         visitMarkers(evaluateAlsoCondition.getMarkers(), p);
@@ -3295,6 +3303,14 @@ public class CobolPrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
         visit(s.getStatement(), p);
         visit(s.getOnExceptionClause(), p);
         visit(s.getNotOnExceptionClause(), p);
+        return s;
+    }
+
+    public Cobol visitSendAdvancingLines(Cobol.SendAdvancingLines s, PrintOutputCapture<P> p) {
+        visitSpace(s.getPrefix(), p);
+        visitMarkers(s.getMarkers(), p);
+        visit(s.getName(), p);
+        visit(s.getLines(), p);
         return s;
     }
 
