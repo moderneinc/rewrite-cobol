@@ -1,7 +1,6 @@
 import org.tmatesoft.svn.core.internal.util.jna.SVNGnomeKeyring.setPassword
 
 plugins {
-    `java-library`
     id("io.moderne.java-project")
 }
 
