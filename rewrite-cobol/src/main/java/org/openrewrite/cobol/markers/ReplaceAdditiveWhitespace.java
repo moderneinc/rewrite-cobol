@@ -7,6 +7,7 @@ package org.openrewrite.cobol.markers;
 
 import lombok.Value;
 import lombok.With;
+import org.openrewrite.cobol.tree.CommentArea;
 import org.openrewrite.cobol.tree.Space;
 import org.openrewrite.marker.Marker;
 
@@ -17,15 +18,15 @@ import java.util.UUID;
  * Whitespace is added in two places to simplify column alignment.
  *  1. The {@link CommentArea} contains whitespace until the end of the line.
  *  2. TemplateWhitespace marker contains whitespace until the next word starts in its current position.
- *
+ * <p>
  * I.E. PIC replaced by PICTURE
  * Before:
  *  |000001| | firstWord PIC [some words]         |
- *
+ * <p>
  * After:
  *  |000001| | firstWord PICTURE                  |
  *  |      | |               [some words]         |
- *
+ * <p>
  * The markers enable the ability to print the original word in place of the transformed word to print either the
  * original word or the transformed word.
  */

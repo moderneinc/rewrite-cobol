@@ -13,6 +13,44 @@ import static org.openrewrite.cobol.Assertions.cobolPostProcess;
 
 class CobolParserCopyTest extends CobolTest {
 
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/15")
+    @Test
+    void missingCopyBook() {
+        rewriteRun(
+          cobolPostProcess(
+            """
+              000000* Prevent trim
+                     IDENTIFICATION DIVISION.
+                     PROGRAM-ID. MISSING-COPYBOOK.
+                     DATA DIVISION.
+                     FILE SECTION.
+                     FD  PRINT-FILE.
+                     COPY MISSING-COPYBOOK.
+                     01  DUMMY-RECORD PICTURE X(120).
+              """)
+        );
+    }
+
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/15")
+    @Test
+    void commentAfterMissingCopyBook() {
+        rewriteRun(
+          cobolPostProcess(
+            """
+              000000* Prevent trim
+                     IDENTIFICATION DIVISION.
+                     PROGRAM-ID. MISSING-COPYBOOK.
+                     DATA DIVISION.
+                     FILE SECTION.
+                     FD  PRINT-FILE.
+                    * C1.
+                     COPY MISSING-COPYBOOK.
+                    * C2.
+                     01  DUMMY-RECORD PICTURE X(120).
+              """)
+        );
+    }
+
     @Test
     void sm101A() {
         rewriteRun(

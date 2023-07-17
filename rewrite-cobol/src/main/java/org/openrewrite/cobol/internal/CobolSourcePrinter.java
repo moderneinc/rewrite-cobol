@@ -9,6 +9,7 @@ import org.openrewrite.Cursor;
 import org.openrewrite.PrintOutputCapture;
 import org.openrewrite.cobol.CobolPreprocessorVisitor;
 import org.openrewrite.cobol.CobolVisitor;
+import org.openrewrite.cobol.markers.MissingCopyBook;
 import org.openrewrite.cobol.tree.*;
 import org.openrewrite.internal.StringUtils;
 import org.openrewrite.internal.lang.Nullable;
@@ -4346,13 +4347,17 @@ public class CobolSourcePrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
 
         // The COBOL word is a product of a copy statement.
         if (word.getCopyStatement() != null) {
-            // Print the original Copy Statement in place of the first word from the copied source.
-            if (printedCopyStatements.add(word.getCopyStatement().getId().toString())) {
+            if (word.getCopyStatement().getMarkers().findFirst(MissingCopyBook.class).isPresent()) {
                 getCobolPreprocessorVisitor().visit(word.getCopyStatement(), p);
-            }
+            } else {
+                // Print the original Copy Statement in place of the first word from the copied source.
+                if (printedCopyStatements.add(word.getCopyStatement().getId().toString())) {
+                    getCobolPreprocessorVisitor().visit(word.getCopyStatement(), p);
+                }
 
-            // Do not print the AST for the copied source.
-            return word;
+                // Do not print the AST for the copied source.
+                return word;
+            }
         }
 
         if (printColumns) {

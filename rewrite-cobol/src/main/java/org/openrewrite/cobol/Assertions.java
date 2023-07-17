@@ -197,6 +197,10 @@ public class Assertions {
         return cobol;
     }
 
+    public static SourceSpecs cobolPostProcess(@Nullable String before) {
+        return cobolPostProcess(before, null, false);
+    }
+
     public static SourceSpecs cobolPostProcess(@Nullable String before, @Nullable String after) {
         return cobolPostProcess(before, after, false);
     }
@@ -258,7 +262,7 @@ public class Assertions {
             CobolPrinter<ExecutionContext> printer = new CobolPrinter<>(false, false);
             PrintOutputCapture<ExecutionContext> outputCapture = new PrintOutputCapture<>(new InMemoryExecutionContext());
             printer.visit(cu, outputCapture);
-            assert trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut())).equals(expectedLst);
+            assert expectedLst == null || trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut())).equals(expectedLst);
         });
     }
 
