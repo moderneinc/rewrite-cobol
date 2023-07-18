@@ -35,6 +35,7 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
     public static final String COPY_START_KEY = "__COPY_START__";
     public static final String COPY_STOP_KEY = "__COPY_STOP__";
     public static final String COPY_UUID_KEY = "__COPY_UUID__";
+    public static final String COPY_BOOK_NOT_FOUND = "__COPY_BOOK_NOT_FOUND__";
 
     public static final String REPLACE_START_KEY = "__REPLACE_START__";
     public static final String REPLACE_STOP_KEY = "__REPLACE_STOP__";
@@ -69,6 +70,7 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
     private String copyStartComment = null;
     private String copyStopComment = null;
     private String copyUuidComment = null;
+    private String copyBookNotFoundComment = null;
 
     private String replaceStartComment = null;
     private String replaceStopComment = null;
@@ -137,9 +139,7 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
         visitMarkers(copyStatement.getMarkers(), p);
 
         if (printColumns) {
-            if (copyStatement.getCopyBook() != null) {
-                copyTemplate(copyStatement, p);
-            }
+            copyTemplate(copyStatement, p);
         } else {
             visit(copyStatement.getCopyBook(), p);
         }
@@ -185,7 +185,12 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
         addUuidKey(getCopyUuidKey(), copyStatement.getId(), p);
 
         // Print copied source.
-        visit(copyStatement.getCopyBook(), p);
+        if (copyStatement.getCopyBook() == null) {
+            // Assume the copy statement is not found, and the copy book is not sub grammatical.
+            p.append(getCopyBookNotFound());
+        } else {
+            visit(copyStatement.getCopyBook(), p);
+        }
         if (!p.getOut().endsWith("\n")) {
             // Add a new line character if the copied source does not end with one already.
             p.append("\n");
@@ -670,6 +675,13 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
             copyUuidComment = getTemplateComment(COPY_UUID_KEY);
         }
         return copyUuidComment;
+    }
+
+    public String getCopyBookNotFound() {
+        if (copyBookNotFoundComment == null) {
+            copyBookNotFoundComment = getTemplateComment(COPY_BOOK_NOT_FOUND);
+        }
+        return copyBookNotFoundComment;
     }
 
     public String getReplaceStartComment() {
