@@ -7,12 +7,24 @@ package org.openrewrite.cobol.tree.cobol;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.ExpectedToFail;
 import org.openrewrite.Issue;
 import org.openrewrite.cobol.CobolTest;
 
 import static org.openrewrite.cobol.Assertions.cobol;
 
 public class CobolParserAnsi85DivisionTest extends CobolTest {
+
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/17")
+    @ExpectedToFail
+    @Test
+    void invalidGrammar() {
+        rewriteRun(
+          cobol(
+            "000001 IDENTIFICATION."
+          )
+        );
+    }
 
     @Test
     void helloWorld() {

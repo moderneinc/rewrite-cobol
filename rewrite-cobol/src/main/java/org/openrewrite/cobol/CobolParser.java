@@ -103,6 +103,9 @@ public class CobolParser implements Parser {
                                 new org.openrewrite.cobol.internal.grammar.CobolParser(
                                         new CommonTokenStream(new CobolLexer(CharStreams.fromString(cobolParserOutput.getOut()))));
 
+                        parser.removeErrorListeners();
+                        parser.addErrorListener(new ForwardingErrorListener(sourceFile.getPath(), ctx));
+
                         // Print the pre-processed code to parse COBOL.
                         PrintOutputCapture<ExecutionContext> sourceOutput = new PrintOutputCapture<>(new InMemoryExecutionContext());
                         CobolPreprocessorOutputSourcePrinter<ExecutionContext> printWithColumns = new CobolPreprocessorOutputSourcePrinter<>(cobolDialect, true);
@@ -121,7 +124,7 @@ public class CobolParser implements Parser {
                                 cobolPreprocessorParser.getReplaces(preprocessedCU),
                                 cobolPreprocessorParser.getReplaceAdditiveTypes(preprocessedCU),
                                 cobolPreprocessorParser.getReplaceReductiveTypes(preprocessedCU)
-                        ).visitStartRule(parser.startRule());
+                        ).visitCompilationUnit(parser.compilationUnit());
 
                         sample.stop(MetricsHelper.successTags(timer).register(Metrics.globalRegistry));
                         parsingListener.parsed(sourceFile, compilationUnit);
@@ -161,6 +164,23 @@ public class CobolParser implements Parser {
     @Override
     public Path sourcePathFromSourceText(Path prefix, String sourceCode) {
         return prefix.resolve("file.CBL");
+    }
+
+    private static class ForwardingErrorListener extends BaseErrorListener {
+        private final Path sourcePath;
+        private final ExecutionContext ctx;
+
+        private ForwardingErrorListener(Path sourcePath, ExecutionContext ctx) {
+            this.sourcePath = sourcePath;
+            this.ctx = ctx;
+        }
+
+        @Override
+        public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,
+                                int line, int charPositionInLine, String msg, RecognitionException e) {
+            ctx.getOnError().accept(new CobolParsingException(sourcePath,
+                    String.format("Syntax error in %s at line %d:%d %s.", sourcePath, line, charPositionInLine, msg), e));
+        }
     }
 
     public static CobolParser.Builder builder() {
