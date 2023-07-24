@@ -13,16 +13,6 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface CobolListener extends ParseTreeListener {
 	/**
-	 * Enter a parse tree produced by {@link CobolParser#startRule}.
-	 * @param ctx the parse tree
-	 */
-	void enterStartRule(CobolParser.StartRuleContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link CobolParser#startRule}.
-	 * @param ctx the parse tree
-	 */
-	void exitStartRule(CobolParser.StartRuleContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link CobolParser#compilationUnit}.
 	 * @param ctx the parse tree
 	 */

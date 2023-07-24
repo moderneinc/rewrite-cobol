@@ -10,13 +10,11 @@
 /*
 * COBOL Preprocessor Grammar for ANTLR4
 *
-* This is a preprocessor grammar for COBOL, which is part of the COBOL 
+* This is a preprocessor grammar for COBOL, which is part of the COBOL
 * parser at https://github.com/uwol/proleap-cobol-parser.
 */
 
 grammar CobolPreprocessor;
-
-startRule : compilationUnit;
 
 compilationUnit
    : (compilerOptions | copyStatement | execCicsStatement | execSqlStatement | execSqlImsStatement | replaceOffStatement | replaceArea | ejectStatement | skipStatement | titleStatement | charDataLine)* EOF
@@ -42,22 +40,22 @@ compilerOption
    | CICS (LPARENCHAR literal RPARENCHAR)?
    | COBOL2 | COBOL3
    | (CODEPAGE | CP) LPARENCHAR literal RPARENCHAR
-   | (COMPILE | C_CHAR) 
+   | (COMPILE | C_CHAR)
    | CPP | CPSM
    | (CURRENCY | CURR) LPARENCHAR literal RPARENCHAR
    | DATA LPARENCHAR literal RPARENCHAR
    | (DATEPROC | DP) (LPARENCHAR (FLAG | NOFLAG)? COMMACHAR? (TRIG | NOTRIG)? RPARENCHAR)?
-   | DBCS 
-   | (DECK | D_CHAR) 
-   | DEBUG 
+   | DBCS
+   | (DECK | D_CHAR)
+   | DEBUG
    | (DIAGTRUNC | DTR)
    | DLL
-   | (DUMP | DU) 
+   | (DUMP | DU)
    | (DYNAM | DYN)
-   | EDF | EPILOG 
+   | EDF | EPILOG
    | EXIT
    | (EXPORTALL | EXP)
-   | (FASTSRT | FSRT) 
+   | (FASTSRT | FSRT)
    | FEPI
    | (FLAG | F_CHAR) LPARENCHAR (E_CHAR | I_CHAR | S_CHAR | U_CHAR | W_CHAR) (COMMACHAR (E_CHAR | I_CHAR | S_CHAR | U_CHAR | W_CHAR))? RPARENCHAR
    | FLAGSTD LPARENCHAR (M_CHAR | I_CHAR | H_CHAR) (COMMACHAR (D_CHAR | DD | N_CHAR | NN | S_CHAR | SS))? RPARENCHAR
@@ -76,51 +74,51 @@ compilerOption
    | NOBLOCK0
    | NOCBLCARD | NOCICS | NOCMPR2
    | (NOCOMPILE | NOC) (LPARENCHAR (S_CHAR | E_CHAR | W_CHAR) RPARENCHAR)?
-   | NOCPSM 
+   | NOCPSM
    | (NOCURRENCY | NOCURR)
-   | (NODATEPROC | NODP) 
-   | NODBCS | NODEBUG 
-   | (NODECK | NOD) 
-   | NODLL | NODE 
+   | (NODATEPROC | NODP)
+   | NODBCS | NODEBUG
+   | (NODECK | NOD)
+   | NODLL | NODE
    | (NODUMP | NODU)
-   | (NODIAGTRUNC | NODTR) 
+   | (NODIAGTRUNC | NODTR)
    | (NODYNAM | NODYN)
-   | NOEDF | NOEPILOG | NOEXIT 
+   | NOEDF | NOEPILOG | NOEXIT
    | (NOEXPORTALL | NOEXP)
    | (NOFASTSRT | NOFSRT)
-   | NOFEPI 
-   | (NOFLAG | NOF) 
+   | NOFEPI
+   | (NOFLAG | NOF)
    | NOFLAGMIG | NOFLAGSTD
    | NOGRAPHIC
    | NOLENGTH | NOLIB | NOLINKAGE | NOLIST
-   | NOMAP 
+   | NOMAP
    | (NOMDECK | NOMD)
-   | NONAME 
+   | NONAME
    | (NONUMBER | NONUM)
-   | (NOOBJECT | NOOBJ) 
-   | (NOOFFSET | NOOFF) 
+   | (NOOBJECT | NOOBJ)
+   | (NOOFFSET | NOOFF)
    | NOOPSEQUENCE
-   | (NOOPTIMIZE | NOOPT) 
-   | NOOPTIONS 
+   | (NOOPTIMIZE | NOOPT)
+   | NOOPTIONS
    | NOP | NOPROLOG
    | NORENT
-   | (NOSEQUENCE | NOSEQ) 
-   | (NOSOURCE | NOS) 
-   | NOSPIE | NOSQL 
-   | (NOSQLCCSID | NOSQLC) 
-   | (NOSSRANGE | NOSSR) 
+   | (NOSEQUENCE | NOSEQ)
+   | (NOSOURCE | NOS)
+   | NOSPIE | NOSQL
+   | (NOSQLCCSID | NOSQLC)
+   | (NOSSRANGE | NOSSR)
    | NOSTDTRUNC
    | (NOTERMINAL | NOTERM) | NOTEST | NOTHREAD
    | NOVBREF
    | (NOWORD | NOWD)
-   | NSEQ 
+   | NSEQ
    | (NSYMBOL | NS) LPARENCHAR (NATIONAL | NAT | DBCS) RPARENCHAR
    | NOVBREF
    | (NOXREF | NOX)
    | NOZWB
    | (NUMBER | NUM)
    | NUMPROC LPARENCHAR (MIG | NOPFD | PFD) RPARENCHAR
-   | (OBJECT | OBJ) 
+   | (OBJECT | OBJ)
    | (OFFSET | OFF)
    | OPMARGINS LPARENCHAR literal COMMACHAR literal (COMMACHAR literal)? RPARENCHAR
    | OPSEQUENCE LPARENCHAR literal COMMACHAR literal RPARENCHAR
@@ -139,8 +137,8 @@ compilerOption
    | SPACE LPARENCHAR literal RPARENCHAR
    | SPIE
    | SQL (LPARENCHAR literal RPARENCHAR)?
-   | (SQLCCSID | SQLC) 
-   | (SSRANGE | SSR) 
+   | (SQLCCSID | SQLC)
+   | (SSRANGE | SSR)
    | SYSEIB
    | (TERMINAL | TERM)
    | TEST (LPARENCHAR (HOOK | NOHOOK)? COMMACHAR? (SEP | SEPARATE | NOSEP | NOSEPARATE)? COMMACHAR? (EJPD | NOEJPD)? RPARENCHAR)?

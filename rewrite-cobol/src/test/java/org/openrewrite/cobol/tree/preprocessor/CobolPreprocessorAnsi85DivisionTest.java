@@ -7,12 +7,28 @@ package org.openrewrite.cobol.tree.preprocessor;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.ExpectedToFail;
 import org.openrewrite.Issue;
 import org.openrewrite.cobol.CobolTest;
 
+import static org.openrewrite.cobol.Assertions.cobol;
 import static org.openrewrite.cobol.Assertions.preprocessor;
 
 class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
+
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/17")
+    @ExpectedToFail
+    @Test
+    void invalidGrammar() {
+        rewriteRun(
+          cobol(
+            """
+              000001 IDENTIFICATION DIVISION.
+                     COPY.
+              """
+          )
+        );
+    }
 
     @Test
     void helloWorld() {

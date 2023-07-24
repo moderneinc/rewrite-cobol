@@ -16,12 +16,6 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  */
 public interface CobolVisitor<T> extends ParseTreeVisitor<T> {
 	/**
-	 * Visit a parse tree produced by {@link CobolParser#startRule}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStartRule(CobolParser.StartRuleContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link CobolParser#compilationUnit}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

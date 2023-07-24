@@ -22,18 +22,6 @@ public class CobolPreprocessorBaseListener implements CobolPreprocessorListener 
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterStartRule(CobolPreprocessorParser.StartRuleContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitStartRule(CobolPreprocessorParser.StartRuleContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterCompilationUnit(CobolPreprocessorParser.CompilationUnitContext ctx) { }
 	/**
 	 * {@inheritDoc}

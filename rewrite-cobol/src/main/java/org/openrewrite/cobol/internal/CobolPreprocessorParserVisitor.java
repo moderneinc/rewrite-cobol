@@ -81,11 +81,6 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
         return (T) super.visit(tree);
     }
 
-    @Override
-    public CobolPreprocessor.CompilationUnit visitStartRule(CobolPreprocessorParser.StartRuleContext ctx) {
-        return visitCompilationUnit(ctx.compilationUnit());
-    }
-
     private void init() {
         String[] parts = source.split("\n");
 

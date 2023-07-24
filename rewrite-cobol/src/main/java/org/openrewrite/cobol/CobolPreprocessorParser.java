@@ -7,9 +7,9 @@ package org.openrewrite.cobol;
 
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Timer;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.*;
 import org.openrewrite.*;
+import org.openrewrite.Parser;
 import org.openrewrite.cobol.internal.CobolDialect;
 import org.openrewrite.cobol.internal.CobolPreprocessorParserVisitor;
 import org.openrewrite.cobol.internal.grammar.CobolPreprocessorLexer;
@@ -78,6 +78,8 @@ public class CobolPreprocessorParser implements Parser {
                         org.openrewrite.cobol.internal.grammar.CobolPreprocessorParser parser =
                                 new org.openrewrite.cobol.internal.grammar.CobolPreprocessorParser(
                                         new CommonTokenStream(new CobolPreprocessorLexer(CharStreams.fromString(prepareSource))));
+                        parser.removeErrorListeners();
+                        parser.addErrorListener(new ForwardingErrorListener(sourceFile.getPath(), ctx));
 
                         CobolPreprocessorParserVisitor parserVisitor = new CobolPreprocessorParserVisitor(
                                 sourceFile.getRelativePath(relativeTo),
@@ -88,7 +90,7 @@ public class CobolPreprocessorParser implements Parser {
                                 cobolDialect
                         );
 
-                        CobolPreprocessor.CompilationUnit preprocessedCU = parserVisitor.visitStartRule(parser.startRule());
+                        CobolPreprocessor.CompilationUnit preprocessedCU = parserVisitor.visitCompilationUnit(parser.compilationUnit());
 
                         if (enableCopy) {
                             PreprocessCopyVisitor<ExecutionContext> copyPhase = new PreprocessCopyVisitor<>(copyBooks);
@@ -152,6 +154,23 @@ public class CobolPreprocessorParser implements Parser {
     @Override
     public Path sourcePathFromSourceText(Path prefix, String sourceCode) {
         return prefix.resolve("file.CBL");
+    }
+
+    private static class ForwardingErrorListener extends BaseErrorListener {
+        private final Path sourcePath;
+        private final ExecutionContext ctx;
+
+        private ForwardingErrorListener(Path sourcePath, ExecutionContext ctx) {
+            this.sourcePath = sourcePath;
+            this.ctx = ctx;
+        }
+
+        @Override
+        public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,
+                                int line, int charPositionInLine, String msg, RecognitionException e) {
+            ctx.getOnError().accept(new CobolParsingException(sourcePath,
+                    String.format("Syntax error in %s at line %d:%d %s.", sourcePath, line, charPositionInLine, msg), e));
+        }
     }
 
     public static CobolPreprocessorParser.Builder builder() {

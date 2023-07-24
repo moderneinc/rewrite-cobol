@@ -19,8 +19,6 @@
 
 grammar Cobol;
 
-startRule : compilationUnit;
-
 compilationUnit
    : programUnit* EOF
    ;

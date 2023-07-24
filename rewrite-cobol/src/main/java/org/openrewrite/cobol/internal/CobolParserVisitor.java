@@ -152,11 +152,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         return (T) super.visit(tree);
     }
 
-    @Override
-    public Cobol.CompilationUnit visitStartRule(CobolParser.StartRuleContext ctx) {
-        return visitCompilationUnit(ctx.compilationUnit());
-    }
-
     private void init() {
         String[] parts = source.split("\n");
 

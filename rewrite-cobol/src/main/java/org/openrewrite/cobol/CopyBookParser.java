@@ -86,7 +86,7 @@ public class CopyBookParser implements Parser {
                                 cobolDialect
                         );
 
-                        CobolPreprocessor.CompilationUnit preprocessedCU = parserVisitor.visitStartRule(parser.startRule());
+                        CobolPreprocessor.CompilationUnit preprocessedCU = parserVisitor.visitCompilationUnit(parser.compilationUnit());
                         CobolPreprocessor parsedCopySource = preprocessedCU.getCobols().get(0);
 
                         CobolPreprocessor.CopyBook copyBook = new CobolPreprocessor.CopyBook(

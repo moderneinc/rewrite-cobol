@@ -23,13 +23,6 @@ public class CobolBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitStartRule(CobolParser.StartRuleContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
 	@Override public T visitCompilationUnit(CobolParser.CompilationUnitContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
