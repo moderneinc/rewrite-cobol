@@ -56,7 +56,8 @@ public class FindCopyBookReferences extends Recipe {
                         copyBookSource.insertRow(executionContext,
                                 new CopyBookSource.Row(word.getCopyStatement().getCopySource().getName().getCobolWord().getWord(),
                                         copySourceResolved ? word.getCopyStatement().getCopyBook().getSourcePath().toString() : "",
-                                        copySourceResolved ? CopyBookSource.Row.ResolutionStatus.RESOLVED : CopyBookSource.Row.ResolutionStatus.NO_SOURCE_PATH));
+                                        copySourceResolved ? CopyBookSource.Row.ResolutionStatus.RESOLVED : CopyBookSource.Row.ResolutionStatus.NO_SOURCE_PATH,
+                                        word.getWord()));
                         return word.withCopyStatement(updated);
                     }
                 }

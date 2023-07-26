@@ -31,6 +31,10 @@ public class CopyBookSource extends DataTable<CopyBookSource.Row> {
                 description = "The status of the resolved copy book in a copy statement.")
         ResolutionStatus resolutionStatus;
 
+        @Column(displayName = "Marked word",
+                description = "The current word being visited from the post-processed LST.")
+        String markedWord;
+
         public enum ResolutionStatus {
             MISSING_SOURCE,
             NO_SOURCE_PATH,

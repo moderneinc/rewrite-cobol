@@ -39,7 +39,8 @@ public class FindMissingCopyBooks extends Recipe {
                     copyBookSource.insertRow(executionContext,
                             new CopyBookSource.Row(word.getCopyStatement().getCopySource().getName().getCobolWord().getWord(),
                                     "",
-                                    CopyBookSource.Row.ResolutionStatus.MISSING_SOURCE));
+                                    CopyBookSource.Row.ResolutionStatus.MISSING_SOURCE,
+                                    ""));
                     return word.withCopyStatement(word.getCopyStatement().withCopySource(
                             word.getCopyStatement().getCopySource().withName(
                                     SearchResult.found(word.getCopyStatement().getCopySource().getName()))));
