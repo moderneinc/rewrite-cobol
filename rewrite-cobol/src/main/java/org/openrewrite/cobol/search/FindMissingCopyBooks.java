@@ -10,12 +10,14 @@ import lombok.Value;
 import org.openrewrite.*;
 import org.openrewrite.cobol.CobolIsoVisitor;
 import org.openrewrite.cobol.markers.MissingCopyBook;
+import org.openrewrite.cobol.table.CopyBookSource;
 import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.marker.SearchResult;
 
 @EqualsAndHashCode(callSuper = true)
 @Value
 public class FindMissingCopyBooks extends Recipe {
+    transient CopyBookSource copyBookSource = new CopyBookSource(this);
 
     @Override
     public String getDisplayName() {
@@ -34,6 +36,10 @@ public class FindMissingCopyBooks extends Recipe {
             public Cobol.Word visitWord(Cobol.Word word, ExecutionContext executionContext) {
                 if (word.getCopyStatement() != null &&
                         word.getCopyStatement().getMarkers().findFirst(MissingCopyBook.class).isPresent()) {
+                    copyBookSource.insertRow(executionContext,
+                            new CopyBookSource.Row(word.getCopyStatement().getCopySource().getName().getCobolWord().getWord(),
+                                    "",
+                                    CopyBookSource.Row.ResolutionStatus.MISSING_SOURCE));
                     return word.withCopyStatement(word.getCopyStatement().withCopySource(
                             word.getCopyStatement().getCopySource().withName(
                                     SearchResult.found(word.getCopyStatement().getCopySource().getName()))));
