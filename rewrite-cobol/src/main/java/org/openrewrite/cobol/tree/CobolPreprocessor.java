@@ -324,13 +324,6 @@ public interface CobolPreprocessor extends Tree {
         @Nullable
         CopyBook copyBook;
 
-        // Each word that is a result for a copied source must be uniquely identified to associate it with the copy statement.
-        UUID copyStatementId;
-
-        public UUID getCopyStatementId() {
-            return copyStatementId == null ? id : copyStatementId;
-        }
-
         @Override
         public <P> CobolPreprocessor acceptCobolPreprocessor(CobolPreprocessorVisitor<P> v, P p) {
             return v.visitCopyStatement(this, p);

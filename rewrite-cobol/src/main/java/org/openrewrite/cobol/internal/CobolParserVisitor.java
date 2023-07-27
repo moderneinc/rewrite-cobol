@@ -12,6 +12,7 @@ import org.openrewrite.ExecutionContext;
 import org.openrewrite.FileAttributes;
 import org.openrewrite.cobol.internal.grammar.CobolBaseVisitor;
 import org.openrewrite.cobol.internal.grammar.CobolParser;
+import org.openrewrite.cobol.markers.CopiedWord;
 import org.openrewrite.cobol.markers.MissingCopyBook;
 import org.openrewrite.cobol.tree.*;
 import org.openrewrite.internal.lang.Nullable;
@@ -5977,6 +5978,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     public Cobol.Word visitTerminal(TerminalNode node) {
         List<Object> objects = new ArrayList<>();
         Space prefix = processTokenText(node.getText(), objects);
+        Markers markers = Markers.EMPTY;
         String text = END_OF_FILE.equals(node.getText()) ? "" :
                 node.getText().startsWith(COMMENT_ENTRY) ? node.getText().substring(COMMENT_ENTRY.length()) : node.getText();
 
@@ -6004,6 +6006,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 commentArea = (CommentArea) object;
             } else if (object instanceof CobolPreprocessor.CopyStatement) {
                 copyStatement = (CobolPreprocessor.CopyStatement) object;
+                markers = markers.addIfAbsent(new CopiedWord(randomId(), copyStatement.getId().toString()));
             } else if (object instanceof CobolPreprocessor.ReplaceByStatement) {
                 replaceByStatement = (CobolPreprocessor.ReplaceByStatement) object;
             } else if (object instanceof CobolPreprocessor.ReplaceOffStatement) {
@@ -6020,7 +6023,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         return new Cobol.Word(
                 randomId(),
                 prefix,
-                Markers.EMPTY,
+                markers,
                 cobolLines,
                 continuation,
                 sequenceArea,

@@ -8,7 +8,6 @@ package org.openrewrite.cobol;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.openrewrite.SourceFile;
-import org.openrewrite.Tree;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
 
 import java.util.HashMap;

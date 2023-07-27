@@ -571,8 +571,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
                 (CobolPreprocessor.CopySource) visit(ctx.copySource()),
                 convertAllList(ctx.directoryPhrase(), ctx.familyPhrase(), ctx.replacingPhrase(), ctx.SUPPRESS()),
                 (CobolPreprocessor.Word) visit(ctx.DOT()),
-                null,
-                randomId()
+                null
         );
     }
 
