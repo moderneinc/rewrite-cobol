@@ -42,16 +42,15 @@ public class FindCopyBookReferences extends Recipe {
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {
         return Preconditions.check(new UsesCopyBook(copyBookName), new CobolIsoVisitor<ExecutionContext>() {
-            private final Map<UUID, UUID> copyIds = new HashMap<>();
+            private final Set<UUID> copyIds = new HashSet<>();
 
             @Override
             public Cobol.Word visitWord(Cobol.Word word, ExecutionContext executionContext) {
-                if (word.getCopyStatement() != null && !copyIds.containsKey(word.getCopyStatement().getId())) {
+                if (word.getCopyStatement() != null && copyIds.add(word.getCopyStatement().getCopyStatementId())) {
                     if (copyBookName == null || copyBookName.equals(word.getCopyStatement().getCopySource().getName().getCobolWord().getWord())) {
                         CobolPreprocessor.CopyStatement updated = word.getCopyStatement().withCopySource(
                                 word.getCopyStatement().getCopySource().withName(
                                         SearchResult.found(word.getCopyStatement().getCopySource().getName(), null)));
-                        copyIds.put(word.getCopyStatement().getId(), updated.getId());
                         boolean copySourceResolved = word.getCopyStatement().getCopyBook() != null;
                         copyBookSource.insertRow(executionContext,
                                 new CopyBookSource.Row(word.getCopyStatement().getCopySource().getName().getCobolWord().getWord(),
