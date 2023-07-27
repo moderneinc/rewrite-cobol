@@ -9,14 +9,11 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.openrewrite.*;
 import org.openrewrite.cobol.CobolIsoVisitor;
-import org.openrewrite.cobol.markers.CopiedWord;
 import org.openrewrite.cobol.table.CopyBookSource;
 import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
 import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.marker.SearchResult;
-
-import java.util.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Value
@@ -43,24 +40,20 @@ public class FindCopyBookReferences extends Recipe {
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {
         return Preconditions.check(new UsesCopyBook(copyBookName), new CobolIsoVisitor<ExecutionContext>() {
-            private final Collection<String> found = new HashSet<>();
 
             @Override
             public Cobol.Word visitWord(Cobol.Word word, ExecutionContext executionContext) {
                 if (word.getCopyStatement() != null) {
                     if (copyBookName == null || copyBookName.equals(word.getCopyStatement().getCopySource().getName().getCobolWord().getWord())) {
-                        Optional<CopiedWord> copiedWord = word.getMarkers().findFirst(CopiedWord.class);
-                        if (copiedWord.isPresent() && found.add(copiedWord.get().getStatementId())) {
-                            CobolPreprocessor.CopyStatement updated = word.getCopyStatement().withCopySource(word.getCopyStatement().getCopySource().withName(
-                                            SearchResult.found(word.getCopyStatement().getCopySource().getName(), null)));
-                            boolean copySourceResolved = word.getCopyStatement().getCopyBook() != null;
-                            copyBookSource.insertRow(executionContext,
-                                    new CopyBookSource.Row(word.getCopyStatement().getCopySource().getName().getCobolWord().getWord(),
-                                            copySourceResolved ? word.getCopyStatement().getCopyBook().getSourcePath().toString() : "",
-                                            copySourceResolved ? CopyBookSource.Row.ResolutionStatus.RESOLVED : CopyBookSource.Row.ResolutionStatus.NO_SOURCE_PATH,
-                                            word.getWord()));
-                            return word.withCopyStatement(updated);
-                        }
+                        CobolPreprocessor.CopyStatement updated = word.getCopyStatement().withCopySource(word.getCopyStatement().getCopySource().withName(
+                                SearchResult.found(word.getCopyStatement().getCopySource().getName(), null)));
+                        boolean copySourceResolved = word.getCopyStatement().getCopyBook() != null;
+                        copyBookSource.insertRow(executionContext,
+                                new CopyBookSource.Row(word.getCopyStatement().getCopySource().getName().getCobolWord().getWord(),
+                                        copySourceResolved ? word.getCopyStatement().getCopyBook().getSourcePath().toString() : "",
+                                        copySourceResolved ? CopyBookSource.Row.ResolutionStatus.RESOLVED : CopyBookSource.Row.ResolutionStatus.NO_SOURCE_PATH,
+                                        word.getWord()));
+                        return word.withCopyStatement(updated);
                     }
                 }
                 return super.visitWord(word, executionContext);

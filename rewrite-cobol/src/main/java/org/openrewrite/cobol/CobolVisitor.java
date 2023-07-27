@@ -6,6 +6,7 @@
 package org.openrewrite.cobol;
 
 import org.openrewrite.TreeVisitor;
+import org.openrewrite.cobol.markers.CopiedWord;
 import org.openrewrite.cobol.tree.*;
 import org.openrewrite.internal.ListUtils;
 import org.openrewrite.internal.lang.Nullable;
@@ -4279,7 +4280,35 @@ public class CobolVisitor<P> extends TreeVisitor<Cobol, P> {
     }
 
     public Cobol visitWord(Cobol.Word word, P p) {
+        if (word.getCopyStatement() == null && word.getMarkers().findFirst(CopiedWord.class).isPresent()) {
+            return word;
+        }
+
         Cobol.Word w = word;
+        // Preprocessed COBOL preservation.
+        if (w.getReplaceByStatement() != null) {
+            w = w.withReplaceByStatement((CobolPreprocessor.ReplaceByStatement) getCobolPreprocessorVisitor().visit(w.getReplaceByStatement(), p));
+            return w;
+        }
+
+        if (w.getReplaceOffStatement() != null) {
+            w = w.withReplaceOffStatement((CobolPreprocessor.ReplaceOffStatement) getCobolPreprocessorVisitor().visit(w.getReplaceOffStatement(), p));
+            return w;
+        }
+
+        if (word.getReplacement() != null) {
+            if (word.getReplacement().getType() == Replacement.Type.EQUAL || word.getReplacement().getType() == Replacement.Type.REDUCTIVE) {
+                w = w.withReplacement(w.getReplacement().withOriginalWords(
+                        ListUtils.map(word.getReplacement().getOriginalWords(), it -> it.withOriginal(visitAndCast(it.getOriginal(), p)))));
+            }
+            return w;
+        }
+
+        if (w.getCopyStatement() != null) {
+            w = w.withCopyStatement((CobolPreprocessor.CopyStatement) getCobolPreprocessorVisitor().visit(w.getCopyStatement(), p));
+            return w;
+        }
+
         w = w.withPrefix(visitSpace(w.getPrefix(), Space.Location.WORD_PREFIX, p));
         w = w.withMarkers(visitMarkers(w.getMarkers(), p));
 
@@ -4290,17 +4319,6 @@ public class CobolVisitor<P> extends TreeVisitor<Cobol, P> {
         w = w.withCommentArea(visitCommentArea(w.getCommentArea(), p));
         w = w.withIndicatorArea(visitIndicatorArea(w.getIndicatorArea(), p));
         w = w.withSequenceArea(visitSequenceArea(w.getSequenceArea(), p));
-
-        // Preprocessed COBOL preservation.
-        if (w.getCopyStatement() != null) {
-            w = w.withCopyStatement((CobolPreprocessor.CopyStatement) getCobolPreprocessorVisitor().visit(w.getCopyStatement(), p));
-        }
-        if (w.getReplaceByStatement() != null) {
-            w = w.withReplaceByStatement((CobolPreprocessor.ReplaceByStatement) getCobolPreprocessorVisitor().visit(w.getReplaceByStatement(), p));
-        }
-        if (w.getReplaceOffStatement() != null) {
-            w = w.withReplaceOffStatement((CobolPreprocessor.ReplaceOffStatement) getCobolPreprocessorVisitor().visit(w.getReplaceOffStatement(), p));
-        }
         return w;
     }
 
@@ -4420,6 +4438,7 @@ public class CobolVisitor<P> extends TreeVisitor<Cobol, P> {
         i = i.withMarkers(visitMarkers(i.getMarkers(), p));
         return i;
     }
+
     @Nullable
     public SequenceArea visitSequenceArea(@Nullable SequenceArea sequenceArea, P p) {
         if (sequenceArea == null) {

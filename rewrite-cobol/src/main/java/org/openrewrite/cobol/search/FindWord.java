@@ -11,8 +11,12 @@ import org.openrewrite.ExecutionContext;
 import org.openrewrite.Option;
 import org.openrewrite.Recipe;
 import org.openrewrite.TreeVisitor;
+import org.openrewrite.cobol.CobolPreprocessorIsoVisitor;
 import org.openrewrite.cobol.NameVisitor;
 import org.openrewrite.cobol.tree.Cobol;
+import org.openrewrite.cobol.tree.CobolPreprocessor;
+import org.openrewrite.cobol.tree.Replacement;
+import org.openrewrite.internal.ListUtils;
 import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.marker.SearchResult;
 
@@ -49,6 +53,7 @@ public class FindWord extends Recipe {
     }
 
     private static class SearchForWord extends NameVisitor<ExecutionContext> {
+        private final PreprocessorSearch preprocessorSearch;
         private final String searchTerm;
 
         @Nullable
@@ -57,14 +62,50 @@ public class FindWord extends Recipe {
         public SearchForWord(String searchTerm, @Nullable Boolean exactMatch) {
             this.searchTerm = searchTerm;
             pattern = Boolean.TRUE.equals(exactMatch) ? null : Pattern.compile(searchTerm.toLowerCase());
+            preprocessorSearch = new PreprocessorSearch();
         }
 
         @Override
         public Cobol.Word visitWord(Cobol.Word word, ExecutionContext executionContext) {
-            if (matches(word.getWord())) {
+            Cobol.Word w = super.visitWord(word, executionContext);
+            // Preprocessed COBOL preservation.
+            if (w.getReplaceByStatement() != null) {
+                w = w.withReplaceByStatement((CobolPreprocessor.ReplaceByStatement) preprocessorSearch.visit(w.getReplaceByStatement(), executionContext));
+                return w;
+            }
+
+            if (w.getReplaceOffStatement() != null) {
+                w = w.withReplaceOffStatement((CobolPreprocessor.ReplaceOffStatement) preprocessorSearch.visit(w.getReplaceOffStatement(), executionContext));
+                return w;
+            }
+
+            if (w.getReplacement() != null) {
+                if (w.getReplacement().getType() == Replacement.Type.EQUAL || w.getReplacement().getType() == Replacement.Type.REDUCTIVE) {
+                    w = w.withReplacement(w.getReplacement().withOriginalWords(
+                            ListUtils.map(w.getReplacement().getOriginalWords(), it -> it.withOriginal(visitAndCast(it.getOriginal(), executionContext)))));
+                }
+                return w;
+            }
+
+            if (w.getCopyStatement() != null) {
+                w = w.withCopyStatement((CobolPreprocessor.CopyStatement) preprocessorSearch.visit(w.getCopyStatement(), executionContext));
+                return w;
+            }
+
+            if (matches(w.getWord())) {
                 return SearchResult.found(word);
             }
-            return super.visitWord(word, executionContext);
+            return w;
+        }
+
+        private class PreprocessorSearch extends CobolPreprocessorIsoVisitor<ExecutionContext> {
+            @Override
+            public CobolPreprocessor.Word visitWord(CobolPreprocessor.Word word, ExecutionContext executionContext) {
+                if (matches(word.getCobolWord().getWord())) {
+                    return SearchResult.found(word);
+                }
+                return word;
+            }
         }
 
         private boolean matches(String word) {
