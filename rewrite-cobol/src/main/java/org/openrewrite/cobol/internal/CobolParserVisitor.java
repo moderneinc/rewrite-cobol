@@ -172,12 +172,16 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 sequenceAreas.put(pos, sequenceArea);
                 pos += sequenceArea.length();
 
-                String indicatorArea = cleanedPart.substring(columns.getIndicatorArea(), columns.getContentArea());
-                indicatorAreas.put(pos, indicatorArea);
-                pos += indicatorArea.length();
+                if (cleanedPart.length() - 1 >= columns.getIndicatorArea()) {
+                    String indicatorArea = cleanedPart.substring(columns.getIndicatorArea(), columns.getContentArea());
+                    indicatorAreas.put(pos, indicatorArea);
+                    pos += indicatorArea.length();
+                }
 
-                String contentArea = cleanedPart.substring(columns.getContentArea(), Math.min(cleanedPart.length(), columns.getOtherArea()));
-                pos += contentArea.length();
+                if (cleanedPart.length() - 1 >= columns.getContentArea()) {
+                    String contentArea = cleanedPart.substring(columns.getContentArea(), Math.min(cleanedPart.length(), columns.getOtherArea()));
+                    pos += contentArea.length();
+                }
 
                 String otherArea = cleanedPart.length() > columns.getOtherArea() ? cleanedPart.substring(columns.getOtherArea()) : "";
                 if (!otherArea.isEmpty()) {
@@ -6501,7 +6505,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         // CommentEntry tags are required to be recognized the COBOL grammar.
         // The CommentEntry tag (hopefully does not exist in the original source code.) and is removed before generating the AST.
         boolean isCommentEntry = text.startsWith(COMMENT_ENTRY);
-        if (!isCommentEntry && indicatorArea != null) {
+        if (!isCommentEntry) {
 
             List<CobolLine> lines = new ArrayList<>();
 

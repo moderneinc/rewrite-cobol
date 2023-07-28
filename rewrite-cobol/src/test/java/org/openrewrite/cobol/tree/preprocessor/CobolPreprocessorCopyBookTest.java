@@ -7,6 +7,7 @@ package org.openrewrite.cobol.tree.preprocessor;
 
 import org.junit.jupiter.api.Test;
 import org.openrewrite.ExecutionContext;
+import org.openrewrite.Issue;
 import org.openrewrite.cobol.CobolTest;
 import org.openrewrite.cobol.internal.CobolPreprocessorPrinter;
 
@@ -25,6 +26,22 @@ public class CobolPreprocessorCopyBookTest extends CobolTest {
               000003 PROCEDURE DIVISION        .
               000004 DISPLAY 'Hello world!'    .
               000005 STOP RUN                  .
+              """
+          )
+        );
+    }
+
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/24")
+    @Test
+    void emptyIndicatorArea() {
+        rewriteRun(
+          preprocessor(
+            """
+              000100*******************************************************************
+              000200
+              000300     PERFORM FAIL.
+              000400     SUBTRACT 1 FROM ERROR-COUNTER.
+              000500     MOVE "TEXT COPIED FROM WRONG LIBRARY" TO RE-MARK.
               """
           )
         );

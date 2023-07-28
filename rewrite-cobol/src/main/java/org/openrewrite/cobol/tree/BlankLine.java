@@ -53,8 +53,13 @@ public class BlankLine implements CobolLine {
             if (sequenceArea != null) {
                 sequenceArea.printColumnArea(sourcePrinter, cursor, true, p);
             }
-            indicatorArea.printColumnArea(sourcePrinter, cursor, true, p);
+
+            if (indicatorArea != null) {
+                indicatorArea.printColumnArea(sourcePrinter, cursor, true, p);
+            }
+
             p.append(contentArea);
+
             if (commentArea != null) {
                 commentArea.printColumnArea(sourcePrinter, cursor, true, p);
             }
@@ -75,8 +80,13 @@ public class BlankLine implements CobolLine {
             if (sequenceArea != null) {
                 sequenceArea.printColumnArea(sourcePrinter, cursor, true, p);
             }
-            indicatorArea.printColumnArea(sourcePrinter, cursor, true, p);
+
+            if (indicatorArea != null) {
+                indicatorArea.printColumnArea(sourcePrinter, cursor, true, p);
+            }
+
             p.append(contentArea);
+
             if (commentArea != null) {
                 commentArea.printColumnArea(sourcePrinter, cursor, true, p);
             }
