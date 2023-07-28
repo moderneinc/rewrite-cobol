@@ -17,7 +17,6 @@ import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.marker.Marker;
 import org.openrewrite.marker.Markers;
 
-import java.util.*;
 import java.util.function.UnaryOperator;
 
 /**
@@ -36,13 +35,8 @@ public class CobolSourcePrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
     private int originalReplaceLength;
     private final boolean printColumns;
 
-    private final Collection<String> printedCopyStatements;
-    private final Collection<String> printedReductiveReplaces;
-
     public CobolSourcePrinter(boolean printColumns) {
         this.printColumns = printColumns;
-        this.printedCopyStatements = new HashSet<>();
-        this.printedReductiveReplaces = new HashSet<>();
     }
 
     @Override
@@ -4311,10 +4305,14 @@ public class CobolSourcePrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
 
     @Override
     public Cobol visitWord(Cobol.Word word, PrintOutputCapture<P> p) {
+        if (word.getCopyStatement() == null && word.getMarkers().findFirst(CopiedWord.class).isPresent()) {
+            return word;
+        }
+
         getCobolPreprocessorVisitor().visit(word.getReplaceByStatement(), p);
         getCobolPreprocessorVisitor().visit(word.getReplaceOffStatement(), p);
 
-        if (word.getReplacement() != null && word.getCopyStatement() == null) {
+        if (word.getReplacement() != null) {
             if (word.getReplacement().getType() == Replacement.Type.EQUAL) {
                 int startLength = p.getOut().length();
                 Replacement.OriginalWord originalWord = word.getReplacement().getOriginalWords().get(0);
@@ -4329,35 +4327,25 @@ public class CobolSourcePrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
             } else if (word.getReplacement().getType() == Replacement.Type.ADDITIVE) {
                 return word;
             } else if (word.getReplacement().getType() == Replacement.Type.REDUCTIVE && !word.getReplacement().isCopiedSource()) {
-                if (printedReductiveReplaces.add(word.getReplacement().getId().toString())) {
-                    for (Replacement.OriginalWord originalWord : word.getReplacement().getOriginalWords()) {
-                        visit(originalWord.getOriginal(), p);
-                    }
-                    if (word.getSequenceArea() != null) {
-                        word.getSequenceArea().printColumnArea(this, getCursor(), printColumns, p);
-                    }
-                    if (word.getIndicatorArea() != null) {
-                        word.getIndicatorArea().printColumnArea(this, getCursor(), printColumns, p);
-                    }
-                    beforeSyntax(word, Space.Location.WORD_PREFIX, p);
-                    p.append(word.getWord());
-                    return word;
+                for (Replacement.OriginalWord originalWord : word.getReplacement().getOriginalWords()) {
+                    visit(originalWord.getOriginal(), p);
                 }
+                if (word.getSequenceArea() != null) {
+                    word.getSequenceArea().printColumnArea(this, getCursor(), printColumns, p);
+                }
+                if (word.getIndicatorArea() != null) {
+                    word.getIndicatorArea().printColumnArea(this, getCursor(), printColumns, p);
+                }
+                beforeSyntax(word, Space.Location.WORD_PREFIX, p);
+                p.append(word.getWord());
+                return word;
             }
         }
 
         // The COBOL word is a product of a copy statement.
         if (word.getCopyStatement() != null) {
-            if (word.getCopyStatement().getMarkers().findFirst(MissingCopyBook.class).isPresent()) {
-                getCobolPreprocessorVisitor().visit(word.getCopyStatement(), p);
-            } else {
-                Optional<CopiedWord> copiedWord = word.getMarkers().findFirst(CopiedWord.class);
-                // Print the original Copy Statement in place of the first word from the copied source.
-                if (copiedWord.isPresent() && printedCopyStatements.add(copiedWord.get().getStatementId())) {
-                    getCobolPreprocessorVisitor().visit(word.getCopyStatement(), p);
-                }
-
-                // Do not print the AST for the copied source.
+            getCobolPreprocessorVisitor().visit(word.getCopyStatement(), p);
+            if (!word.getCopyStatement().getMarkers().findFirst(MissingCopyBook.class).isPresent()) {
                 return word;
             }
         }

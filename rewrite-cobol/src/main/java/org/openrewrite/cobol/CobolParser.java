@@ -92,7 +92,7 @@ public class CobolParser implements Parser {
                     try {
                         EncodingDetectingInputStream is = sourceFile.getSource(ctx);
 
-                        CobolPreprocessor.CompilationUnit preprocessedCU = (CobolPreprocessor.CompilationUnit) cobolPreprocessorParser.parseInputs(singletonList(sourceFile), relativeTo, ctx).findFirst().get();
+                        CobolPreprocessor.CompilationUnit preprocessedCU = (CobolPreprocessor.CompilationUnit) cobolPreprocessorParser.parseInputs(singletonList(sourceFile), relativeTo, ctx).findFirst().orElse(null);
 
                         // Print processed code to parse COBOL.
                         PrintOutputCapture<ExecutionContext> cobolParserOutput = new PrintOutputCapture<>(new InMemoryExecutionContext());
@@ -134,15 +134,9 @@ public class CobolParser implements Parser {
                         pctx.getOnError().accept(t);
                         return ParseError.build(this, sourceFile, relativeTo, ctx, t);
                     }
-                })
-                .filter(Objects::nonNull);
+                });
 
         return Stream.concat(sources, copyBooks.stream());
-    }
-
-    @Override
-    public Stream<SourceFile> parse(String... sources) {
-        return parse(new InMemoryExecutionContext(), sources);
     }
 
     @Override

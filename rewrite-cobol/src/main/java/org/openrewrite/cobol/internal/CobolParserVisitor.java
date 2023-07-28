@@ -79,6 +79,9 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Nullable
     private CobolPreprocessor.CopyStatement currentCopy = null;
 
+    @Nullable
+    private CopiedWord copiedWord = null;
+
     boolean copyBookNotFound = false;
 
     private String replaceStartComment = null;
@@ -6006,7 +6009,9 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 commentArea = (CommentArea) object;
             } else if (object instanceof CobolPreprocessor.CopyStatement) {
                 copyStatement = (CobolPreprocessor.CopyStatement) object;
-                markers = markers.addIfAbsent(new CopiedWord(randomId(), copyStatement.getId().toString()));
+                if (copiedWord == null && !copyBookNotFound) {
+                    copiedWord = new CopiedWord(randomId(), copyStatement.getId().toString());
+                }
             } else if (object instanceof CobolPreprocessor.ReplaceByStatement) {
                 replaceByStatement = (CobolPreprocessor.ReplaceByStatement) object;
             } else if (object instanceof CobolPreprocessor.ReplaceOffStatement) {
@@ -6016,11 +6021,15 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
             }
         }
 
+        // An unresolved copy book will not have any words from a copied source to add the statement to.
+        // So the current copy is set to null on the next word that occurs in the LST.
         if (copyBookNotFound) {
             this.currentCopy = null;
             copyBookNotFound = false;
+        } else if (copiedWord != null){
+            markers = markers.addIfAbsent(copiedWord);
         }
-        return new Cobol.Word(
+        Cobol.Word word = new Cobol.Word(
                 randomId(),
                 prefix,
                 markers,
@@ -6035,6 +6044,8 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 replaceOffStatement,
                 replacement
         );
+        this.currentCopy = null;
+        return word;
     }
 
     @Override
@@ -6815,9 +6826,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     private void copyStopComment() {
         parseComment(copyStopComment);
 
-        if (!copyBookNotFound) {
-            currentCopy = null;
-        }
+        copiedWord = null;
         inCopiedText = false;
 
         sequenceArea();
@@ -7085,7 +7094,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
      *
      * @param continuationDelimiter the next expected Character in the source that comes after the indicator.
      * @param isStringLiteral String literals and Keywords/Identifiers have different rules for line continuations.
-     *                        A continued String literal will be prefixed by the delimiter (' or "),
+     *                        A continued String literal will be prefixed by the delimiter `'` or `"`,
      *                        which needs to exist in the indicator marker.
      *                        I.E. 000001-|<whitespace including the delimiter " or '>|some continued string literal.
      * <p>
