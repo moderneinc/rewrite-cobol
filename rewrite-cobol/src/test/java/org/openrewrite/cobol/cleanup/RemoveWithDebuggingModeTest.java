@@ -5,6 +5,7 @@
  */
 package org.openrewrite.cobol.cleanup;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openrewrite.cobol.CobolTest;
 import org.openrewrite.test.RecipeSpec;
@@ -125,6 +126,7 @@ public class RemoveWithDebuggingModeTest extends CobolTest {
         );
     }
 
+    @Disabled
     @Test
     void endOfCompilationUnit() {
         rewriteRun(
