@@ -61,6 +61,27 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
         );
     }
 
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/26")
+    @Test
+    void emptyLineAfterCommentEntry() {
+        rewriteRun(
+          preprocessor(
+            """
+              000001 IDENTIFICATION DIVISION.
+                     PROGRAM-ID. HELLO.
+                     AUTHOR.  MODERNE.
+                    \s
+                   \s
+                     DATA DIVISION.
+                         WORKING-STORAGE SECTION.
+                             77 X PIC 99.                                             C_AREA.05
+                             77 Y PIC 99.                                             C_AREA.06
+                             77 Z PIC 99.                                             C_AREA.07
+              """
+          )
+        );
+    }
+
     @Test
     void arithmetic() {
         rewriteRun(

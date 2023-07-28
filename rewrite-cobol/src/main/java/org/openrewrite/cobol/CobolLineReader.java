@@ -7,10 +7,7 @@ package org.openrewrite.cobol;
 
 import org.openrewrite.cobol.internal.CobolDialect;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 import static org.openrewrite.cobol.CobolStringUtils.*;
 
@@ -19,11 +16,11 @@ import static org.openrewrite.cobol.CobolStringUtils.*;
  */
 public class CobolLineReader {
 
-    private static final Set<String> triggersStart = new HashSet<>(Arrays.asList("AUTHOR.", "INSTALLATION.", "DATE-WRITTEN.",
-            "DATE-COMPILED.", "SECURITY.", "REMARKS."));
+    private static final List<String> triggersStart = Arrays.asList("AUTHOR", "INSTALLATION", "DATE-WRITTEN",
+            "DATE-COMPILED", "SECURITY", "REMARKS");
 
-    private static final Set<String> triggersEnd = new HashSet<>(Arrays.asList("PROGRAM-ID.", "AUTHOR.", "INSTALLATION.",
-            "DATE-WRITTEN.", "DATE-COMPILED.", "SECURITY.", "ENVIRONMENT", "DATA.", "PROCEDURE."));
+    private static final List<String> triggersEnd = Arrays.asList("PROGRAM-ID", "AUTHOR", "INSTALLATION",
+            "DATE-WRITTEN", "DATE-COMPILED", "SECURITY", "IDENTIFICATION", "ID", "ENVIRONMENT", "DATA", "PROCEDURE", "END");
 
     private boolean inCommentEntry = false;
 
@@ -65,7 +62,7 @@ public class CobolLineReader {
             }
             boolean isValidText = !(" ".equals(indicator) && contentArea.trim().isEmpty());
 
-            if (inCommentEntry) {
+            if (inCommentEntry && !contentArea.isEmpty()) {
                 if (startsWithTrigger(contentArea, triggersEnd)) {
                     inCommentEntry = false;
                 } else {
@@ -139,8 +136,15 @@ public class CobolLineReader {
         return line.substring(0, i);
     }
 
-    private static boolean startsWithTrigger(String line, Set<String> triggers) {
+    private static boolean startsWithTrigger(String line, List<String> triggers) {
         String firstWordsUpper = getFirstWords(line).toUpperCase();
-        return triggers.contains(firstWordsUpper);
+        boolean isTrigger = false;
+        for (String trigger : triggers) {
+            if (firstWordsUpper.equals(trigger) || firstWordsUpper.startsWith(trigger + ".")) {
+                isTrigger = true;
+                break;
+            }
+        }
+        return isTrigger;
     }
 }

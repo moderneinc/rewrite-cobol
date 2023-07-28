@@ -12,6 +12,7 @@ import org.openrewrite.Issue;
 import org.openrewrite.cobol.CobolTest;
 
 import static org.openrewrite.cobol.Assertions.cobol;
+import static org.openrewrite.cobol.Assertions.preprocessor;
 
 public class CobolParserAnsi85DivisionTest extends CobolTest {
 
@@ -38,6 +39,27 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
               000400 PROCEDURE DIVISION.
               000500
               000600 STOP RUN.
+              """
+          )
+        );
+    }
+
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/26")
+    @Test
+    void emptyLineAfterCommentEntry() {
+        rewriteRun(
+          preprocessor(
+            """
+              000000 IDENTIFICATION DIVISION.
+                     PROGRAM-ID. HELLO.
+                     AUTHOR.  MODERNE.
+                    \s
+                   \s
+                     DATA DIVISION.
+                         WORKING-STORAGE SECTION.
+                             77 X PIC 99.                                             C_AREA.05
+                             77 Y PIC 99.                                             C_AREA.06
+                             77 Z PIC 99.                                             C_AREA.07
               """
           )
         );
