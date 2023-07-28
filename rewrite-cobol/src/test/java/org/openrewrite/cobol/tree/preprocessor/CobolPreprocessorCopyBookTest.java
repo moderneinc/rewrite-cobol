@@ -47,6 +47,14 @@ public class CobolPreprocessorCopyBookTest extends CobolTest {
         );
     }
 
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/27")
+    @Test
+    void newLineInContentAreaBeforeCopyBook() {
+        rewriteRun(
+          preprocessor(getNistResource("ISSUE_27.CBL"))
+        );
+    }
+
     @Test
     void altl1() {
         rewriteRun(
