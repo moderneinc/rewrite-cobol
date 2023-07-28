@@ -26,6 +26,23 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
         );
     }
 
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/24")
+    @Test
+    void emptyIndicatorArea() {
+        rewriteRun(
+          cobol(
+            """
+              000001 IDENTIFICATION  DIVISION.
+              000200
+              000300 PROGRAM-ID    . HELLO.
+              000400 PROCEDURE DIVISION.
+              000500
+              000600 STOP RUN.
+              """
+          )
+        );
+    }
+
     @Test
     void helloWorld() {
         rewriteRun(
