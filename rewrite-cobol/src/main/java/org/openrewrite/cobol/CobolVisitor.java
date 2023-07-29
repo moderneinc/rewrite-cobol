@@ -3734,7 +3734,7 @@ public class CobolVisitor<P> extends TreeVisitor<Cobol, P> {
         s = s.withMarkers(visitMarkers(s.getMarkers(), p));
         s = s.withIdentifiers(ListUtils.map(s.getIdentifiers(), t -> (Identifier) visit(t, p)));
         s = s.withTo((Cobol.Word) visit(s.getTo(), p));
-        s = s.withValues(ListUtils.map(s.getValues(), t -> (Name) visit(t, p)));
+        s = s.withValues(ListUtils.map(s.getValues(), t -> visit(t, p)));
         return s;
     }
 
@@ -3830,6 +3830,15 @@ public class CobolVisitor<P> extends TreeVisitor<Cobol, P> {
         s = s.withDot((Cobol.Word) visit(s.getDot(), p));
         s = s.withClauses(ListUtils.map(s.getClauses(), it -> visit(it, p)));
         s = s.withDot2((Cobol.Word) visit(s.getDot2(), p));
+        return s;
+    }
+
+    public Cobol visitSpecialRegister(Cobol.SpecialRegister specialRegister, P p) {
+        Cobol.SpecialRegister s = specialRegister;
+        s = s.withPrefix(visitSpace(s.getPrefix(), Space.Location.SPECIAL_REGISTER_PREFIX, p));
+        s = s.withMarkers(visitMarkers(s.getMarkers(), p));
+        s = s.withWords(ListUtils.map(s.getWords(), it -> visit(it, p)));
+        s = s.withIdentifier((Name) visit(s.getIdentifier(), p));
         return s;
     }
 

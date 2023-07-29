@@ -33,7 +33,6 @@ import static java.util.Collections.emptyList;
  * Read preprocessed COBOL and execute preprocessor commands.
  */
 public class CobolPreprocessorParser implements Parser {
-    public static final List<String> COPYBOOK_FILE_EXTENSIONS = Collections.singletonList(".cpy");
     private static final List<String> COBOL_FILE_EXTENSIONS = Collections.singletonList(".cbl");
 
     private final CobolDialect cobolDialect;

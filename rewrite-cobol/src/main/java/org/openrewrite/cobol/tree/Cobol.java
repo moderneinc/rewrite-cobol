@@ -8273,7 +8273,7 @@ public interface Cobol extends Tree {
         Markers markers;
         List<Identifier> identifiers;
         Word to;
-        List<Name> values;
+        List<Cobol> values;
 
         @Override
         public <P> Cobol acceptCobol(CobolVisitor<P> v, P p) {
@@ -8486,6 +8486,27 @@ public interface Cobol extends Tree {
         @Override
         public <P> Cobol acceptCobol(CobolVisitor<P> v, P p) {
             return v.visitSpecialNames(this, p);
+        }
+    }
+
+    @Value
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+    @With
+    class SpecialRegister implements Cobol, Name {
+
+        @EqualsAndHashCode.Include
+        UUID id;
+
+        Space prefix;
+        Markers markers;
+        List<Cobol> words;
+
+        @Nullable
+        Name identifier;
+
+        @Override
+        public <P> Cobol acceptCobol(CobolVisitor<P> v, P p) {
+            return v.visitSpecialRegister(this, p);
         }
     }
 
