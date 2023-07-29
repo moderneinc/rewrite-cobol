@@ -5641,6 +5641,9 @@ public interface Cobol extends Tree {
 
         Space prefix;
         Markers markers;
+
+        List<CobolPreprocessor.CompilerOptions> compilerOptions;
+
         IdentificationDivision identificationDivision;
 
         @Nullable

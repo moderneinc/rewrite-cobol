@@ -123,7 +123,8 @@ public class CobolParser implements Parser {
                                 cobolPreprocessorParser.getReplaceOffStatements(preprocessedCU),
                                 cobolPreprocessorParser.getReplaces(preprocessedCU),
                                 cobolPreprocessorParser.getReplaceAdditiveTypes(preprocessedCU),
-                                cobolPreprocessorParser.getReplaceReductiveTypes(preprocessedCU)
+                                cobolPreprocessorParser.getReplaceReductiveTypes(preprocessedCU),
+                                cobolPreprocessorParser.getCompilerOptions(preprocessedCU)
                         ).visitCompilationUnit(parser.compilationUnit());
 
                         sample.stop(MetricsHelper.successTags(timer).register(Metrics.globalRegistry));

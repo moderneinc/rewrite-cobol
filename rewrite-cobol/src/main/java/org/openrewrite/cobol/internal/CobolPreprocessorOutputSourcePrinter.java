@@ -59,6 +59,9 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
 
     public static final String REPLACE_ADDED_WHITESPACE_KEY = "__REPLACE_ADDED_WHITESPACE__";
 
+    public static final String COMPILER_OPTIONS_START_KEY = "__COMPILER_OPTIONS_START__";
+    public static final String COMPILER_OPTIONS_STOP_KEY = "__COMPILER_OPTIONS_STOP__";
+
     private final CobolSourcePrinter<P> cobolSourcePrinter;
     private final CobolDialect cobolDialect;
     private final boolean printColumns;
@@ -95,6 +98,9 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
 
     private String replaceAddedWhitespaceComment = null;
 
+    private String compilerOptionsStartComment = null;
+    private String compilerOptionsStopComment = null;
+
     private final CobolPreprocessorSourcePrinter<ExecutionContext> statementPrinter = new CobolPreprocessorSourcePrinter<>(false);
     private final CobolSourcePrinter<ExecutionContext> cobolStatementPrinter = new CobolSourcePrinter<>(false);
 
@@ -106,6 +112,18 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
         this.cobolSourcePrinter = new CobolSourcePrinter<>(printColumns);
         this.cobolDialect = cobolDialect;
         this.printColumns = printColumns;
+    }
+
+    @Override
+    public CobolPreprocessor visitCompilerOptions(CobolPreprocessor.CompilerOptions compilerOptions, PrintOutputCapture<P> p) {
+        if (printColumns) {
+            int curIndex = getCurrentIndex(p.getOut());
+            curIndex = curIndex == -1 ? 0 : curIndex;
+            addStartKey(getCompilerOptionsStartComment(), curIndex, p);
+            addUuidKey(getUuidComment(), compilerOptions.getId(), p);
+            addStopComment(getCompilerOptionsStopComment(), null, curIndex, p);
+        }
+        return compilerOptions;
     }
 
     @Override
@@ -780,6 +798,20 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
             replaceTypeReductiveStopComment = getTemplateComment(REPLACE_TYPE_REDUCTIVE_STOP_KEY);
         }
         return replaceTypeReductiveStopComment;
+    }
+
+    public String getCompilerOptionsStartComment() {
+        if (compilerOptionsStartComment == null) {
+            compilerOptionsStartComment = getTemplateComment(COMPILER_OPTIONS_START_KEY);
+        }
+        return compilerOptionsStartComment;
+    }
+
+    public String getCompilerOptionsStopComment() {
+        if (compilerOptionsStopComment == null) {
+            compilerOptionsStopComment = getTemplateComment(COMPILER_OPTIONS_STOP_KEY);
+        }
+        return compilerOptionsStopComment;
     }
 
     public String getUuidComment() {

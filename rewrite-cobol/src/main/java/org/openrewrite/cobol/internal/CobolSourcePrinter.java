@@ -2564,6 +2564,7 @@ public class CobolSourcePrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
     @Override
     public Cobol visitProgramUnit(Cobol.ProgramUnit programUnit, PrintOutputCapture<P> p) {
         beforeSyntax(programUnit, Space.Location.PROGRAM_UNIT_PREFIX, p);
+        getCobolPreprocessorVisitor().visit(programUnit.getCompilerOptions(), p);
         visit(programUnit.getIdentificationDivision(), p);
         visit(programUnit.getEnvironmentDivision(), p);
         visit(programUnit.getDataDivision(), p);
