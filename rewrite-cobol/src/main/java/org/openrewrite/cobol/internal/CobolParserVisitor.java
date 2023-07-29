@@ -49,6 +49,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     private final Map<String, Replacement> replaceMap = new HashMap<>();
     private final Map<String, Replacement> replaceAdditiveTypeMap = new HashMap<>();
     private final Map<String, Replacement> replaceReductiveTypeMap = new HashMap<>();
+    private final Map<String, CobolPreprocessor.CompilerOptions> compilersOptionsMap = new HashMap<>();
     private final Set<String> templateKeys = new HashSet<>();
 
     // Areas may be a Set of Integer to reduce memory, each method to create the marker would generate the string.
@@ -107,6 +108,9 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     private String replaceReductiveTypeStartComment = null;
     private String replaceReductiveTypeStopComment = null;
 
+    private String compileOptionStartComment = null;
+    private String compileOptionStopComment = null;
+
     private String uuidComment = null;
     private Integer nextIndex = null;
 
@@ -121,7 +125,8 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                               Collection<CobolPreprocessor.ReplaceOffStatement> replaceOffStatements,
                               Collection<Replacement> replaces,
                               Collection<Replacement> replaceAdditiveTypes,
-                              Collection<Replacement> replaceReductiveTypes) {
+                              Collection<Replacement> replaceReductiveTypes,
+                              Collection<CobolPreprocessor.CompilerOptions> compilerOptions) {
         this.path = path;
         this.fileAttributes = fileAttributes;
         this.source = source;
@@ -135,6 +140,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         replaces.forEach(it -> replaceMap.putIfAbsent(it.getId().toString(), it));
         replaceAdditiveTypes.forEach(it -> replaceAdditiveTypeMap.putIfAbsent(it.getId().toString(), it));
         replaceReductiveTypes.forEach(it -> replaceReductiveTypeMap.putIfAbsent(it.getId().toString(), it));
+        compilerOptions.forEach(it -> compilersOptionsMap.putIfAbsent(it.getId().toString(), it));
     }
 
     public <T> T visit(@Nullable ParseTree... trees) {
@@ -252,6 +258,12 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
 
             this.replaceReductiveTypeStopComment = getCommentFromKey(templatePrinter.getReplaceTypeReductiveStopComment());
             this.templateKeys.add(replaceReductiveTypeStopComment);
+
+            this.compileOptionStartComment = getCommentFromKey(templatePrinter.getCompilerOptionsStartComment());
+            this.templateKeys.add(compileOptionStartComment);
+
+            this.compileOptionStopComment = getCommentFromKey(templatePrinter.getCompilerOptionsStopComment());
+            this.templateKeys.add(compileOptionStopComment);
 
             this.uuidComment = getCommentFromKey(templatePrinter.getUuidComment());
             this.templateKeys.add(uuidComment);
@@ -3813,10 +3825,12 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
 
     @Override
     public Cobol.ProgramUnit visitProgramUnit(CobolParser.ProgramUnitContext ctx) {
+        List<CobolPreprocessor.CompilerOptions> compilerOptions = getCompilerOptions();
         return new Cobol.ProgramUnit(
                 randomId(),
                 EMPTY,
                 Markers.EMPTY,
+                compilerOptions,
                 (Cobol.IdentificationDivision) visit(ctx.identificationDivision()),
                 visitNullable(ctx.environmentDivision()),
                 visitNullable(ctx.dataDivision()),
@@ -7054,6 +7068,43 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         nextIndex = Integer.valueOf(numberOfSpaces.trim());
 
         return replaceByMap.get(uuid.trim());
+    }
+
+    // The spec says compiler options cannot be continued and must be declared 1 per line.
+    private List<CobolPreprocessor.CompilerOptions> getCompilerOptions() {
+        List<CobolPreprocessor.CompilerOptions> compilerOptions = new ArrayList<>();
+
+        int max = 0;
+        while (max < 200) {
+            int start = cursor;
+            sequenceArea();
+            indicatorArea();
+            if (!source.substring(cursor).startsWith(compileOptionStartComment)) {
+                cursor = start;
+                break;
+            }
+            cursor += compileOptionStartComment.length();
+            cursor++; // Increment passed the \n.
+
+            sequenceArea();
+            indicatorArea();
+            cursor += source.substring(cursor, cursor + source.substring(cursor).indexOf("\n") + 1).length();
+
+            parseComment(uuidComment);
+            String uuid = getUuid().trim();
+            parseComment(compileOptionStopComment);
+            sequenceArea();
+            indicatorArea();
+            cursor += source.substring(cursor, cursor + source.substring(cursor).indexOf("\n") + 1).length();
+
+            CobolPreprocessor.CompilerOptions co = compilersOptionsMap.get(uuid);
+            if (co != null) {
+                compilerOptions.add(co);
+            }
+            ++max;
+        }
+
+        return compilerOptions.isEmpty() ? emptyList() : compilerOptions;
     }
 
     private void parseComment(String comment) {

@@ -49,6 +49,7 @@ public class CobolPreprocessorParser implements Parser {
     private Set<Replacement> replaces = null;
     private Set<Replacement> replaceAdditiveTypes = null;
     private Set<Replacement> replaceReductiveTypes = null;
+    private Set<CobolPreprocessor.CompilerOptions> compilerOptions = null;
 
     public CobolPreprocessorParser(CobolDialect cobolDialect,
                                    List<SourceFile> copyBooks,
@@ -116,17 +117,11 @@ public class CobolPreprocessorParser implements Parser {
                         ctx.getOnError().accept(t);
                         return ParseError.build(this, sourceFile, relativeTo, ctx, t);
                     }
-                })
-                .filter(Objects::nonNull);
+                });
     }
 
     public void setCopyBooks(List<SourceFile> copyBooks) {
         this.copyBooks = copyBooks;
-    }
-
-    @Override
-    public Stream<SourceFile> parse(String... sources) {
-        return parse(new InMemoryExecutionContext(), sources);
     }
 
     @Override
@@ -266,13 +261,21 @@ public class CobolPreprocessorParser implements Parser {
         return replaceReductiveTypes;
     }
 
+    public Set<CobolPreprocessor.CompilerOptions> getCompilerOptions(@Nullable CobolPreprocessor.CompilationUnit cu) {
+        if (compilerOptions == null) {
+            getOriginalSources(cu);
+        }
+        return compilerOptions;
+    }
+
     public void getOriginalSources(@Nullable CobolPreprocessor.CompilationUnit cu) {
-        this.copyStatements = new HashSet<>();
-        this.replaceRules = new HashSet<>();
-        this.replaceOffs = new HashSet<>();
-        this.replaces = new HashSet<>();
-        this.replaceAdditiveTypes = new HashSet<>();
-        this.replaceReductiveTypes = new HashSet<>();
+        this.copyStatements = Collections.newSetFromMap(new IdentityHashMap<>());
+        this.replaceRules = Collections.newSetFromMap(new IdentityHashMap<>());
+        this.replaceOffs = Collections.newSetFromMap(new IdentityHashMap<>());
+        this.replaces = Collections.newSetFromMap(new IdentityHashMap<>());
+        this.replaceAdditiveTypes = Collections.newSetFromMap(new IdentityHashMap<>());
+        this.replaceReductiveTypes = Collections.newSetFromMap(new IdentityHashMap<>());
+        this.compilerOptions = Collections.newSetFromMap(new IdentityHashMap<>());
 
         CobolPreprocessorIsoVisitor<ExecutionContext> visitor = new CobolPreprocessorIsoVisitor<ExecutionContext>() {
             @Override
@@ -294,6 +297,12 @@ public class CobolPreprocessorParser implements Parser {
                                                                                   ExecutionContext executionContext) {
                 replaceOffs.add(replaceOffStatement);
                 return super.visitReplaceOffStatement(replaceOffStatement, executionContext);
+            }
+
+            @Override
+            public CobolPreprocessor.CompilerOptions visitCompilerOptions(CobolPreprocessor.CompilerOptions cOptions, ExecutionContext executionContext) {
+                compilerOptions.add(cOptions);
+                return super.visitCompilerOptions(cOptions, executionContext);
             }
 
             @Override
