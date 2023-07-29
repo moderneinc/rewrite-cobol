@@ -82,6 +82,68 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
         );
     }
 
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/31")
+    @Test
+    void startTriggerInComment() {
+        rewriteRun(
+          preprocessor(
+            """
+              000000 IDENTIFICATION DIVISION.
+                     PROGRAM-ID. HELLO.
+                    *DATE_COMPILED.
+                    *REMARKS.
+                     DATA DIVISION.
+                         WORKING-STORAGE SECTION.
+                             77 X PIC 99.                                             C_AREA.05
+                             77 Y PIC 99.                                             C_AREA.06
+                             77 Z PIC 99.                                             C_AREA.07
+              """
+          )
+        );
+    }
+
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/31")
+    @Test
+    void triggerStopInComment() {
+        rewriteRun(
+          preprocessor(
+            """
+              000000 IDENTIFICATION DIVISION.
+                     PROGRAM-ID. HELLO.
+                     AUTHOR.  MODERNE.
+                    *DATE_COMPILED.
+                    *REMARKS.
+                    *DATA DIVISION.
+                    *    WORKING-STORAGE SECTION.
+                     DATA DIVISION.
+                         WORKING-STORAGE SECTION.
+                             77 X PIC 99.                                             C_AREA.05
+                             77 Y PIC 99.                                             C_AREA.06
+                             77 Z PIC 99.                                             C_AREA.07
+              """
+          )
+        );
+    }
+
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/29")
+    @Test
+    void cblRent() {
+        rewriteRun(
+          cobol(
+            """
+                     CBL RENT
+                     CBL ADATA
+                     CBL DBCS
+              000001 IDENTIFICATION  DIVISION .                                       C_AREA.01
+              000002 PROGRAM-ID    . HELLO     .                                      C_AREA.02
+              000003 PROCEDURE DIVISION.                                              C_AREA.03
+              000004 DISPLAY 'Hello world!'.                                          C_AREA.04
+              000005 STOP RUN.                                                        C_AREA.05
+              """
+          )
+        );
+    }
+
     @Test
     void arithmetic() {
         rewriteRun(
