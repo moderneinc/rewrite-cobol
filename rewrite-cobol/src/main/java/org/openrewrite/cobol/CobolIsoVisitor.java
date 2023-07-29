@@ -2000,6 +2000,11 @@ public class CobolIsoVisitor<P> extends CobolVisitor<P> {
     }
 
     @Override
+    public Cobol.SpecialRegister visitSpecialRegister(Cobol.SpecialRegister specialRegister, P p) {
+        return (Cobol.SpecialRegister) super.visitSpecialRegister(specialRegister, p);
+    }
+
+    @Override
     public Cobol.Start visitStart(Cobol.Start start, P p) {
         return (Cobol.Start) super.visitStart(start, p);
     }

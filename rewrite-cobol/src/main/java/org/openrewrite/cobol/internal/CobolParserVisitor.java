@@ -5681,6 +5681,26 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     }
 
     @Override
+    public Object visitSpecialRegister(CobolParser.SpecialRegisterContext ctx) {
+        return new Cobol.SpecialRegister(
+                randomId(),
+                EMPTY,
+                Markers.EMPTY,
+                convertAllList(singletonList(ctx.ADDRESS()), singletonList(ctx.LENGTH()), singletonList(ctx.OF()),
+                        singletonList(ctx.DATE()), singletonList(ctx.DAY()), singletonList(ctx.DAY_OF_WEEK()),
+                        singletonList(ctx.DEBUG_CONTENTS()), singletonList(ctx.DEBUG_ITEM()), singletonList(ctx.DEBUG_LINE()),
+                        singletonList(ctx.DEBUG_NAME()), singletonList(ctx.DEBUG_SUB_1()), singletonList(ctx.DEBUG_SUB_2()),
+                        singletonList(ctx.DEBUG_SUB_3()), singletonList(ctx.LINAGE_COUNTER()), singletonList(ctx.LINE_COUNTER()),
+                        singletonList(ctx.PAGE_COUNTER()), singletonList(ctx.RETURN_CODE()), singletonList(ctx.SHIFT_IN()),
+                        singletonList(ctx.SHIFT_OUT()), singletonList(ctx.SORT_CONTROL()), singletonList(ctx.SORT_CORE_SIZE()),
+                        singletonList(ctx.SORT_FILE_SIZE()), singletonList(ctx.SORT_MESSAGE()), singletonList(ctx.SORT_MODE_SIZE()),
+                        singletonList(ctx.SORT_RETURN()), singletonList(ctx.TALLY()), singletonList(ctx.TIME()),
+                        singletonList(ctx.WHEN_COMPILED())),
+                visitNullable(ctx.identifier())
+        );
+    }
+
+    @Override
     public Object visitStartKey(CobolParser.StartKeyContext ctx) {
         return new Cobol.StartKey(
                 randomId(),

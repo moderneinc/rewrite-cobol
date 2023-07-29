@@ -3859,6 +3859,15 @@ public class CobolSourcePrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
     }
 
     @Override
+    public Cobol visitSpecialRegister(Cobol.SpecialRegister specialRegister, PrintOutputCapture<P> p) {
+        beforeSyntax(specialRegister, Space.Location.SPECIAL_REGISTER_PREFIX, p);
+        visit(specialRegister.getWords(), p);
+        visit(specialRegister.getIdentifier(), p);
+        afterSyntax(specialRegister, p);
+        return specialRegister;
+    }
+
+    @Override
     public Cobol visitStart(Cobol.Start start, PrintOutputCapture<P> p) {
         beforeSyntax(start, Space.Location.START_PREFIX, p);
         visit(start.getStart(), p);
