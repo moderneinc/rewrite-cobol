@@ -8492,7 +8492,7 @@ public interface Cobol extends Tree {
     @Value
     @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
-    class SpecialRegister implements Cobol, Name {
+    class SpecialRegister implements Cobol, Name, Identifier {
 
         @EqualsAndHashCode.Include
         UUID id;
