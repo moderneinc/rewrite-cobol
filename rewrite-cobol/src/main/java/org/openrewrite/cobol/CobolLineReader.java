@@ -62,8 +62,9 @@ public class CobolLineReader {
             }
             boolean isValidText = !(" ".equals(indicator) && contentArea.trim().isEmpty());
 
+            boolean isCommentLine = !indicator.isEmpty() && cobolDialect.getCommentIndicators().contains(indicator.charAt(0));
             if (inCommentEntry && !contentArea.isEmpty()) {
-                if (startsWithTrigger(contentArea, triggersEnd)) {
+                if (!isCommentLine && startsWithTrigger(contentArea, triggersEnd)) {
                     inCommentEntry = false;
                 } else {
                     // Mark the comment entry.
@@ -73,7 +74,7 @@ public class CobolLineReader {
 
             // Comment entries are a specific type of comment that occur in the Identification Division.
             // Each comment entry needs to be marked uniquely to be recognized by the grammar.
-            if (startsWithTrigger(contentArea, triggersStart)) {
+            if (!isCommentLine && startsWithTrigger(contentArea, triggersStart)) {
                 inCommentEntry = true;
                 String firstWords = getFirstWords(contentArea);
                 // Comment entries in older COBOL dialects may start in line with the paragraph start.
@@ -82,7 +83,7 @@ public class CobolLineReader {
                 }
             }
 
-            if (!inCommentEntry && (indicator.length() == 1 && cobolDialect.getCommentIndicators().contains(indicator.charAt(0)))) {
+            if (!inCommentEntry && isCommentLine) {
                 // Mark in-line comments.
                 processedSource.append("*> ");
             }
