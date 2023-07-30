@@ -636,7 +636,7 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
 
         int numberOfSpaces;
         if (!isEndOfLine && totalChars > contentAreaLength) {
-            throw new UnsupportedOperationException("Recalculate prefix.");
+            numberOfSpaces = 0;
         } else {
             numberOfSpaces = isEndOfLine ? 0 : output.length() + curIndex;
         }

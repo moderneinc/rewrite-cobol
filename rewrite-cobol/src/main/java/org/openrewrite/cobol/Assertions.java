@@ -262,6 +262,12 @@ public class Assertions {
             CobolPrinter<ExecutionContext> printer = new CobolPrinter<>(false, false);
             PrintOutputCapture<ExecutionContext> outputCapture = new PrintOutputCapture<>(new InMemoryExecutionContext());
             printer.visit(cu, outputCapture);
+            if (expectedLst != null && !trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut())).equals(expectedLst)) {
+                System.out.println("Expected LST of length " + expectedLst.length() + ":");
+                System.out.println(expectedLst);
+                System.out.println("Actual LST of length " + trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut())).length() + ":");
+                System.out.println(outputCapture.getOut());
+            }
             assert expectedLst == null || trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut())).equals(expectedLst);
         });
     }

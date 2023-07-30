@@ -4322,7 +4322,7 @@ public class CobolSourcePrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
         getCobolPreprocessorVisitor().visit(word.getReplaceByStatement(), p);
         getCobolPreprocessorVisitor().visit(word.getReplaceOffStatement(), p);
 
-        if (word.getReplacement() != null) {
+        if (word.getReplacement() != null && word.getCopyStatement() == null) {
             if (word.getReplacement().getType() == Replacement.Type.EQUAL) {
                 int startLength = p.getOut().length();
                 Replacement.OriginalWord originalWord = word.getReplacement().getOriginalWords().get(0);
