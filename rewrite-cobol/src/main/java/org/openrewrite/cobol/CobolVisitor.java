@@ -380,7 +380,7 @@ public class CobolVisitor<P> extends TreeVisitor<Cobol, P> {
         c = c.withPrefix(visitSpace(c.getPrefix(), Space.Location.CLOSE_PREFIX, p));
         c = c.withMarkers(visitMarkers(c.getMarkers(), p));
         c = c.withClose((Cobol.Word) visit(c.getClose(), p));
-        c = c.withCloseFiles(ListUtils.map(c.getCloseFiles(), t -> (Cobol.CloseFile) visit(t, p)));
+        c = c.withCloseFiles(ListUtils.map(c.getCloseFiles(), t -> visit(t, p)));
         return c;
     }
 

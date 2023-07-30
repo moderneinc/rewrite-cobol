@@ -884,7 +884,7 @@ public interface Cobol extends Tree {
         Space prefix;
         Markers markers;
         Word close;
-        List<CloseFile> closeFiles;
+        List<Cobol> closeFiles;
 
         @Override
         public <P> Cobol acceptCobol(CobolVisitor<P> v, P p) {
