@@ -936,7 +936,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.CLOSE()),
-                convertAll(ctx.closeFile())
+                convertAllList(ctx.COMMACHAR(), ctx.closeFile())
         );
     }
 

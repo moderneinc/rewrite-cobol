@@ -12,7 +12,6 @@ import org.openrewrite.Issue;
 import org.openrewrite.cobol.CobolTest;
 
 import static org.openrewrite.cobol.Assertions.cobol;
-import static org.openrewrite.cobol.Assertions.preprocessor;
 
 public class CobolParserAnsi85DivisionTest extends CobolTest {
 
@@ -65,7 +64,7 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
     @Test
     void emptyLineAfterCommentEntry() {
         rewriteRun(
-          preprocessor(
+          cobol(
             """
               000000 IDENTIFICATION DIVISION.
                      PROGRAM-ID. HELLO.
@@ -105,7 +104,7 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
     @Test
     void startTriggerInComment() {
         rewriteRun(
-          preprocessor(
+          cobol(
             """
               000000 IDENTIFICATION DIVISION.
                      PROGRAM-ID. HELLO.
@@ -125,7 +124,7 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
     @Test
     void triggerStopInComment() {
         rewriteRun(
-          preprocessor(
+          cobol(
             """
               000000 IDENTIFICATION DIVISION.
                      PROGRAM-ID. HELLO.
@@ -170,6 +169,25 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
               000003 PROCEDURE DIVISION.                                              C_AREA.03
               000004 DISPLAY 'Hello world!'.                                          C_AREA.04
               000005 STOP RUN.                                                        C_AREA.05
+              """
+          )
+        );
+    }
+
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/38")
+    @Test
+    void delimiterEndsInContentArea() {
+        rewriteRun(
+          cobol(
+            """
+              000001 IDENTIFICATION DIVISION .                                        000000000
+                     PROGRAM-ID . HELLO-WORLD .                                       000000000
+                     PROCEDURE DIVISION .                                             000000000
+                         NAME SECTION 01.                                             000000000
+                             CLOSE NAME01,
+                                   NAME02,
+                                   NAME03.
+                     STOP RUN .                                                       000000000
               """
           )
         );

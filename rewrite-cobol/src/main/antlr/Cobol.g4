@@ -1299,9 +1299,8 @@ cancelCall
    ;
 
 // close statement
-
 closeStatement
-   : CLOSE closeFile+
+   : CLOSE closeFile (COMMACHAR? closeFile)*
    ;
 
 closeFile
