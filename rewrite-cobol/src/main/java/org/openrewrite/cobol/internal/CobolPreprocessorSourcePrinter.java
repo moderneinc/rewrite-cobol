@@ -273,20 +273,18 @@ public class CobolPreprocessorSourcePrinter<P> extends CobolPreprocessorVisitor<
                     return word;
                 }
             } else if (word.getCobolWord().getReplacement().getType() == Replacement.Type.REDUCTIVE && !word.getCobolWord().getReplacement().isCopiedSource()) {
-                if (printedReductiveReplaces.add(word.getCobolWord().getReplacement().getId().toString())) {
-                    for (Replacement.OriginalWord originalWord : word.getCobolWord().getReplacement().getOriginalWords()) {
-                        cobolSourcePrinter.visitWord(originalWord.getOriginal(), p);
-                    }
-                    if (word.getCobolWord().getSequenceArea() != null) {
-                        word.getCobolWord().getSequenceArea().printColumnArea(this, getCursor(), printColumns, p);
-                    }
-                    if (word.getCobolWord().getIndicatorArea() != null) {
-                        word.getCobolWord().getIndicatorArea().printColumnArea(this, getCursor(), printColumns, p);
-                    }
-                    beforeSyntax(word, Space.Location.WORD_PREFIX, p);
-                    p.append(word.getCobolWord().getWord());
-                    return word;
+                for (Replacement.OriginalWord originalWord : word.getCobolWord().getReplacement().getOriginalWords()) {
+                    cobolSourcePrinter.visitWord(originalWord.getOriginal(), p);
                 }
+                if (word.getCobolWord().getSequenceArea() != null) {
+                    word.getCobolWord().getSequenceArea().printColumnArea(this, getCursor(), printColumns, p);
+                }
+                if (word.getCobolWord().getIndicatorArea() != null) {
+                    word.getCobolWord().getIndicatorArea().printColumnArea(this, getCursor(), printColumns, p);
+                }
+                beforeSyntax(word, Space.Location.WORD_PREFIX, p);
+                p.append(word.getCobolWord().getWord());
+                return word;
             }
         }
 

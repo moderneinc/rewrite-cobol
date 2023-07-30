@@ -6062,7 +6062,10 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         // An unresolved copy book will not have any words from a copied source to add the statement to.
         // So the current copy is set to null on the next word that occurs in the LST.
         if (copyBookNotFound) {
-            this.currentCopy = null;
+            if (copyStatement == null) {
+                copyStatement = currentCopy;
+            }
+            currentCopy = null;
             copyBookNotFound = false;
         } else if (copiedWord != null){
             markers = markers.addIfAbsent(copiedWord);
@@ -6082,7 +6085,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 replaceOffStatement,
                 replacement
         );
-        this.currentCopy = null;
+        currentCopy = null;
         return word;
     }
 

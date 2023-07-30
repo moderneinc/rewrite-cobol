@@ -6,11 +6,36 @@
 package org.openrewrite.cobol.tree.cobol;
 
 import org.junit.jupiter.api.Test;
+import org.openrewrite.Issue;
 import org.openrewrite.cobol.CobolTest;
 
 import static org.openrewrite.cobol.Assertions.cobolPostProcess;
 
 public class CobolParserReplaceTest extends CobolTest {
+
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/36")
+    @Test
+    void copyAtStartOfContentArea() {
+        rewriteRun(
+          cobolPostProcess(
+            """
+              000001 IDENTIFICATION  DIVISION .                                       000000000
+                     PROGRAM-ID    . HELLO.                                           000000000
+                     PROCEDURE DIVISION.                                              000000000
+                    /                                                                 000000000
+                     COPY ISSUE_36                                                    000000000
+                          REPLACING ==REPLACED==                                      000000000
+                                 BY ==STOP RUN==.                                     000000000""",
+            """
+              IDENTIFICATION  DIVISION .
+              PROGRAM-ID    . HELLO.
+              PROCEDURE DIVISION.
+                  STOP
+               RUN
+              .
+              """, true)
+        );
+    }
 
     @Test
     void sm201A() {
