@@ -177,7 +177,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                     continue;
                 }
 
-                String sequenceArea = cleanedPart.substring(columns.getSequenceArea(), columns.getIndicatorArea());
+                String sequenceArea = cleanedPart.substring(columns.getSequenceArea(), Math.min(cleanedPart.length(), columns.getIndicatorArea()));
                 sequenceAreas.put(pos, sequenceArea);
                 pos += sequenceArea.length();
 

@@ -30,6 +30,23 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
         );
     }
 
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/35")
+    @Test
+    void shortColumnLength() {
+        rewriteRun(
+          cobol(
+            """
+              000001 IDENTIFICATION  DIVISION.
+              0002
+              000300 PROGRAM-ID    . HELLO.
+              000400 PROCEDURE DIVISION.
+              0005
+              000600 STOP RUN.
+              """
+          )
+        );
+    }
+
     @Test
     void helloWorld() {
         rewriteRun(
