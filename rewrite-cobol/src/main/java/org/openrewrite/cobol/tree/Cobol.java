@@ -42,23 +42,21 @@ public interface Cobol extends Tree {
 
     <P extends Cobol> P withPrefix(Space prefix);
 
+    default UUID getId() {
+        return Cobol.CompilationUnit.id;
+    }
+
+    default <T extends Tree> T withId(UUID id) {
+        //noinspection unchecked
+        return (T) this;
+    }
+
     @Value
     @EqualsAndHashCode(callSuper = false)
     @With
     class CompilationUnit implements Cobol, CobolSourceFile {
 
         public static final UUID id = randomId();
-
-        @Override
-        public UUID getId() {
-            return id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Path sourcePath;
 
@@ -107,17 +105,6 @@ public interface Cobol extends Tree {
     @With
     class Abbreviation implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
 
@@ -149,17 +136,6 @@ public interface Cobol extends Tree {
     @With
     class Accept implements Statement {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word accept;
@@ -186,17 +162,6 @@ public interface Cobol extends Tree {
     @With
     class AcceptFromDateStatement implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -212,17 +177,6 @@ public interface Cobol extends Tree {
     @With
     class AcceptFromEscapeKeyStatement implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -237,17 +191,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class AcceptFromMnemonicStatement implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -265,17 +208,6 @@ public interface Cobol extends Tree {
     @With
     class AcceptMessageCountStatement implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -290,17 +222,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class AccessModeClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -317,17 +238,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Add implements Statement {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -354,17 +264,6 @@ public interface Cobol extends Tree {
     @With
     class AddCorresponding implements Statement {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word corresponding;
@@ -383,17 +282,6 @@ public interface Cobol extends Tree {
     @With
     class AddTo implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Name> from;
@@ -410,17 +298,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class AddToGiving implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -446,17 +323,6 @@ public interface Cobol extends Tree {
     @With
     class AlphabetAlso implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word word;
@@ -472,17 +338,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class AlphabetClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -502,17 +357,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class AlphabetLiteral implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -535,17 +379,6 @@ public interface Cobol extends Tree {
     @With
     class AlphabetThrough implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word word;
@@ -562,17 +395,6 @@ public interface Cobol extends Tree {
     @With
     class AlteredGoTo implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -588,17 +410,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class AlternateRecordKeyClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -621,17 +432,6 @@ public interface Cobol extends Tree {
     @With
     class AlterProceedTo implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         ProcedureName from;
@@ -649,17 +449,6 @@ public interface Cobol extends Tree {
     @With
     class AlterStatement implements Statement {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word word;
@@ -675,17 +464,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class AndOrCondition implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -708,17 +486,6 @@ public interface Cobol extends Tree {
     @With
     class Argument implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
 
@@ -739,17 +506,6 @@ public interface Cobol extends Tree {
     @With
     class ArithmeticExpression implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         MultDivs multDivs;
@@ -768,17 +524,6 @@ public interface Cobol extends Tree {
     @With
     class AssignClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -794,17 +539,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class BlockContainsClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -828,17 +562,6 @@ public interface Cobol extends Tree {
     @With
     class BlockContainsTo implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word to;
@@ -854,17 +577,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Call implements Statement {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -900,17 +612,6 @@ public interface Cobol extends Tree {
     @With
     class CallBy implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -929,17 +630,6 @@ public interface Cobol extends Tree {
     @With
     class CallGivingPhrase implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word word;
@@ -955,17 +645,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class CallPhrase implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -983,17 +662,6 @@ public interface Cobol extends Tree {
     @With
     class Cancel implements Statement {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word cancel;
@@ -1009,17 +677,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class CancelCall implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -1047,17 +704,6 @@ public interface Cobol extends Tree {
     @With
     class ChannelClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word word;
@@ -1079,17 +725,6 @@ public interface Cobol extends Tree {
     @With
     class ClassClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word clazz;
@@ -1107,17 +742,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ClassClauseThrough implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -1140,17 +764,6 @@ public interface Cobol extends Tree {
     @With
     class ClassCondition implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Name name;
@@ -1172,17 +785,6 @@ public interface Cobol extends Tree {
     @With
     class Close implements Statement {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word close;
@@ -1198,17 +800,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class CloseFile implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -1228,17 +819,6 @@ public interface Cobol extends Tree {
     @With
     class ClosePortFileIOStatement implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -1254,17 +834,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ClosePortFileIOUsingAssociatedData implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -1282,17 +851,6 @@ public interface Cobol extends Tree {
     @With
     class ClosePortFileIOUsingAssociatedDataLength implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -1309,17 +867,6 @@ public interface Cobol extends Tree {
     @With
     class ClosePortFileIOUsingCloseDisposition implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -1334,17 +881,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class CloseReelUnitStatement implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -1361,17 +897,6 @@ public interface Cobol extends Tree {
     @With
     class CloseRelativeStatement implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -1386,17 +911,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Word implements Literal, Identifier {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -1444,17 +958,6 @@ public interface Cobol extends Tree {
     @With
     class CodeSetClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -1471,17 +974,6 @@ public interface Cobol extends Tree {
     @With
     class CollatingSequenceAlphabet implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -1497,17 +989,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class CollatingSequenceClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -1532,17 +1013,6 @@ public interface Cobol extends Tree {
     @With
     class CombinableCondition implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
 
@@ -1562,17 +1032,6 @@ public interface Cobol extends Tree {
     @With
     class CommentEntry implements Cobol, Comment {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> comments;
@@ -1587,17 +1046,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class CommitmentControlClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -1614,17 +1062,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class CommunicationDescriptionEntryFormat1 implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -1645,17 +1082,6 @@ public interface Cobol extends Tree {
     @With
     class CommunicationDescriptionEntryFormat2 implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word cd;
@@ -1674,17 +1100,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class CommunicationDescriptionEntryFormat3 implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -1705,17 +1120,6 @@ public interface Cobol extends Tree {
     @With
     class CommunicationSection implements DataDivisionSection {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -1732,17 +1136,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Compute implements Statement {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -1767,17 +1160,6 @@ public interface Cobol extends Tree {
     @With
     class Condition implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         CombinableCondition combinableCondition;
@@ -1793,17 +1175,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ConditionNameReference implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -1832,17 +1203,6 @@ public interface Cobol extends Tree {
     @With
     class ConditionNameSubscriptReference implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word leftParen;
@@ -1859,17 +1219,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ConfigurationSection implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -1888,17 +1237,6 @@ public interface Cobol extends Tree {
     @With
     class Continue implements Statement {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word word;
@@ -1913,17 +1251,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class CurrencyClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -1947,17 +1274,6 @@ public interface Cobol extends Tree {
     @With
     class DataAlignedClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word aligned;
@@ -1972,17 +1288,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class DataBaseSection implements DataDivisionSection {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -2000,17 +1305,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class DataBaseSectionEntry implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -2030,17 +1324,6 @@ public interface Cobol extends Tree {
     @With
     class DataBlankWhenZeroClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -2056,17 +1339,6 @@ public interface Cobol extends Tree {
     @With
     class DataCommonOwnLocalClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word word;
@@ -2081,17 +1353,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class DataDescriptionEntry implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -2118,17 +1379,6 @@ public interface Cobol extends Tree {
     @With
     class DataDivision implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -2146,17 +1396,6 @@ public interface Cobol extends Tree {
     @With
     class DataExternalClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> redefines;
@@ -2173,17 +1412,6 @@ public interface Cobol extends Tree {
     @With
     class DataGlobalClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -2198,17 +1426,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class DataIntegerStringClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -2225,17 +1442,6 @@ public interface Cobol extends Tree {
     @With
     class DataJustifiedClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -2250,17 +1456,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class DataOccursClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -2290,17 +1485,6 @@ public interface Cobol extends Tree {
     @With
     class DataOccursDepending implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -2316,17 +1500,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class DataOccursIndexed implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -2344,17 +1517,6 @@ public interface Cobol extends Tree {
     @With
     class DataOccursSort implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -2370,17 +1532,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class DataOccursTo implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -2398,17 +1549,6 @@ public interface Cobol extends Tree {
     @With
     class DataPictureClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -2425,17 +1565,6 @@ public interface Cobol extends Tree {
     @With
     class DataReceivedByClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -2451,17 +1580,6 @@ public interface Cobol extends Tree {
     @With
     class DataRecordAreaClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -2476,17 +1594,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class DataRecordsClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -2504,17 +1611,6 @@ public interface Cobol extends Tree {
     @With
     class DataRedefinesClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word redefines;
@@ -2530,17 +1626,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class DataRenamesClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -2565,17 +1650,6 @@ public interface Cobol extends Tree {
     @With
     class DataSignClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -2590,17 +1664,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class DataSynchronizedClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -2617,17 +1680,6 @@ public interface Cobol extends Tree {
     @With
     class DataThreadLocalClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -2642,17 +1694,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class DataTypeClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -2672,17 +1713,6 @@ public interface Cobol extends Tree {
     @With
     class DataTypeDefClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -2698,17 +1728,6 @@ public interface Cobol extends Tree {
     @With
     class DataUsageClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -2723,17 +1742,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class DataUsingClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -2751,17 +1759,6 @@ public interface Cobol extends Tree {
     @With
     class DataValueClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -2777,17 +1774,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class DataValueInterval implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -2807,17 +1793,6 @@ public interface Cobol extends Tree {
     @With
     class DataValueIntervalTo implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word through;
@@ -2834,17 +1809,6 @@ public interface Cobol extends Tree {
     @With
     class DataWithLowerBoundsClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -2859,17 +1823,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class DecimalPointClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -2886,17 +1839,6 @@ public interface Cobol extends Tree {
     @With
     class DefaultComputationalSignClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -2912,17 +1854,6 @@ public interface Cobol extends Tree {
     @With
     class DefaultDisplaySignClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -2937,17 +1868,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Delete implements Statement {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -2977,17 +1897,6 @@ public interface Cobol extends Tree {
     @With
     class DestinationCountClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -3003,17 +1912,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class DestinationTableClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -3032,17 +1930,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Disable implements Statement {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -3066,17 +1953,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Display implements Statement {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -3112,17 +1988,6 @@ public interface Cobol extends Tree {
     @With
     class DisplayAt implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word at;
@@ -3139,17 +2004,6 @@ public interface Cobol extends Tree {
     @With
     class DisplayUpon implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word upon;
@@ -3165,17 +2019,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Divide implements Statement {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -3206,17 +2049,6 @@ public interface Cobol extends Tree {
     @With
     class DivideGiving implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word word;
@@ -3236,17 +2068,6 @@ public interface Cobol extends Tree {
     @With
     class DivideGivingPhrase implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word giving;
@@ -3262,17 +2083,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class DivideInto implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -3290,17 +2100,6 @@ public interface Cobol extends Tree {
     @With
     class DivideRemainder implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word remainder;
@@ -3316,17 +2115,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Enable implements Statement {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -3351,17 +2139,6 @@ public interface Cobol extends Tree {
     @With
     class EndKeyClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -3377,17 +2154,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class EndProgram implements Statement {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -3405,17 +2171,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Entry implements Statement {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -3437,17 +2192,6 @@ public interface Cobol extends Tree {
     @With
     class EnvironmentDivision implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -3464,17 +2208,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Evaluate implements Statement {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -3504,17 +2237,6 @@ public interface Cobol extends Tree {
     @With
     class EvaluateAlso implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word also;
@@ -3531,17 +2253,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class EnvironmentSwitchNameClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -3569,17 +2280,6 @@ public interface Cobol extends Tree {
     @With
     class EnvironmentSwitchNameSpecialNamesStatusPhrase implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Cobol> cobols;
@@ -3594,17 +2294,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ErrorKeyClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -3622,17 +2311,6 @@ public interface Cobol extends Tree {
     @With
     class EvaluateAlsoCondition implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word also;
@@ -3649,17 +2327,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class EvaluateCondition implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -3684,17 +2351,6 @@ public interface Cobol extends Tree {
     @With
     class EvaluateThrough implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word through;
@@ -3710,17 +2366,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class EvaluateWhen implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -3741,17 +2386,6 @@ public interface Cobol extends Tree {
     @With
     class EvaluateWhenPhrase implements Statement {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<EvaluateWhen> whens;
@@ -3770,17 +2404,6 @@ public interface Cobol extends Tree {
     @With
     class ExecCicsStatement implements Statement {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> execCicsLines;
@@ -3795,17 +2418,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ExecSqlImsStatement implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -3822,17 +2434,6 @@ public interface Cobol extends Tree {
     @With
     class ExecSqlStatement implements Statement {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> execSqlLines;
@@ -3847,17 +2448,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Exhibit implements Statement {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -3875,17 +2465,6 @@ public interface Cobol extends Tree {
     @With
     class Exit implements Statement {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -3901,17 +2480,6 @@ public interface Cobol extends Tree {
     @With
     class ExternalClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -3926,17 +2494,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class FigurativeConstant implements Literal {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -3957,17 +2514,6 @@ public interface Cobol extends Tree {
     @With
     class FileControlEntry implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Cobol selectClause;
@@ -3985,17 +2531,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class FileControlParagraph implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
 
@@ -4016,17 +2551,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class FileDescriptionEntry implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -4050,17 +2574,6 @@ public interface Cobol extends Tree {
     @With
     class FileSection implements DataDivisionSection {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -4078,17 +2591,6 @@ public interface Cobol extends Tree {
     @With
     class FileStatusClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -4104,17 +2606,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class FunctionCall implements Identifier {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -4136,17 +2627,6 @@ public interface Cobol extends Tree {
     @With
     class Generate implements Statement {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word generate;
@@ -4163,17 +2643,6 @@ public interface Cobol extends Tree {
     @With
     class GlobalClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -4189,17 +2658,6 @@ public interface Cobol extends Tree {
     @With
     class GoBack implements Statement {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word goBack;
@@ -4214,17 +2672,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class GoTo implements Statement {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -4242,17 +2689,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class GoToDependingOnStatement implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -4276,17 +2712,6 @@ public interface Cobol extends Tree {
     @With
     class IdentificationDivision implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -4303,17 +2728,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class IdentificationDivisionParagraph implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -4337,17 +2751,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class If implements Statement {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
 
@@ -4376,17 +2779,6 @@ public interface Cobol extends Tree {
     @With
     class IfElse implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word word;
@@ -4407,17 +2799,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class IfThen implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -4442,17 +2823,6 @@ public interface Cobol extends Tree {
     @With
     class InData implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word word;
@@ -4469,17 +2839,6 @@ public interface Cobol extends Tree {
     @With
     class InFile implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word word;
@@ -4495,17 +2854,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Initialize implements Statement {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -4526,17 +2874,6 @@ public interface Cobol extends Tree {
     @With
     class InitializeReplacingBy implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -4552,17 +2889,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class InitializeReplacingPhrase implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -4580,17 +2906,6 @@ public interface Cobol extends Tree {
     @With
     class Initiate implements Statement {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word initiate;
@@ -4606,17 +2921,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class InLibrary implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -4634,17 +2938,6 @@ public interface Cobol extends Tree {
     @With
     class InMnemonic implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word word;
@@ -4660,17 +2953,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class InputOutputSection implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -4690,17 +2972,6 @@ public interface Cobol extends Tree {
     @With
     class InSection implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word word;
@@ -4716,17 +2987,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Inspect implements Statement {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -4744,17 +3004,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class InspectAllLeading implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -4774,17 +3023,6 @@ public interface Cobol extends Tree {
     @With
     class InspectAllLeadings implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word word;
@@ -4800,17 +3038,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class InspectBeforeAfter implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -4828,17 +3055,6 @@ public interface Cobol extends Tree {
     @With
     class InspectBy implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word by;
@@ -4854,17 +3070,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class InspectCharacters implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -4883,17 +3088,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class InspectConvertingPhrase implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -4915,17 +3109,6 @@ public interface Cobol extends Tree {
     @With
     class InspectFor implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Identifier identifier;
@@ -4942,17 +3125,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class InspectReplacingAllLeading implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -4973,17 +3145,6 @@ public interface Cobol extends Tree {
     @With
     class InspectReplacingAllLeadings implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word word;
@@ -4999,17 +3160,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class InspectReplacingCharacters implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -5030,17 +3180,6 @@ public interface Cobol extends Tree {
     @With
     class InspectReplacingPhrase implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word word;
@@ -5057,17 +3196,6 @@ public interface Cobol extends Tree {
     @With
     class InspectTallyingPhrase implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word tallying;
@@ -5083,17 +3211,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class InspectTallyingReplacingPhrase implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -5112,17 +3229,6 @@ public interface Cobol extends Tree {
     @With
     class InspectTo implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word to;
@@ -5139,17 +3245,6 @@ public interface Cobol extends Tree {
     @With
     class InTable implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word word;
@@ -5165,17 +3260,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class IoControlParagraph implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -5204,17 +3288,6 @@ public interface Cobol extends Tree {
     @With
     class LabelRecordsClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -5233,17 +3306,6 @@ public interface Cobol extends Tree {
     @With
     class LibraryAttributeClauseFormat1 implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -5258,17 +3320,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class LibraryAttributeClauseFormat2 implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -5296,17 +3347,6 @@ public interface Cobol extends Tree {
     @With
     class LibraryAttributeFunction implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -5322,17 +3362,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class LibraryAttributeParameter implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -5350,17 +3379,6 @@ public interface Cobol extends Tree {
     @With
     class LibraryAttributeTitle implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -5376,17 +3394,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class LibraryDescriptionEntryFormat1 implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -5412,17 +3419,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class LibraryDescriptionEntryFormat2 implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -5450,17 +3446,6 @@ public interface Cobol extends Tree {
     @With
     class LibraryEntryProcedureClauseFormat1 implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word entryProcedure;
@@ -5479,17 +3464,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class LibraryEntryProcedureClauseFormat2 implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -5519,17 +3493,6 @@ public interface Cobol extends Tree {
     @With
     class LibraryEntryProcedureForClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word word;
@@ -5545,17 +3508,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class LibraryEntryProcedureGivingClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -5573,17 +3525,6 @@ public interface Cobol extends Tree {
     @With
     class LibraryEntryProcedureUsingClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word using;
@@ -5599,17 +3540,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class LibraryEntryProcedureWithClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -5627,17 +3557,6 @@ public interface Cobol extends Tree {
     @With
     class LibraryIsCommonClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -5653,17 +3572,6 @@ public interface Cobol extends Tree {
     @With
     class LibraryIsGlobalClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -5678,17 +3586,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class LinageClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -5712,17 +3609,6 @@ public interface Cobol extends Tree {
     @With
     class LinageFootingAt implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -5738,17 +3624,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class LinageLinesAtBottom implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -5766,17 +3641,6 @@ public interface Cobol extends Tree {
     @With
     class LinageLinesAtTop implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -5792,17 +3656,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class LinkageSection implements DataDivisionSection {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -5822,17 +3675,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class LocalStorageSection implements DataDivisionSection {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -5861,17 +3703,6 @@ public interface Cobol extends Tree {
     @With
     class Merge implements Statement {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word word;
@@ -5899,17 +3730,6 @@ public interface Cobol extends Tree {
     @With
     class Mergeable implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -5925,17 +3745,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class MergeCollatingSequencePhrase implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -5959,17 +3768,6 @@ public interface Cobol extends Tree {
     @With
     class MergeGiving implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Name name;
@@ -5988,17 +3786,6 @@ public interface Cobol extends Tree {
     @With
     class MergeGivingPhrase implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word word;
@@ -6015,17 +3802,6 @@ public interface Cobol extends Tree {
     @With
     class MergeOnKeyClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -6041,17 +3817,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class MergeOutputProcedurePhrase implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -6072,17 +3837,6 @@ public interface Cobol extends Tree {
     @With
     class MergeOutputThrough implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word word;
@@ -6098,17 +3852,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class MergeUsing implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -6126,17 +3869,6 @@ public interface Cobol extends Tree {
     @With
     class MessageCountClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -6152,17 +3884,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class MessageDateClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -6180,17 +3901,6 @@ public interface Cobol extends Tree {
     @With
     class MessageTimeClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -6206,17 +3916,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class MoveCorrespondingToStatement implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -6236,17 +3935,6 @@ public interface Cobol extends Tree {
     @With
     class MoveStatement implements Statement {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -6262,17 +3950,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class MoveToStatement implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -6291,17 +3968,6 @@ public interface Cobol extends Tree {
     @With
     class MultDiv implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word word;
@@ -6317,17 +3983,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class MultDivs implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -6347,17 +4002,6 @@ public interface Cobol extends Tree {
     @With
     class MultipleFileClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -6373,17 +4017,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class MultipleFilePosition implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -6405,17 +4038,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Multiply implements Statement {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -6444,17 +4066,6 @@ public interface Cobol extends Tree {
     @With
     class MultiplyGiving implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Name operand;
@@ -6472,17 +4083,6 @@ public interface Cobol extends Tree {
     @With
     class MultiplyRegular implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Roundable> operand;
@@ -6498,17 +4098,6 @@ public interface Cobol extends Tree {
     @With
     class NextSentence implements Statement {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -6523,17 +4112,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ObjectComputer implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -6553,17 +4131,6 @@ public interface Cobol extends Tree {
     @With
     class ObjectComputerDefinition implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word computerName;
@@ -6581,17 +4148,6 @@ public interface Cobol extends Tree {
     @With
     class OdtClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -6608,17 +4164,6 @@ public interface Cobol extends Tree {
     @With
     class Open implements Statement {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word word;
@@ -6634,17 +4179,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Openable implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -6664,17 +4198,6 @@ public interface Cobol extends Tree {
     @With
     class OpenInputOutputStatement implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word word;
@@ -6690,17 +4213,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class OpenIOExtendStatement implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -6718,17 +4230,6 @@ public interface Cobol extends Tree {
     @With
     class OrganizationClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -6743,17 +4244,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class PaddingCharacterClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -6770,17 +4260,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Paragraph implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -6806,17 +4285,6 @@ public interface Cobol extends Tree {
     @With
     class Paragraphs implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Sentence> sentences;
@@ -6832,17 +4300,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Parenthesized implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -6861,17 +4318,6 @@ public interface Cobol extends Tree {
     @With
     class PasswordClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -6887,17 +4333,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Perform implements Statement {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -6915,17 +4350,6 @@ public interface Cobol extends Tree {
     @With
     class Performable implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word word;
@@ -6941,17 +4365,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class PerformInlineStatement implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -6973,17 +4386,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class PerformProcedureStatement implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -7009,17 +4411,6 @@ public interface Cobol extends Tree {
     @With
     class PerformTestClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -7034,17 +4425,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class PerformTimes implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -7061,17 +4441,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class PerformUntil implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -7093,17 +4462,6 @@ public interface Cobol extends Tree {
     @With
     class PerformVarying implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Cobol> cobols;
@@ -7118,17 +4476,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class PerformVaryingClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -7146,17 +4493,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class PerformVaryingPhrase implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -7176,17 +4512,6 @@ public interface Cobol extends Tree {
     @With
     class Picture implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -7205,17 +4530,6 @@ public interface Cobol extends Tree {
     @With
     class PictureString implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Picture> pictures;
@@ -7230,17 +4544,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class PlusMinus implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -7257,17 +4560,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Power implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -7288,17 +4580,6 @@ public interface Cobol extends Tree {
     @With
     class Powers implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word plusMinusChar;
@@ -7317,17 +4598,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ProcedureDeclarative implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -7348,17 +4618,6 @@ public interface Cobol extends Tree {
     @With
     class ProcedureDeclaratives implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word declaratives;
@@ -7377,17 +4636,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ProcedureDivision implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -7417,17 +4665,6 @@ public interface Cobol extends Tree {
     @With
     class ProcedureDivisionBody implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Paragraphs paragraphs;
@@ -7445,17 +4682,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ProcedureDivisionByReference implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -7476,17 +4702,6 @@ public interface Cobol extends Tree {
     @With
     class ProcedureDivisionByReferencePhrase implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
 
@@ -7506,17 +4721,6 @@ public interface Cobol extends Tree {
     @With
     class ProcedureDivisionByValuePhrase implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -7532,17 +4736,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ProcedureDivisionGivingClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -7560,17 +4753,6 @@ public interface Cobol extends Tree {
     @With
     class ProcedureDivisionUsingClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word word;
@@ -7586,17 +4768,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ProcedureName implements Cobol, Name {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -7619,17 +4790,6 @@ public interface Cobol extends Tree {
     @With
     class ProcedureSection implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         ProcedureSectionHeader procedureSectionHeader;
@@ -7647,17 +4807,6 @@ public interface Cobol extends Tree {
     @With
     class ProcedureSectionHeader implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Name sectionName;
@@ -7674,17 +4823,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ProgramIdParagraph implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -7712,17 +4850,6 @@ public interface Cobol extends Tree {
     @With
     class ProgramLibrarySection implements DataDivisionSection {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -7740,17 +4867,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ProgramUnit implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -7785,17 +4901,6 @@ public interface Cobol extends Tree {
     @With
     class Purge implements Statement {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word purge;
@@ -7812,17 +4917,6 @@ public interface Cobol extends Tree {
     @With
     class QualifiedDataName implements Cobol, Identifier {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Cobol dataName;
@@ -7837,17 +4931,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class QualifiedDataNameFormat1 implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -7870,17 +4953,6 @@ public interface Cobol extends Tree {
     @With
     class QualifiedDataNameFormat2 implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Name paragraphName;
@@ -7896,17 +4968,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class QualifiedDataNameFormat3 implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -7924,17 +4985,6 @@ public interface Cobol extends Tree {
     @With
     class QualifiedDataNameFormat4 implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word linageCounter;
@@ -7951,17 +5001,6 @@ public interface Cobol extends Tree {
     @With
     class QualifiedInData implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Cobol in;
@@ -7976,17 +5015,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Read implements Statement {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -8028,17 +5056,6 @@ public interface Cobol extends Tree {
     @With
     class ReadInto implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word word;
@@ -8054,17 +5071,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ReadKey implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -8082,17 +5088,6 @@ public interface Cobol extends Tree {
     @With
     class ReadWith implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -8107,17 +5102,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Receivable implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -8135,17 +5119,6 @@ public interface Cobol extends Tree {
     @With
     class ReceiveWith implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -8160,17 +5133,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Receive implements Statement {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -8196,17 +5158,6 @@ public interface Cobol extends Tree {
     @With
     class ReceiveFrom implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -8225,17 +5176,6 @@ public interface Cobol extends Tree {
     @With
     class ReceiveFromStatement implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word dataName;
@@ -8253,17 +5193,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ReceiveIntoStatement implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -8288,17 +5217,6 @@ public interface Cobol extends Tree {
     @With
     class RecordContainsClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word record;
@@ -8314,17 +5232,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class RecordContainsClauseFormat1 implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -8348,17 +5255,6 @@ public interface Cobol extends Tree {
     @With
     class RecordContainsClauseFormat2 implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -8375,17 +5271,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class RecordContainsClauseFormat3 implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -8410,17 +5295,6 @@ public interface Cobol extends Tree {
     @With
     class RecordContainsTo implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word to;
@@ -8436,17 +5310,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class RecordDelimiterClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -8466,17 +5329,6 @@ public interface Cobol extends Tree {
     @With
     class RecordingModeClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -8492,17 +5344,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class RecordKeyClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -8524,17 +5365,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ReferenceModifier implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -8558,17 +5388,6 @@ public interface Cobol extends Tree {
     @With
     class RelationalOperator implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -8583,17 +5402,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class RelationArithmeticComparison implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -8612,17 +5420,6 @@ public interface Cobol extends Tree {
     @With
     class RelationCombinedComparison implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         ArithmeticExpression arithmeticExpression;
@@ -8640,17 +5437,6 @@ public interface Cobol extends Tree {
     @With
     class RelationCombinedCondition implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Cobol> relationalArithmeticExpressions;
@@ -8665,17 +5451,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class RelationSignCondition implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -8693,17 +5468,6 @@ public interface Cobol extends Tree {
     @With
     class RelativeKeyClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -8719,17 +5483,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Release implements Statement {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -8753,17 +5506,6 @@ public interface Cobol extends Tree {
     @With
     class ReportClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -8780,17 +5522,6 @@ public interface Cobol extends Tree {
     @With
     class ReportDescription implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         ReportDescriptionEntry reportDescriptionEntry;
@@ -8806,17 +5537,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ReportDescriptionEntry implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -8854,17 +5574,6 @@ public interface Cobol extends Tree {
     @With
     class ReportDescriptionFirstDetailClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -8880,17 +5589,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ReportDescriptionFootingClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -8908,17 +5606,6 @@ public interface Cobol extends Tree {
     @With
     class ReportDescriptionGlobalClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -8933,17 +5620,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ReportDescriptionHeadingClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -8961,17 +5637,6 @@ public interface Cobol extends Tree {
     @With
     class ReportDescriptionLastDetailClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -8987,17 +5652,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ReportDescriptionPageLimitClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -9018,17 +5672,6 @@ public interface Cobol extends Tree {
     @With
     class ReportGroupBlankWhenZeroClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -9043,17 +5686,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ReportGroupColumnNumberClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -9070,17 +5702,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ReportGroupDescriptionEntryFormat1 implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -9111,17 +5732,6 @@ public interface Cobol extends Tree {
     @With
     class ReportGroupDescriptionEntryFormat2 implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word integerLiteral;
@@ -9147,17 +5757,6 @@ public interface Cobol extends Tree {
     @With
     class ReportGroupDescriptionEntryFormat3 implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word integerLiteral;
@@ -9181,17 +5780,6 @@ public interface Cobol extends Tree {
     @With
     class ReportGroupIndicateClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -9207,17 +5795,6 @@ public interface Cobol extends Tree {
     @With
     class ReportGroupJustifiedClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -9232,17 +5809,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ReportGroupLineNumberClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -9260,17 +5826,6 @@ public interface Cobol extends Tree {
     @With
     class ReportGroupLineNumberNextPage implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word integerLiteral;
@@ -9286,17 +5841,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ReportGroupLineNumberPlus implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -9314,17 +5858,6 @@ public interface Cobol extends Tree {
     @With
     class ReportGroupNextGroupClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -9341,17 +5874,6 @@ public interface Cobol extends Tree {
     @With
     class ReportGroupNextGroupNextPage implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> nextPage;
@@ -9366,17 +5888,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ReportGroupNextGroupPlus implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -9394,17 +5905,6 @@ public interface Cobol extends Tree {
     @With
     class ReportGroupPictureClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -9420,17 +5920,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ReportGroupResetClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -9450,17 +5939,6 @@ public interface Cobol extends Tree {
     @With
     class ReportGroupSignClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -9475,17 +5953,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ReportGroupSourceClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -9503,17 +5970,6 @@ public interface Cobol extends Tree {
     @With
     class ReportGroupSumClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Cobol> cobols;
@@ -9528,17 +5984,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ReportGroupTypeClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -9555,17 +6000,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ReportGroupTypeControlFooting implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -9585,17 +6019,6 @@ public interface Cobol extends Tree {
     @With
     class ReportGroupTypeControlHeading implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -9614,17 +6037,6 @@ public interface Cobol extends Tree {
     @With
     class ReportGroupTypeDetail implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -9639,17 +6051,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ReportGroupTypePageFooting implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -9666,17 +6067,6 @@ public interface Cobol extends Tree {
     @With
     class ReportGroupTypePageHeading implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -9691,17 +6081,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ReportGroupTypeReportFooting implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -9718,17 +6097,6 @@ public interface Cobol extends Tree {
     @With
     class ReportGroupTypeReportHeading implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -9744,17 +6112,6 @@ public interface Cobol extends Tree {
     @With
     class ReportGroupUsageClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -9769,17 +6126,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ReportGroupValueClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -9797,17 +6143,6 @@ public interface Cobol extends Tree {
     @With
     class ReportName implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         QualifiedDataName qualifiedDataName;
@@ -9822,17 +6157,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ReportSection implements DataDivisionSection {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -9849,17 +6173,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class RerunClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -9886,17 +6199,6 @@ public interface Cobol extends Tree {
     @With
     class RerunEveryClock implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word integerLiteral;
@@ -9915,17 +6217,6 @@ public interface Cobol extends Tree {
     @With
     class RerunEveryOf implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> records;
@@ -9941,17 +6232,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class RerunEveryRecords implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -9969,17 +6249,6 @@ public interface Cobol extends Tree {
     @With
     class ReserveClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Cobol> words;
@@ -9995,17 +6264,6 @@ public interface Cobol extends Tree {
     @With
     class ReserveNetworkClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -10020,17 +6278,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Return implements Statement {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -10062,17 +6309,6 @@ public interface Cobol extends Tree {
     @With
     class ReturnInto implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word into;
@@ -10088,17 +6324,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Rewrite implements Statement {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -10129,17 +6354,6 @@ public interface Cobol extends Tree {
     @With
     class RewriteFrom implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word from;
@@ -10155,17 +6369,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Roundable implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -10185,17 +6388,6 @@ public interface Cobol extends Tree {
     @With
     class SameClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -10212,17 +6404,6 @@ public interface Cobol extends Tree {
     @With
     class ScreenDescriptionAutoClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word auto;
@@ -10237,17 +6418,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ScreenDescriptionBackgroundColorClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -10267,17 +6437,6 @@ public interface Cobol extends Tree {
     @With
     class ScreenDescriptionBellClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word bell;
@@ -10292,17 +6451,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ScreenDescriptionBlankClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -10319,17 +6467,6 @@ public interface Cobol extends Tree {
     @With
     class ScreenDescriptionBlankWhenZeroClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -10345,17 +6482,6 @@ public interface Cobol extends Tree {
     @With
     class ScreenDescriptionBlinkClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word blink;
@@ -10370,17 +6496,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ScreenDescriptionColumnClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -10398,17 +6513,6 @@ public interface Cobol extends Tree {
     @With
     class ScreenDescriptionControlClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -10424,17 +6528,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ScreenDescriptionEntry implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -10457,17 +6550,6 @@ public interface Cobol extends Tree {
     @With
     class ScreenDescriptionEraseClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -10482,17 +6564,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ScreenDescriptionForegroundColorClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -10509,17 +6580,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ScreenDescriptionFromClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -10540,17 +6600,6 @@ public interface Cobol extends Tree {
     @With
     class ScreenDescriptionFullClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word word;
@@ -10565,17 +6614,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ScreenDescriptionGridClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -10592,17 +6630,6 @@ public interface Cobol extends Tree {
     @With
     class ScreenDescriptionJustifiedClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -10618,17 +6645,6 @@ public interface Cobol extends Tree {
     @With
     class ScreenDescriptionLightClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word light;
@@ -10643,17 +6659,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ScreenDescriptionLineClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -10671,17 +6676,6 @@ public interface Cobol extends Tree {
     @With
     class ScreenDescriptionPictureClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -10697,17 +6691,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ScreenDescriptionPromptClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -10728,17 +6711,6 @@ public interface Cobol extends Tree {
     @With
     class ScreenDescriptionPromptOccursClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word occurs;
@@ -10758,17 +6730,6 @@ public interface Cobol extends Tree {
     @With
     class ScreenDescriptionRequiredClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word required;
@@ -10783,17 +6744,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ScreenDescriptionReverseVideoClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -10810,17 +6760,6 @@ public interface Cobol extends Tree {
     @With
     class ScreenDescriptionSecureClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word word;
@@ -10836,17 +6775,6 @@ public interface Cobol extends Tree {
     @With
     class ScreenDescriptionSignClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -10861,17 +6789,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ScreenDescriptionSizeClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -10889,17 +6806,6 @@ public interface Cobol extends Tree {
     @With
     class ScreenDescriptionToClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word to;
@@ -10916,17 +6822,6 @@ public interface Cobol extends Tree {
     @With
     class ScreenDescriptionUnderlineClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word underline;
@@ -10942,17 +6837,6 @@ public interface Cobol extends Tree {
     @With
     class ScreenDescriptionUsageClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -10967,17 +6851,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ScreenDescriptionUsingClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -10995,17 +6868,6 @@ public interface Cobol extends Tree {
     @With
     class ScreenDescriptionValueClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -11022,17 +6884,6 @@ public interface Cobol extends Tree {
     @With
     class ScreenDescriptionZeroFillClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word word;
@@ -11047,17 +6898,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ScreenSection implements DataDivisionSection {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -11075,17 +6915,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Search implements Statement {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -11114,17 +6943,6 @@ public interface Cobol extends Tree {
     @With
     class SearchVarying implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word varying;
@@ -11140,17 +6958,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class SearchWhen implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -11170,17 +6977,6 @@ public interface Cobol extends Tree {
     @With
     class SelectClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -11196,17 +6992,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Send implements Statement {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -11230,17 +7015,6 @@ public interface Cobol extends Tree {
     @With
     class SendAdvancingLines implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Name name;
@@ -11259,17 +7033,6 @@ public interface Cobol extends Tree {
     @With
     class SendPhrase implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -11287,17 +7050,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class SendStatementSync implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -11326,17 +7078,6 @@ public interface Cobol extends Tree {
     @With
     class Sentence implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Statement> statements;
@@ -11352,17 +7093,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Set implements Statement {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -11385,17 +7115,6 @@ public interface Cobol extends Tree {
     @With
     class SetTo implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Identifier> identifiers;
@@ -11413,17 +7132,6 @@ public interface Cobol extends Tree {
     @With
     class SetUpDown implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Identifier> to;
@@ -11440,17 +7148,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Sort implements Statement {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -11481,17 +7178,6 @@ public interface Cobol extends Tree {
     @With
     class Sortable implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -11507,17 +7193,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class SortCollatingSequencePhrase implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -11541,17 +7216,6 @@ public interface Cobol extends Tree {
     @With
     class SortGiving implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word fileName;
@@ -11569,17 +7233,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class SortProcedurePhrase implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -11600,17 +7253,6 @@ public interface Cobol extends Tree {
     @With
     class SourceComputer implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -11628,17 +7270,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class SourceComputerDefinition implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -11659,17 +7290,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class SpecialNames implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -11693,17 +7313,6 @@ public interface Cobol extends Tree {
     @With
     class SpecialRegister implements Cobol, Name, Identifier {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Cobol> words;
@@ -11721,17 +7330,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Start implements Statement {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -11761,17 +7359,6 @@ public interface Cobol extends Tree {
     @With
     class StartKey implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -11787,17 +7374,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class StatementPhrase implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -11815,17 +7391,6 @@ public interface Cobol extends Tree {
     @With
     class StatusKeyClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -11841,17 +7406,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Stop implements Statement {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -11871,17 +7425,6 @@ public interface Cobol extends Tree {
     @With
     class StringDelimitedByPhrase implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -11897,17 +7440,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class StopStatementGiving implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -11925,17 +7457,6 @@ public interface Cobol extends Tree {
     @With
     class StringForPhrase implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word word;
@@ -11951,17 +7472,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class StringIntoPhrase implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -11979,17 +7489,6 @@ public interface Cobol extends Tree {
     @With
     class StringSendingPhrase implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Cobol> sendings;
@@ -12005,17 +7504,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class StringStatement implements Statement {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -12046,17 +7534,6 @@ public interface Cobol extends Tree {
     @With
     class StringWithPointerPhrase implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -12072,17 +7549,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Subscript implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -12103,17 +7569,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Subtract implements Statement {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -12140,17 +7595,6 @@ public interface Cobol extends Tree {
     @With
     class SubtractCorrespondingStatement implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word corresponding;
@@ -12168,17 +7612,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class SubtractFromGivingStatement implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -12199,17 +7632,6 @@ public interface Cobol extends Tree {
     @With
     class SubtractFromStatement implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Name> subtractSubtrahend;
@@ -12226,17 +7648,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class SubtractMinuendCorresponding implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -12255,17 +7666,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class SymbolicCharacter implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -12286,17 +7686,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class SymbolicCharactersClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -12320,17 +7709,6 @@ public interface Cobol extends Tree {
     @With
     class SymbolicDestinationClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -12346,17 +7724,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class SymbolicQueueClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -12374,17 +7741,6 @@ public interface Cobol extends Tree {
     @With
     class SymbolicSourceClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -12400,17 +7756,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class SymbolicSubQueueClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -12428,17 +7773,6 @@ public interface Cobol extends Tree {
     @With
     class SymbolicTerminalClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -12454,17 +7788,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class TableCall implements Identifier {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -12485,17 +7808,6 @@ public interface Cobol extends Tree {
     @With
     class Terminate implements Statement {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word terminate;
@@ -12512,17 +7824,6 @@ public interface Cobol extends Tree {
     @With
     class TextLengthClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -12538,17 +7839,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class UnString implements Statement {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -12582,17 +7872,6 @@ public interface Cobol extends Tree {
     @With
     class UnstringCountIn implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -12608,17 +7887,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class UnstringDelimitedByPhrase implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -12636,17 +7904,6 @@ public interface Cobol extends Tree {
     @With
     class UnstringDelimiterIn implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -12662,17 +7919,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class UnstringInto implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -12695,17 +7941,6 @@ public interface Cobol extends Tree {
     @With
     class UnstringIntoPhrase implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word into;
@@ -12722,17 +7957,6 @@ public interface Cobol extends Tree {
     @With
     class UnstringOrAllPhrase implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -12748,17 +7972,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class UnstringSendingPhrase implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -12781,17 +7994,6 @@ public interface Cobol extends Tree {
     @With
     class UnstringTallyingPhrase implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -12807,17 +8009,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class UnstringWithPointerPhrase implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -12835,17 +8026,6 @@ public interface Cobol extends Tree {
     @With
     class UseAfterClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -12861,17 +8041,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class UseAfterOn implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -12893,17 +8062,6 @@ public interface Cobol extends Tree {
     @With
     class UseDebugClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -12919,17 +8077,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class UseDebugOn implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -12951,17 +8098,6 @@ public interface Cobol extends Tree {
     @With
     class UseStatement implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Word use;
@@ -12977,17 +8113,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ValuedObjectComputerClause implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -13018,17 +8143,6 @@ public interface Cobol extends Tree {
     @With
     class ValueOfClause implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> valueOf;
@@ -13044,17 +8158,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class ValuePair implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -13076,17 +8179,6 @@ public interface Cobol extends Tree {
     @With
     class WorkingStorageSection implements DataDivisionSection {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -13103,17 +8195,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class Write implements Statement {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -13152,17 +8233,6 @@ public interface Cobol extends Tree {
     @With
     class WriteAdvancingLines implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Name name;
@@ -13179,17 +8249,6 @@ public interface Cobol extends Tree {
     @With
     class WriteAdvancingMnemonic implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         Name name;
@@ -13204,17 +8263,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class WriteAdvancingPage implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -13231,17 +8279,6 @@ public interface Cobol extends Tree {
     @With
     class WriteAdvancingPhrase implements Cobol {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> words;
@@ -13257,17 +8294,6 @@ public interface Cobol extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class WriteFromPhrase implements Cobol {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;

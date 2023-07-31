@@ -40,21 +40,19 @@ public interface CobolPreprocessor extends Tree {
 
     <P extends CobolPreprocessor> P withPrefix(Space prefix);
 
+    default UUID getId() {
+        return Cobol.CompilationUnit.id;
+    }
+
+    default <T extends Tree> T withId(UUID id) {
+        //noinspection unchecked
+        return (T) this;
+    }
+
     @Value
     @EqualsAndHashCode(callSuper = false)
     @With
     class CompilationUnit implements CobolPreprocessor, SourceFile {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Path sourcePath;
 
@@ -104,17 +102,6 @@ public interface CobolPreprocessor extends Tree {
     @With
     class CharData implements CobolPreprocessor {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
 
@@ -130,17 +117,6 @@ public interface CobolPreprocessor extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class CharDataLine implements CobolPreprocessor {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -158,17 +134,6 @@ public interface CobolPreprocessor extends Tree {
     @With
     class CharDataSql implements CobolPreprocessor {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
 
@@ -185,17 +150,6 @@ public interface CobolPreprocessor extends Tree {
     @With
     class CommentEntry implements CobolPreprocessor, Comment {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
         List<Word> comments;
@@ -210,17 +164,6 @@ public interface CobolPreprocessor extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class CompilerOption implements CobolPreprocessor {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -257,17 +200,6 @@ public interface CobolPreprocessor extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class CompilerXOpts implements CobolPreprocessor {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -337,17 +269,6 @@ public interface CobolPreprocessor extends Tree {
     @With
     class CopySource implements CobolPreprocessor {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
-
         Space prefix;
         Markers markers;
 
@@ -397,16 +318,7 @@ public interface CobolPreprocessor extends Tree {
     @With
     class DirectoryPhrase implements CobolPreprocessor {
 
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -489,17 +401,6 @@ public interface CobolPreprocessor extends Tree {
     @EqualsAndHashCode(callSuper = false)
     @With
     class PseudoText implements CobolPreprocessor {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;
@@ -688,17 +589,6 @@ public interface CobolPreprocessor extends Tree {
     @Value
     @EqualsAndHashCode(callSuper = false)
     class Word implements CobolPreprocessor {
-
-        @Override
-        public UUID getId() {
-            return Cobol.CompilationUnit.id;
-        }
-
-        @Override
-        public <T extends Tree> T withId(UUID id) {
-            //noinspection unchecked
-            return (T) this;
-        }
 
         Space prefix;
         Markers markers;

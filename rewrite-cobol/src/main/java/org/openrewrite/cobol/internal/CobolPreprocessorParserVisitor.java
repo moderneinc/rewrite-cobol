@@ -583,7 +583,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
     @Override
     public Object visitDirectoryPhrase(CobolPreprocessorParser.DirectoryPhraseContext ctx) {
         return new CobolPreprocessor.DirectoryPhrase(
-
+                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.OF(), ctx.IN()),
@@ -1239,13 +1239,13 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
      * Return the IndicatorArea based on the current cursor position if it exists.
      *
      * @param continuationDelimiter the next expected Character in the source that comes after the indicator.
-     * @param isStringLiteral String literals and Keywords/Identifiers have different rules for line continuations.
-     *                        A continued String literal will be prefixed by the delimiter (' or "),
-     *                        which needs to exist in the indicator marker.
-     *                        I.E. 000001-|<whitespace including the delimiter " or '>|some continued string literal.
-     * <p>
-     *                        A continued Keyword/Identifier should not include the delimiter.
-     *                        I.E. 000001-|<whitespace added to indicator>|TOKEN-NAME.
+     * @param isStringLiteral       String literals and Keywords/Identifiers have different rules for line continuations.
+     *                              A continued String literal will be prefixed by the delimiter (' or "),
+     *                              which needs to exist in the indicator marker.
+     *                              I.E. 000001-|<whitespace including the delimiter " or '>|some continued string literal.
+     *                              <p>
+     *                              A continued Keyword/Identifier should not include the delimiter.
+     *                              I.E. 000001-|<whitespace added to indicator>|TOKEN-NAME.
      */
     @Nullable
     private IndicatorArea indicatorArea(@Nullable Character continuationDelimiter, boolean isStringLiteral) {
