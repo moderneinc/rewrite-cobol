@@ -5,10 +5,10 @@
  */
 package org.openrewrite.cobol.tree.preprocessor;
 
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ScanResult;
 import org.junit.jupiter.api.Test;
-import org.openrewrite.ExecutionContext;
-import org.openrewrite.InMemoryExecutionContext;
-import org.openrewrite.PrintOutputCapture;
+import org.openrewrite.*;
 import org.openrewrite.cobol.CobolPreprocessorVisitor;
 import org.openrewrite.cobol.CobolTest;
 import org.openrewrite.cobol.internal.CobolDialect;
@@ -16,13 +16,10 @@ import org.openrewrite.cobol.internal.CobolPreprocessorOutputSourcePrinter;
 import org.openrewrite.cobol.internal.CobolPreprocessorPrinter;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
 import org.openrewrite.cobol.tree.Space;
-import org.openrewrite.internal.EncodingDetectingInputStream;
 import org.openrewrite.test.RecipeSpec;
 
 
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openrewrite.cobol.Assertions.preprocessor;
@@ -55,7 +52,7 @@ public class CobolPreprocessorCopyTest extends CobolTest {
                   new CobolPreprocessorOutputSourcePrinter<>(CobolDialect.ibmAnsi85(), true);
                 printer.visit(copyBook, output);
 
-                String source = getSource(copyBook.getSourcePath());
+                String source = getSource(copyBook.getSourcePath().toString());
                 assertThat(source).isEqualTo(output.getOut());
 
                 return super.visitCopyStatement(copyStatement, p);
@@ -63,17 +60,21 @@ public class CobolPreprocessorCopyTest extends CobolTest {
         }));
     }
 
-    private String getSource(Path copyBook) {
-        String source;
-        try {
-            try (InputStream inputStream = Files.newInputStream(copyBook)) {
-                EncodingDetectingInputStream input = new EncodingDetectingInputStream(inputStream);
-                source = input.readFully();
-            }
-        } catch (Exception e) {
+    private String getSource(String copyBook) {
+        String searchPath = PathUtils.separatorsToUnix(copyBook);
+        try(ScanResult scan = new ClassGraph().scan()) {
+            //noinspection OptionalGetWithoutIsPresent
+            return scan.getResourcesWithExtension("cpy").stream()
+              .filter(it -> {
+                  String path = PathUtils.separatorsToUnix(it.getPath());
+                  return path.endsWith(searchPath);
+              })
+              .findFirst()
+              .get()
+              .getContentAsString();
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return source;
     }
 
     @Test

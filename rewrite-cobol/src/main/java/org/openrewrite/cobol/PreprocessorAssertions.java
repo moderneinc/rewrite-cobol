@@ -5,24 +5,23 @@
  */
 package org.openrewrite.cobol;
 
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ScanResult;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.InMemoryExecutionContext;
+import org.openrewrite.Parser;
 import org.openrewrite.SourceFile;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
 import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.test.SourceSpec;
 import org.openrewrite.test.SourceSpecs;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 
 public class PreprocessorAssertions {
     private PreprocessorAssertions() {
@@ -45,7 +44,7 @@ public class PreprocessorAssertions {
                 before,
                 SourceSpec.EachResult.noop,
                 PreprocessorAssertions::customizeExecutionContext);
-        acceptSpec(spec, cobol);
+        acceptPreprocessorSpec(spec, cobol);
         return cobol;
     }
 
@@ -63,7 +62,7 @@ public class PreprocessorAssertions {
                 before,
                 SourceSpec.EachResult.noop,
                 PreprocessorAssertions::customizeExecutionContext).after(s -> after);
-        acceptSpec(spec, cobol);
+        acceptPreprocessorSpec(spec, cobol);
         return cobol;
     }
 
@@ -81,7 +80,7 @@ public class PreprocessorAssertions {
                 before,
                 SourceSpec.EachResult.noop,
                 PreprocessorAssertions::customizeExecutionContext);
-        acceptSpec(spec, cobol);
+        acceptPreprocessorSpec(spec, cobol);
         return cobol;
     }
 
@@ -100,24 +99,30 @@ public class PreprocessorAssertions {
                 before,
                 SourceSpec.EachResult.noop,
                 PreprocessorAssertions::customizeExecutionContext).after(s -> after);
-        acceptSpec(spec, cobol);
+        acceptPreprocessorSpec(spec, cobol);
         return cobol;
     }
 
-    private static void acceptSpec(Consumer<SourceSpec<CobolPreprocessor.CompilationUnit>> spec, SourceSpec<CobolPreprocessor.CompilationUnit> cobol) {
+    private static void acceptPreprocessorSpec(Consumer<SourceSpec<CobolPreprocessor.CompilationUnit>> spec, SourceSpec<CobolPreprocessor.CompilationUnit> cobol) {
         Consumer<CobolPreprocessor.CompilationUnit> userSuppliedAfterRecipe = cobol.getAfterRecipe();
         cobol.afterRecipe(userSuppliedAfterRecipe::accept);
         spec.accept(cobol);
     }
 
     private static List<SourceFile> getCopyBookSources() {
-        ResourceParser resourceParser = new ResourceParser(Paths.get("").toAbsolutePath(), emptyList(), emptyList());
-
-        try {
-            List<Path> paths = resourceParser.getResourcesByExtension(emptyList(), singletonList(".cpy"));
-            return CopyBookParser.builder().build().parse(paths, null, new InMemoryExecutionContext()).collect(Collectors.toList());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        try(ScanResult scan = new ClassGraph().scan()) {
+            List<Parser.Input> copyInputs = scan.getResourcesWithExtension("cpy").stream()
+                    .map(res -> new Parser.Input(Paths.get(res.getPath()), () -> {
+                        try {
+                            return new ByteArrayInputStream(res.getContentAsString().getBytes());
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }))
+                    .collect(Collectors.toList());
+            return CopyBookParser.builder().build()
+                    .parseInputs(copyInputs, null, new InMemoryExecutionContext())
+                    .collect(Collectors.toList());
         }
     }
 }

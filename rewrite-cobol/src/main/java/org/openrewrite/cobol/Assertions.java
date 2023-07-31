@@ -5,10 +5,9 @@
  */
 package org.openrewrite.cobol;
 
-import org.openrewrite.ExecutionContext;
-import org.openrewrite.InMemoryExecutionContext;
-import org.openrewrite.PrintOutputCapture;
-import org.openrewrite.SourceFile;
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ScanResult;
+import org.openrewrite.*;
 import org.openrewrite.cobol.internal.CobolPrinter;
 import org.openrewrite.cobol.internal.IbmAnsi85;
 import org.openrewrite.cobol.tree.Cobol;
@@ -19,15 +18,12 @@ import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.test.SourceSpec;
 import org.openrewrite.test.SourceSpecs;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 
 public class Assertions {
     private Assertions() {
@@ -284,12 +280,19 @@ public class Assertions {
     }
 
     private static List<SourceFile> getCopyBookSources() {
-        ResourceParser resourceParser = new ResourceParser(Paths.get("").toAbsolutePath(), emptyList(), emptyList());
-        try {
-            List<Path> paths = resourceParser.getResourcesByExtension(emptyList(), singletonList(".cpy"));
-            return CopyBookParser.builder().build().parse(paths, null, new InMemoryExecutionContext()).collect(Collectors.toList());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        try(ScanResult scan = new ClassGraph().scan()) {
+            List<Parser.Input> copyInputs = scan.getResourcesWithExtension("cpy").stream()
+                    .map(res -> new Parser.Input(Paths.get(res.getPath()), () -> {
+                        try {
+                            return new ByteArrayInputStream(res.getContentAsString().getBytes());
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }))
+                    .collect(Collectors.toList());
+            return CopyBookParser.builder().build()
+                    .parseInputs(copyInputs, null, new InMemoryExecutionContext())
+                    .collect(Collectors.toList());
         }
     }
 }

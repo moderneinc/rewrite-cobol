@@ -48,6 +48,7 @@ dependencies {
     implementation("org.openrewrite:rewrite-core")
     implementation("org.antlr:antlr4:4.11.1")
     implementation("io.micrometer:micrometer-core:1.9.+")
+    implementation("io.github.classgraph:classgraph:latest.release")
 
     runtimeOnly("org.openrewrite.tools:java-object-diff:latest.release")
 
@@ -66,7 +67,6 @@ dependencies {
 
     testImplementation("org.openrewrite:rewrite-test")
     testImplementation("org.assertj:assertj-core:latest.release")
-    testImplementation("io.github.classgraph:classgraph:latest.release")
 
     testImplementation("org.openrewrite:rewrite-groovy")
     testImplementation("org.openrewrite:rewrite-maven")
