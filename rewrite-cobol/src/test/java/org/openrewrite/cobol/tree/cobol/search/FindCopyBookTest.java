@@ -7,10 +7,12 @@ package org.openrewrite.cobol.tree.cobol.search;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.openrewrite.PathUtils;
 import org.openrewrite.Tree;
 import org.openrewrite.TreeVisitor;
 import org.openrewrite.cobol.CobolTest;
-import org.openrewrite.cobol.search.FindCopyBookReferences;
+import org.openrewrite.cobol.search.FindCopyBook;
+import org.openrewrite.cobol.table.CopyBookSource;
 import org.openrewrite.marker.Marker;
 import org.openrewrite.marker.SearchResult;
 import org.openrewrite.test.RecipeSpec;
@@ -18,13 +20,14 @@ import org.openrewrite.test.RecipeSpec;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.openrewrite.cobol.Assertions.cobol;
 
-public class FindCopyBookReferencesTest extends CobolTest {
+public class FindCopyBookTest extends CobolTest {
 
     @Override
     public void defaults(RecipeSpec spec) {
-        spec.recipe(new FindCopyBookReferences("KP008"));
+        spec.recipe(new FindCopyBook("KP008"));
     }
 
     private final TreeVisitor<Tree, List<SearchResult>> visitor = new TreeVisitor<>() {
@@ -47,7 +50,14 @@ public class FindCopyBookReferencesTest extends CobolTest {
     @Test
     void sm103A() {
         rewriteRun(
-          spec -> spec.recipe(new FindCopyBookReferences(null)),
+          spec -> spec.recipe(new FindCopyBook(""))
+            .dataTable(CopyBookSource.Row.class, rows -> {
+                assertThat(rows).hasSize(7);
+                CopyBookSource.Row r0 = rows.get(0);
+                assertThat(r0.getCopyBookName()).isEqualTo("K3SCA");
+                assertThat(r0.getResolutionStatus()).isEqualTo(CopyBookSource.ResolutionStatus.RESOLVED);
+                assertThat(PathUtils.separatorsToUnix(r0.getCopyBookSourcePath())).isEqualTo("gov/nist/copybooks/K3SCA.CPY");
+            }),
           cobol(
             """
               000100 IDENTIFICATION DIVISION.                                         SM1034.2
@@ -570,18 +580,26 @@ public class FindCopyBookReferencesTest extends CobolTest {
               055300 CCVS-EXIT SECTION.                                               SM1034.2
               055400 CCVS-999999.                                                     SM1034.2
               055500     GO TO CLOSE-FILES.                                           SM1034.2
-              """,
-            spec -> spec.afterRecipe(cu -> {
-                List<SearchResult> searchResults = new ArrayList<>(7);
-                visitor.visit(cu, searchResults);
-                Assertions.assertThat(searchResults).hasSize(7);
-            }), true)
+              """, true)
         );
     }
 
     @Test
     void sm206a() {
         rewriteRun(
+          spec -> spec.dataTable(CopyBookSource.Row.class, rows -> {
+              assertThat(rows).isNotEmpty();
+              assertThat(rows).hasSize(3);
+              CopyBookSource.Row r0 = rows.get(0);
+              assertThat(r0.getCopyBookName()).isEqualTo("KP001");
+              assertThat(r0.getResolutionStatus()).isEqualTo(CopyBookSource.ResolutionStatus.MISSING_SOURCE);
+              CopyBookSource.Row r1 = rows.get(1);
+              assertThat(r1.getCopyBookName()).isEqualTo("KP002");
+              assertThat(r1.getResolutionStatus()).isEqualTo(CopyBookSource.ResolutionStatus.MISSING_SOURCE);
+              CopyBookSource.Row r2 = rows.get(2);
+              assertThat(r2.getCopyBookName()).isEqualTo("KP008");
+              assertThat(r2.getResolutionStatus()).isEqualTo(CopyBookSource.ResolutionStatus.MISSING_SOURCE);
+          }),
           cobol(
             """
               000100 IDENTIFICATION DIVISION.                                         SM2064.2
@@ -626,7 +644,7 @@ public class FindCopyBookReferencesTest extends CobolTest {
               032800 CCVS1-EXIT.                                                      SM2064.2
               032900     EXIT.                                                        SM2064.2
               033000 SECT-SM206-0001 SECTION.                                         SM2064.2
-              033800     COPY                                                    KP001SM2064.2
+              033800     COPY                                                    ~~>KP001SM2064.2
               033900             REPLACING ==PERFORM FAIL. == BY ====.                SM2064.2
               034100 SECT-SM206-0002 SECTION.                                         SM2064.2
               034200 PST-INIT-002.                                                    SM2064.2
@@ -634,7 +652,7 @@ public class FindCopyBookReferencesTest extends CobolTest {
               034400     MOVE   +000000005 TO WRK-DS-09V00-901.                       SM2064.2
               034500 PST-TEST-002.                                                    SM2064.2
               034800     MOVE    "PSEUDO-TEXT/IDENTIFR" TO FEATURE.                   SM2064.2
-              036100     COPY                                                    KP002SM2064.2
+              036100     COPY                                                    ~~>KP002SM2064.2
               036200             REPLACING == WRK-DS-09V00-901                        SM2064.2
               036300                          SUBTRACT 1 FROM                         SM2064.2
               036400                          WRK-DS-05V00-O005-001 IN GRP-002 (1)==  SM2064.2
@@ -650,12 +668,7 @@ public class FindCopyBookReferencesTest extends CobolTest {
               061200         BY  ==PASS. ==.                                          SM2064.2
               061400     IF P-OR-F IS EQUAL TO "FAIL*"  ADD 1 TO ERROR-COUNTER.       SM2064.2
               061500     GO TO PST-WRITE-009.                                         SM2064.2
-              """,
-            spec -> spec.afterRecipe(cu -> {
-                List<SearchResult> searchResults = new ArrayList<>(1);
-                visitor.visit(cu, searchResults);
-                Assertions.assertThat(searchResults).hasSize(1);
-            }), true)
-        );
+              """
+        ));
     }
 }

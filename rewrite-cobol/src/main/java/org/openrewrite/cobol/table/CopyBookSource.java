@@ -8,6 +8,7 @@ package org.openrewrite.cobol.table;
 import lombok.Value;
 import org.openrewrite.Column;
 import org.openrewrite.DataTable;
+import org.openrewrite.Option;
 import org.openrewrite.Recipe;
 
 public class CopyBookSource extends DataTable<CopyBookSource.Row> {
@@ -16,16 +17,24 @@ public class CopyBookSource extends DataTable<CopyBookSource.Row> {
         super(recipe, "CopyBook source information",
                 "Information about copy book references in a COBOL source.");
     }
-
+    public enum ResolutionStatus {
+        MISSING_SOURCE,
+        NO_SOURCE_PATH,
+        RESOLVED
+    }
     @Value
     public static class Row {
+        @Option(displayName = "Source path",
+                description = "The source path of the COBOL source file that contains the copy statement.")
+        String sourcePath;
+
         @Column(displayName = "Copy book name",
                 description = "The copy book name from a copy statement in a COBOL source.")
         String copyBookName;
 
-        @Column(displayName = "Source path",
+        @Column(displayName = "Copy book Source path",
                 description = "The source path of the copy book that was resolved during resolution of copy books.")
-        String sourcePath;
+        String copyBookSourcePath;
 
         @Column(displayName = "Resolution status",
                 description = "The status of the resolved copy book in a copy statement.")
@@ -35,10 +44,6 @@ public class CopyBookSource extends DataTable<CopyBookSource.Row> {
                 description = "The current word being visited from the post-processed LST.")
         String markedWord;
 
-        public enum ResolutionStatus {
-            MISSING_SOURCE,
-            NO_SOURCE_PATH,
-            RESOLVED
-        }
+
     }
 }

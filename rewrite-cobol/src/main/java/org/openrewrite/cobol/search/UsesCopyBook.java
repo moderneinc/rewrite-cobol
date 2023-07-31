@@ -46,7 +46,7 @@ public class UsesCopyBook extends CobolIsoVisitor<ExecutionContext> {
                 public Cobol.Word visitWord(Cobol.Word word, List<CobolPreprocessor.CopySource> copySources) {
                     Cobol.Word w = super.visitWord(word, copySources);
                     if (copySources.isEmpty()) {
-                        if (w.getCopyStatement() != null && (bookName == null || bookName.equals(w.getCopyStatement().getCopySource().getName().getCobolWord().getWord()))) {
+                        if (w.getCopyStatement() != null && (bookName == null || bookName.isEmpty() || bookName.equals(w.getCopyStatement().getCopySource().getName().getCobolWord().getWord()))) {
                             copySources.add(w.getCopyStatement().getCopySource());
                         }
                     }
