@@ -137,7 +137,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
     @Override
     public Object visitCharData(CobolPreprocessorParser.CharDataContext ctx) {
         return new CobolPreprocessor.CharData(
-                randomId(),
+
                 EMPTY,
                 Markers.EMPTY,
                 convertAll(ctx.charDataLine())
@@ -153,7 +153,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
     @Override
     public Object visitCharDataLine(CobolPreprocessorParser.CharDataLineContext ctx) {
         return new CobolPreprocessor.CharDataLine(
-                randomId(),
+
                 EMPTY,
                 Markers.EMPTY,
                 convertAllList(ctx.cobolWord(), ctx.literal(), ctx.filename(), ctx.commentEntry(), ctx.TEXT(), ctx.DOT(), ctx.LPARENCHAR(), ctx.RPARENCHAR())
@@ -163,7 +163,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
     @Override
     public Object visitCharDataLineNoDot(CobolPreprocessorParser.CharDataLineNoDotContext ctx) {
         return new CobolPreprocessor.CharDataLine(
-                randomId(),
+
                 EMPTY,
                 Markers.EMPTY,
                 convertAllList(ctx.cobolWord(), ctx.literal(), ctx.filename(), ctx.commentEntry(), ctx.TEXT(), ctx.LPARENCHAR(), ctx.RPARENCHAR())
@@ -173,7 +173,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
     @Override
     public Object visitCharDataSql(CobolPreprocessorParser.CharDataSqlContext ctx) {
         return new CobolPreprocessor.CharDataSql(
-                randomId(),
+
                 EMPTY,
                 Markers.EMPTY,
                 convertAllList(ctx.charDataLine())
@@ -189,7 +189,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
     @Override
     public Object visitCommentEntry(CobolPreprocessorParser.CommentEntryContext ctx) {
         return new CobolPreprocessor.CommentEntry(
-                randomId(),
+
                 EMPTY,
                 Markers.EMPTY,
                 convertAll(ctx.COMMENTENTRYLINE())
@@ -199,7 +199,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
     @Override
     public Object visitCompilerOption(CobolPreprocessorParser.CompilerOptionContext ctx) {
         return new CobolPreprocessor.CompilerOption(
-                randomId(),
+
                 EMPTY,
                 Markers.EMPTY,
                 convertAllList(
@@ -510,7 +510,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
     @Override
     public Object visitCompilerXOpts(CobolPreprocessorParser.CompilerXOptsContext ctx) {
         return new CobolPreprocessor.CompilerXOpts(
-                randomId(),
+
                 EMPTY,
                 Markers.EMPTY,
                 (CobolPreprocessor.Word) visit(ctx.XOPTS()),
@@ -525,7 +525,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
         init();
 
         return new CobolPreprocessor.CompilationUnit(
-                randomId(),
+
                 path,
                 fileAttributes,
                 EMPTY,
@@ -557,7 +557,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
     @Override
     public Object visitCopySource(CobolPreprocessorParser.CopySourceContext ctx) {
         return new CobolPreprocessor.CopySource(
-                randomId(),
+
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.literal(), ctx.cobolWord(), ctx.filename()),
@@ -667,7 +667,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
     @Override
     public Object visitPseudoText(CobolPreprocessorParser.PseudoTextContext ctx) {
         return new CobolPreprocessor.PseudoText(
-                randomId(),
+
                 EMPTY,
                 Markers.EMPTY,
                 (CobolPreprocessor.Word) visit(ctx.DOUBLEEQUALCHAR().get(0)),
@@ -812,11 +812,11 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
         }
 
         return new CobolPreprocessor.Word(
-                randomId(),
+
                 EMPTY,
                 Markers.EMPTY,
                 new Cobol.Word(
-                        randomId(),
+
                         prefix,
                         Markers.EMPTY,
                         cobolLines,
@@ -1239,13 +1239,13 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
      * Return the IndicatorArea based on the current cursor position if it exists.
      *
      * @param continuationDelimiter the next expected Character in the source that comes after the indicator.
-     * @param isStringLiteral String literals and Keywords/Identifiers have different rules for line continuations.
-     *                        A continued String literal will be prefixed by the delimiter (' or "),
-     *                        which needs to exist in the indicator marker.
-     *                        I.E. 000001-|<whitespace including the delimiter " or '>|some continued string literal.
-     * <p>
-     *                        A continued Keyword/Identifier should not include the delimiter.
-     *                        I.E. 000001-|<whitespace added to indicator>|TOKEN-NAME.
+     * @param isStringLiteral       String literals and Keywords/Identifiers have different rules for line continuations.
+     *                              A continued String literal will be prefixed by the delimiter (' or "),
+     *                              which needs to exist in the indicator marker.
+     *                              I.E. 000001-|<whitespace including the delimiter " or '>|some continued string literal.
+     *                              <p>
+     *                              A continued Keyword/Identifier should not include the delimiter.
+     *                              I.E. 000001-|<whitespace added to indicator>|TOKEN-NAME.
      */
     @Nullable
     private IndicatorArea indicatorArea(@Nullable Character continuationDelimiter, boolean isStringLiteral) {

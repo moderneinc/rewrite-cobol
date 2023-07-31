@@ -333,7 +333,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
             programUnits.add(visitProgramUnit(pu));
         }
         return new Cobol.CompilationUnit(
-                randomId(),
                 path,
                 fileAttributes,
                 prefix,
@@ -349,7 +348,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitAbbreviation(CobolParser.AbbreviationContext ctx) {
         return new Cobol.Abbreviation(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visitNullable(ctx.NOT()),
@@ -364,7 +362,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitAcceptFromDateStatement(CobolParser.AcceptFromDateStatementContext ctx) {
         return new Cobol.AcceptFromDateStatement(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.FROM(), ctx.DATE(), ctx.YYYYMMDD(), ctx.DAY(), ctx.YYYYDDD(), ctx.DAY_OF_WEEK(), ctx.TIME(), ctx.TIMER(), ctx.TODAYS_DATE(), ctx.MMDDYYYY(), ctx.TODAYS_NAME(), ctx.YEAR())
@@ -374,7 +371,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitAcceptFromEscapeKeyStatement(CobolParser.AcceptFromEscapeKeyStatementContext ctx) {
         return new Cobol.AcceptFromEscapeKeyStatement(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.FROM(), ctx.ESCAPE(), ctx.KEY())
@@ -384,7 +380,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitAcceptFromMnemonicStatement(CobolParser.AcceptFromMnemonicStatementContext ctx) {
         return new Cobol.AcceptFromMnemonicStatement(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.FROM()),
@@ -395,7 +390,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitAcceptMessageCountStatement(CobolParser.AcceptMessageCountStatementContext ctx) {
         return new Cobol.AcceptMessageCountStatement(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.MESSAGE(), ctx.COUNT())
@@ -405,7 +399,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitAcceptStatement(CobolParser.AcceptStatementContext ctx) {
         return new Cobol.Accept(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.ACCEPT()),
@@ -423,7 +416,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitAccessModeClause(CobolParser.AccessModeClauseContext ctx) {
         return new Cobol.AccessModeClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.ACCESS(), ctx.MODE(), ctx.IS()),
@@ -434,7 +426,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitAddCorrespondingStatement(CobolParser.AddCorrespondingStatementContext ctx) {
         return new Cobol.AddCorresponding(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.CORRESPONDING(), ctx.CORR()),
@@ -447,7 +438,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Add visitAddStatement(CobolParser.AddStatementContext ctx) {
         return new Cobol.Add(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.ADD()),
@@ -461,7 +451,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.AddToGiving visitAddToGivingStatement(CobolParser.AddToGivingStatementContext ctx) {
         return new Cobol.AddToGiving(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 convertAll(ctx.addFrom()),
@@ -475,7 +464,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.AddTo visitAddToStatement(CobolParser.AddToStatementContext ctx) {
         return new Cobol.AddTo(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 convertAll(ctx.addFrom()),
@@ -487,7 +475,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.AlphabetAlso visitAlphabetAlso(CobolParser.AlphabetAlsoContext ctx) {
         return new Cobol.AlphabetAlso(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.ALSO()),
@@ -498,7 +485,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.AlphabetClause visitAlphabetClauseFormat1(CobolParser.AlphabetClauseFormat1Context ctx) {
         return new Cobol.AlphabetClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.ALPHABET()),
@@ -513,7 +499,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.AlphabetClause visitAlphabetClauseFormat2(CobolParser.AlphabetClauseFormat2Context ctx) {
         return new Cobol.AlphabetClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.ALPHABET()),
@@ -526,7 +511,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.AlphabetLiteral visitAlphabetLiterals(CobolParser.AlphabetLiteralsContext ctx) {
         return new Cobol.AlphabetLiteral(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Literal) visit(ctx.literal()),
@@ -538,7 +522,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.AlphabetThrough visitAlphabetThrough(CobolParser.AlphabetThroughContext ctx) {
         return new Cobol.AlphabetThrough(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.THROUGH(), ctx.THRU()),
@@ -549,7 +532,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.AlterProceedTo visitAlterProceedTo(CobolParser.AlterProceedToContext ctx) {
         return new Cobol.AlterProceedTo(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.ProcedureName) visit(ctx.procedureName(0)),
@@ -561,7 +543,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.AlterStatement visitAlterStatement(CobolParser.AlterStatementContext ctx) {
         return new Cobol.AlterStatement(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.ALTER()),
@@ -572,7 +553,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitAlteredGoTo(CobolParser.AlteredGoToContext ctx) {
         return new Cobol.AlteredGoTo(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.GO(), ctx.TO()),
@@ -583,7 +563,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitAlternateRecordKeyClause(CobolParser.AlternateRecordKeyClauseContext ctx) {
         return new Cobol.AlternateRecordKeyClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.ALTERNATE(), ctx.RECORD(), ctx.KEY(), ctx.IS()),
@@ -596,7 +575,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitAndOrCondition(CobolParser.AndOrConditionContext ctx) {
         return new Cobol.AndOrCondition(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.AND(), ctx.OR()),
@@ -608,7 +586,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitArgument(CobolParser.ArgumentContext ctx) {
         return new Cobol.Argument(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.literal(), ctx.identifier(), ctx.qualifiedDataName(), ctx.indexName(), ctx.arithmeticExpression()),
@@ -619,7 +596,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitArithmeticExpression(CobolParser.ArithmeticExpressionContext ctx) {
         return new Cobol.ArithmeticExpression(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.MultDivs) visit(ctx.multDivs()),
@@ -630,7 +606,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitAssignClause(CobolParser.AssignClauseContext ctx) {
         return new Cobol.AssignClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.ASSIGN(), ctx.TO(), ctx.DISK(), ctx.DISPLAY(), ctx.KEYBOARD(), ctx.PORT(), ctx.PRINTER(),
@@ -643,7 +618,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.StatementPhrase visitAtEndPhrase(CobolParser.AtEndPhraseContext ctx) {
         return new Cobol.StatementPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.AT(), ctx.END()),
@@ -654,7 +628,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitAuthorParagraph(CobolParser.AuthorParagraphContext ctx) {
         return new Cobol.IdentificationDivisionParagraph(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.AUTHOR()),
@@ -669,7 +642,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     public Object visitBasis(CobolParser.BasisContext ctx) {
         if (ctx.arithmeticExpression() != null) {
             return new Cobol.Parenthesized(
-                    randomId(),
                     EMPTY,
                     Markers.EMPTY,
                     (Cobol.Word) visit(ctx.LPARENCHAR()),
@@ -684,21 +656,19 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitBlockContainsClause(CobolParser.BlockContainsClauseContext ctx) {
         return new Cobol.BlockContainsClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.BLOCK(), ctx.CONTAINS()),
                 visitNullable(ctx.integerLiteral()),
                 visitNullable(ctx.blockContainsTo()),
                 ctx.RECORDS() != null ? (Cobol.Word) visit(ctx.RECORDS()) :
-                        ctx.CHARACTERS() != null ? (Cobol.Word)visit(ctx.CHARACTERS()) : null
+                        ctx.CHARACTERS() != null ? (Cobol.Word) visit(ctx.CHARACTERS()) : null
         );
     }
 
     @Override
     public Object visitBlockContainsTo(CobolParser.BlockContainsToContext ctx) {
         return new Cobol.BlockContainsTo(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.TO()),
@@ -709,7 +679,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitCallByContent(CobolParser.CallByContentContext ctx) {
         return new Cobol.CallBy(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.ADDRESS(), ctx.LENGTH(), ctx.OF(), ctx.OMITTED()),
@@ -721,7 +690,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitCallByContentPhrase(CobolParser.CallByContentPhraseContext ctx) {
         return new Cobol.CallPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.BY(), ctx.CONTENT()),
@@ -732,7 +700,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitCallByReference(CobolParser.CallByReferenceContext ctx) {
         return new Cobol.CallBy(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.ADDRESS(), ctx.OF(), ctx.INTEGER(), ctx.STRING(), ctx.OMITTED()),
@@ -745,7 +712,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitCallByReferencePhrase(CobolParser.CallByReferencePhraseContext ctx) {
         return new Cobol.CallPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.BY(), ctx.REFERENCE()),
@@ -756,7 +722,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitCallByValue(CobolParser.CallByValueContext ctx) {
         return new Cobol.CallBy(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.ADDRESS(), ctx.LENGTH(), ctx.OF()),
@@ -767,7 +732,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitCallByValuePhrase(CobolParser.CallByValuePhraseContext ctx) {
         return new Cobol.CallPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.BY(), ctx.VALUE()),
@@ -778,7 +742,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitCallGivingPhrase(CobolParser.CallGivingPhraseContext ctx) {
         return new Cobol.CallGivingPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.GIVING(), ctx.RETURNING()),
@@ -789,7 +752,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitCallStatement(CobolParser.CallStatementContext ctx) {
         return new Cobol.Call(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visitNullable(ctx.CALL()),
@@ -806,7 +768,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitCallUsingPhrase(CobolParser.CallUsingPhraseContext ctx) {
         return new Cobol.CallPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.USING()),
@@ -817,7 +778,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitCancelCall(CobolParser.CancelCallContext ctx) {
         return new Cobol.CancelCall(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visitNullable(ctx.libraryName()),
@@ -830,7 +790,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitCancelStatement(CobolParser.CancelStatementContext ctx) {
         return new Cobol.Cancel(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.CANCEL()),
@@ -841,7 +800,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.ChannelClause visitChannelClause(CobolParser.ChannelClauseContext ctx) {
         return new Cobol.ChannelClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.CHANNEL()),
@@ -854,7 +812,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.ValuedObjectComputerClause visitCharacterSetClause(CobolParser.CharacterSetClauseContext ctx) {
         return new Cobol.ValuedObjectComputerClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 Cobol.ValuedObjectComputerClause.Type.CharacterSet,
@@ -867,7 +824,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitClassClause(CobolParser.ClassClauseContext ctx) {
         return new Cobol.ClassClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.CLASS()),
@@ -880,7 +836,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitClassClauseThrough(CobolParser.ClassClauseThroughContext ctx) {
         return new Cobol.ClassClauseThrough(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Name) visit(ctx.classClauseFrom()),
@@ -893,7 +848,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitClassCondition(CobolParser.ClassConditionContext ctx) {
         return new Cobol.ClassCondition(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Name) visit(ctx.identifier()),
@@ -905,7 +859,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitCloseFile(CobolParser.CloseFileContext ctx) {
         return new Cobol.CloseFile(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Name) visit(ctx.fileName()),
@@ -917,7 +870,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitClosePortFileIOStatement(CobolParser.ClosePortFileIOStatementContext ctx) {
         return new Cobol.ClosePortFileIOStatement(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.WITH(), ctx.NO(), ctx.WAIT(), ctx.USING()),
@@ -928,7 +880,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitClosePortFileIOUsingAssociatedData(CobolParser.ClosePortFileIOUsingAssociatedDataContext ctx) {
         return new Cobol.ClosePortFileIOUsingAssociatedData(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.ASSOCIATED_DATA()),
@@ -939,7 +890,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitClosePortFileIOUsingAssociatedDataLength(CobolParser.ClosePortFileIOUsingAssociatedDataLengthContext ctx) {
         return new Cobol.ClosePortFileIOUsingAssociatedDataLength(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.ASSOCIATED_DATA_LENGTH(), ctx.OF()),
@@ -950,7 +900,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitClosePortFileIOUsingCloseDisposition(CobolParser.ClosePortFileIOUsingCloseDispositionContext ctx) {
         return new Cobol.ClosePortFileIOUsingCloseDisposition(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.CLOSE_DISPOSITION(), ctx.OF(), ctx.ABORT(), ctx.ORDERLY())
@@ -960,7 +909,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitCloseReelUnitStatement(CobolParser.CloseReelUnitStatementContext ctx) {
         return new Cobol.CloseReelUnitStatement(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.REEL(), ctx.UNIT(), ctx.FOR(), ctx.REMOVAL(), ctx.WITH(), ctx.NO(), ctx.REWIND(), ctx.LOCK())
@@ -970,7 +918,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitCloseRelativeStatement(CobolParser.CloseRelativeStatementContext ctx) {
         return new Cobol.CloseRelativeStatement(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.WITH(), ctx.NO(), ctx.REWIND(), ctx.LOCK())
@@ -980,7 +927,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitCloseStatement(CobolParser.CloseStatementContext ctx) {
         return new Cobol.Close(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.CLOSE()),
@@ -991,7 +937,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitCodeSetClause(CobolParser.CodeSetClauseContext ctx) {
         return new Cobol.CodeSetClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.CODE_SET(), ctx.IS()),
@@ -1002,7 +947,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.CollatingSequenceClause visitCollatingSequenceClause(CobolParser.CollatingSequenceClauseContext ctx) {
         return new Cobol.CollatingSequenceClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.PROGRAM(), ctx.COLLATING(), ctx.SEQUENCE()),
@@ -1016,7 +960,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.CollatingSequenceAlphabet visitCollatingSequenceClauseAlphanumeric(CobolParser.CollatingSequenceClauseAlphanumericContext ctx) {
         return new Cobol.CollatingSequenceAlphabet(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.FOR(), ctx.ALPHANUMERIC(), ctx.IS()),
@@ -1027,7 +970,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitCollatingSequenceClauseNational(CobolParser.CollatingSequenceClauseNationalContext ctx) {
         return new Cobol.CollatingSequenceAlphabet(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.FOR(), ctx.NATIONAL(), ctx.IS()),
@@ -1038,7 +980,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitCombinableCondition(CobolParser.CombinableConditionContext ctx) {
         return new Cobol.CombinableCondition(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visitNullable(ctx.NOT()),
@@ -1049,7 +990,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitCommentEntry(CobolParser.CommentEntryContext ctx) {
         return new Cobol.CommentEntry(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 convertAll(ctx.COMMENTENTRYLINE())
@@ -1059,7 +999,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitCommitmentControlClause(CobolParser.CommitmentControlClauseContext ctx) {
         return new Cobol.CommitmentControlClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.COMMITMENT(), ctx.CONTROL(), ctx.FOR()),
@@ -1070,7 +1009,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitCommunicationDescriptionEntryFormat1(CobolParser.CommunicationDescriptionEntryFormat1Context ctx) {
         return new Cobol.CommunicationDescriptionEntryFormat1(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.CD()),
@@ -1093,7 +1031,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitCommunicationDescriptionEntryFormat2(CobolParser.CommunicationDescriptionEntryFormat2Context ctx) {
         return new Cobol.CommunicationDescriptionEntryFormat2(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.CD()),
@@ -1112,7 +1049,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitCommunicationDescriptionEntryFormat3(CobolParser.CommunicationDescriptionEntryFormat3Context ctx) {
         return new Cobol.CommunicationDescriptionEntryFormat3(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.CD()),
@@ -1132,7 +1068,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitCommunicationSection(CobolParser.CommunicationSectionContext ctx) {
         return new Cobol.CommunicationSection(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.COMMUNICATION(), ctx.SECTION()),
@@ -1144,7 +1079,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitComputeStatement(CobolParser.ComputeStatementContext ctx) {
         return new Cobol.Compute(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.COMPUTE()),
@@ -1160,7 +1094,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitCondition(CobolParser.ConditionContext ctx) {
         return new Cobol.Condition(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.CombinableCondition) visit(ctx.combinableCondition()),
@@ -1171,7 +1104,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.ConditionNameReference visitConditionNameReference(CobolParser.ConditionNameReferenceContext ctx) {
         return new Cobol.ConditionNameReference(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Name) visit(ctx.conditionName()),
@@ -1185,7 +1117,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol visitConditionNameSubscriptReference(CobolParser.ConditionNameSubscriptReferenceContext ctx) {
         return new Cobol.Parenthesized(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.LPARENCHAR()),
@@ -1197,7 +1128,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.ConfigurationSection visitConfigurationSection(CobolParser.ConfigurationSectionContext ctx) {
         return new Cobol.ConfigurationSection(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.CONFIGURATION(), ctx.SECTION()),
@@ -1209,7 +1139,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitContinueStatement(CobolParser.ContinueStatementContext ctx) {
         return new Cobol.Continue(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.CONTINUE())
@@ -1219,7 +1148,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.CurrencyClause visitCurrencySignClause(CobolParser.CurrencySignClauseContext ctx) {
         return new Cobol.CurrencyClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.CURRENCY(), ctx.SIGN(), ctx.IS()),
@@ -1232,7 +1160,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDataAlignedClause(CobolParser.DataAlignedClauseContext ctx) {
         return new Cobol.DataAlignedClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.ALIGNED())
@@ -1242,7 +1169,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDataBaseSection(CobolParser.DataBaseSectionContext ctx) {
         return new Cobol.DataBaseSection(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.DATA_BASE(), ctx.SECTION()),
@@ -1254,7 +1180,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDataBaseSectionEntry(CobolParser.DataBaseSectionEntryContext ctx) {
         return new Cobol.DataBaseSectionEntry(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.integerLiteral()),
@@ -1267,7 +1192,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDataBlankWhenZeroClause(CobolParser.DataBlankWhenZeroClauseContext ctx) {
         return new Cobol.DataBlankWhenZeroClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.BLANK(), ctx.WHEN(), ctx.ZERO(), ctx.ZEROS(), ctx.ZEROES())
@@ -1277,7 +1201,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDataCommonOwnLocalClause(CobolParser.DataCommonOwnLocalClauseContext ctx) {
         return new Cobol.DataCommonOwnLocalClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.COMMON(), ctx.OWN(), ctx.LOCAL())
@@ -1287,7 +1210,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDataDescriptionEntryExecSql(CobolParser.DataDescriptionEntryExecSqlContext ctx) {
         return new Cobol.DataDescriptionEntry(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 convertAll(ctx.EXECSQLLINE()),
@@ -1300,7 +1222,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.DataDescriptionEntry visitDataDescriptionEntryFormat1(CobolParser.DataDescriptionEntryFormat1Context ctx) {
         return new Cobol.DataDescriptionEntry(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.LEVEL_NUMBER_77(), ctx.INTEGERLITERAL()),
@@ -1314,7 +1235,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDataDescriptionEntryFormat2(CobolParser.DataDescriptionEntryFormat2Context ctx) {
         return new Cobol.DataDescriptionEntry(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.LEVEL_NUMBER_66()),
@@ -1327,7 +1247,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDataDescriptionEntryFormat3(CobolParser.DataDescriptionEntryFormat3Context ctx) {
         return new Cobol.DataDescriptionEntry(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.LEVEL_NUMBER_88()),
@@ -1340,7 +1259,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.DataDivision visitDataDivision(CobolParser.DataDivisionContext ctx) {
         return new Cobol.DataDivision(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.DATA(), ctx.DIVISION()),
@@ -1352,7 +1270,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDataExternalClause(CobolParser.DataExternalClauseContext ctx) {
         return new Cobol.DataExternalClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.IS(), ctx.EXTERNAL(), ctx.BY()),
@@ -1363,7 +1280,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDataGlobalClause(CobolParser.DataGlobalClauseContext ctx) {
         return new Cobol.DataGlobalClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.IS(), ctx.GLOBAL())
@@ -1373,7 +1289,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDataIntegerStringClause(CobolParser.DataIntegerStringClauseContext ctx) {
         return new Cobol.DataIntegerStringClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.INTEGER(), ctx.STRING())
@@ -1383,7 +1298,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDataJustifiedClause(CobolParser.DataJustifiedClauseContext ctx) {
         return new Cobol.DataJustifiedClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.JUSTIFIED(), ctx.JUST(), ctx.RIGHT())
@@ -1393,7 +1307,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDataOccursClause(CobolParser.DataOccursClauseContext ctx) {
         return new Cobol.DataOccursClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.OCCURS()),
@@ -1408,7 +1321,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDataOccursDepending(CobolParser.DataOccursDependingContext ctx) {
         return new Cobol.DataOccursDepending(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.DEPENDING(), ctx.ON()),
@@ -1419,7 +1331,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDataOccursIndexed(CobolParser.DataOccursIndexedContext ctx) {
         return new Cobol.DataOccursIndexed(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.INDEXED(), ctx.BY(), ctx.LOCAL()),
@@ -1430,7 +1341,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDataOccursSort(CobolParser.DataOccursSortContext ctx) {
         return new Cobol.DataOccursSort(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.ASCENDING(), ctx.DESCENDING(), ctx.KEY(), ctx.IS()),
@@ -1441,7 +1351,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDataOccursTo(CobolParser.DataOccursToContext ctx) {
         return new Cobol.DataOccursTo(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.TO()),
@@ -1452,7 +1361,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.DataPictureClause visitDataPictureClause(CobolParser.DataPictureClauseContext ctx) {
         return new Cobol.DataPictureClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.PICTURE(), ctx.PIC(), ctx.IS()),
@@ -1463,7 +1371,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDataReceivedByClause(CobolParser.DataReceivedByClauseContext ctx) {
         return new Cobol.DataReceivedByClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.RECEIVED(), ctx.BY(), ctx.CONTENT(), ctx.REFERENCE(), ctx.REF())
@@ -1473,7 +1380,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDataRecordAreaClause(CobolParser.DataRecordAreaClauseContext ctx) {
         return new Cobol.DataRecordAreaClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.RECORD(), ctx.AREA())
@@ -1483,7 +1389,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDataRecordsClause(CobolParser.DataRecordsClauseContext ctx) {
         return new Cobol.DataRecordsClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.DATA(), ctx.RECORD(), ctx.IS(), ctx.RECORDS(), ctx.ARE()),
@@ -1494,7 +1399,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDataRedefinesClause(CobolParser.DataRedefinesClauseContext ctx) {
         return new Cobol.DataRedefinesClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.REDEFINES()),
@@ -1505,7 +1409,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDataRenamesClause(CobolParser.DataRenamesClauseContext ctx) {
         return new Cobol.DataRenamesClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.RENAMES()),
@@ -1519,7 +1422,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDataSignClause(CobolParser.DataSignClauseContext ctx) {
         return new Cobol.DataSignClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.SIGN(), ctx.IS(), ctx.LEADING(), ctx.TRAILING(), ctx.SEPARATE(), ctx.CHARACTER())
@@ -1529,7 +1431,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDataSynchronizedClause(CobolParser.DataSynchronizedClauseContext ctx) {
         return new Cobol.DataSynchronizedClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.SYNCHRONIZED(), ctx.SYNC(), ctx.LEFT(), ctx.RIGHT())
@@ -1539,7 +1440,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDataThreadLocalClause(CobolParser.DataThreadLocalClauseContext ctx) {
         return new Cobol.DataThreadLocalClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.IS(), ctx.THREAD_LOCAL())
@@ -1549,13 +1449,11 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDataTypeClause(CobolParser.DataTypeClauseContext ctx) {
         return new Cobol.DataTypeClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.TYPE(), ctx.IS(), ctx.SHORT_DATE(), ctx.LONG_DATE(), ctx.NUMERIC_DATE(),
                         ctx.NUMERIC_TIME(), ctx.LONG_TIME(), ctx.CLOB(), ctx.BLOB(), ctx.DBCLOB()),
                 ctx.integerLiteral() == null ? null : new Cobol.Parenthesized(
-                        randomId(),
                         EMPTY,
                         Markers.EMPTY,
                         (Cobol.Word) visit(ctx.LPARENCHAR()),
@@ -1568,7 +1466,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDataTypeDefClause(CobolParser.DataTypeDefClauseContext ctx) {
         return new Cobol.DataTypeDefClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.IS(), ctx.TYPEDEF())
@@ -1578,7 +1475,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDataUsageClause(CobolParser.DataUsageClauseContext ctx) {
         return new Cobol.DataUsageClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.USAGE(), ctx.IS(), ctx.BINARY(), ctx.TRUNCATED(), ctx.EXTENDED(), ctx.BIT(),
@@ -1592,7 +1488,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDataUsingClause(CobolParser.DataUsingClauseContext ctx) {
         return new Cobol.DataUsingClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.USING(), ctx.LANGUAGE(), ctx.CONVENTION(), ctx.OF()),
@@ -1603,7 +1498,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDataValueClause(CobolParser.DataValueClauseContext ctx) {
         return new Cobol.DataValueClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.VALUE(), ctx.VALUES(), ctx.IS(), ctx.ARE()),
@@ -1614,7 +1508,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDataValueInterval(CobolParser.DataValueIntervalContext ctx) {
         return new Cobol.DataValueInterval(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Name) visit(ctx.dataValueIntervalFrom()),
@@ -1625,7 +1518,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDataValueIntervalTo(CobolParser.DataValueIntervalToContext ctx) {
         return new Cobol.DataValueIntervalTo(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.THROUGH(), ctx.THRU()),
@@ -1636,7 +1528,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDataWithLowerBoundsClause(CobolParser.DataWithLowerBoundsClauseContext ctx) {
         return new Cobol.DataWithLowerBoundsClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.WITH(), ctx.LOWER(), ctx.BOUNDS())
@@ -1646,7 +1537,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDateCompiledParagraph(CobolParser.DateCompiledParagraphContext ctx) {
         return new Cobol.IdentificationDivisionParagraph(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.DATE_COMPILED()),
@@ -1660,7 +1550,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDateWrittenParagraph(CobolParser.DateWrittenParagraphContext ctx) {
         return new Cobol.IdentificationDivisionParagraph(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.DATE_WRITTEN()),
@@ -1674,7 +1563,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.DecimalPointClause visitDecimalPointClause(CobolParser.DecimalPointClauseContext ctx) {
         return new Cobol.DecimalPointClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.DECIMAL_POINT(), ctx.IS(), ctx.COMMA())
@@ -1684,7 +1572,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.DefaultComputationalSignClause visitDefaultComputationalSignClause(CobolParser.DefaultComputationalSignClauseContext ctx) {
         return new Cobol.DefaultComputationalSignClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.DEFAULT(), ctx.COMPUTATIONAL(), ctx.COMP(), ctx.SIGN(), ctx.IS(),
@@ -1695,7 +1582,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.DefaultDisplaySignClause visitDefaultDisplaySignClause(CobolParser.DefaultDisplaySignClauseContext ctx) {
         return new Cobol.DefaultDisplaySignClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.DEFAULT_DISPLAY(), ctx.SIGN(), ctx.IS(), ctx.LEADING(), ctx.TRAILING(),
@@ -1706,7 +1592,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDeleteStatement(CobolParser.DeleteStatementContext ctx) {
         return new Cobol.Delete(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.DELETE()),
@@ -1721,7 +1606,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDestinationCountClause(CobolParser.DestinationCountClauseContext ctx) {
         return new Cobol.DestinationCountClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.DESTINATION(), ctx.COUNT(), ctx.IS()),
@@ -1732,7 +1616,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDestinationTableClause(CobolParser.DestinationTableClauseContext ctx) {
         return new Cobol.DestinationTableClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.DESTINATION(), ctx.TABLE(), ctx.OCCURS()),
@@ -1745,7 +1628,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDisableStatement(CobolParser.DisableStatementContext ctx) {
         return new Cobol.Disable(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.DISABLE()),
@@ -1760,7 +1642,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.ValuedObjectComputerClause visitDiskSizeClause(CobolParser.DiskSizeClauseContext ctx) {
         return new Cobol.ValuedObjectComputerClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 Cobol.ValuedObjectComputerClause.Type.Disk,
@@ -1775,7 +1656,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDisplayAt(CobolParser.DisplayAtContext ctx) {
         return new Cobol.DisplayAt(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.AT()),
@@ -1786,7 +1666,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Display visitDisplayStatement(CobolParser.DisplayStatementContext ctx) {
         return new Cobol.Display(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.DISPLAY()),
@@ -1803,7 +1682,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDisplayUpon(CobolParser.DisplayUponContext ctx) {
         return new Cobol.DisplayUpon(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.UPON()),
@@ -1819,7 +1697,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDivideByGivingStatement(CobolParser.DivideByGivingStatementContext ctx) {
         return new Cobol.DivideGiving(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.BY()),
@@ -1831,7 +1708,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDivideGivingPhrase(CobolParser.DivideGivingPhraseContext ctx) {
         return new Cobol.DivideGivingPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.GIVING()),
@@ -1842,7 +1718,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDivideIntoGivingStatement(CobolParser.DivideIntoGivingStatementContext ctx) {
         return new Cobol.DivideGiving(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.INTO()),
@@ -1854,7 +1729,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDivideIntoStatement(CobolParser.DivideIntoStatementContext ctx) {
         return new Cobol.DivideInto(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.INTO()),
@@ -1865,7 +1739,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDivideRemainder(CobolParser.DivideRemainderContext ctx) {
         return new Cobol.DivideRemainder(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.REMAINDER()),
@@ -1876,7 +1749,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitDivideStatement(CobolParser.DivideStatementContext ctx) {
         return new Cobol.Divide(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.DIVIDE()),
@@ -1892,7 +1764,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitEnableStatement(CobolParser.EnableStatementContext ctx) {
         return new Cobol.Enable(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.ENABLE()),
@@ -1907,7 +1778,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitEndKeyClause(CobolParser.EndKeyClauseContext ctx) {
         return new Cobol.EndKeyClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.END(), ctx.KEY(), ctx.IS()),
@@ -1918,7 +1788,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.EndProgram visitEndProgramStatement(CobolParser.EndProgramStatementContext ctx) {
         return new Cobol.EndProgram(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.END(), ctx.PROGRAM()),
@@ -1930,7 +1799,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitEntryStatement(CobolParser.EntryStatementContext ctx) {
         return new Cobol.Entry(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.ENTRY()),
@@ -1943,7 +1811,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.EnvironmentDivision visitEnvironmentDivision(CobolParser.EnvironmentDivisionContext ctx) {
         return new Cobol.EnvironmentDivision(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.ENVIRONMENT(), ctx.DIVISION()),
@@ -1955,7 +1822,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitEnvironmentSwitchNameClause(CobolParser.EnvironmentSwitchNameClauseContext ctx) {
         return new Cobol.EnvironmentSwitchNameClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visitNullable(ctx.environmentName()),
@@ -1968,7 +1834,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitEnvironmentSwitchNameSpecialNamesStatusPhrase(CobolParser.EnvironmentSwitchNameSpecialNamesStatusPhraseContext ctx) {
         return new Cobol.EnvironmentSwitchNameSpecialNamesStatusPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 convertAllList(singletonList(ctx.ON()), singletonList(ctx.OFF()), ctx.STATUS(), ctx.IS(), ctx.condition())
@@ -1978,7 +1843,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitErrorKeyClause(CobolParser.ErrorKeyClauseContext ctx) {
         return new Cobol.ErrorKeyClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.ERROR(), ctx.KEY(), ctx.IS()),
@@ -1989,7 +1853,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitEvaluateAlsoCondition(CobolParser.EvaluateAlsoConditionContext ctx) {
         return new Cobol.EvaluateAlsoCondition(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.ALSO()),
@@ -2000,7 +1863,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitEvaluateAlsoSelect(CobolParser.EvaluateAlsoSelectContext ctx) {
         return new Cobol.EvaluateAlso(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.ALSO()),
@@ -2011,7 +1873,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitEvaluateCondition(CobolParser.EvaluateConditionContext ctx) {
         return new Cobol.EvaluateCondition(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.ANY(), ctx.NOT()),
@@ -2023,7 +1884,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitEvaluateStatement(CobolParser.EvaluateStatementContext ctx) {
         return new Cobol.Evaluate(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.EVALUATE()),
@@ -2038,7 +1898,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitEvaluateThrough(CobolParser.EvaluateThroughContext ctx) {
         return new Cobol.EvaluateThrough(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.THROUGH(), ctx.THRU()),
@@ -2049,7 +1908,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitEvaluateWhen(CobolParser.EvaluateWhenContext ctx) {
         return new Cobol.EvaluateWhen(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.WHEN()),
@@ -2061,7 +1919,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitEvaluateWhenOther(CobolParser.EvaluateWhenOtherContext ctx) {
         return new Cobol.StatementPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.WHEN(), ctx.OTHER()),
@@ -2072,7 +1929,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitEvaluateWhenPhrase(CobolParser.EvaluateWhenPhraseContext ctx) {
         return new Cobol.EvaluateWhenPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 convertAll(ctx.evaluateWhen()),
@@ -2083,7 +1939,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitExecCicsStatement(CobolParser.ExecCicsStatementContext ctx) {
         return new Cobol.ExecCicsStatement(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 convertAll(ctx.EXECCICSLINE())
@@ -2093,7 +1948,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitExecSqlImsStatement(CobolParser.ExecSqlImsStatementContext ctx) {
         return new Cobol.ExecSqlImsStatement(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 convertAll(ctx.EXECSQLIMSLINE())
@@ -2103,7 +1957,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitExecSqlStatement(CobolParser.ExecSqlStatementContext ctx) {
         return new Cobol.ExecSqlStatement(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 convertAll(ctx.EXECSQLLINE())
@@ -2113,7 +1966,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Exhibit visitExhibitStatement(CobolParser.ExhibitStatementContext ctx) {
         return new Cobol.Exhibit(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.EXHIBIT(), ctx.NAMED(), ctx.CHANGED()),
@@ -2124,7 +1976,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitExitStatement(CobolParser.ExitStatementContext ctx) {
         return new Cobol.Exit(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.EXIT(), ctx.PROGRAM())
@@ -2134,7 +1985,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitExternalClause(CobolParser.ExternalClauseContext ctx) {
         return new Cobol.ExternalClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.IS(), ctx.EXTERNAL())
@@ -2144,7 +1994,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitFigurativeConstant(CobolParser.FigurativeConstantContext ctx) {
         return new Cobol.FigurativeConstant(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.ALL(), ctx.HIGH_VALUE(), ctx.HIGH_VALUES(), ctx.LOW_VALUE(), ctx.LOW_VALUES(),
@@ -2157,7 +2006,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitFileControlEntry(CobolParser.FileControlEntryContext ctx) {
         return new Cobol.FileControlEntry(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol) visit(ctx.selectClause()),
@@ -2168,7 +2016,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitFileControlParagraph(CobolParser.FileControlParagraphContext ctx) {
         return new Cobol.FileControlParagraph(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visitNullable(ctx.FILE_CONTROL()),
@@ -2179,7 +2026,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.FileDescriptionEntry visitFileDescriptionEntry(CobolParser.FileDescriptionEntryContext ctx) {
         return new Cobol.FileDescriptionEntry(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.FD(), ctx.SD()),
@@ -2192,7 +2038,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.FileSection visitFileSection(CobolParser.FileSectionContext ctx) {
         return new Cobol.FileSection(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.FILE(), ctx.SECTION()),
@@ -2204,7 +2049,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitFileStatusClause(CobolParser.FileStatusClauseContext ctx) {
         return new Cobol.FileStatusClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.FILE(), ctx.STATUS(), ctx.IS()),
@@ -2215,7 +2059,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.FunctionCall visitFunctionCall(CobolParser.FunctionCallContext ctx) {
         return new Cobol.FunctionCall(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.FUNCTION()),
@@ -2228,7 +2071,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitFunctionCallArguments(CobolParser.FunctionCallArgumentsContext ctx) {
         return new Cobol.Parenthesized(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.LPARENCHAR()),
@@ -2240,7 +2082,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitGenerateStatement(CobolParser.GenerateStatementContext ctx) {
         return new Cobol.Generate(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.GENERATE()),
@@ -2251,7 +2092,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitGlobalClause(CobolParser.GlobalClauseContext ctx) {
         return new Cobol.GlobalClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.IS(), ctx.GLOBAL())
@@ -2261,7 +2101,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitGoToDependingOnStatement(CobolParser.GoToDependingOnStatementContext ctx) {
         return new Cobol.GoToDependingOnStatement(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 convertAll(ctx.procedureName()),
@@ -2273,7 +2112,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitGoToStatement(CobolParser.GoToStatementContext ctx) {
         return new Cobol.GoTo(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.GO(), ctx.TO()),
@@ -2284,7 +2122,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitGobackStatement(CobolParser.GobackStatementContext ctx) {
         return new Cobol.GoBack(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.GOBACK())
@@ -2294,7 +2131,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol visitIdentificationDivision(CobolParser.IdentificationDivisionContext ctx) {
         return new Cobol.IdentificationDivision(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.IDENTIFICATION(), ctx.ID(), ctx.DIVISION(), ctx.DOT_FS()),
@@ -2306,7 +2142,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitIfElse(CobolParser.IfElseContext ctx) {
         return new Cobol.IfElse(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.ELSE()),
@@ -2318,7 +2153,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitIfStatement(CobolParser.IfStatementContext ctx) {
         return new Cobol.If(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.IF()),
@@ -2328,10 +2162,10 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 visitNullable(ctx.END_IF())
         );
     }
+
     @Override
     public Object visitIfThen(CobolParser.IfThenContext ctx) {
         return new Cobol.IfThen(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visitNullable(ctx.THEN()),
@@ -2343,7 +2177,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitInData(CobolParser.InDataContext ctx) {
         return new Cobol.InData(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.IN(), ctx.OF()),
@@ -2354,7 +2187,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitInFile(CobolParser.InFileContext ctx) {
         return new Cobol.InFile(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.IN(), ctx.OF()),
@@ -2365,7 +2197,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitInLibrary(CobolParser.InLibraryContext ctx) {
         return new Cobol.InLibrary(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.IN(), ctx.OF()),
@@ -2376,7 +2207,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitInMnemonic(CobolParser.InMnemonicContext ctx) {
         return new Cobol.InMnemonic(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.IN(), ctx.OF()),
@@ -2387,7 +2217,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.InSection visitInSection(CobolParser.InSectionContext ctx) {
         return new Cobol.InSection(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.IN(), ctx.OF()),
@@ -2398,7 +2227,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitInTable(CobolParser.InTableContext ctx) {
         return new Cobol.InLibrary(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.IN(), ctx.OF()),
@@ -2409,7 +2237,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitInstallationParagraph(CobolParser.InstallationParagraphContext ctx) {
         return new Cobol.IdentificationDivisionParagraph(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.INSTALLATION()),
@@ -2423,7 +2250,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitInitializeReplacingBy(CobolParser.InitializeReplacingByContext ctx) {
         return new Cobol.InitializeReplacingBy(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.ALPHABETIC(), ctx.ALPHANUMERIC(), ctx.ALPHANUMERIC_EDITED(),
@@ -2436,7 +2262,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitInitializeReplacingPhrase(CobolParser.InitializeReplacingPhraseContext ctx) {
         return new Cobol.InitializeReplacingPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.REPLACING()),
@@ -2447,7 +2272,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitInitializeStatement(CobolParser.InitializeStatementContext ctx) {
         return new Cobol.Initialize(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.INITIALIZE()),
@@ -2459,7 +2283,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitInitiateStatement(CobolParser.InitiateStatementContext ctx) {
         return new Cobol.Initiate(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.INITIATE()),
@@ -2470,7 +2293,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitInputOutputSection(CobolParser.InputOutputSectionContext ctx) {
         return new Cobol.InputOutputSection(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.INPUT_OUTPUT(), ctx.SECTION(), ctx.DOT_FS()),
@@ -2481,7 +2303,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitInspectAllLeading(CobolParser.InspectAllLeadingContext ctx) {
         return new Cobol.InspectAllLeading(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.identifier(), ctx.literal()),
@@ -2492,7 +2313,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitInspectAllLeadings(CobolParser.InspectAllLeadingsContext ctx) {
         return new Cobol.InspectAllLeadings(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.ALL(), ctx.LEADING()),
@@ -2503,7 +2323,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitInspectBeforeAfter(CobolParser.InspectBeforeAfterContext ctx) {
         return new Cobol.InspectBeforeAfter(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.BEFORE(), ctx.AFTER(), ctx.INITIAL()),
@@ -2514,7 +2333,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitInspectBy(CobolParser.InspectByContext ctx) {
         return new Cobol.InspectBy(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.BY()),
@@ -2525,7 +2343,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitInspectCharacters(CobolParser.InspectCharactersContext ctx) {
         return new Cobol.InspectCharacters(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.CHARACTER(), ctx.CHARACTERS()),
@@ -2536,7 +2353,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitInspectConvertingPhrase(CobolParser.InspectConvertingPhraseContext ctx) {
         return new Cobol.InspectConvertingPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.CONVERTING()),
@@ -2549,7 +2365,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitInspectFor(CobolParser.InspectForContext ctx) {
         return new Cobol.InspectFor(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Identifier) visit(ctx.identifier()),
@@ -2561,7 +2376,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitInspectReplacingAllLeading(CobolParser.InspectReplacingAllLeadingContext ctx) {
         return new Cobol.InspectReplacingAllLeading(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.identifier(), ctx.literal()),
@@ -2573,7 +2387,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitInspectReplacingAllLeadings(CobolParser.InspectReplacingAllLeadingsContext ctx) {
         return new Cobol.InspectReplacingAllLeadings(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.ALL(), ctx.LEADING(), ctx.FIRST()),
@@ -2584,7 +2397,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitInspectReplacingCharacters(CobolParser.InspectReplacingCharactersContext ctx) {
         return new Cobol.InspectReplacingCharacters(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.CHARACTER(), ctx.CHARACTERS()),
@@ -2596,7 +2408,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitInspectReplacingPhrase(CobolParser.InspectReplacingPhraseContext ctx) {
         return new Cobol.InspectReplacingPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.REPLACING()),
@@ -2607,7 +2418,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitInspectStatement(CobolParser.InspectStatementContext ctx) {
         return new Cobol.Inspect(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.INSPECT()),
@@ -2620,7 +2430,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitInspectTallyingPhrase(CobolParser.InspectTallyingPhraseContext ctx) {
         return new Cobol.InspectTallyingPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.TALLYING()),
@@ -2631,7 +2440,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitInspectTallyingReplacingPhrase(CobolParser.InspectTallyingReplacingPhraseContext ctx) {
         return new Cobol.InspectTallyingReplacingPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.TALLYING()),
@@ -2643,7 +2451,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitInspectTo(CobolParser.InspectToContext ctx) {
         return new Cobol.InspectTo(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.TO()),
@@ -2654,7 +2461,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.StatementPhrase visitInvalidKeyPhrase(CobolParser.InvalidKeyPhraseContext ctx) {
         return new Cobol.StatementPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.INVALID(), ctx.KEY()),
@@ -2665,7 +2471,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitIoControlParagraph(CobolParser.IoControlParagraphContext ctx) {
         return new Cobol.IoControlParagraph(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.I_O_CONTROL()),
@@ -2680,7 +2485,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitLabelRecordsClause(CobolParser.LabelRecordsClauseContext ctx) {
         return new Cobol.LabelRecordsClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.LABEL(), ctx.RECORD(), ctx.IS(), ctx.RECORDS(), ctx.ARE(), ctx.OMITTED(), ctx.STANDARD()),
@@ -2691,7 +2495,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitLibraryAttributeClauseFormat1(CobolParser.LibraryAttributeClauseFormat1Context ctx) {
         return new Cobol.LibraryAttributeClauseFormat1(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.ATTRIBUTE(), ctx.SHARING(), ctx.IS(), ctx.DONTCARE(), ctx.PRIVATE(), ctx.SHAREDBYRUNUNIT(), ctx.SHAREDBYALL())
@@ -2701,7 +2504,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitLibraryAttributeClauseFormat2(CobolParser.LibraryAttributeClauseFormat2Context ctx) {
         return new Cobol.LibraryAttributeClauseFormat2(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.ATTRIBUTE()),
@@ -2715,7 +2517,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitLibraryAttributeFunction(CobolParser.LibraryAttributeFunctionContext ctx) {
         return new Cobol.LibraryAttributeFunction(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.FUNCTIONNAME(), ctx.IS()),
@@ -2726,7 +2527,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitLibraryAttributeParameter(CobolParser.LibraryAttributeParameterContext ctx) {
         return new Cobol.LibraryAttributeParameter(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.LIBPARAMETER(), ctx.IS()),
@@ -2737,7 +2537,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitLibraryAttributeTitle(CobolParser.LibraryAttributeTitleContext ctx) {
         return new Cobol.LibraryAttributeTitle(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.TITLE(), ctx.IS()),
@@ -2748,7 +2547,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitLibraryDescriptionEntryFormat1(CobolParser.LibraryDescriptionEntryFormat1Context ctx) {
         return new Cobol.LibraryDescriptionEntryFormat1(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.LD()),
@@ -2762,7 +2560,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitLibraryDescriptionEntryFormat2(CobolParser.LibraryDescriptionEntryFormat2Context ctx) {
         return new Cobol.LibraryDescriptionEntryFormat2(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.LB()),
@@ -2777,7 +2574,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitLibraryEntryProcedureClauseFormat1(CobolParser.LibraryEntryProcedureClauseFormat1Context ctx) {
         return new Cobol.LibraryEntryProcedureClauseFormat1(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.ENTRY_PROCEDURE()),
@@ -2789,7 +2585,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitLibraryEntryProcedureClauseFormat2(CobolParser.LibraryEntryProcedureClauseFormat2Context ctx) {
         return new Cobol.LibraryEntryProcedureClauseFormat2(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.ENTRY_PROCEDURE()),
@@ -2804,7 +2599,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitLibraryEntryProcedureForClause(CobolParser.LibraryEntryProcedureForClauseContext ctx) {
         return new Cobol.LibraryEntryProcedureForClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.FOR()),
@@ -2815,7 +2609,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitLibraryEntryProcedureGivingClause(CobolParser.LibraryEntryProcedureGivingClauseContext ctx) {
         return new Cobol.LibraryEntryProcedureGivingClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.GIVING()),
@@ -2826,7 +2619,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitLibraryEntryProcedureUsingClause(CobolParser.LibraryEntryProcedureUsingClauseContext ctx) {
         return new Cobol.LibraryEntryProcedureUsingClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.USING()),
@@ -2837,7 +2629,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitLibraryEntryProcedureWithClause(CobolParser.LibraryEntryProcedureWithClauseContext ctx) {
         return new Cobol.LibraryEntryProcedureWithClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.WITH()),
@@ -2848,7 +2639,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitLibraryIsCommonClause(CobolParser.LibraryIsCommonClauseContext ctx) {
         return new Cobol.LibraryIsCommonClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.IS(), ctx.COMMON())
@@ -2858,7 +2648,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitLibraryIsGlobalClause(CobolParser.LibraryIsGlobalClauseContext ctx) {
         return new Cobol.LibraryIsGlobalClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.IS(), ctx.GLOBAL())
@@ -2868,7 +2657,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitLinageClause(CobolParser.LinageClauseContext ctx) {
         return new Cobol.LinageClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.LINAGE(), ctx.IS()),
@@ -2881,7 +2669,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitLinageFootingAt(CobolParser.LinageFootingAtContext ctx) {
         return new Cobol.LinageFootingAt(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.WITH(), ctx.FOOTING(), ctx.AT()),
@@ -2892,7 +2679,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitLinageLinesAtBottom(CobolParser.LinageLinesAtBottomContext ctx) {
         return new Cobol.LinageLinesAtBottom(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.LINES(), ctx.AT(), ctx.BOTTOM()),
@@ -2903,7 +2689,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitLinageLinesAtTop(CobolParser.LinageLinesAtTopContext ctx) {
         return new Cobol.LinageLinesAtTop(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.LINES(), ctx.AT(), ctx.TOP()),
@@ -2914,7 +2699,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.LinkageSection visitLinkageSection(CobolParser.LinkageSectionContext ctx) {
         return new Cobol.LinkageSection(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.LINKAGE(), ctx.SECTION()),
@@ -2926,7 +2710,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.LocalStorageSection visitLocalStorageSection(CobolParser.LocalStorageSectionContext ctx) {
         return new Cobol.LocalStorageSection(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.LOCAL_STORAGE(), ctx.SECTION()),
@@ -2941,7 +2724,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.ValuedObjectComputerClause visitMemorySizeClause(CobolParser.MemorySizeClauseContext ctx) {
         return new Cobol.ValuedObjectComputerClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 Cobol.ValuedObjectComputerClause.Type.Memory,
@@ -2956,7 +2738,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Mergeable visitMergeCollatingAlphanumeric(CobolParser.MergeCollatingAlphanumericContext ctx) {
         return new Cobol.Mergeable(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.FOR(), ctx.ALPHANUMERIC(), ctx.IS()),
@@ -2967,7 +2748,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Mergeable visitMergeCollatingNational(CobolParser.MergeCollatingNationalContext ctx) {
         return new Cobol.Mergeable(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.FOR(), ctx.NATIONAL(), ctx.IS()),
@@ -2978,7 +2758,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.MergeCollatingSequencePhrase visitMergeCollatingSequencePhrase(CobolParser.MergeCollatingSequencePhraseContext ctx) {
         return new Cobol.MergeCollatingSequencePhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.COLLATING(), ctx.SEQUENCE(), ctx.IS()),
@@ -2991,7 +2770,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.MergeGiving visitMergeGiving(CobolParser.MergeGivingContext ctx) {
         return new Cobol.MergeGiving(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Name) visit(ctx.fileName()),
@@ -3002,7 +2780,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.MergeGivingPhrase visitMergeGivingPhrase(CobolParser.MergeGivingPhraseContext ctx) {
         return new Cobol.MergeGivingPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.GIVING()),
@@ -3013,7 +2790,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.MergeOnKeyClause visitMergeOnKeyClause(CobolParser.MergeOnKeyClauseContext ctx) {
         return new Cobol.MergeOnKeyClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.ON(), ctx.ASCENDING(), ctx.DESCENDING(), ctx.KEY()),
@@ -3024,7 +2800,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.MergeOutputProcedurePhrase visitMergeOutputProcedurePhrase(CobolParser.MergeOutputProcedurePhraseContext ctx) {
         return new Cobol.MergeOutputProcedurePhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.OUTPUT(), ctx.PROCEDURE(), ctx.IS()),
@@ -3036,7 +2811,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.MergeOutputThrough visitMergeOutputThrough(CobolParser.MergeOutputThroughContext ctx) {
         return new Cobol.MergeOutputThrough(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.THROUGH(), ctx.THRU()),
@@ -3047,7 +2821,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Merge visitMergeStatement(CobolParser.MergeStatementContext ctx) {
         return new Cobol.Merge(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.MERGE()),
@@ -3063,7 +2836,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.MergeUsing visitMergeUsing(CobolParser.MergeUsingContext ctx) {
         return new Cobol.MergeUsing(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.USING()),
@@ -3074,7 +2846,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitMessageCountClause(CobolParser.MessageCountClauseContext ctx) {
         return new Cobol.MessageCountClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.MESSAGE(), ctx.COUNT(), ctx.IS()),
@@ -3085,7 +2856,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitMessageDateClause(CobolParser.MessageDateClauseContext ctx) {
         return new Cobol.MessageDateClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.MESSAGE(), ctx.DATE(), ctx.IS()),
@@ -3096,7 +2866,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitMessageTimeClause(CobolParser.MessageTimeClauseContext ctx) {
         return new Cobol.MessageTimeClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.MESSAGE(), ctx.TIME(), ctx.IS()),
@@ -3107,7 +2876,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.MoveCorrespondingToStatement visitMoveCorrespondingToStatement(CobolParser.MoveCorrespondingToStatementContext ctx) {
         return new Cobol.MoveCorrespondingToStatement(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.CORRESPONDING(), ctx.CORR()),
@@ -3120,7 +2888,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.MoveStatement visitMoveStatement(CobolParser.MoveStatementContext ctx) {
         return new Cobol.MoveStatement(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.MOVE(), ctx.ALL()),
@@ -3131,7 +2898,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.MoveToStatement visitMoveToStatement(CobolParser.MoveToStatementContext ctx) {
         return new Cobol.MoveToStatement(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Name) visit(ctx.moveToSendingArea()),
@@ -3143,7 +2909,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitMultDiv(CobolParser.MultDivContext ctx) {
         return new Cobol.MultDiv(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.ASTERISKCHAR(), ctx.SLASHCHAR()),
@@ -3154,7 +2919,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitMultDivs(CobolParser.MultDivsContext ctx) {
         return new Cobol.MultDivs(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Powers) visit(ctx.powers()),
@@ -3165,7 +2929,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitMultipleFileClause(CobolParser.MultipleFileClauseContext ctx) {
         return new Cobol.MultipleFileClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.MULTIPLE(), ctx.FILE(), ctx.TAPE(), ctx.CONTAINS()),
@@ -3176,7 +2939,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitMultipleFilePosition(CobolParser.MultipleFilePositionContext ctx) {
         return new Cobol.MultipleFilePosition(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.fileName()),
@@ -3188,7 +2950,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.MultiplyGiving visitMultiplyGiving(CobolParser.MultiplyGivingContext ctx) {
         return new Cobol.MultiplyGiving(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Name) visit(ctx.multiplyGivingOperand()),
@@ -3200,7 +2961,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.MultiplyRegular visitMultiplyRegular(CobolParser.MultiplyRegularContext ctx) {
         return new Cobol.MultiplyRegular(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 convertAll(ctx.multiplyRegularOperand())
@@ -3210,7 +2970,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Multiply visitMultiplyStatement(CobolParser.MultiplyStatementContext ctx) {
         return new Cobol.Multiply(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.MULTIPLY()),
@@ -3226,7 +2985,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.NextSentence visitNextSentenceStatement(CobolParser.NextSentenceStatementContext ctx) {
         return new Cobol.NextSentence(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.NEXT(), ctx.SENTENCE())
@@ -3236,7 +2994,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.StatementPhrase visitNotAtEndPhrase(CobolParser.NotAtEndPhraseContext ctx) {
         return new Cobol.StatementPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.NOT(), ctx.AT(), ctx.END()),
@@ -3247,7 +3004,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.StatementPhrase visitNotInvalidKeyPhrase(CobolParser.NotInvalidKeyPhraseContext ctx) {
         return new Cobol.StatementPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.NOT(), ctx.INVALID(), ctx.KEY()),
@@ -3258,7 +3014,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitNotOnExceptionClause(CobolParser.NotOnExceptionClauseContext ctx) {
         return new Cobol.StatementPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.NOT(), ctx.ON(), ctx.EXCEPTION()),
@@ -3269,7 +3024,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.StatementPhrase visitNotOnOverflowPhrase(CobolParser.NotOnOverflowPhraseContext ctx) {
         return new Cobol.StatementPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.NOT(), ctx.ON(), ctx.OVERFLOW()),
@@ -3280,7 +3034,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.StatementPhrase visitNotOnSizeErrorPhrase(CobolParser.NotOnSizeErrorPhraseContext ctx) {
         return new Cobol.StatementPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.NOT(), ctx.ON(), ctx.SIZE(), ctx.ERROR()),
@@ -3291,12 +3044,10 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.ObjectComputer visitObjectComputerParagraph(CobolParser.ObjectComputerParagraphContext ctx) {
         return new Cobol.ObjectComputer(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.OBJECT_COMPUTER(), ctx.DOT_FS(0)),
                 ctx.computerName() == null ? null : new Cobol.ObjectComputerDefinition(
-                        randomId(),
                         EMPTY,
                         Markers.EMPTY,
                         (Cobol.Word) visit(ctx.computerName()),
@@ -3309,7 +3060,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.OdtClause visitOdtClause(CobolParser.OdtClauseContext ctx) {
         return new Cobol.OdtClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.ODT(), ctx.IS()),
@@ -3320,7 +3070,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitOnExceptionClause(CobolParser.OnExceptionClauseContext ctx) {
         return new Cobol.StatementPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.ON(), ctx.EXCEPTION()),
@@ -3331,7 +3080,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.StatementPhrase visitOnOverflowPhrase(CobolParser.OnOverflowPhraseContext ctx) {
         return new Cobol.StatementPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.ON(), ctx.OVERFLOW()),
@@ -3342,7 +3090,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitOnSizeErrorPhrase(CobolParser.OnSizeErrorPhraseContext ctx) {
         return new Cobol.StatementPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.ON(), ctx.SIZE(), ctx.ERROR()),
@@ -3353,7 +3100,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.OpenIOExtendStatement visitOpenExtendStatement(CobolParser.OpenExtendStatementContext ctx) {
         return new Cobol.OpenIOExtendStatement(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.EXTEND()),
@@ -3364,7 +3110,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.OpenIOExtendStatement visitOpenIOStatement(CobolParser.OpenIOStatementContext ctx) {
         return new Cobol.OpenIOExtendStatement(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.I_O()),
@@ -3375,7 +3120,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Openable visitOpenInput(CobolParser.OpenInputContext ctx) {
         return new Cobol.Openable(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Name) visit(ctx.fileName()),
@@ -3386,7 +3130,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.OpenInputOutputStatement visitOpenInputStatement(CobolParser.OpenInputStatementContext ctx) {
         return new Cobol.OpenInputOutputStatement(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.INPUT()),
@@ -3397,7 +3140,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Openable visitOpenOutput(CobolParser.OpenOutputContext ctx) {
         return new Cobol.Openable(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Name) visit(ctx.fileName()),
@@ -3408,7 +3150,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.OpenInputOutputStatement visitOpenOutputStatement(CobolParser.OpenOutputStatementContext ctx) {
         return new Cobol.OpenInputOutputStatement(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.OUTPUT()),
@@ -3419,7 +3160,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Open visitOpenStatement(CobolParser.OpenStatementContext ctx) {
         return new Cobol.Open(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.OPEN()),
@@ -3431,7 +3171,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitOrganizationClause(CobolParser.OrganizationClauseContext ctx) {
         return new Cobol.OrganizationClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.ORGANIZATION(), ctx.IS(), ctx.LINE(), ctx.RECORD(), ctx.BINARY(),
@@ -3442,7 +3181,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitPaddingCharacterClause(CobolParser.PaddingCharacterClauseContext ctx) {
         return new Cobol.PaddingCharacterClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.PADDING(), ctx.CHARACTER(), ctx.IS()),
@@ -3453,7 +3191,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitParagraph(CobolParser.ParagraphContext ctx) {
         return new Cobol.Paragraph(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Name) visit(ctx.paragraphName()),
@@ -3466,7 +3203,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Paragraphs visitParagraphs(CobolParser.ParagraphsContext ctx) {
         return new Cobol.Paragraphs(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 convertAll(ctx.sentence()),
@@ -3477,7 +3213,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitPasswordClause(CobolParser.PasswordClauseContext ctx) {
         return new Cobol.PasswordClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.PASSWORD(), ctx.IS()),
@@ -3488,7 +3223,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Performable visitPerformAfter(CobolParser.PerformAfterContext ctx) {
         return new Cobol.Performable(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.AFTER()),
@@ -3499,7 +3233,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Performable visitPerformBy(CobolParser.PerformByContext ctx) {
         return new Cobol.Performable(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.BY()),
@@ -3510,7 +3243,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Performable visitPerformFrom(CobolParser.PerformFromContext ctx) {
         return new Cobol.Performable(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.FROM()),
@@ -3521,7 +3253,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.PerformInlineStatement visitPerformInlineStatement(CobolParser.PerformInlineStatementContext ctx) {
         return new Cobol.PerformInlineStatement(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visitNullable(ctx.performType()),
@@ -3533,7 +3264,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.PerformProcedureStatement visitPerformProcedureStatement(CobolParser.PerformProcedureStatementContext ctx) {
         return new Cobol.PerformProcedureStatement(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.ProcedureName) visit(ctx.procedureName(0)),
@@ -3547,7 +3277,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Perform visitPerformStatement(CobolParser.PerformStatementContext ctx) {
         return new Cobol.Perform(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.PERFORM()),
@@ -3558,7 +3287,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.PerformTestClause visitPerformTestClause(CobolParser.PerformTestClauseContext ctx) {
         return new Cobol.PerformTestClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.WITH(), ctx.TEST(), ctx.BEFORE(), ctx.AFTER())
@@ -3568,7 +3296,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.PerformTimes visitPerformTimes(CobolParser.PerformTimesContext ctx) {
         return new Cobol.PerformTimes(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.identifier(), ctx.integerLiteral()),
@@ -3579,7 +3306,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.PerformUntil visitPerformUntil(CobolParser.PerformUntilContext ctx) {
         return new Cobol.PerformUntil(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visitNullable(ctx.performTestClause()),
@@ -3591,7 +3317,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.PerformVarying visitPerformVarying(CobolParser.PerformVaryingContext ctx) {
         return new Cobol.PerformVarying(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 convertAllList(singletonList(ctx.performVaryingClause()), singletonList(ctx.performTestClause()))
@@ -3601,7 +3326,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.PerformVaryingClause visitPerformVaryingClause(CobolParser.PerformVaryingClauseContext ctx) {
         return new Cobol.PerformVaryingClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.VARYING()),
@@ -3613,7 +3337,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.PerformVaryingPhrase visitPerformVaryingPhrase(CobolParser.PerformVaryingPhraseContext ctx) {
         return new Cobol.PerformVaryingPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.identifier(), ctx.literal()),
@@ -3626,7 +3349,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Picture visitPicture(CobolParser.PictureContext ctx) {
         return new Cobol.Picture(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 convertAll(ctx.pictureChars()),
@@ -3637,7 +3359,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitPictureCardinality(CobolParser.PictureCardinalityContext ctx) {
         return new Cobol.Parenthesized(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.LPARENCHAR()),
@@ -3649,7 +3370,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitPictureString(CobolParser.PictureStringContext ctx) {
         return new Cobol.PictureString(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 convertAll(ctx.picture())
@@ -3659,7 +3379,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitPlusMinus(CobolParser.PlusMinusContext ctx) {
         return new Cobol.PlusMinus(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.PLUSCHAR(), ctx.MINUSCHAR()),
@@ -3670,7 +3389,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitPower(CobolParser.PowerContext ctx) {
         return new Cobol.Power(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.DOUBLEASTERISKCHAR()),
@@ -3681,7 +3399,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitPowers(CobolParser.PowersContext ctx) {
         return new Cobol.Powers(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 ctx.PLUSCHAR() != null ? (Cobol.Word) visit(ctx.PLUSCHAR()) :
@@ -3694,7 +3411,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitProcedureDeclarative(CobolParser.ProcedureDeclarativeContext ctx) {
         return new Cobol.ProcedureDeclarative(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.ProcedureSectionHeader) visit(ctx.procedureSectionHeader()),
@@ -3708,7 +3424,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitProcedureDeclaratives(CobolParser.ProcedureDeclarativesContext ctx) {
         return new Cobol.ProcedureDeclaratives(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.DECLARATIVES(0)),
@@ -3722,7 +3437,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.ProcedureDivision visitProcedureDivision(CobolParser.ProcedureDivisionContext ctx) {
         return new Cobol.ProcedureDivision(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.PROCEDURE(), ctx.DIVISION()),
@@ -3737,7 +3451,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.ProcedureDivisionBody visitProcedureDivisionBody(CobolParser.ProcedureDivisionBodyContext ctx) {
         return new Cobol.ProcedureDivisionBody(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Paragraphs) visit(ctx.paragraphs()),
@@ -3749,7 +3462,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     public Cobol.ProcedureDivisionByReference visitProcedureDivisionByReference(CobolParser.ProcedureDivisionByReferenceContext ctx) {
         if (ctx.ANY() == null) {
             return new Cobol.ProcedureDivisionByReference(
-                    randomId(),
                     EMPTY,
                     Markers.EMPTY,
                     visitNullable(ctx.OPTIONAL()),
@@ -3757,7 +3469,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
             );
         } else {
             return new Cobol.ProcedureDivisionByReference(
-                    randomId(),
                     EMPTY,
                     Markers.EMPTY,
                     (Cobol.Word) visit(ctx.ANY()),
@@ -3768,7 +3479,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.ProcedureDivisionByReferencePhrase visitProcedureDivisionByReferencePhrase(CobolParser.ProcedureDivisionByReferencePhraseContext ctx) {
         return new Cobol.ProcedureDivisionByReferencePhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.BY(), ctx.REFERENCE()),
@@ -3779,7 +3489,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.ProcedureDivisionByValuePhrase visitProcedureDivisionByValuePhrase(CobolParser.ProcedureDivisionByValuePhraseContext ctx) {
         return new Cobol.ProcedureDivisionByValuePhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.BY(), ctx.VALUE()),
@@ -3790,7 +3499,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitProcedureDivisionGivingClause(CobolParser.ProcedureDivisionGivingClauseContext ctx) {
         return new Cobol.ProcedureDivisionGivingClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.GIVING(), ctx.RETURNING()),
@@ -3801,7 +3509,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.ProcedureDivisionUsingClause visitProcedureDivisionUsingClause(CobolParser.ProcedureDivisionUsingClauseContext ctx) {
         return new Cobol.ProcedureDivisionUsingClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.USING(), ctx.CHAINING()),
@@ -3812,7 +3519,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.ProcedureName visitProcedureName(CobolParser.ProcedureNameContext ctx) {
         return new Cobol.ProcedureName(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Name) visit(ctx.paragraphName()),
@@ -3824,7 +3530,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitProcedureSection(CobolParser.ProcedureSectionContext ctx) {
         return new Cobol.ProcedureSection(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.ProcedureSectionHeader) visit(ctx.procedureSectionHeader()),
@@ -3836,7 +3541,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitProcedureSectionHeader(CobolParser.ProcedureSectionHeaderContext ctx) {
         return new Cobol.ProcedureSectionHeader(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Name) visit(ctx.sectionName()),
@@ -3848,7 +3552,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.ProgramIdParagraph visitProgramIdParagraph(CobolParser.ProgramIdParagraphContext ctx) {
         return new Cobol.ProgramIdParagraph(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visitNullable(ctx.PROGRAM_ID()),
@@ -3863,7 +3566,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitProgramLibrarySection(CobolParser.ProgramLibrarySectionContext ctx) {
         return new Cobol.ProgramLibrarySection(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.PROGRAM_LIBRARY(), ctx.SECTION(), ctx.DOT_FS()),
@@ -3875,7 +3577,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     public Cobol.ProgramUnit visitProgramUnit(CobolParser.ProgramUnitContext ctx) {
         List<CobolPreprocessor.CompilerOptions> compilerOptions = getCompilerOptions();
         return new Cobol.ProgramUnit(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 compilerOptions,
@@ -3891,7 +3592,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Purge visitPurgeStatement(CobolParser.PurgeStatementContext ctx) {
         return new Cobol.Purge(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.PURGE()),
@@ -3902,7 +3602,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitQualifiedDataName(CobolParser.QualifiedDataNameContext ctx) {
         return new Cobol.QualifiedDataName(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.qualifiedDataNameFormat1(), ctx.qualifiedDataNameFormat1(), ctx.qualifiedDataNameFormat3(), ctx.qualifiedDataNameFormat4())
@@ -3912,7 +3611,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitQualifiedDataNameFormat1(CobolParser.QualifiedDataNameFormat1Context ctx) {
         return new Cobol.QualifiedDataNameFormat1(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.dataName(), ctx.conditionName()),
@@ -3924,7 +3622,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitQualifiedDataNameFormat2(CobolParser.QualifiedDataNameFormat2Context ctx) {
         return new Cobol.QualifiedDataNameFormat2(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Name) visit(ctx.paragraphName()),
@@ -3935,7 +3632,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitQualifiedDataNameFormat3(CobolParser.QualifiedDataNameFormat3Context ctx) {
         return new Cobol.QualifiedDataNameFormat3(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Name) visit(ctx.textName()),
@@ -3946,7 +3642,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitQualifiedDataNameFormat4(CobolParser.QualifiedDataNameFormat4Context ctx) {
         return new Cobol.QualifiedDataNameFormat4(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visitNullable(ctx.LINAGE_COUNTER()),
@@ -3957,7 +3652,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitQualifiedInData(CobolParser.QualifiedInDataContext ctx) {
         return new Cobol.QualifiedDataName(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.inData(), ctx.inTable())
@@ -3967,7 +3661,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.ReadInto visitReadInto(CobolParser.ReadIntoContext ctx) {
         return new Cobol.ReadInto(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.INTO()),
@@ -3978,7 +3671,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.ReadKey visitReadKey(CobolParser.ReadKeyContext ctx) {
         return new Cobol.ReadKey(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.KEY(), ctx.IS()),
@@ -3989,7 +3681,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Read visitReadStatement(CobolParser.ReadStatementContext ctx) {
         return new Cobol.Read(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.READ()),
@@ -4009,7 +3700,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.ReadWith visitReadWith(CobolParser.ReadWithContext ctx) {
         return new Cobol.ReadWith(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.WITH(), ctx.KEPT(), ctx.NO(), ctx.LOCK(), ctx.WAIT())
@@ -4019,7 +3709,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Receivable visitReceiveBefore(CobolParser.ReceiveBeforeContext ctx) {
         return new Cobol.Receivable(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.BEFORE(), ctx.TIME()),
@@ -4030,7 +3719,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.ReceiveFrom visitReceiveFrom(CobolParser.ReceiveFromContext ctx) {
         return new Cobol.ReceiveFrom(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.LAST(), ctx.ANY(), ctx.THREAD()),
@@ -4041,7 +3729,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.ReceiveFromStatement visitReceiveFromStatement(CobolParser.ReceiveFromStatementContext ctx) {
         return new Cobol.ReceiveFromStatement(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.dataName()),
@@ -4054,7 +3741,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.ReceiveIntoStatement visitReceiveIntoStatement(CobolParser.ReceiveIntoStatementContext ctx) {
         return new Cobol.ReceiveIntoStatement(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visitNullable(ctx.cdName()),
@@ -4068,7 +3754,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.StatementPhrase visitReceiveNoData(CobolParser.ReceiveNoDataContext ctx) {
         return new Cobol.StatementPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.NO(), ctx.DATA()),
@@ -4079,7 +3764,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Receivable visitReceiveSize(CobolParser.ReceiveSizeContext ctx) {
         return new Cobol.Receivable(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.SIZE(), ctx.IN()),
@@ -4090,7 +3774,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Receive visitReceiveStatement(CobolParser.ReceiveStatementContext ctx) {
         return new Cobol.Receive(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.RECEIVE()),
@@ -4104,7 +3787,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Receivable visitReceiveStatus(CobolParser.ReceiveStatusContext ctx) {
         return new Cobol.Receivable(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.STATUS(), ctx.IN()),
@@ -4115,7 +3797,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Receivable visitReceiveThread(CobolParser.ReceiveThreadContext ctx) {
         return new Cobol.Receivable(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.THREAD(), ctx.IN()),
@@ -4126,7 +3807,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.ReceiveWith visitReceiveWith(CobolParser.ReceiveWithContext ctx) {
         return new Cobol.ReceiveWith(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.WITH(), ctx.NO(), ctx.WAIT())
@@ -4136,7 +3816,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.StatementPhrase visitReceiveWithData(CobolParser.ReceiveWithDataContext ctx) {
         return new Cobol.StatementPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.WITH(), ctx.DATA()),
@@ -4147,7 +3826,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitRecordContainsClause(CobolParser.RecordContainsClauseContext ctx) {
         return new Cobol.RecordContainsClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.RECORD()),
@@ -4158,7 +3836,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitRecordContainsClauseFormat1(CobolParser.RecordContainsClauseFormat1Context ctx) {
         return new Cobol.RecordContainsClauseFormat1(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visitNullable(ctx.CONTAINS()),
@@ -4170,7 +3847,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitRecordContainsClauseFormat2(CobolParser.RecordContainsClauseFormat2Context ctx) {
         return new Cobol.RecordContainsClauseFormat2(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.IS(), ctx.VARYING(), ctx.IN(), ctx.SIZE()),
@@ -4182,7 +3858,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitRecordContainsClauseFormat3(CobolParser.RecordContainsClauseFormat3Context ctx) {
         return new Cobol.RecordContainsClauseFormat3(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visitNullable(ctx.CONTAINS()),
@@ -4195,7 +3870,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitRecordContainsTo(CobolParser.RecordContainsToContext ctx) {
         return new Cobol.RecordContainsTo(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.TO()),
@@ -4206,7 +3880,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitRecordDelimiterClause(CobolParser.RecordDelimiterClauseContext ctx) {
         return new Cobol.RecordDelimiterClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.RECORD(), ctx.DELIMITER(), ctx.IS(), ctx.STANDARD_1(), ctx.IMPLICIT()),
@@ -4217,7 +3890,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitRecordKeyClause(CobolParser.RecordKeyClauseContext ctx) {
         return new Cobol.RecordKeyClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.RECORD(), ctx.KEY(), ctx.IS()),
@@ -4230,7 +3902,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitRecordingModeClause(CobolParser.RecordingModeClauseContext ctx) {
         return new Cobol.RecordingModeClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.RECORDING(), ctx.MODE(), ctx.IS()),
@@ -4241,7 +3912,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReferenceModifier(CobolParser.ReferenceModifierContext ctx) {
         return new Cobol.ReferenceModifier(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.LPARENCHAR()),
@@ -4255,7 +3925,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitRelationArithmeticComparison(CobolParser.RelationArithmeticComparisonContext ctx) {
         return new Cobol.RelationArithmeticComparison(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.ArithmeticExpression) visit(ctx.arithmeticExpression().get(0)),
@@ -4267,13 +3936,11 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitRelationCombinedComparison(CobolParser.RelationCombinedComparisonContext ctx) {
         return new Cobol.RelationCombinedComparison(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.ArithmeticExpression) visit(ctx.arithmeticExpression()),
                 (Cobol.RelationalOperator) visit(ctx.relationalOperator()),
                 new Cobol.Parenthesized(
-                        randomId(),
                         EMPTY,
                         Markers.EMPTY,
                         (Cobol.Word) visit(ctx.LPARENCHAR()),
@@ -4286,7 +3953,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitRelationCombinedCondition(CobolParser.RelationCombinedConditionContext ctx) {
         return new Cobol.RelationCombinedCondition(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 convertAllList(ctx.AND(), ctx.OR(), ctx.arithmeticExpression())
@@ -4296,7 +3962,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitRelationSignCondition(CobolParser.RelationSignConditionContext ctx) {
         return new Cobol.RelationSignCondition(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.ArithmeticExpression) visit(ctx.arithmeticExpression()),
@@ -4307,7 +3972,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitRelationalOperator(CobolParser.RelationalOperatorContext ctx) {
         return new Cobol.RelationalOperator(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.IS(), ctx.ARE(), ctx.NOT(),
@@ -4321,7 +3985,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitRelativeKeyClause(CobolParser.RelativeKeyClauseContext ctx) {
         return new Cobol.RelativeKeyClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.RELATIVE(), ctx.KEY(), ctx.IS()),
@@ -4332,7 +3995,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Release visitReleaseStatement(CobolParser.ReleaseStatementContext ctx) {
         return new Cobol.Release(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.RELEASE()),
@@ -4345,7 +4007,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportClause(CobolParser.ReportClauseContext ctx) {
         return new Cobol.ReportClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.REPORT(), ctx.IS(), ctx.REPORTS(), ctx.ARE()),
@@ -4356,7 +4017,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitRemarksParagraph(CobolParser.RemarksParagraphContext ctx) {
         return new Cobol.IdentificationDivisionParagraph(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.REMARKS()),
@@ -4370,7 +4030,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportDescription(CobolParser.ReportDescriptionContext ctx) {
         return new Cobol.ReportDescription(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.ReportDescriptionEntry) visit(ctx.reportDescriptionEntry()),
@@ -4381,7 +4040,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportDescriptionEntry(CobolParser.ReportDescriptionEntryContext ctx) {
         return new Cobol.ReportDescriptionEntry(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.RD()),
@@ -4399,7 +4057,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportDescriptionFirstDetailClause(CobolParser.ReportDescriptionFirstDetailClauseContext ctx) {
         return new Cobol.ReportDescriptionFirstDetailClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.FIRST(), ctx.DETAIL()),
@@ -4410,7 +4067,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportDescriptionFootingClause(CobolParser.ReportDescriptionFootingClauseContext ctx) {
         return new Cobol.ReportDescriptionFootingClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.FOOTING()),
@@ -4421,7 +4077,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportDescriptionGlobalClause(CobolParser.ReportDescriptionGlobalClauseContext ctx) {
         return new Cobol.ReportDescriptionGlobalClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.IS(), ctx.GLOBAL())
@@ -4431,7 +4086,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportDescriptionHeadingClause(CobolParser.ReportDescriptionHeadingClauseContext ctx) {
         return new Cobol.ReportDescriptionHeadingClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.HEADING()),
@@ -4442,7 +4096,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportDescriptionLastDetailClause(CobolParser.ReportDescriptionLastDetailClauseContext ctx) {
         return new Cobol.ReportDescriptionLastDetailClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.LAST(), ctx.DETAIL()),
@@ -4453,7 +4106,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportDescriptionPageLimitClause(CobolParser.ReportDescriptionPageLimitClauseContext ctx) {
         return new Cobol.ReportDescriptionPageLimitClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.PAGE(), ctx.LIMIT(), ctx.IS(), ctx.LIMITS(), ctx.ARE()),
@@ -4466,7 +4118,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportGroupBlankWhenZeroClause(CobolParser.ReportGroupBlankWhenZeroClauseContext ctx) {
         return new Cobol.ReportGroupBlankWhenZeroClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.BLANK(), ctx.WHEN(), ctx.ZERO())
@@ -4476,7 +4127,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportGroupColumnNumberClause(CobolParser.ReportGroupColumnNumberClauseContext ctx) {
         return new Cobol.ReportGroupColumnNumberClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.COLUMN(), ctx.NUMBER(), ctx.IS()),
@@ -4487,7 +4137,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportGroupDescriptionEntryFormat1(CobolParser.ReportGroupDescriptionEntryFormat1Context ctx) {
         return new Cobol.ReportGroupDescriptionEntryFormat1(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.integerLiteral()),
@@ -4503,7 +4152,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportGroupDescriptionEntryFormat2(CobolParser.ReportGroupDescriptionEntryFormat2Context ctx) {
         return new Cobol.ReportGroupDescriptionEntryFormat2(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.integerLiteral()),
@@ -4517,7 +4165,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportGroupDescriptionEntryFormat3(CobolParser.ReportGroupDescriptionEntryFormat3Context ctx) {
         return new Cobol.ReportGroupDescriptionEntryFormat3(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.integerLiteral()),
@@ -4541,7 +4188,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportGroupIndicateClause(CobolParser.ReportGroupIndicateClauseContext ctx) {
         return new Cobol.ReportGroupIndicateClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.GROUP(), ctx.INDICATE())
@@ -4551,7 +4197,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportGroupJustifiedClause(CobolParser.ReportGroupJustifiedClauseContext ctx) {
         return new Cobol.ReportGroupJustifiedClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.JUSTIFIED(), ctx.JUST(), ctx.RIGHT())
@@ -4561,7 +4206,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportGroupLineNumberClause(CobolParser.ReportGroupLineNumberClauseContext ctx) {
         return new Cobol.ReportGroupLineNumberClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.LINE(), ctx.NUMBER(), ctx.IS()),
@@ -4572,7 +4216,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportGroupLineNumberNextPage(CobolParser.ReportGroupLineNumberNextPageContext ctx) {
         return new Cobol.ReportGroupLineNumberNextPage(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.integerLiteral()),
@@ -4583,7 +4226,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportGroupLineNumberPlus(CobolParser.ReportGroupLineNumberPlusContext ctx) {
         return new Cobol.ReportGroupLineNumberPlus(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.PLUS()),
@@ -4594,7 +4236,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportGroupNextGroupClause(CobolParser.ReportGroupNextGroupClauseContext ctx) {
         return new Cobol.ReportGroupNextGroupClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.NEXT(), ctx.GROUP(), ctx.IS()),
@@ -4605,7 +4246,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportGroupNextGroupNextPage(CobolParser.ReportGroupNextGroupNextPageContext ctx) {
         return new Cobol.ReportGroupNextGroupNextPage(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.NEXT(), ctx.PAGE())
@@ -4615,7 +4255,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportGroupNextGroupPlus(CobolParser.ReportGroupNextGroupPlusContext ctx) {
         return new Cobol.ReportGroupNextGroupPlus(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.PLUS()),
@@ -4626,7 +4265,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportGroupPictureClause(CobolParser.ReportGroupPictureClauseContext ctx) {
         return new Cobol.ReportGroupPictureClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.PICTURE(), ctx.PIC(), ctx.IS()),
@@ -4637,7 +4275,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportGroupResetClause(CobolParser.ReportGroupResetClauseContext ctx) {
         return new Cobol.ReportGroupResetClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.RESET(), ctx.ON(), ctx.FINAL()),
@@ -4648,7 +4285,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportGroupSignClause(CobolParser.ReportGroupSignClauseContext ctx) {
         return new Cobol.ReportGroupSignClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.SIGN(), ctx.IS(), ctx.LEADING(), ctx.TRAILING(), ctx.SEPARATE(), ctx.CHARACTER())
@@ -4658,7 +4294,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportGroupSourceClause(CobolParser.ReportGroupSourceClauseContext ctx) {
         return new Cobol.ReportGroupSourceClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.SOURCE(), ctx.IS()),
@@ -4669,7 +4304,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportGroupSumClause(CobolParser.ReportGroupSumClauseContext ctx) {
         return new Cobol.ReportGroupSumClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 convertAllList(singletonList(ctx.SUM()), ctx.COMMACHAR(), ctx.identifier(), singletonList(ctx.UPON()), ctx.dataName())
@@ -4679,7 +4313,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportGroupTypeClause(CobolParser.ReportGroupTypeClauseContext ctx) {
         return new Cobol.ReportGroupTypeClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.TYPE(), ctx.IS()),
@@ -4696,7 +4329,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportGroupTypeControlFooting(CobolParser.ReportGroupTypeControlFootingContext ctx) {
         return new Cobol.ReportGroupTypeControlFooting(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.CONTROL(), ctx.FOOTING(), ctx.CF(), ctx.FINAL()),
@@ -4707,7 +4339,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportGroupTypeControlHeading(CobolParser.ReportGroupTypeControlHeadingContext ctx) {
         return new Cobol.ReportGroupTypeControlHeading(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.CONTROL(), ctx.HEADING(), ctx.CH(), ctx.FINAL()),
@@ -4718,7 +4349,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportGroupTypeDetail(CobolParser.ReportGroupTypeDetailContext ctx) {
         return new Cobol.ReportGroupTypeDetail(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.DETAIL(), ctx.DE())
@@ -4728,7 +4358,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportGroupTypePageFooting(CobolParser.ReportGroupTypePageFootingContext ctx) {
         return new Cobol.ReportGroupTypePageFooting(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.PAGE(), ctx.FOOTING(), ctx.PF())
@@ -4738,7 +4367,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportGroupTypePageHeading(CobolParser.ReportGroupTypePageHeadingContext ctx) {
         return new Cobol.ReportGroupTypePageHeading(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.PAGE(), ctx.HEADING(), ctx.PH())
@@ -4748,7 +4376,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportGroupTypeReportFooting(CobolParser.ReportGroupTypeReportFootingContext ctx) {
         return new Cobol.ReportGroupTypeReportFooting(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.REPORT(), ctx.FOOTING(), ctx.RF())
@@ -4758,7 +4385,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportGroupTypeReportHeading(CobolParser.ReportGroupTypeReportHeadingContext ctx) {
         return new Cobol.ReportGroupTypeReportHeading(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.REPORT(), ctx.HEADING(), ctx.RH())
@@ -4768,7 +4394,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportGroupUsageClause(CobolParser.ReportGroupUsageClauseContext ctx) {
         return new Cobol.ReportGroupUsageClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.USAGE(), ctx.IS(), ctx.DISPLAY(), ctx.DISPLAY_1())
@@ -4778,7 +4403,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportGroupValueClause(CobolParser.ReportGroupValueClauseContext ctx) {
         return new Cobol.ReportGroupValueClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.VALUE(), ctx.IS()),
@@ -4789,7 +4413,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReportSection(CobolParser.ReportSectionContext ctx) {
         return new Cobol.ReportSection(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.REPORT(), ctx.SECTION(), ctx.DOT_FS()),
@@ -4800,7 +4423,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitRerunClause(CobolParser.RerunClauseContext ctx) {
         return new Cobol.RerunClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.RERUN()),
@@ -4814,7 +4436,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitRerunEveryClock(CobolParser.RerunEveryClockContext ctx) {
         return new Cobol.RerunEveryClock(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.integerLiteral()),
@@ -4825,7 +4446,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitRerunEveryOf(CobolParser.RerunEveryOfContext ctx) {
         return new Cobol.RerunEveryOf(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.END(), ctx.OF().size() == 1 ? null : ctx.OF(0), ctx.REEL(), ctx.UNIT(), ctx.OF(ctx.OF().size() == 1 ? 0 : 1)),
@@ -4836,7 +4456,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitRerunEveryRecords(CobolParser.RerunEveryRecordsContext ctx) {
         return new Cobol.RerunEveryRecords(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.integerLiteral()),
@@ -4847,7 +4466,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitReserveClause(CobolParser.ReserveClauseContext ctx) {
         return new Cobol.ReserveClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 convertAllList(emptyList(), singletonList(ctx.RESERVE()), singletonList(ctx.NO()),
@@ -4859,7 +4477,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.ReserveNetworkClause visitReserveNetworkClause(CobolParser.ReserveNetworkClauseContext ctx) {
         return new Cobol.ReserveNetworkClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.RESERVE(), ctx.WORDS(), ctx.LIST(), ctx.IS(), ctx.NETWORK(), ctx.CAPABLE())
@@ -4869,7 +4486,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.ReturnInto visitReturnInto(CobolParser.ReturnIntoContext ctx) {
         return new Cobol.ReturnInto(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.INTO()),
@@ -4880,7 +4496,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Return visitReturnStatement(CobolParser.ReturnStatementContext ctx) {
         return new Cobol.Return(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.RETURN()),
@@ -4896,7 +4511,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitRewriteFrom(CobolParser.RewriteFromContext ctx) {
         return new Cobol.RewriteFrom(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.FROM()),
@@ -4907,7 +4521,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitRewriteStatement(CobolParser.RewriteStatementContext ctx) {
         return new Cobol.Rewrite(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.REWRITE()),
@@ -4922,7 +4535,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Roundable visitRoundable(CobolParser.RoundableContext ctx) {
         return new Cobol.Roundable(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Identifier) visit(ctx.identifier()),
@@ -4933,7 +4545,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitSameClause(CobolParser.SameClauseContext ctx) {
         return new Cobol.SameClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.SAME(), ctx.RECORD(), ctx.SORT(), ctx.SORT_MERGE(), ctx.AREA(), ctx.FOR()),
@@ -4944,7 +4555,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitSecurityParagraph(CobolParser.SecurityParagraphContext ctx) {
         return new Cobol.IdentificationDivisionParagraph(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.SECURITY()),
@@ -4958,7 +4568,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitScreenDescriptionAutoClause(CobolParser.ScreenDescriptionAutoClauseContext ctx) {
         return new Cobol.ScreenDescriptionAutoClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.AUTO(), ctx.AUTO_SKIP())
@@ -4968,7 +4577,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitScreenDescriptionBackgroundColorClause(CobolParser.ScreenDescriptionBackgroundColorClauseContext ctx) {
         return new Cobol.ScreenDescriptionBackgroundColorClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.BACKGROUND_COLOR(), ctx.BACKGROUND_COLOUR()),
@@ -4980,7 +4588,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitScreenDescriptionBellClause(CobolParser.ScreenDescriptionBellClauseContext ctx) {
         return new Cobol.ScreenDescriptionBellClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.BELL(), ctx.BEEP())
@@ -4990,7 +4597,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitScreenDescriptionBlankClause(CobolParser.ScreenDescriptionBlankClauseContext ctx) {
         return new Cobol.ScreenDescriptionBlankClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.BLANK(), ctx.SCREEN(), ctx.LINE())
@@ -5000,7 +4606,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitScreenDescriptionBlankWhenZeroClause(CobolParser.ScreenDescriptionBlankWhenZeroClauseContext ctx) {
         return new Cobol.ScreenDescriptionBlankWhenZeroClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.BLANK(), ctx.WHEN(), ctx.ZERO())
@@ -5010,7 +4615,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitScreenDescriptionBlinkClause(CobolParser.ScreenDescriptionBlinkClauseContext ctx) {
         return new Cobol.ScreenDescriptionBlinkClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.BLINK())
@@ -5020,7 +4624,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitScreenDescriptionColumnClause(CobolParser.ScreenDescriptionColumnClauseContext ctx) {
         return new Cobol.ScreenDescriptionColumnClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.COLUMN(), ctx.COL(), ctx.NUMBER(), ctx.IS(), ctx.PLUS(), ctx.PLUSCHAR(), ctx.MINUSCHAR()),
@@ -5031,7 +4634,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitScreenDescriptionControlClause(CobolParser.ScreenDescriptionControlClauseContext ctx) {
         return new Cobol.ScreenDescriptionControlClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.CONTROL(), ctx.IS()),
@@ -5042,7 +4644,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitScreenDescriptionEntry(CobolParser.ScreenDescriptionEntryContext ctx) {
         return new Cobol.ScreenDescriptionEntry(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.INTEGERLITERAL()),
@@ -5083,7 +4684,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitScreenDescriptionEraseClause(CobolParser.ScreenDescriptionEraseClauseContext ctx) {
         return new Cobol.ScreenDescriptionEraseClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.ERASE(), ctx.EOL(), ctx.EOS())
@@ -5093,7 +4693,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitScreenDescriptionForegroundColorClause(CobolParser.ScreenDescriptionForegroundColorClauseContext ctx) {
         return new Cobol.ScreenDescriptionForegroundColorClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.FOREGROUND_COLOR(), ctx.FOREGROUND_COLOUR(), ctx.IS()),
@@ -5104,7 +4703,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitScreenDescriptionFromClause(CobolParser.ScreenDescriptionFromClauseContext ctx) {
         return new Cobol.ScreenDescriptionFromClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.FROM()),
@@ -5116,7 +4714,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitScreenDescriptionFullClause(CobolParser.ScreenDescriptionFullClauseContext ctx) {
         return new Cobol.ScreenDescriptionFullClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.FULL(), ctx.LENGTH_CHECK())
@@ -5126,7 +4723,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitScreenDescriptionGridClause(CobolParser.ScreenDescriptionGridClauseContext ctx) {
         return new Cobol.ScreenDescriptionGridClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.GRID(), ctx.LEFTLINE(), ctx.OVERLINE())
@@ -5136,7 +4732,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitScreenDescriptionJustifiedClause(CobolParser.ScreenDescriptionJustifiedClauseContext ctx) {
         return new Cobol.ScreenDescriptionJustifiedClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.JUSTIFIED(), ctx.JUST(), ctx.RIGHT())
@@ -5146,7 +4741,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitScreenDescriptionLightClause(CobolParser.ScreenDescriptionLightClauseContext ctx) {
         return new Cobol.ScreenDescriptionLightClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.HIGHLIGHT(), ctx.LOWLIGHT())
@@ -5156,7 +4750,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitScreenDescriptionLineClause(CobolParser.ScreenDescriptionLineClauseContext ctx) {
         return new Cobol.ScreenDescriptionLineClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.LINE(), ctx.NUMBER(), ctx.IS(), ctx.PLUS(), ctx.PLUSCHAR(), ctx.MINUSCHAR()),
@@ -5167,7 +4760,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitScreenDescriptionPictureClause(CobolParser.ScreenDescriptionPictureClauseContext ctx) {
         return new Cobol.ScreenDescriptionPictureClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.PICTURE(), ctx.PIC(), ctx.IS()),
@@ -5178,7 +4770,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitScreenDescriptionPromptClause(CobolParser.ScreenDescriptionPromptClauseContext ctx) {
         return new Cobol.ScreenDescriptionPromptClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.PROMPT(), ctx.CHARACTER(), ctx.IS()),
@@ -5190,7 +4781,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitScreenDescriptionPromptOccursClause(CobolParser.ScreenDescriptionPromptOccursClauseContext ctx) {
         return new Cobol.ScreenDescriptionPromptOccursClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.OCCURS()),
@@ -5202,7 +4792,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitScreenDescriptionRequiredClause(CobolParser.ScreenDescriptionRequiredClauseContext ctx) {
         return new Cobol.ScreenDescriptionRequiredClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.REQUIRED(), ctx.EMPTY_CHECK())
@@ -5212,7 +4801,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitScreenDescriptionReverseVideoClause(CobolParser.ScreenDescriptionReverseVideoClauseContext ctx) {
         return new Cobol.ScreenDescriptionReverseVideoClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.REVERSE_VIDEO())
@@ -5222,7 +4810,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitScreenDescriptionSecureClause(CobolParser.ScreenDescriptionSecureClauseContext ctx) {
         return new Cobol.ScreenDescriptionSecureClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.SECURE(), ctx.NO_ECHO())
@@ -5232,7 +4819,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitScreenDescriptionSignClause(CobolParser.ScreenDescriptionSignClauseContext ctx) {
         return new Cobol.ScreenDescriptionSignClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.SIGN(), ctx.IS(), ctx.LEADING(), ctx.TRAILING(), ctx.SEPARATE(), ctx.CHARACTER())
@@ -5242,7 +4828,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitScreenDescriptionSizeClause(CobolParser.ScreenDescriptionSizeClauseContext ctx) {
         return new Cobol.ScreenDescriptionSizeClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.SIZE(), ctx.IS()),
@@ -5253,7 +4838,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitScreenDescriptionToClause(CobolParser.ScreenDescriptionToClauseContext ctx) {
         return new Cobol.ScreenDescriptionToClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.TO()),
@@ -5264,7 +4848,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitScreenDescriptionUnderlineClause(CobolParser.ScreenDescriptionUnderlineClauseContext ctx) {
         return new Cobol.ScreenDescriptionUnderlineClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.UNDERLINE())
@@ -5274,7 +4857,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitScreenDescriptionUsageClause(CobolParser.ScreenDescriptionUsageClauseContext ctx) {
         return new Cobol.ScreenDescriptionUsageClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.USAGE(), ctx.IS(), ctx.DISPLAY(), ctx.DISPLAY_1())
@@ -5284,7 +4866,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitScreenDescriptionUsingClause(CobolParser.ScreenDescriptionUsingClauseContext ctx) {
         return new Cobol.ScreenDescriptionUsingClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.USING()),
@@ -5295,7 +4876,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitScreenDescriptionValueClause(CobolParser.ScreenDescriptionValueClauseContext ctx) {
         return new Cobol.ScreenDescriptionValueClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.VALUE(), ctx.IS()),
@@ -5306,7 +4886,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitScreenDescriptionZeroFillClause(CobolParser.ScreenDescriptionZeroFillClauseContext ctx) {
         return new Cobol.ScreenDescriptionZeroFillClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.ZERO_FILL())
@@ -5316,7 +4895,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitScreenSection(CobolParser.ScreenSectionContext ctx) {
         return new Cobol.ScreenSection(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.SCREEN(), ctx.SECTION()),
@@ -5328,7 +4906,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Search visitSearchStatement(CobolParser.SearchStatementContext ctx) {
         return new Cobol.Search(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.SEARCH(), ctx.ALL()),
@@ -5343,7 +4920,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.SearchVarying visitSearchVarying(CobolParser.SearchVaryingContext ctx) {
         return new Cobol.SearchVarying(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.VARYING()),
@@ -5354,7 +4930,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.SearchWhen visitSearchWhen(CobolParser.SearchWhenContext ctx) {
         return new Cobol.SearchWhen(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.WHEN()),
@@ -5367,7 +4942,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.ValuedObjectComputerClause visitSegmentLimitClause(CobolParser.SegmentLimitClauseContext ctx) {
         return new Cobol.ValuedObjectComputerClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 Cobol.ValuedObjectComputerClause.Type.SegmentLimit,
@@ -5380,7 +4954,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitSelectClause(CobolParser.SelectClauseContext ctx) {
         return new Cobol.SelectClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.SELECT(), ctx.OPTIONAL()),
@@ -5391,7 +4964,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.SendAdvancingLines visitSendAdvancingLines(CobolParser.SendAdvancingLinesContext ctx) {
         return new Cobol.SendAdvancingLines(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.identifier(), ctx.literal()),
@@ -5403,7 +4975,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.SendPhrase visitSendAdvancingPhrase(CobolParser.SendAdvancingPhraseContext ctx) {
         return new Cobol.SendPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.BEFORE(), ctx.AFTER(), ctx.ADVANCING()),
@@ -5414,7 +4985,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.SendPhrase visitSendFromPhrase(CobolParser.SendFromPhraseContext ctx) {
         return new Cobol.SendPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.FROM()),
@@ -5425,7 +4995,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.SendPhrase visitSendReplacingPhrase(CobolParser.SendReplacingPhraseContext ctx) {
         return new Cobol.SendPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.REPLACING(), ctx.LINE()),
@@ -5436,7 +5005,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Send visitSendStatement(CobolParser.SendStatementContext ctx) {
         return new Cobol.Send(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.SEND()),
@@ -5449,7 +5017,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.SendPhrase visitSendStatementAsync(CobolParser.SendStatementAsyncContext ctx) {
         return new Cobol.SendPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.TO(), ctx.TOP(), ctx.BOTTOM()),
@@ -5460,7 +5027,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.SendStatementSync visitSendStatementSync(CobolParser.SendStatementSyncContext ctx) {
         return new Cobol.SendStatementSync(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.identifier(), ctx.literal()),
@@ -5474,7 +5040,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.SendPhrase visitSendWithPhrase(CobolParser.SendWithPhraseContext ctx) {
         return new Cobol.SendPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.WITH(), ctx.EGI(), ctx.EMI(), ctx.ESI()),
@@ -5485,7 +5050,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Sentence visitSentence(CobolParser.SentenceContext ctx) {
         return new Cobol.Sentence(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 convertAll(ctx.statement()),
@@ -5496,7 +5060,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Set visitSetStatement(CobolParser.SetStatementContext ctx) {
         return new Cobol.Set(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.SET()),
@@ -5508,7 +5071,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.SetTo visitSetToStatement(CobolParser.SetToStatementContext ctx) {
         return new Cobol.SetTo(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 convertAll(ctx.setTo()),
@@ -5520,7 +5082,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.SetUpDown visitSetUpDownByStatement(CobolParser.SetUpDownByStatementContext ctx) {
         return new Cobol.SetUpDown(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 convertAll(ctx.setTo()),
@@ -5532,7 +5093,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitSimpleCondition(CobolParser.SimpleConditionContext ctx) {
         return ctx.condition() != null ? new Cobol.Parenthesized(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.LPARENCHAR()),
@@ -5544,7 +5104,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.SortProcedurePhrase visitSortCollatingAlphanumeric(CobolParser.SortCollatingAlphanumericContext ctx) {
         return new Cobol.SortProcedurePhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.FOR(), ctx.ALPHANUMERIC(), ctx.IS()),
@@ -5556,7 +5115,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.SortProcedurePhrase visitSortCollatingNational(CobolParser.SortCollatingNationalContext ctx) {
         return new Cobol.SortProcedurePhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.FOR(), ctx.NATIONAL(), ctx.IS()),
@@ -5568,7 +5126,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.SortCollatingSequencePhrase visitSortCollatingSequencePhrase(CobolParser.SortCollatingSequencePhraseContext ctx) {
         return new Cobol.SortCollatingSequencePhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.COLLATING(), ctx.SEQUENCE(), ctx.IS()),
@@ -5581,7 +5138,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Sortable visitSortDuplicatesPhrase(CobolParser.SortDuplicatesPhraseContext ctx) {
         return new Cobol.Sortable(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.WITH(), ctx.DUPLICATES(), ctx.IN(), ctx.ORDER()),
@@ -5592,7 +5148,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.SortGiving visitSortGiving(CobolParser.SortGivingContext ctx) {
         return new Cobol.SortGiving(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.fileName()),
@@ -5603,7 +5158,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Sortable visitSortGivingPhrase(CobolParser.SortGivingPhraseContext ctx) {
         return new Cobol.Sortable(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.GIVING()),
@@ -5614,7 +5168,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.SortProcedurePhrase visitSortInputProcedurePhrase(CobolParser.SortInputProcedurePhraseContext ctx) {
         return new Cobol.SortProcedurePhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.INPUT(), ctx.PROCEDURE(), ctx.IS()),
@@ -5626,7 +5179,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Sortable visitSortInputThrough(CobolParser.SortInputThroughContext ctx) {
         return new Cobol.Sortable(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.THROUGH(), ctx.THRU()),
@@ -5637,7 +5189,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Sortable visitSortOnKeyClause(CobolParser.SortOnKeyClauseContext ctx) {
         return new Cobol.Sortable(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.ON(), ctx.ASCENDING(), ctx.DESCENDING(), ctx.KEY()),
@@ -5648,7 +5199,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.SortProcedurePhrase visitSortOutputProcedurePhrase(CobolParser.SortOutputProcedurePhraseContext ctx) {
         return new Cobol.SortProcedurePhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.OUTPUT(), ctx.PROCEDURE(), ctx.IS()),
@@ -5660,7 +5210,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Sortable visitSortOutputThrough(CobolParser.SortOutputThroughContext ctx) {
         return new Cobol.Sortable(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.THROUGH(), ctx.THRU()),
@@ -5671,7 +5220,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Sort visitSortStatement(CobolParser.SortStatementContext ctx) {
         return new Cobol.Sort(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visitNullable(ctx.SORT()),
@@ -5689,7 +5237,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Sortable visitSortUsing(CobolParser.SortUsingContext ctx) {
         return new Cobol.Sortable(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.USING()),
@@ -5700,12 +5247,10 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.SourceComputer visitSourceComputerParagraph(CobolParser.SourceComputerParagraphContext ctx) {
         return new Cobol.SourceComputer(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.SOURCE_COMPUTER(), ctx.DOT_FS(0)),
                 ctx.computerName() == null ? null : new Cobol.SourceComputerDefinition(
-                        randomId(),
                         EMPTY,
                         Markers.EMPTY,
                         (Cobol.Word) visit(ctx.computerName()),
@@ -5718,7 +5263,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.SpecialNames visitSpecialNamesParagraph(CobolParser.SpecialNamesParagraphContext ctx) {
         return new Cobol.SpecialNames(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.SPECIAL_NAMES()),
@@ -5731,7 +5275,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitSpecialRegister(CobolParser.SpecialRegisterContext ctx) {
         return new Cobol.SpecialRegister(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 convertAllList(singletonList(ctx.ADDRESS()), singletonList(ctx.LENGTH()), singletonList(ctx.OF()),
@@ -5751,7 +5294,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitStartKey(CobolParser.StartKeyContext ctx) {
         return new Cobol.StartKey(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.KEY(), ctx.IS(),
@@ -5764,7 +5306,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitStartStatement(CobolParser.StartStatementContext ctx) {
         return new Cobol.Start(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.START()),
@@ -5779,7 +5320,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitStatusKeyClause(CobolParser.StatusKeyClauseContext ctx) {
         return new Cobol.StatusKeyClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.STATUS(), ctx.KEY(), ctx.IS()),
@@ -5790,7 +5330,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Stop visitStopStatement(CobolParser.StopStatementContext ctx) {
         return new Cobol.Stop(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.STOP(), ctx.RUN()),
@@ -5802,7 +5341,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitStopStatementGiving(CobolParser.StopStatementGivingContext ctx) {
         return new Cobol.StopStatementGiving(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.RUN(), ctx.GIVING(), ctx.RETURNING()),
@@ -5813,7 +5351,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitStringDelimitedByPhrase(CobolParser.StringDelimitedByPhraseContext ctx) {
         return new Cobol.StringDelimitedByPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.DELIMITED(), ctx.BY()),
@@ -5824,7 +5361,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitStringForPhrase(CobolParser.StringForPhraseContext ctx) {
         return new Cobol.StringForPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.FOR()),
@@ -5835,7 +5371,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitStringIntoPhrase(CobolParser.StringIntoPhraseContext ctx) {
         return new Cobol.StringIntoPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.INTO()),
@@ -5846,7 +5381,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitStringSendingPhrase(CobolParser.StringSendingPhraseContext ctx) {
         return new Cobol.StringSendingPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 convertAllList(ctx.COMMACHAR(), ctx.stringSending()),
@@ -5857,7 +5391,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitStringStatement(CobolParser.StringStatementContext ctx) {
         return new Cobol.StringStatement(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.STRING()),
@@ -5873,7 +5406,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitStringWithPointerPhrase(CobolParser.StringWithPointerPhraseContext ctx) {
         return new Cobol.StringWithPointerPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.WITH(), ctx.POINTER()),
@@ -5884,7 +5416,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Subscript visitSubscript(CobolParser.SubscriptContext ctx) {
         return new Cobol.Subscript(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 ctx.ALL() == null && ctx.qualifiedDataName() == null &&
@@ -5897,7 +5428,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitSubtractCorrespondingStatement(CobolParser.SubtractCorrespondingStatementContext ctx) {
         return new Cobol.SubtractCorrespondingStatement(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.CORRESPONDING(), ctx.CORR()),
@@ -5910,7 +5440,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitSubtractFromGivingStatement(CobolParser.SubtractFromGivingStatementContext ctx) {
         return new Cobol.SubtractFromGivingStatement(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 convertAll(ctx.subtractSubtrahend()),
@@ -5924,7 +5453,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitSubtractFromStatement(CobolParser.SubtractFromStatementContext ctx) {
         return new Cobol.SubtractFromStatement(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 convertAll(ctx.subtractSubtrahend()),
@@ -5936,7 +5464,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitSubtractMinuendCorresponding(CobolParser.SubtractMinuendCorrespondingContext ctx) {
         return new Cobol.SubtractMinuendCorresponding(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.QualifiedDataName) visit(ctx.qualifiedDataName()),
@@ -5947,7 +5474,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitSubtractStatement(CobolParser.SubtractStatementContext ctx) {
         return new Cobol.Subtract(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.SUBTRACT()),
@@ -5961,7 +5487,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.SymbolicCharacter visitSymbolicCharacters(CobolParser.SymbolicCharactersContext ctx) {
         return new Cobol.SymbolicCharacter(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 convertAll(ctx.symbolicCharacter()),
@@ -5974,7 +5499,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.SymbolicCharactersClause visitSymbolicCharactersClause(CobolParser.SymbolicCharactersClauseContext ctx) {
         return new Cobol.SymbolicCharactersClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.SYMBOLIC(), ctx.CHARACTERS(), ctx.FOR(), ctx.ALPHANUMERIC(), ctx.NATIONAL()),
@@ -5987,7 +5511,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitSymbolicDestinationClause(CobolParser.SymbolicDestinationClauseContext ctx) {
         return new Cobol.SymbolicDestinationClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.SYMBOLIC(), ctx.DESTINATION(), ctx.IS()),
@@ -5998,7 +5521,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitSymbolicQueueClause(CobolParser.SymbolicQueueClauseContext ctx) {
         return new Cobol.SymbolicQueueClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.SYMBOLIC(), ctx.QUEUE(), ctx.IS()),
@@ -6009,7 +5531,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitSymbolicSourceClause(CobolParser.SymbolicSourceClauseContext ctx) {
         return new Cobol.SymbolicSourceClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.SYMBOLIC(), ctx.SOURCE(), ctx.IS()),
@@ -6020,7 +5541,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitSymbolicSubQueueClause(CobolParser.SymbolicSubQueueClauseContext ctx) {
         return new Cobol.SymbolicSubQueueClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.SYMBOLIC(), ctx.SUB_QUEUE_1(), ctx.SUB_QUEUE_2(), ctx.SUB_QUEUE_3(), ctx.IS()),
@@ -6031,7 +5551,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitSymbolicTerminalClause(CobolParser.SymbolicTerminalClauseContext ctx) {
         return new Cobol.SymbolicTerminalClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.SYMBOLIC(), ctx.TERMINAL(), ctx.IS()),
@@ -6042,7 +5561,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.TableCall visitTableCall(CobolParser.TableCallContext ctx) {
         return new Cobol.TableCall(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.QualifiedDataName) visit(ctx.qualifiedDataName()),
@@ -6054,7 +5572,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.Parenthesized visitTableCallSubscripts(CobolParser.TableCallSubscriptsContext ctx) {
         return new Cobol.Parenthesized(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.LPARENCHAR()),
@@ -6121,11 +5638,10 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
             }
             currentCopy = null;
             copyBookNotFound = false;
-        } else if (copiedWord != null){
+        } else if (copiedWord != null) {
             markers = markers.addIfAbsent(copiedWord);
         }
         Cobol.Word word = new Cobol.Word(
-                randomId(),
                 prefix,
                 markers,
                 cobolLines,
@@ -6147,7 +5663,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitTerminateStatement(CobolParser.TerminateStatementContext ctx) {
         return new Cobol.Terminate(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.TERMINATE()),
@@ -6158,7 +5673,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitTextLengthClause(CobolParser.TextLengthClauseContext ctx) {
         return new Cobol.TextLengthClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.TEXT(), ctx.LENGTH(), ctx.IS()),
@@ -6169,7 +5683,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitUnstringCountIn(CobolParser.UnstringCountInContext ctx) {
         return new Cobol.UnstringCountIn(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.COUNT(), ctx.IN()),
@@ -6180,7 +5693,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitUnstringDelimitedByPhrase(CobolParser.UnstringDelimitedByPhraseContext ctx) {
         return new Cobol.UnstringDelimitedByPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.DELIMITED(), ctx.BY(), ctx.ALL()),
@@ -6191,7 +5703,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitUnstringDelimiterIn(CobolParser.UnstringDelimiterInContext ctx) {
         return new Cobol.UnstringDelimiterIn(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.DELIMITER(), ctx.IN()),
@@ -6202,7 +5713,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitUnstringInto(CobolParser.UnstringIntoContext ctx) {
         return new Cobol.UnstringInto(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Identifier) visit(ctx.identifier()),
@@ -6214,7 +5724,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitUnstringIntoPhrase(CobolParser.UnstringIntoPhraseContext ctx) {
         return new Cobol.UnstringIntoPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.INTO()),
@@ -6225,7 +5734,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitUnstringOrAllPhrase(CobolParser.UnstringOrAllPhraseContext ctx) {
         return new Cobol.UnstringOrAllPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.OR(), ctx.ALL()),
@@ -6236,7 +5744,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitUnstringSendingPhrase(CobolParser.UnstringSendingPhraseContext ctx) {
         return new Cobol.UnstringSendingPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Identifier) visit(ctx.identifier()),
@@ -6248,7 +5755,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitUnstringStatement(CobolParser.UnstringStatementContext ctx) {
         return new Cobol.UnString(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.UNSTRING()),
@@ -6265,7 +5771,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitUnstringTallyingPhrase(CobolParser.UnstringTallyingPhraseContext ctx) {
         return new Cobol.UnstringTallyingPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.TALLYING(), ctx.IN()),
@@ -6276,7 +5781,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitUnstringWithPointerPhrase(CobolParser.UnstringWithPointerPhraseContext ctx) {
         return new Cobol.UnstringWithPointerPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.WITH(), ctx.POINTER()),
@@ -6287,7 +5791,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitUseAfterClause(CobolParser.UseAfterClauseContext ctx) {
         return new Cobol.UseAfterClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.GLOBAL(), ctx.AFTER(), ctx.STANDARD(), ctx.EXCEPTION(), ctx.ERROR(), ctx.PROCEDURE(), ctx.ON()),
@@ -6298,7 +5801,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitUseAfterOn(CobolParser.UseAfterOnContext ctx) {
         return new Cobol.UseAfterOn(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.INPUT(), ctx.OUTPUT(), ctx.I_O(), ctx.EXTEND()),
@@ -6309,7 +5811,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitUseDebugClause(CobolParser.UseDebugClauseContext ctx) {
         return new Cobol.UseDebugClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.FOR(), ctx.DEBUGGING(), ctx.ON()),
@@ -6320,7 +5821,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitUseDebugOn(CobolParser.UseDebugOnContext ctx) {
         return new Cobol.UseDebugOn(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.ALL(), ctx.PROCEDURES(), ctx.REFERENCES(), ctx.OF()),
@@ -6331,7 +5831,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitUseStatement(CobolParser.UseStatementContext ctx) {
         return new Cobol.UseStatement(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.USE()),
@@ -6342,7 +5841,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitValueOfClause(CobolParser.ValueOfClauseContext ctx) {
         return new Cobol.ValueOfClause(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.VALUE(), ctx.OF()),
@@ -6353,7 +5851,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitValuePair(CobolParser.ValuePairContext ctx) {
         return new Cobol.ValuePair(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.systemName()),
@@ -6365,7 +5862,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Cobol.WorkingStorageSection visitWorkingStorageSection(CobolParser.WorkingStorageSectionContext ctx) {
         return new Cobol.WorkingStorageSection(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.WORKING_STORAGE(), ctx.SECTION()),
@@ -6377,7 +5873,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitWriteAdvancingLines(CobolParser.WriteAdvancingLinesContext ctx) {
         return new Cobol.WriteAdvancingLines(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.identifier(), ctx.literal()),
@@ -6389,7 +5884,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitWriteAdvancingMnemonic(CobolParser.WriteAdvancingMnemonicContext ctx) {
         return new Cobol.WriteAdvancingMnemonic(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Name) visit(ctx.mnemonicName())
@@ -6399,7 +5893,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitWriteAdvancingPage(CobolParser.WriteAdvancingPageContext ctx) {
         return new Cobol.WriteAdvancingPage(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.PAGE())
@@ -6409,7 +5902,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitWriteAdvancingPhrase(CobolParser.WriteAdvancingPhraseContext ctx) {
         return new Cobol.WriteAdvancingPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.BEFORE(), ctx.AFTER(), ctx.ADVANCING()),
@@ -6420,7 +5912,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitWriteAtEndOfPagePhrase(CobolParser.WriteAtEndOfPagePhraseContext ctx) {
         return new Cobol.StatementPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.AT(), ctx.END_OF_PAGE(), ctx.EOP()),
@@ -6431,7 +5922,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitWriteFromPhrase(CobolParser.WriteFromPhraseContext ctx) {
         return new Cobol.WriteFromPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visitNullable(ctx.FROM()),
@@ -6442,7 +5932,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitWriteNotAtEndOfPagePhrase(CobolParser.WriteNotAtEndOfPagePhraseContext ctx) {
         return new Cobol.StatementPhrase(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.NOT(), ctx.AT(), ctx.END_OF_PAGE(), ctx.EOP()),
@@ -6453,7 +5942,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     @Override
     public Object visitWriteStatement(CobolParser.WriteStatementContext ctx) {
         return new Cobol.Write(
-                randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.WRITE()),
@@ -6971,9 +6459,8 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                         null,
                         false,
                         null,
-                        new CobolPreprocessor.Word(randomId(), EMPTY, Markers.EMPTY,
+                        new CobolPreprocessor.Word(EMPTY, Markers.EMPTY,
                                 new Cobol.Word(
-                                        randomId(),
                                         EMPTY,
                                         Markers.EMPTY,
                                         lines,
@@ -6987,9 +6474,8 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                                         null,
                                         null,
                                         emptyList())),
-                        new CobolPreprocessor.Word(randomId(), EMPTY, Markers.EMPTY,
+                        new CobolPreprocessor.Word(EMPTY, Markers.EMPTY,
                                 new Cobol.Word(
-                                        randomId(),
                                         EMPTY,
                                         Markers.EMPTY,
                                         null,
@@ -7320,13 +6806,13 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
      * Return the IndicatorArea based on the current cursor position if it exists.
      *
      * @param continuationDelimiter the next expected Character in the source that comes after the indicator.
-     * @param isStringLiteral String literals and Keywords/Identifiers have different rules for line continuations.
-     *                        A continued String literal will be prefixed by the delimiter `'` or `"`,
-     *                        which needs to exist in the indicator marker.
-     *                        I.E. 000001-|<whitespace including the delimiter " or '>|some continued string literal.
-     * <p>
-     *                        A continued Keyword/Identifier should not include the delimiter.
-     *                        I.E. 000001-|<whitespace added to indicator>|TOKEN-NAME.
+     * @param isStringLiteral       String literals and Keywords/Identifiers have different rules for line continuations.
+     *                              A continued String literal will be prefixed by the delimiter ' or ",
+     *                              which needs to exist in the indicator marker.
+     *                              I.E. 000001-|<whitespace including the delimiter " or '>|some continued string literal.
+     *                              <p>
+     *                              A continued Keyword/Identifier should not include the delimiter.
+     *                              I.E. 000001-|<whitespace added to indicator>|TOKEN-NAME.
      */
     @Nullable
     private IndicatorArea indicatorArea(@Nullable Character continuationDelimiter, boolean isStringLiteral) {
