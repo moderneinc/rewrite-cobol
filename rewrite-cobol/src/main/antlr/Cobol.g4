@@ -1550,7 +1550,7 @@ ifElse
 // initialize statement
 
 initializeStatement
-   : INITIALIZE identifier+ initializeReplacingPhrase?
+   : INITIALIZE identifier (COMMACHAR? identifier)* initializeReplacingPhrase?
    ;
 
 initializeReplacingPhrase
