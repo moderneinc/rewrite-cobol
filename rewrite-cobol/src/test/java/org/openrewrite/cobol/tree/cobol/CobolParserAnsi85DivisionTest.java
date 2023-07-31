@@ -212,6 +212,46 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
         );
     }
 
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/42")
+    @Test
+    void commaDelimitedCallUsingPhrase() {
+        rewriteRun(
+          cobol(
+            """
+              000001 IDENTIFICATION DIVISION .                                        000000000
+                     PROGRAM-ID . HELLO-WORLD .                                       000000000
+                     PROCEDURE DIVISION .                                             000000000
+                         NAME SECTION 01.                                             000000000
+                             CALL NAME USING NAME01
+                                             NAME02,
+                                             NAME03.
+                     STOP RUN .                                                       000000000
+              """
+          )
+        );
+    }
+
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/42")
+    @Test
+    void commaDelimitedFileEntry() {
+        rewriteRun(
+          cobol(
+            """
+              000001 IDENTIFICATION DIVISION .                                        000000000
+                     PROGRAM-ID . HELLO-WORLD .                                       000000000
+                     ENVIRONMENT DIVISION .                                           000000000
+                     INPUT-OUTPUT SECTION .                                           000000000
+                     FILE-CONTROL .                                                   000000000
+                         SELECT NAME ASSIGN TO DISK,
+                                     ASSIGN TO DISPLAY,
+                                     ASSIGN TO KEYBOARD.
+                     PROCEDURE DIVISION .                                             000000000
+                     STOP RUN .                                                       000000000
+              """
+          )
+        );
+    }
+
     @Test
     void arithmetic() {
         rewriteRun(

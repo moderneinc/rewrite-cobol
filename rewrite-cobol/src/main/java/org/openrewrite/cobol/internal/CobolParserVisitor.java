@@ -762,7 +762,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.USING()),
-                convertAll(ctx.callUsingParameter())
+                convertAllList(ctx.COMMACHAR(), ctx.callUsingParameter())
         );
     }
 
@@ -2113,7 +2113,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol) visit(ctx.selectClause()),
-                convertAll(ctx.fileControlClause())
+                convertAllList(ctx.COMMACHAR(), ctx.fileControlClause())
         );
     }
 

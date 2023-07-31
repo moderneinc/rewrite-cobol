@@ -263,7 +263,7 @@ fileControlParagraph
    ;
 
 fileControlEntry
-   : selectClause fileControlClause*
+   : selectClause fileControlClause? (COMMACHAR? fileControlClause)*
    ;
 
 selectClause
@@ -1253,7 +1253,7 @@ callStatement
    ;
 
 callUsingPhrase
-   : USING callUsingParameter+
+   : USING callUsingParameter (COMMACHAR? callUsingParameter)*
    ;
 
 callUsingParameter
