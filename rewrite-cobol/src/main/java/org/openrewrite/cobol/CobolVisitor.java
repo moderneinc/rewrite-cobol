@@ -4318,6 +4318,8 @@ public class CobolVisitor<P> extends TreeVisitor<Cobol, P> {
             return w;
         }
 
+        w = w.withPreprocessorStatements(ListUtils.map(w.getPreprocessorStatements(), it -> getCobolPreprocessorVisitor().visit(it, p)));
+
         w = w.withPrefix(visitSpace(w.getPrefix(), Space.Location.WORD_PREFIX, p));
         w = w.withMarkers(visitMarkers(w.getMarkers(), p));
 

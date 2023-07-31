@@ -389,6 +389,104 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
     }
 
     @Test
+    void eject() {
+        rewriteRun(
+          cobol(
+            """
+              000000 IDENTIFICATION DIVISION .                                       \s
+                     PROGRAM-ID . HELLO-WORLD .                                      \s
+                     DATA DIVISION .                                                 \s
+                         WORKING-STORAGE SECTION .                                   \s
+                         EJECT                                                       \s
+                             77 X PIC 99.                                            \s
+                             77 Y PIC 99.                                            \s
+                             77 Z PIC 99.                                            \s
+                     PROCEDURE DIVISION .                                            \s
+                         SET X TO 10 .                                               \s
+                         SET Y TO 25 .                                               \s
+                         ADD X Y GIVING Z .                                          \s
+                         DISPLAY "X + Y = "Z .                                       \s
+                     STOP RUN .                                                      \s
+              """
+          )
+        );
+    }
+
+    @Test
+    void exec() {
+        rewriteRun(
+          cobol(
+            """
+              000000 IDENTIFICATION DIVISION .                                       \s
+                     PROGRAM-ID . HELLO-WORLD .                                      \s
+                     DATA DIVISION .                                                 \s
+                         WORKING-STORAGE SECTION .                                   \s
+                         EXEC CICS 01 END-EXEC                                       \s
+                         EXEC SQL 01 END-EXEC                                        \s
+                         EXEC SQLIMS 01 END-EXEC                                     \s
+                             77 X PIC 99.                                            \s
+                             77 Y PIC 99.                                            \s
+                             77 Z PIC 99.                                            \s
+                     PROCEDURE DIVISION .                                            \s
+                         SET X TO 10 .                                               \s
+                         SET Y TO 25 .                                               \s
+                         ADD X Y GIVING Z .                                          \s
+                         DISPLAY "X + Y = "Z .                                       \s
+                     STOP RUN .                                                      \s
+              """
+          )
+        );
+    }
+
+    @Test
+    void skip() {
+        rewriteRun(
+          cobol(
+            """
+              000000 IDENTIFICATION DIVISION .                                       \s
+                     PROGRAM-ID . HELLO-WORLD .                                      \s
+                     DATA DIVISION .                                                 \s
+                         WORKING-STORAGE SECTION .                                   \s
+                         SKIP3                                                       \s
+                             77 X PIC 99.                                            \s
+                             77 Y PIC 99.                                            \s
+                             77 Z PIC 99.                                            \s
+                     PROCEDURE DIVISION .                                            \s
+                         SET X TO 10 .                                               \s
+                         SET Y TO 25 .                                               \s
+                         ADD X Y GIVING Z .                                          \s
+                         DISPLAY "X + Y = "Z .                                       \s
+                     STOP RUN .                                                      \s
+              """
+          )
+        );
+    }
+
+    @Test
+    void title() {
+        rewriteRun(
+          cobol(
+            """
+              000000 IDENTIFICATION DIVISION .                                       \s
+                     PROGRAM-ID . HELLO-WORLD .                                      \s
+                     DATA DIVISION .                                                 \s
+                         WORKING-STORAGE SECTION .                                   \s
+                         TITLE 01                                                    \s
+                             77 X PIC 99.                                            \s
+                             77 Y PIC 99.                                            \s
+                             77 Z PIC 99.                                            \s
+                     PROCEDURE DIVISION .                                            \s
+                         SET X TO 10 .                                               \s
+                         SET Y TO 25 .                                               \s
+                         ADD X Y GIVING Z .                                          \s
+                         DISPLAY "X + Y = "Z .                                       \s
+                     STOP RUN .                                                      \s
+              """
+          )
+        );
+    }
+
+    @Test
     void arithmetic() {
         rewriteRun(
           cobol(

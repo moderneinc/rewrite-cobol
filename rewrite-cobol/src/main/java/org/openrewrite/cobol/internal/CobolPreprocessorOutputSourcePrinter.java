@@ -62,6 +62,18 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
     public static final String COMPILER_OPTIONS_START_KEY = "__COMPILER_OPTIONS_START__";
     public static final String COMPILER_OPTIONS_STOP_KEY = "__COMPILER_OPTIONS_STOP__";
 
+    public static final String EJECT_START_KEY = "__EJECT_START__";
+    public static final String EJECT_STOP_KEY = "__EJECT_STOP__";
+
+    public static final String EXEC_START__KEY = "__EXEC_START__";
+    public static final String EXEC_STOP_KEY = "__EXEC_STOP__";
+
+    public static final String SKIP_START_KEY = "__SKIP_START__";
+    public static final String SKIP_STOP_KEY = "__SKIP_STOP__";
+
+    public static final String TITLE_START_KEY = "__TITLE_START__";
+    public static final String TITLE_STOP_KEY = "__TITLE_STOP__";
+
     private final CobolSourcePrinter<P> cobolSourcePrinter;
     private final CobolDialect cobolDialect;
     private final boolean printColumns;
@@ -100,6 +112,18 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
 
     private String compilerOptionsStartComment = null;
     private String compilerOptionsStopComment = null;
+
+    private String ejectStartComment = null;
+    private String ejectStopComment = null;
+
+    private String execStartComment = null;
+    private String execStopComment = null;
+
+    private String skipStartComment = null;
+    private String skipStopComment = null;
+
+    private String titleStartComment = null;
+    private String titleStopComment = null;
 
     private final CobolPreprocessorSourcePrinter<ExecutionContext> statementPrinter = new CobolPreprocessorSourcePrinter<>(false);
     private final CobolSourcePrinter<ExecutionContext> cobolStatementPrinter = new CobolSourcePrinter<>(false);
@@ -218,6 +242,30 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
     }
 
     @Override
+    public CobolPreprocessor visitEjectStatement(CobolPreprocessor.EjectStatement ejectStatement, PrintOutputCapture<P> p) {
+        if (printColumns) {
+            int curIndex = getCurrentIndex(p.getOut());
+            curIndex = curIndex == -1 ? 0 : curIndex;
+            addStartKey(getEjectStartComment(), curIndex, p);
+            addUuidKey(getUuidComment(), ejectStatement.getId(), p);
+            addStopComment(getEjectStopComment(), null, curIndex, p);
+        }
+        return ejectStatement;
+    }
+
+    @Override
+    public CobolPreprocessor visitExecStatement(CobolPreprocessor.ExecStatement execStatement, PrintOutputCapture<P> p) {
+        if (printColumns) {
+            int curIndex = getCurrentIndex(p.getOut());
+            curIndex = curIndex == -1 ? 0 : curIndex;
+            addStartKey(getExecStartComment(), curIndex, p);
+            addUuidKey(getUuidComment(), execStatement.getId(), p);
+            addStopComment(getExecStopComment(), null, curIndex, p);
+        }
+        return execStatement;
+    }
+
+    @Override
     public CobolPreprocessor visitReplaceArea(CobolPreprocessor.ReplaceArea replaceArea, PrintOutputCapture<P> p) {
         if (printColumns) {
             replaceByTemplate(replaceArea, p);
@@ -258,6 +306,30 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
         addStartKey(getReplaceOffStartComment(), curIndex, p);
         addUuidKey(getUuidComment(), replaceOffStatement.getId(), p);
         addStopComment(getReplaceOffStopComment(), replaceOffStatement, curIndex, p);
+    }
+
+    @Override
+    public CobolPreprocessor visitSkipStatement(CobolPreprocessor.SkipStatement skipStatement, PrintOutputCapture<P> p) {
+        if (printColumns) {
+            int curIndex = getCurrentIndex(p.getOut());
+            curIndex = curIndex == -1 ? 0 : curIndex;
+            addStartKey(getSkipStartComment(), curIndex, p);
+            addUuidKey(getUuidComment(), skipStatement.getId(), p);
+            addStopComment(getSkipStopComment(), null, curIndex, p);
+        }
+        return skipStatement;
+    }
+
+    @Override
+    public CobolPreprocessor visitTitleStatement(CobolPreprocessor.TitleStatement titleStatement, PrintOutputCapture<P> p) {
+        if (printColumns) {
+            int curIndex = getCurrentIndex(p.getOut());
+            curIndex = curIndex == -1 ? 0 : curIndex;
+            addStartKey(getTitleStartComment(), curIndex, p);
+            addUuidKey(getUuidComment(), titleStatement.getId(), p);
+            addStopComment(getTitleStopComment(), null, curIndex, p);
+        }
+        return titleStatement;
     }
 
     @Override
@@ -812,6 +884,62 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
             compilerOptionsStopComment = getTemplateComment(COMPILER_OPTIONS_STOP_KEY);
         }
         return compilerOptionsStopComment;
+    }
+
+    public String getEjectStartComment() {
+        if (ejectStartComment == null) {
+            ejectStartComment = getTemplateComment(EJECT_START_KEY);
+        }
+        return ejectStartComment;
+    }
+
+    public String getEjectStopComment() {
+        if (ejectStopComment == null) {
+            ejectStopComment = getTemplateComment(EJECT_STOP_KEY);
+        }
+        return ejectStopComment;
+    }
+
+    public String getExecStartComment() {
+        if (execStartComment == null) {
+            execStartComment = getTemplateComment(EXEC_START__KEY);
+        }
+        return execStartComment;
+    }
+
+    public String getExecStopComment() {
+        if (execStopComment == null) {
+            execStopComment = getTemplateComment(EXEC_STOP_KEY);
+        }
+        return execStopComment;
+    }
+
+    public String getSkipStartComment() {
+        if (skipStartComment == null) {
+            skipStartComment = getTemplateComment(SKIP_START_KEY);
+        }
+        return skipStartComment;
+    }
+
+    public String getSkipStopComment() {
+        if (skipStopComment == null) {
+            skipStopComment = getTemplateComment(SKIP_STOP_KEY);
+        }
+        return skipStopComment;
+    }
+
+    public String getTitleStartComment() {
+        if (titleStartComment == null) {
+            titleStartComment = getTemplateComment(TITLE_START_KEY);
+        }
+        return titleStartComment;
+    }
+
+    public String getTitleStopComment() {
+        if (titleStopComment == null) {
+            titleStopComment = getTemplateComment(TITLE_STOP_KEY);
+        }
+        return titleStopComment;
     }
 
     public String getUuidComment() {

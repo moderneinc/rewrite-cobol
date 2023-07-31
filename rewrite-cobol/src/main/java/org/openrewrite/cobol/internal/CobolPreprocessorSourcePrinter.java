@@ -14,7 +14,6 @@ import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.marker.Marker;
 import org.openrewrite.marker.Markers;
 
-import java.util.*;
 import java.util.function.UnaryOperator;
 
 /**
@@ -27,14 +26,9 @@ public class CobolPreprocessorSourcePrinter<P> extends CobolPreprocessorVisitor<
     private final boolean printColumns;
     private int originalReplaceLength;
 
-    private final Collection<String> printedCopyStatements;
-    private final Collection<String> printedReductiveReplaces;
-
     public CobolPreprocessorSourcePrinter(boolean printColumns) {
         this.cobolSourcePrinter = new CobolSourcePrinter<>(printColumns);
         this.printColumns = printColumns;
-        this.printedCopyStatements = new HashSet<>();
-        this.printedReductiveReplaces = new HashSet<>();
     }
 
     @Override
@@ -291,9 +285,7 @@ public class CobolPreprocessorSourcePrinter<P> extends CobolPreprocessorVisitor<
         // The COBOL word is a product of a copy statement.
         if (word.getCobolWord().getCopyStatement() != null) {
             // Print the original Copy Statement in place of the first word from the copied source.
-            if (printedCopyStatements.add(word.getCobolWord().getCopyStatement().getId().toString())) {
-                visit(word.getCobolWord().getCopyStatement(), p);
-            }
+            visit(word.getCobolWord().getCopyStatement(), p);
 
             // Do not print the AST for the copied source.
             return word;

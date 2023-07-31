@@ -21,6 +21,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.openrewrite.Tree.randomId;
 import static org.openrewrite.cobol.CobolStringUtils.isSubstituteCharacter;
@@ -780,6 +781,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
         CobolPreprocessor.ReplaceByStatement replaceByStatement = null;
         CobolPreprocessor.ReplaceOffStatement replaceOffStatement = null;
         Replacement replacement = null;
+        List<CobolPreprocessor> preprocessorStatements = new ArrayList<>();
 
         for (Object object : objects) {
             if (object instanceof List) {
@@ -801,6 +803,11 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
                 replaceOffStatement = (CobolPreprocessor.ReplaceOffStatement) object;
             } else if (object instanceof Replacement) {
                 replacement = (Replacement) object;
+            } else if (object instanceof CobolPreprocessor.EjectStatement ||
+                    object instanceof CobolPreprocessor.ExecStatement ||
+                    object instanceof CobolPreprocessor.SkipStatement ||
+                    object instanceof CobolPreprocessor.TitleStatement) {
+                preprocessorStatements.add((CobolPreprocessor) object);
             }
         }
 
@@ -821,7 +828,9 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
                         copyStatement,
                         replaceByStatement,
                         replaceOffStatement,
-                        replacement)
+                        replacement,
+                        preprocessorStatements.isEmpty() ? emptyList() : preprocessorStatements
+                )
         );
     }
 

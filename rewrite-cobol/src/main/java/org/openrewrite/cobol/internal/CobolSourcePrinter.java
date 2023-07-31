@@ -4360,6 +4360,8 @@ public class CobolSourcePrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
             }
         }
 
+        getCobolPreprocessorVisitor().visit(word.getPreprocessorStatements(), p);
+
         if (printColumns) {
             if (word.getLines() != null) {
                 for (CobolLine cobolLine : word.getLines()) {

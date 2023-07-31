@@ -22,496 +22,496 @@ public class CobolParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		ABORT=1, ACCEPT=2, ACCESS=3, ADD=4, ADDRESS=5, ADVANCING=6, AFTER=7, ALIGNED=8,
-		ALL=9, ALPHABET=10, ALPHABETIC=11, ALPHABETIC_LOWER=12, ALPHABETIC_UPPER=13,
-		ALPHANUMERIC=14, ALPHANUMERIC_EDITED=15, ALSO=16, ALTER=17, ALTERNATE=18,
-		AND=19, ANY=20, ARE=21, AREA=22, AREAS=23, AS=24, ASCENDING=25, ASCII=26,
-		ASSIGN=27, ASSOCIATED_DATA=28, ASSOCIATED_DATA_LENGTH=29, AT=30, ATTRIBUTE=31,
-		AUTHOR=32, AUTO=33, AUTO_SKIP=34, BACKGROUND_COLOR=35, BACKGROUND_COLOUR=36,
-		BASIS=37, BEEP=38, BEFORE=39, BEGINNING=40, BELL=41, BINARY=42, BIT=43,
-		BLANK=44, BLINK=45, BLOB=46, BLOCK=47, BOUNDS=48, BOTTOM=49, BY=50, BYFUNCTION=51,
-		BYTITLE=52, CALL=53, CANCEL=54, CAPABLE=55, CCSVERSION=56, CD=57, CF=58,
-		CH=59, CHAINING=60, CHANGED=61, CHANNEL=62, CHARACTER=63, CHARACTERS=64,
-		CLASS=65, CLASS_ID=66, CLOB=67, CLOCK_UNITS=68, CLOSE=69, CLOSE_DISPOSITION=70,
-		COBOL=71, CODE=72, CODE_SET=73, COLLATING=74, COL=75, COLUMN=76, COM_REG=77,
-		COMMA=78, COMMITMENT=79, COMMON=80, COMMUNICATION=81, COMP=82, COMP_1=83,
-		COMP_2=84, COMP_3=85, COMP_4=86, COMP_5=87, COMPUTATIONAL=88, COMPUTATIONAL_1=89,
-		COMPUTATIONAL_2=90, COMPUTATIONAL_3=91, COMPUTATIONAL_4=92, COMPUTATIONAL_5=93,
-		COMPUTE=94, CONFIGURATION=95, CONTAINS=96, CONTENT=97, CONTINUE=98, CONTROL=99,
-		CONTROL_POINT=100, CONTROLS=101, CONVENTION=102, CONVERTING=103, COPY=104,
-		CORR=105, CORRESPONDING=106, COUNT=107, CRUNCH=108, CURRENCY=109, CURSOR=110,
-		DATA=111, DATA_BASE=112, DATE=113, DATE_COMPILED=114, DATE_WRITTEN=115,
-		DAY=116, DAY_OF_WEEK=117, DBCS=118, DBCLOB=119, DE=120, DEBUG_CONTENTS=121,
-		DEBUG_ITEM=122, DEBUG_LINE=123, DEBUG_NAME=124, DEBUG_SUB_1=125, DEBUG_SUB_2=126,
-		DEBUG_SUB_3=127, DEBUGGING=128, DECIMAL_POINT=129, DECLARATIVES=130, DEFAULT=131,
-		DEFAULT_DISPLAY=132, DEFINITION=133, DELETE=134, DELIMITED=135, DELIMITER=136,
-		DEPENDING=137, DESCENDING=138, DESTINATION=139, DETAIL=140, DFHRESP=141,
-		DFHVALUE=142, DISABLE=143, DISK=144, DISPLAY=145, DISPLAY_1=146, DIVIDE=147,
-		DIVISION=148, DONTCARE=149, DOUBLE=150, DOWN=151, DUPLICATES=152, DYNAMIC=153,
-		EBCDIC=154, EGCS=155, EGI=156, ELSE=157, EMI=158, EMPTY_CHECK=159, ENABLE=160,
-		END=161, END_ACCEPT=162, END_ADD=163, END_CALL=164, END_COMPUTE=165, END_DELETE=166,
-		END_DISPLAY=167, END_DIVIDE=168, END_EVALUATE=169, END_IF=170, END_MULTIPLY=171,
-		END_OF_PAGE=172, END_PERFORM=173, END_READ=174, END_RECEIVE=175, END_REMARKS=176,
-		END_RETURN=177, END_REWRITE=178, END_SEARCH=179, END_START=180, END_STRING=181,
-		END_SUBTRACT=182, END_UNSTRING=183, END_WRITE=184, ENDING=185, ENTER=186,
-		ENTRY=187, ENTRY_PROCEDURE=188, ENVIRONMENT=189, EOP=190, EQUAL=191, ERASE=192,
-		ERROR=193, EOL=194, EOS=195, ESCAPE=196, ESI=197, EVALUATE=198, EVENT=199,
-		EVERY=200, EXCEPTION=201, EXCLUSIVE=202, EXHIBIT=203, EXIT=204, EXPORT=205,
-		EXTEND=206, EXTENDED=207, EXTERNAL=208, FALSE=209, FD=210, FILE=211, FILE_CONTROL=212,
-		FILLER=213, FINAL=214, FIRST=215, FOOTING=216, FOR=217, FOREGROUND_COLOR=218,
-		FOREGROUND_COLOUR=219, FROM=220, FULL=221, FUNCTION=222, FUNCTIONNAME=223,
-		FUNCTION_POINTER=224, GENERATE=225, GOBACK=226, GIVING=227, GLOBAL=228,
-		GO=229, GREATER=230, GRID=231, GROUP=232, HEADING=233, HIGHLIGHT=234,
-		HIGH_VALUE=235, HIGH_VALUES=236, I_O=237, I_O_CONTROL=238, ID=239, IDENTIFICATION=240,
-		IF=241, IMPLICIT=242, IMPORT=243, IN=244, INDEX=245, INDEXED=246, INDICATE=247,
-		INITIAL=248, INITIALIZE=249, INITIATE=250, INPUT=251, INPUT_OUTPUT=252,
-		INSPECT=253, INSTALLATION=254, INTEGER=255, INTO=256, INVALID=257, INVOKE=258,
-		IS=259, JUST=260, JUSTIFIED=261, KANJI=262, KEPT=263, KEY=264, KEYBOARD=265,
-		LABEL=266, LANGUAGE=267, LAST=268, LB=269, LD=270, LEADING=271, LEFT=272,
-		LEFTLINE=273, LENGTH=274, LENGTH_CHECK=275, LESS=276, LIBACCESS=277, LIBPARAMETER=278,
-		LIBRARY=279, LIMIT=280, LIMITS=281, LINAGE=282, LINAGE_COUNTER=283, LINE=284,
-		LINES=285, LINE_COUNTER=286, LINKAGE=287, LIST=288, LOCAL=289, LOCAL_STORAGE=290,
-		LOCK=291, LONG_DATE=292, LONG_TIME=293, LOWER=294, LOWLIGHT=295, LOW_VALUE=296,
-		LOW_VALUES=297, MEMORY=298, MERGE=299, MESSAGE=300, MMDDYYYY=301, MODE=302,
-		MODULES=303, MORE_LABELS=304, MOVE=305, MULTIPLE=306, MULTIPLY=307, NAMED=308,
-		NATIONAL=309, NATIONAL_EDITED=310, NATIVE=311, NEGATIVE=312, NETWORK=313,
-		NEXT=314, NO=315, NO_ECHO=316, NOT=317, NULL=318, NULLS=319, NUMBER=320,
-		NUMERIC=321, NUMERIC_DATE=322, NUMERIC_EDITED=323, NUMERIC_TIME=324, OBJECT_COMPUTER=325,
-		OCCURS=326, ODT=327, OF=328, OFF=329, OMITTED=330, ON=331, OPEN=332, OPTIONAL=333,
-		OR=334, ORDER=335, ORDERLY=336, ORGANIZATION=337, OTHER=338, OUTPUT=339,
-		OVERFLOW=340, OVERLINE=341, OWN=342, PACKED_DECIMAL=343, PADDING=344,
-		PAGE=345, PAGE_COUNTER=346, PASSWORD=347, PERFORM=348, PF=349, PH=350,
-		PIC=351, PICTURE=352, PLUS=353, POINTER=354, POSITION=355, POSITIVE=356,
-		PORT=357, PRINTER=358, PRINTING=359, PRIVATE=360, PROCEDURE=361, PROCEDURE_POINTER=362,
-		PROCEDURES=363, PROCEED=364, PROCESS=365, PROGRAM=366, PROGRAM_ID=367,
-		PROGRAM_LIBRARY=368, PROMPT=369, PURGE=370, QUEUE=371, QUOTE=372, QUOTES=373,
-		RANDOM=374, READER=375, REMOTE=376, RD=377, REAL=378, READ=379, RECEIVE=380,
-		RECEIVED=381, RECORD=382, RECORDING=383, RECORDS=384, RECURSIVE=385, REDEFINES=386,
-		REEL=387, REF=388, REFERENCE=389, REFERENCES=390, RELATIVE=391, RELEASE=392,
-		REMAINDER=393, REMARKS=394, REMOVAL=395, REMOVE=396, RENAMES=397, REPLACE=398,
-		REPLACING=399, REPORT=400, REPORTING=401, REPORTS=402, REQUIRED=403, RERUN=404,
-		RESERVE=405, REVERSE_VIDEO=406, RESET=407, RETURN=408, RETURN_CODE=409,
-		RETURNING=410, REVERSED=411, REWIND=412, REWRITE=413, RF=414, RH=415,
-		RIGHT=416, ROUNDED=417, RUN=418, SAME=419, SAVE=420, SCREEN=421, SD=422,
-		SEARCH=423, SECTION=424, SECURE=425, SECURITY=426, SEGMENT=427, SEGMENT_LIMIT=428,
-		SELECT=429, SEND=430, SENTENCE=431, SEPARATE=432, SEQUENCE=433, SEQUENTIAL=434,
-		SET=435, SHARED=436, SHAREDBYALL=437, SHAREDBYRUNUNIT=438, SHARING=439,
-		SHIFT_IN=440, SHIFT_OUT=441, SHORT_DATE=442, SIGN=443, SIZE=444, SORT=445,
-		SORT_CONTROL=446, SORT_CORE_SIZE=447, SORT_FILE_SIZE=448, SORT_MERGE=449,
-		SORT_MESSAGE=450, SORT_MODE_SIZE=451, SORT_RETURN=452, SOURCE=453, SOURCE_COMPUTER=454,
-		SPACE=455, SPACES=456, SPECIAL_NAMES=457, SQL=458, STANDARD=459, STANDARD_1=460,
-		STANDARD_2=461, START=462, STATUS=463, STOP=464, STRING=465, SUB_QUEUE_1=466,
-		SUB_QUEUE_2=467, SUB_QUEUE_3=468, SUBTRACT=469, SUM=470, SUPPRESS=471,
-		SYMBOL=472, SYMBOLIC=473, SYNC=474, SYNCHRONIZED=475, TABLE=476, TALLY=477,
-		TALLYING=478, TASK=479, TAPE=480, TERMINAL=481, TERMINATE=482, TEST=483,
-		TEXT=484, THAN=485, THEN=486, THREAD=487, THREAD_LOCAL=488, THROUGH=489,
-		THRU=490, TIME=491, TIMER=492, TIMES=493, TITLE=494, TO=495, TODAYS_DATE=496,
-		TODAYS_NAME=497, TOP=498, TRAILING=499, TRUE=500, TRUNCATED=501, TYPE=502,
-		TYPEDEF=503, UNDERLINE=504, UNIT=505, UNSTRING=506, UNTIL=507, UP=508,
-		UPON=509, USAGE=510, USE=511, USING=512, VALUE=513, VALUES=514, VARYING=515,
-		VIRTUAL=516, WAIT=517, WHEN=518, WHEN_COMPILED=519, WITH=520, WORDS=521,
-		WORKING_STORAGE=522, WRITE=523, YEAR=524, YYYYMMDD=525, YYYYDDD=526, ZERO=527,
-		ZERO_FILL=528, ZEROS=529, ZEROES=530, AMPCHAR=531, ASTERISKCHAR=532, DOUBLEASTERISKCHAR=533,
-		COLONCHAR=534, COMMACHAR=535, COMMENTENTRYTAG=536, COMMENTTAG=537, DOLLARCHAR=538,
-		DOUBLEQUOTE=539, DOT_FS=540, EQUALCHAR=541, EXECCICSTAG=542, EXECSQLTAG=543,
-		EXECSQLIMSTAG=544, LESSTHANCHAR=545, LESSTHANOREQUAL=546, LPARENCHAR=547,
-		MINUSCHAR=548, MORETHANCHAR=549, MORETHANOREQUAL=550, NOTEQUALCHAR=551,
-		PLUSCHAR=552, SINGLEQUOTE=553, RPARENCHAR=554, SLASHCHAR=555, NONNUMERICLITERAL=556,
-		LEVEL_NUMBER_66=557, LEVEL_NUMBER_77=558, LEVEL_NUMBER_88=559, INTEGERLITERAL=560,
-		NUMERICLITERAL=561, IDENTIFIER=562, NEWLINE=563, EXECCICSLINE=564, EXECSQLIMSLINE=565,
+		ABORT=1, ACCEPT=2, ACCESS=3, ADD=4, ADDRESS=5, ADVANCING=6, AFTER=7, ALIGNED=8, 
+		ALL=9, ALPHABET=10, ALPHABETIC=11, ALPHABETIC_LOWER=12, ALPHABETIC_UPPER=13, 
+		ALPHANUMERIC=14, ALPHANUMERIC_EDITED=15, ALSO=16, ALTER=17, ALTERNATE=18, 
+		AND=19, ANY=20, ARE=21, AREA=22, AREAS=23, AS=24, ASCENDING=25, ASCII=26, 
+		ASSIGN=27, ASSOCIATED_DATA=28, ASSOCIATED_DATA_LENGTH=29, AT=30, ATTRIBUTE=31, 
+		AUTHOR=32, AUTO=33, AUTO_SKIP=34, BACKGROUND_COLOR=35, BACKGROUND_COLOUR=36, 
+		BASIS=37, BEEP=38, BEFORE=39, BEGINNING=40, BELL=41, BINARY=42, BIT=43, 
+		BLANK=44, BLINK=45, BLOB=46, BLOCK=47, BOUNDS=48, BOTTOM=49, BY=50, BYFUNCTION=51, 
+		BYTITLE=52, CALL=53, CANCEL=54, CAPABLE=55, CCSVERSION=56, CD=57, CF=58, 
+		CH=59, CHAINING=60, CHANGED=61, CHANNEL=62, CHARACTER=63, CHARACTERS=64, 
+		CLASS=65, CLASS_ID=66, CLOB=67, CLOCK_UNITS=68, CLOSE=69, CLOSE_DISPOSITION=70, 
+		COBOL=71, CODE=72, CODE_SET=73, COLLATING=74, COL=75, COLUMN=76, COM_REG=77, 
+		COMMA=78, COMMITMENT=79, COMMON=80, COMMUNICATION=81, COMP=82, COMP_1=83, 
+		COMP_2=84, COMP_3=85, COMP_4=86, COMP_5=87, COMPUTATIONAL=88, COMPUTATIONAL_1=89, 
+		COMPUTATIONAL_2=90, COMPUTATIONAL_3=91, COMPUTATIONAL_4=92, COMPUTATIONAL_5=93, 
+		COMPUTE=94, CONFIGURATION=95, CONTAINS=96, CONTENT=97, CONTINUE=98, CONTROL=99, 
+		CONTROL_POINT=100, CONTROLS=101, CONVENTION=102, CONVERTING=103, COPY=104, 
+		CORR=105, CORRESPONDING=106, COUNT=107, CRUNCH=108, CURRENCY=109, CURSOR=110, 
+		DATA=111, DATA_BASE=112, DATE=113, DATE_COMPILED=114, DATE_WRITTEN=115, 
+		DAY=116, DAY_OF_WEEK=117, DBCS=118, DBCLOB=119, DE=120, DEBUG_CONTENTS=121, 
+		DEBUG_ITEM=122, DEBUG_LINE=123, DEBUG_NAME=124, DEBUG_SUB_1=125, DEBUG_SUB_2=126, 
+		DEBUG_SUB_3=127, DEBUGGING=128, DECIMAL_POINT=129, DECLARATIVES=130, DEFAULT=131, 
+		DEFAULT_DISPLAY=132, DEFINITION=133, DELETE=134, DELIMITED=135, DELIMITER=136, 
+		DEPENDING=137, DESCENDING=138, DESTINATION=139, DETAIL=140, DFHRESP=141, 
+		DFHVALUE=142, DISABLE=143, DISK=144, DISPLAY=145, DISPLAY_1=146, DIVIDE=147, 
+		DIVISION=148, DONTCARE=149, DOUBLE=150, DOWN=151, DUPLICATES=152, DYNAMIC=153, 
+		EBCDIC=154, EGCS=155, EGI=156, ELSE=157, EMI=158, EMPTY_CHECK=159, ENABLE=160, 
+		END=161, END_ACCEPT=162, END_ADD=163, END_CALL=164, END_COMPUTE=165, END_DELETE=166, 
+		END_DISPLAY=167, END_DIVIDE=168, END_EVALUATE=169, END_IF=170, END_MULTIPLY=171, 
+		END_OF_PAGE=172, END_PERFORM=173, END_READ=174, END_RECEIVE=175, END_REMARKS=176, 
+		END_RETURN=177, END_REWRITE=178, END_SEARCH=179, END_START=180, END_STRING=181, 
+		END_SUBTRACT=182, END_UNSTRING=183, END_WRITE=184, ENDING=185, ENTER=186, 
+		ENTRY=187, ENTRY_PROCEDURE=188, ENVIRONMENT=189, EOP=190, EQUAL=191, ERASE=192, 
+		ERROR=193, EOL=194, EOS=195, ESCAPE=196, ESI=197, EVALUATE=198, EVENT=199, 
+		EVERY=200, EXCEPTION=201, EXCLUSIVE=202, EXHIBIT=203, EXIT=204, EXPORT=205, 
+		EXTEND=206, EXTENDED=207, EXTERNAL=208, FALSE=209, FD=210, FILE=211, FILE_CONTROL=212, 
+		FILLER=213, FINAL=214, FIRST=215, FOOTING=216, FOR=217, FOREGROUND_COLOR=218, 
+		FOREGROUND_COLOUR=219, FROM=220, FULL=221, FUNCTION=222, FUNCTIONNAME=223, 
+		FUNCTION_POINTER=224, GENERATE=225, GOBACK=226, GIVING=227, GLOBAL=228, 
+		GO=229, GREATER=230, GRID=231, GROUP=232, HEADING=233, HIGHLIGHT=234, 
+		HIGH_VALUE=235, HIGH_VALUES=236, I_O=237, I_O_CONTROL=238, ID=239, IDENTIFICATION=240, 
+		IF=241, IMPLICIT=242, IMPORT=243, IN=244, INDEX=245, INDEXED=246, INDICATE=247, 
+		INITIAL=248, INITIALIZE=249, INITIATE=250, INPUT=251, INPUT_OUTPUT=252, 
+		INSPECT=253, INSTALLATION=254, INTEGER=255, INTO=256, INVALID=257, INVOKE=258, 
+		IS=259, JUST=260, JUSTIFIED=261, KANJI=262, KEPT=263, KEY=264, KEYBOARD=265, 
+		LABEL=266, LANGUAGE=267, LAST=268, LB=269, LD=270, LEADING=271, LEFT=272, 
+		LEFTLINE=273, LENGTH=274, LENGTH_CHECK=275, LESS=276, LIBACCESS=277, LIBPARAMETER=278, 
+		LIBRARY=279, LIMIT=280, LIMITS=281, LINAGE=282, LINAGE_COUNTER=283, LINE=284, 
+		LINES=285, LINE_COUNTER=286, LINKAGE=287, LIST=288, LOCAL=289, LOCAL_STORAGE=290, 
+		LOCK=291, LONG_DATE=292, LONG_TIME=293, LOWER=294, LOWLIGHT=295, LOW_VALUE=296, 
+		LOW_VALUES=297, MEMORY=298, MERGE=299, MESSAGE=300, MMDDYYYY=301, MODE=302, 
+		MODULES=303, MORE_LABELS=304, MOVE=305, MULTIPLE=306, MULTIPLY=307, NAMED=308, 
+		NATIONAL=309, NATIONAL_EDITED=310, NATIVE=311, NEGATIVE=312, NETWORK=313, 
+		NEXT=314, NO=315, NO_ECHO=316, NOT=317, NULL=318, NULLS=319, NUMBER=320, 
+		NUMERIC=321, NUMERIC_DATE=322, NUMERIC_EDITED=323, NUMERIC_TIME=324, OBJECT_COMPUTER=325, 
+		OCCURS=326, ODT=327, OF=328, OFF=329, OMITTED=330, ON=331, OPEN=332, OPTIONAL=333, 
+		OR=334, ORDER=335, ORDERLY=336, ORGANIZATION=337, OTHER=338, OUTPUT=339, 
+		OVERFLOW=340, OVERLINE=341, OWN=342, PACKED_DECIMAL=343, PADDING=344, 
+		PAGE=345, PAGE_COUNTER=346, PASSWORD=347, PERFORM=348, PF=349, PH=350, 
+		PIC=351, PICTURE=352, PLUS=353, POINTER=354, POSITION=355, POSITIVE=356, 
+		PORT=357, PRINTER=358, PRINTING=359, PRIVATE=360, PROCEDURE=361, PROCEDURE_POINTER=362, 
+		PROCEDURES=363, PROCEED=364, PROCESS=365, PROGRAM=366, PROGRAM_ID=367, 
+		PROGRAM_LIBRARY=368, PROMPT=369, PURGE=370, QUEUE=371, QUOTE=372, QUOTES=373, 
+		RANDOM=374, READER=375, REMOTE=376, RD=377, REAL=378, READ=379, RECEIVE=380, 
+		RECEIVED=381, RECORD=382, RECORDING=383, RECORDS=384, RECURSIVE=385, REDEFINES=386, 
+		REEL=387, REF=388, REFERENCE=389, REFERENCES=390, RELATIVE=391, RELEASE=392, 
+		REMAINDER=393, REMARKS=394, REMOVAL=395, REMOVE=396, RENAMES=397, REPLACE=398, 
+		REPLACING=399, REPORT=400, REPORTING=401, REPORTS=402, REQUIRED=403, RERUN=404, 
+		RESERVE=405, REVERSE_VIDEO=406, RESET=407, RETURN=408, RETURN_CODE=409, 
+		RETURNING=410, REVERSED=411, REWIND=412, REWRITE=413, RF=414, RH=415, 
+		RIGHT=416, ROUNDED=417, RUN=418, SAME=419, SAVE=420, SCREEN=421, SD=422, 
+		SEARCH=423, SECTION=424, SECURE=425, SECURITY=426, SEGMENT=427, SEGMENT_LIMIT=428, 
+		SELECT=429, SEND=430, SENTENCE=431, SEPARATE=432, SEQUENCE=433, SEQUENTIAL=434, 
+		SET=435, SHARED=436, SHAREDBYALL=437, SHAREDBYRUNUNIT=438, SHARING=439, 
+		SHIFT_IN=440, SHIFT_OUT=441, SHORT_DATE=442, SIGN=443, SIZE=444, SORT=445, 
+		SORT_CONTROL=446, SORT_CORE_SIZE=447, SORT_FILE_SIZE=448, SORT_MERGE=449, 
+		SORT_MESSAGE=450, SORT_MODE_SIZE=451, SORT_RETURN=452, SOURCE=453, SOURCE_COMPUTER=454, 
+		SPACE=455, SPACES=456, SPECIAL_NAMES=457, SQL=458, STANDARD=459, STANDARD_1=460, 
+		STANDARD_2=461, START=462, STATUS=463, STOP=464, STRING=465, SUB_QUEUE_1=466, 
+		SUB_QUEUE_2=467, SUB_QUEUE_3=468, SUBTRACT=469, SUM=470, SUPPRESS=471, 
+		SYMBOL=472, SYMBOLIC=473, SYNC=474, SYNCHRONIZED=475, TABLE=476, TALLY=477, 
+		TALLYING=478, TASK=479, TAPE=480, TERMINAL=481, TERMINATE=482, TEST=483, 
+		TEXT=484, THAN=485, THEN=486, THREAD=487, THREAD_LOCAL=488, THROUGH=489, 
+		THRU=490, TIME=491, TIMER=492, TIMES=493, TITLE=494, TO=495, TODAYS_DATE=496, 
+		TODAYS_NAME=497, TOP=498, TRAILING=499, TRUE=500, TRUNCATED=501, TYPE=502, 
+		TYPEDEF=503, UNDERLINE=504, UNIT=505, UNSTRING=506, UNTIL=507, UP=508, 
+		UPON=509, USAGE=510, USE=511, USING=512, VALUE=513, VALUES=514, VARYING=515, 
+		VIRTUAL=516, WAIT=517, WHEN=518, WHEN_COMPILED=519, WITH=520, WORDS=521, 
+		WORKING_STORAGE=522, WRITE=523, YEAR=524, YYYYMMDD=525, YYYYDDD=526, ZERO=527, 
+		ZERO_FILL=528, ZEROS=529, ZEROES=530, AMPCHAR=531, ASTERISKCHAR=532, DOUBLEASTERISKCHAR=533, 
+		COLONCHAR=534, COMMACHAR=535, COMMENTENTRYTAG=536, COMMENTTAG=537, DOLLARCHAR=538, 
+		DOUBLEQUOTE=539, DOT_FS=540, EQUALCHAR=541, EXECCICSTAG=542, EXECSQLTAG=543, 
+		EXECSQLIMSTAG=544, LESSTHANCHAR=545, LESSTHANOREQUAL=546, LPARENCHAR=547, 
+		MINUSCHAR=548, MORETHANCHAR=549, MORETHANOREQUAL=550, NOTEQUALCHAR=551, 
+		PLUSCHAR=552, SINGLEQUOTE=553, RPARENCHAR=554, SLASHCHAR=555, NONNUMERICLITERAL=556, 
+		LEVEL_NUMBER_66=557, LEVEL_NUMBER_77=558, LEVEL_NUMBER_88=559, INTEGERLITERAL=560, 
+		NUMERICLITERAL=561, IDENTIFIER=562, NEWLINE=563, EXECCICSLINE=564, EXECSQLIMSLINE=565, 
 		EXECSQLLINE=566, COMMENTENTRYLINE=567, COMMENTLINE=568, WS=569, SEPARATOR=570;
 	public static final int
-		RULE_compilationUnit = 0, RULE_programUnit = 1, RULE_endProgramStatement = 2,
-		RULE_identificationDivision = 3, RULE_identificationDivisionBody = 4,
-		RULE_programIdParagraph = 5, RULE_authorParagraph = 6, RULE_installationParagraph = 7,
-		RULE_dateWrittenParagraph = 8, RULE_dateCompiledParagraph = 9, RULE_securityParagraph = 10,
-		RULE_remarksParagraph = 11, RULE_environmentDivision = 12, RULE_environmentDivisionBody = 13,
-		RULE_configurationSection = 14, RULE_configurationSectionParagraph = 15,
-		RULE_sourceComputerParagraph = 16, RULE_objectComputerParagraph = 17,
-		RULE_objectComputerClause = 18, RULE_memorySizeClause = 19, RULE_diskSizeClause = 20,
-		RULE_collatingSequenceClause = 21, RULE_collatingSequenceClauseAlphanumeric = 22,
-		RULE_collatingSequenceClauseNational = 23, RULE_segmentLimitClause = 24,
-		RULE_characterSetClause = 25, RULE_specialNamesParagraph = 26, RULE_specialNameClause = 27,
-		RULE_alphabetClause = 28, RULE_alphabetClauseFormat1 = 29, RULE_alphabetLiterals = 30,
-		RULE_alphabetThrough = 31, RULE_alphabetAlso = 32, RULE_alphabetClauseFormat2 = 33,
-		RULE_channelClause = 34, RULE_classClause = 35, RULE_classClauseThrough = 36,
-		RULE_classClauseFrom = 37, RULE_classClauseTo = 38, RULE_currencySignClause = 39,
-		RULE_decimalPointClause = 40, RULE_defaultComputationalSignClause = 41,
-		RULE_defaultDisplaySignClause = 42, RULE_environmentSwitchNameClause = 43,
-		RULE_environmentSwitchNameSpecialNamesStatusPhrase = 44, RULE_odtClause = 45,
-		RULE_reserveNetworkClause = 46, RULE_symbolicCharactersClause = 47, RULE_symbolicCharacters = 48,
-		RULE_inputOutputSection = 49, RULE_inputOutputSectionParagraph = 50, RULE_fileControlParagraph = 51,
-		RULE_fileControlEntry = 52, RULE_selectClause = 53, RULE_fileControlClause = 54,
-		RULE_assignClause = 55, RULE_reserveClause = 56, RULE_organizationClause = 57,
-		RULE_paddingCharacterClause = 58, RULE_recordDelimiterClause = 59, RULE_accessModeClause = 60,
-		RULE_recordKeyClause = 61, RULE_alternateRecordKeyClause = 62, RULE_passwordClause = 63,
-		RULE_fileStatusClause = 64, RULE_relativeKeyClause = 65, RULE_ioControlParagraph = 66,
-		RULE_ioControlClause = 67, RULE_rerunClause = 68, RULE_rerunEveryRecords = 69,
-		RULE_rerunEveryOf = 70, RULE_rerunEveryClock = 71, RULE_sameClause = 72,
-		RULE_multipleFileClause = 73, RULE_multipleFilePosition = 74, RULE_commitmentControlClause = 75,
-		RULE_dataDivision = 76, RULE_dataDivisionSection = 77, RULE_fileSection = 78,
-		RULE_fileDescriptionEntry = 79, RULE_fileDescriptionEntryClause = 80,
-		RULE_externalClause = 81, RULE_globalClause = 82, RULE_blockContainsClause = 83,
-		RULE_blockContainsTo = 84, RULE_recordContainsClause = 85, RULE_recordContainsClauseFormat1 = 86,
-		RULE_recordContainsClauseFormat2 = 87, RULE_recordContainsClauseFormat3 = 88,
-		RULE_recordContainsTo = 89, RULE_labelRecordsClause = 90, RULE_valueOfClause = 91,
-		RULE_valuePair = 92, RULE_dataRecordsClause = 93, RULE_linageClause = 94,
-		RULE_linageAt = 95, RULE_linageFootingAt = 96, RULE_linageLinesAtTop = 97,
-		RULE_linageLinesAtBottom = 98, RULE_recordingModeClause = 99, RULE_modeStatement = 100,
-		RULE_codeSetClause = 101, RULE_reportClause = 102, RULE_dataBaseSection = 103,
-		RULE_dataBaseSectionEntry = 104, RULE_workingStorageSection = 105, RULE_linkageSection = 106,
-		RULE_communicationSection = 107, RULE_communicationDescriptionEntry = 108,
-		RULE_communicationDescriptionEntryFormat1 = 109, RULE_communicationDescriptionEntryFormat2 = 110,
-		RULE_communicationDescriptionEntryFormat3 = 111, RULE_destinationCountClause = 112,
-		RULE_destinationTableClause = 113, RULE_endKeyClause = 114, RULE_errorKeyClause = 115,
-		RULE_messageCountClause = 116, RULE_messageDateClause = 117, RULE_messageTimeClause = 118,
-		RULE_statusKeyClause = 119, RULE_symbolicDestinationClause = 120, RULE_symbolicQueueClause = 121,
-		RULE_symbolicSourceClause = 122, RULE_symbolicTerminalClause = 123, RULE_symbolicSubQueueClause = 124,
-		RULE_textLengthClause = 125, RULE_localStorageSection = 126, RULE_screenSection = 127,
-		RULE_screenDescriptionEntry = 128, RULE_screenDescriptionBlankClause = 129,
-		RULE_screenDescriptionBellClause = 130, RULE_screenDescriptionBlinkClause = 131,
-		RULE_screenDescriptionEraseClause = 132, RULE_screenDescriptionLightClause = 133,
-		RULE_screenDescriptionGridClause = 134, RULE_screenDescriptionReverseVideoClause = 135,
-		RULE_screenDescriptionUnderlineClause = 136, RULE_screenDescriptionSizeClause = 137,
-		RULE_screenDescriptionLineClause = 138, RULE_screenDescriptionColumnClause = 139,
-		RULE_screenDescriptionForegroundColorClause = 140, RULE_screenDescriptionBackgroundColorClause = 141,
-		RULE_screenDescriptionControlClause = 142, RULE_screenDescriptionValueClause = 143,
-		RULE_screenDescriptionPictureClause = 144, RULE_screenDescriptionFromClause = 145,
-		RULE_screenDescriptionToClause = 146, RULE_screenDescriptionUsingClause = 147,
-		RULE_screenDescriptionUsageClause = 148, RULE_screenDescriptionBlankWhenZeroClause = 149,
-		RULE_screenDescriptionJustifiedClause = 150, RULE_screenDescriptionSignClause = 151,
-		RULE_screenDescriptionAutoClause = 152, RULE_screenDescriptionSecureClause = 153,
-		RULE_screenDescriptionRequiredClause = 154, RULE_screenDescriptionPromptClause = 155,
-		RULE_screenDescriptionPromptOccursClause = 156, RULE_screenDescriptionFullClause = 157,
-		RULE_screenDescriptionZeroFillClause = 158, RULE_reportSection = 159,
-		RULE_reportDescription = 160, RULE_reportDescriptionEntry = 161, RULE_reportDescriptionGlobalClause = 162,
-		RULE_reportDescriptionPageLimitClause = 163, RULE_reportDescriptionHeadingClause = 164,
-		RULE_reportDescriptionFirstDetailClause = 165, RULE_reportDescriptionLastDetailClause = 166,
-		RULE_reportDescriptionFootingClause = 167, RULE_reportGroupDescriptionEntry = 168,
-		RULE_reportGroupDescriptionEntryFormat1 = 169, RULE_reportGroupDescriptionEntryFormat2 = 170,
-		RULE_reportGroupDescriptionEntryFormat3 = 171, RULE_reportGroupBlankWhenZeroClause = 172,
-		RULE_reportGroupColumnNumberClause = 173, RULE_reportGroupIndicateClause = 174,
-		RULE_reportGroupJustifiedClause = 175, RULE_reportGroupLineNumberClause = 176,
-		RULE_reportGroupLineNumberNextPage = 177, RULE_reportGroupLineNumberPlus = 178,
-		RULE_reportGroupNextGroupClause = 179, RULE_reportGroupNextGroupPlus = 180,
-		RULE_reportGroupNextGroupNextPage = 181, RULE_reportGroupPictureClause = 182,
-		RULE_reportGroupResetClause = 183, RULE_reportGroupSignClause = 184, RULE_reportGroupSourceClause = 185,
-		RULE_reportGroupSumClause = 186, RULE_reportGroupTypeClause = 187, RULE_reportGroupTypeReportHeading = 188,
-		RULE_reportGroupTypePageHeading = 189, RULE_reportGroupTypeControlHeading = 190,
-		RULE_reportGroupTypeDetail = 191, RULE_reportGroupTypeControlFooting = 192,
-		RULE_reportGroupUsageClause = 193, RULE_reportGroupTypePageFooting = 194,
-		RULE_reportGroupTypeReportFooting = 195, RULE_reportGroupValueClause = 196,
-		RULE_programLibrarySection = 197, RULE_libraryDescriptionEntry = 198,
-		RULE_libraryDescriptionEntryFormat1 = 199, RULE_libraryDescriptionEntryFormat2 = 200,
-		RULE_libraryAttributeClauseFormat1 = 201, RULE_libraryAttributeClauseFormat2 = 202,
-		RULE_libraryAttributeFunction = 203, RULE_libraryAttributeParameter = 204,
-		RULE_libraryAttributeTitle = 205, RULE_libraryEntryProcedureClauseFormat1 = 206,
-		RULE_libraryEntryProcedureClauseFormat2 = 207, RULE_libraryEntryProcedureForClause = 208,
-		RULE_libraryEntryProcedureGivingClause = 209, RULE_libraryEntryProcedureUsingClause = 210,
-		RULE_libraryEntryProcedureUsingName = 211, RULE_libraryEntryProcedureWithClause = 212,
-		RULE_libraryEntryProcedureWithName = 213, RULE_libraryIsCommonClause = 214,
-		RULE_libraryIsGlobalClause = 215, RULE_dataDescriptionEntry = 216, RULE_dataDescriptionEntryFormat1 = 217,
-		RULE_dataDescriptionEntryFormat1Clause = 218, RULE_dataDescriptionEntryFormat2 = 219,
-		RULE_dataDescriptionEntryFormat3 = 220, RULE_dataDescriptionEntryExecSql = 221,
-		RULE_dataAlignedClause = 222, RULE_dataBlankWhenZeroClause = 223, RULE_dataCommonOwnLocalClause = 224,
-		RULE_dataExternalClause = 225, RULE_dataGlobalClause = 226, RULE_dataIntegerStringClause = 227,
-		RULE_dataJustifiedClause = 228, RULE_dataOccursClause = 229, RULE_dataOccursTo = 230,
-		RULE_dataOccursDepending = 231, RULE_dataOccursSort = 232, RULE_dataOccursIndexed = 233,
-		RULE_dataPictureClause = 234, RULE_pictureString = 235, RULE_picture = 236,
-		RULE_pictureChars = 237, RULE_pictureCardinality = 238, RULE_dataReceivedByClause = 239,
-		RULE_dataRecordAreaClause = 240, RULE_dataRedefinesClause = 241, RULE_dataRenamesClause = 242,
-		RULE_dataSignClause = 243, RULE_dataSynchronizedClause = 244, RULE_dataThreadLocalClause = 245,
-		RULE_dataTypeClause = 246, RULE_dataTypeDefClause = 247, RULE_dataUsageClause = 248,
-		RULE_dataUsingClause = 249, RULE_dataValueClause = 250, RULE_dataValueInterval = 251,
-		RULE_dataValueIntervalFrom = 252, RULE_dataValueIntervalTo = 253, RULE_dataWithLowerBoundsClause = 254,
-		RULE_procedureDivision = 255, RULE_procedureDivisionUsingClause = 256,
-		RULE_procedureDivisionGivingClause = 257, RULE_procedureDivisionUsingParameter = 258,
-		RULE_procedureDivisionByReferencePhrase = 259, RULE_procedureDivisionByReference = 260,
-		RULE_procedureDivisionByValuePhrase = 261, RULE_procedureDivisionByValue = 262,
-		RULE_procedureDeclaratives = 263, RULE_procedureDeclarative = 264, RULE_procedureSectionHeader = 265,
-		RULE_procedureDivisionBody = 266, RULE_procedureSection = 267, RULE_paragraphs = 268,
-		RULE_paragraph = 269, RULE_sentence = 270, RULE_statement = 271, RULE_acceptStatement = 272,
-		RULE_acceptFromDateStatement = 273, RULE_acceptFromMnemonicStatement = 274,
-		RULE_acceptFromEscapeKeyStatement = 275, RULE_acceptMessageCountStatement = 276,
-		RULE_roundable = 277, RULE_addStatement = 278, RULE_addToStatement = 279,
-		RULE_addTo = 280, RULE_addToGivingStatement = 281, RULE_addCorrespondingStatement = 282,
-		RULE_addFrom = 283, RULE_addToGiving = 284, RULE_addGiving = 285, RULE_alteredGoTo = 286,
-		RULE_alterStatement = 287, RULE_alterProceedTo = 288, RULE_callStatement = 289,
-		RULE_callUsingPhrase = 290, RULE_callUsingParameter = 291, RULE_callByReferencePhrase = 292,
-		RULE_callByReference = 293, RULE_callByValuePhrase = 294, RULE_callByValue = 295,
-		RULE_callByContentPhrase = 296, RULE_callByContent = 297, RULE_callGivingPhrase = 298,
-		RULE_cancelStatement = 299, RULE_cancelCall = 300, RULE_closeStatement = 301,
-		RULE_closeFile = 302, RULE_closeReelUnitStatement = 303, RULE_closeRelativeStatement = 304,
-		RULE_closePortFileIOStatement = 305, RULE_closePortFileIOUsing = 306,
-		RULE_closePortFileIOUsingCloseDisposition = 307, RULE_closePortFileIOUsingAssociatedData = 308,
-		RULE_closePortFileIOUsingAssociatedDataLength = 309, RULE_computeStatement = 310,
-		RULE_computeStore = 311, RULE_continueStatement = 312, RULE_deleteStatement = 313,
-		RULE_disableStatement = 314, RULE_displayStatement = 315, RULE_displayOperand = 316,
-		RULE_displayAt = 317, RULE_displayUpon = 318, RULE_displayWith = 319,
-		RULE_divideStatement = 320, RULE_divideIntoStatement = 321, RULE_divideIntoGivingStatement = 322,
-		RULE_divideByGivingStatement = 323, RULE_divideGivingPhrase = 324, RULE_divideInto = 325,
-		RULE_divideGiving = 326, RULE_divideRemainder = 327, RULE_enableStatement = 328,
-		RULE_entryStatement = 329, RULE_evaluateStatement = 330, RULE_evaluateSelect = 331,
-		RULE_evaluateAlsoSelect = 332, RULE_evaluateWhenPhrase = 333, RULE_evaluateWhen = 334,
-		RULE_evaluateCondition = 335, RULE_evaluateThrough = 336, RULE_evaluateAlsoCondition = 337,
-		RULE_evaluateWhenOther = 338, RULE_evaluateValue = 339, RULE_execCicsStatement = 340,
-		RULE_execSqlStatement = 341, RULE_execSqlImsStatement = 342, RULE_exhibitStatement = 343,
-		RULE_exhibitOperand = 344, RULE_exitStatement = 345, RULE_generateStatement = 346,
-		RULE_gobackStatement = 347, RULE_goToStatement = 348, RULE_goToStatementSimple = 349,
-		RULE_goToDependingOnStatement = 350, RULE_ifStatement = 351, RULE_ifThen = 352,
-		RULE_ifElse = 353, RULE_initializeStatement = 354, RULE_initializeReplacingPhrase = 355,
-		RULE_initializeReplacingBy = 356, RULE_initiateStatement = 357, RULE_inspectStatement = 358,
-		RULE_inspectTallyingPhrase = 359, RULE_inspectReplacingPhrase = 360, RULE_inspectTallyingReplacingPhrase = 361,
-		RULE_inspectConvertingPhrase = 362, RULE_inspectFor = 363, RULE_inspectCharacters = 364,
-		RULE_inspectReplacingCharacters = 365, RULE_inspectAllLeadings = 366,
-		RULE_inspectReplacingAllLeadings = 367, RULE_inspectAllLeading = 368,
-		RULE_inspectReplacingAllLeading = 369, RULE_inspectBy = 370, RULE_inspectTo = 371,
-		RULE_inspectBeforeAfter = 372, RULE_mergeStatement = 373, RULE_mergeOnKeyClause = 374,
-		RULE_mergeCollatingSequencePhrase = 375, RULE_mergeCollatingAlphanumeric = 376,
-		RULE_mergeCollatingNational = 377, RULE_mergeUsing = 378, RULE_mergeOutputProcedurePhrase = 379,
-		RULE_mergeOutputThrough = 380, RULE_mergeGivingPhrase = 381, RULE_mergeGiving = 382,
-		RULE_moveStatement = 383, RULE_moveToStatement = 384, RULE_moveToSendingArea = 385,
-		RULE_moveCorrespondingToStatement = 386, RULE_moveCorrespondingToSendingArea = 387,
-		RULE_multiplyStatement = 388, RULE_multiplyRegular = 389, RULE_multiplyRegularOperand = 390,
-		RULE_multiplyGiving = 391, RULE_multiplyGivingOperand = 392, RULE_multiplyGivingResult = 393,
-		RULE_nextSentenceStatement = 394, RULE_openStatement = 395, RULE_openInputStatement = 396,
-		RULE_openInput = 397, RULE_openOutputStatement = 398, RULE_openOutput = 399,
-		RULE_openIOStatement = 400, RULE_openExtendStatement = 401, RULE_performStatement = 402,
-		RULE_performInlineStatement = 403, RULE_performProcedureStatement = 404,
-		RULE_performType = 405, RULE_performTimes = 406, RULE_performUntil = 407,
-		RULE_performVarying = 408, RULE_performVaryingClause = 409, RULE_performVaryingPhrase = 410,
-		RULE_performAfter = 411, RULE_performFrom = 412, RULE_performBy = 413,
-		RULE_performTestClause = 414, RULE_purgeStatement = 415, RULE_readStatement = 416,
-		RULE_readInto = 417, RULE_readWith = 418, RULE_readKey = 419, RULE_receiveStatement = 420,
-		RULE_receiveFromStatement = 421, RULE_receiveFrom = 422, RULE_receiveIntoStatement = 423,
-		RULE_receiveNoData = 424, RULE_receiveWithData = 425, RULE_receiveBefore = 426,
-		RULE_receiveWith = 427, RULE_receiveThread = 428, RULE_receiveSize = 429,
-		RULE_receiveStatus = 430, RULE_releaseStatement = 431, RULE_returnStatement = 432,
-		RULE_returnInto = 433, RULE_rewriteStatement = 434, RULE_rewriteFrom = 435,
-		RULE_searchStatement = 436, RULE_searchVarying = 437, RULE_searchWhen = 438,
-		RULE_sendStatement = 439, RULE_sendStatementSync = 440, RULE_sendStatementAsync = 441,
-		RULE_sendFromPhrase = 442, RULE_sendWithPhrase = 443, RULE_sendReplacingPhrase = 444,
-		RULE_sendAdvancingPhrase = 445, RULE_sendAdvancingPage = 446, RULE_sendAdvancingLines = 447,
-		RULE_sendAdvancingMnemonic = 448, RULE_setStatement = 449, RULE_setToStatement = 450,
-		RULE_setUpDownByStatement = 451, RULE_setTo = 452, RULE_setToValue = 453,
-		RULE_setByValue = 454, RULE_sortStatement = 455, RULE_sortOnKeyClause = 456,
-		RULE_sortDuplicatesPhrase = 457, RULE_sortCollatingSequencePhrase = 458,
-		RULE_sortCollatingAlphanumeric = 459, RULE_sortCollatingNational = 460,
-		RULE_sortInputProcedurePhrase = 461, RULE_sortInputThrough = 462, RULE_sortUsing = 463,
-		RULE_sortOutputProcedurePhrase = 464, RULE_sortOutputThrough = 465, RULE_sortGivingPhrase = 466,
-		RULE_sortGiving = 467, RULE_startStatement = 468, RULE_startKey = 469,
-		RULE_stopStatement = 470, RULE_stopStatementGiving = 471, RULE_stringStatement = 472,
-		RULE_stringSendingPhrase = 473, RULE_stringSending = 474, RULE_stringDelimitedByPhrase = 475,
-		RULE_stringForPhrase = 476, RULE_stringIntoPhrase = 477, RULE_stringWithPointerPhrase = 478,
-		RULE_subtractStatement = 479, RULE_subtractFromStatement = 480, RULE_subtractFromGivingStatement = 481,
-		RULE_subtractCorrespondingStatement = 482, RULE_subtractSubtrahend = 483,
-		RULE_subtractMinuend = 484, RULE_subtractMinuendGiving = 485, RULE_subtractGiving = 486,
-		RULE_subtractMinuendCorresponding = 487, RULE_terminateStatement = 488,
-		RULE_unstringStatement = 489, RULE_unstringSendingPhrase = 490, RULE_unstringDelimitedByPhrase = 491,
-		RULE_unstringOrAllPhrase = 492, RULE_unstringIntoPhrase = 493, RULE_unstringInto = 494,
-		RULE_unstringDelimiterIn = 495, RULE_unstringCountIn = 496, RULE_unstringWithPointerPhrase = 497,
-		RULE_unstringTallyingPhrase = 498, RULE_useStatement = 499, RULE_useAfterClause = 500,
-		RULE_useAfterOn = 501, RULE_useDebugClause = 502, RULE_useDebugOn = 503,
-		RULE_writeStatement = 504, RULE_writeFromPhrase = 505, RULE_writeAdvancingPhrase = 506,
-		RULE_writeAdvancingPage = 507, RULE_writeAdvancingLines = 508, RULE_writeAdvancingMnemonic = 509,
-		RULE_writeAtEndOfPagePhrase = 510, RULE_writeNotAtEndOfPagePhrase = 511,
-		RULE_atEndPhrase = 512, RULE_notAtEndPhrase = 513, RULE_invalidKeyPhrase = 514,
-		RULE_notInvalidKeyPhrase = 515, RULE_onOverflowPhrase = 516, RULE_notOnOverflowPhrase = 517,
-		RULE_onSizeErrorPhrase = 518, RULE_notOnSizeErrorPhrase = 519, RULE_onExceptionClause = 520,
-		RULE_notOnExceptionClause = 521, RULE_arithmeticExpression = 522, RULE_plusMinus = 523,
-		RULE_multDivs = 524, RULE_multDiv = 525, RULE_powers = 526, RULE_power = 527,
-		RULE_basis = 528, RULE_condition = 529, RULE_andOrCondition = 530, RULE_combinableCondition = 531,
-		RULE_simpleCondition = 532, RULE_classCondition = 533, RULE_conditionNameReference = 534,
-		RULE_conditionNameSubscriptReference = 535, RULE_relationCondition = 536,
-		RULE_relationSignCondition = 537, RULE_relationArithmeticComparison = 538,
-		RULE_relationCombinedComparison = 539, RULE_relationCombinedCondition = 540,
-		RULE_relationalOperator = 541, RULE_abbreviation = 542, RULE_identifier = 543,
-		RULE_tableCall = 544, RULE_tableCallSubscripts = 545, RULE_functionCall = 546,
-		RULE_functionCallArguments = 547, RULE_referenceModifier = 548, RULE_characterPosition = 549,
-		RULE_length = 550, RULE_subscript = 551, RULE_argument = 552, RULE_qualifiedDataName = 553,
-		RULE_qualifiedDataNameFormat1 = 554, RULE_qualifiedDataNameFormat2 = 555,
-		RULE_qualifiedDataNameFormat3 = 556, RULE_qualifiedDataNameFormat4 = 557,
-		RULE_qualifiedInData = 558, RULE_inData = 559, RULE_inFile = 560, RULE_inMnemonic = 561,
-		RULE_inSection = 562, RULE_inLibrary = 563, RULE_inTable = 564, RULE_alphabetName = 565,
-		RULE_assignmentName = 566, RULE_basisName = 567, RULE_cdName = 568, RULE_className = 569,
-		RULE_computerName = 570, RULE_conditionName = 571, RULE_dataName = 572,
-		RULE_dataDescName = 573, RULE_environmentName = 574, RULE_fileName = 575,
-		RULE_functionName = 576, RULE_indexName = 577, RULE_languageName = 578,
-		RULE_libraryName = 579, RULE_localName = 580, RULE_mnemonicName = 581,
-		RULE_paragraphName = 582, RULE_procedureName = 583, RULE_programName = 584,
-		RULE_recordName = 585, RULE_reportName = 586, RULE_routineName = 587,
-		RULE_screenName = 588, RULE_sectionName = 589, RULE_systemName = 590,
-		RULE_symbolicCharacter = 591, RULE_textName = 592, RULE_cobolWord = 593,
-		RULE_literal = 594, RULE_booleanLiteral = 595, RULE_numericLiteral = 596,
-		RULE_integerLiteral = 597, RULE_cicsDfhRespLiteral = 598, RULE_cicsDfhValueLiteral = 599,
+		RULE_compilationUnit = 0, RULE_programUnit = 1, RULE_endProgramStatement = 2, 
+		RULE_identificationDivision = 3, RULE_identificationDivisionBody = 4, 
+		RULE_programIdParagraph = 5, RULE_authorParagraph = 6, RULE_installationParagraph = 7, 
+		RULE_dateWrittenParagraph = 8, RULE_dateCompiledParagraph = 9, RULE_securityParagraph = 10, 
+		RULE_remarksParagraph = 11, RULE_environmentDivision = 12, RULE_environmentDivisionBody = 13, 
+		RULE_configurationSection = 14, RULE_configurationSectionParagraph = 15, 
+		RULE_sourceComputerParagraph = 16, RULE_objectComputerParagraph = 17, 
+		RULE_objectComputerClause = 18, RULE_memorySizeClause = 19, RULE_diskSizeClause = 20, 
+		RULE_collatingSequenceClause = 21, RULE_collatingSequenceClauseAlphanumeric = 22, 
+		RULE_collatingSequenceClauseNational = 23, RULE_segmentLimitClause = 24, 
+		RULE_characterSetClause = 25, RULE_specialNamesParagraph = 26, RULE_specialNameClause = 27, 
+		RULE_alphabetClause = 28, RULE_alphabetClauseFormat1 = 29, RULE_alphabetLiterals = 30, 
+		RULE_alphabetThrough = 31, RULE_alphabetAlso = 32, RULE_alphabetClauseFormat2 = 33, 
+		RULE_channelClause = 34, RULE_classClause = 35, RULE_classClauseThrough = 36, 
+		RULE_classClauseFrom = 37, RULE_classClauseTo = 38, RULE_currencySignClause = 39, 
+		RULE_decimalPointClause = 40, RULE_defaultComputationalSignClause = 41, 
+		RULE_defaultDisplaySignClause = 42, RULE_environmentSwitchNameClause = 43, 
+		RULE_environmentSwitchNameSpecialNamesStatusPhrase = 44, RULE_odtClause = 45, 
+		RULE_reserveNetworkClause = 46, RULE_symbolicCharactersClause = 47, RULE_symbolicCharacters = 48, 
+		RULE_inputOutputSection = 49, RULE_inputOutputSectionParagraph = 50, RULE_fileControlParagraph = 51, 
+		RULE_fileControlEntry = 52, RULE_selectClause = 53, RULE_fileControlClause = 54, 
+		RULE_assignClause = 55, RULE_reserveClause = 56, RULE_organizationClause = 57, 
+		RULE_paddingCharacterClause = 58, RULE_recordDelimiterClause = 59, RULE_accessModeClause = 60, 
+		RULE_recordKeyClause = 61, RULE_alternateRecordKeyClause = 62, RULE_passwordClause = 63, 
+		RULE_fileStatusClause = 64, RULE_relativeKeyClause = 65, RULE_ioControlParagraph = 66, 
+		RULE_ioControlClause = 67, RULE_rerunClause = 68, RULE_rerunEveryRecords = 69, 
+		RULE_rerunEveryOf = 70, RULE_rerunEveryClock = 71, RULE_sameClause = 72, 
+		RULE_multipleFileClause = 73, RULE_multipleFilePosition = 74, RULE_commitmentControlClause = 75, 
+		RULE_dataDivision = 76, RULE_dataDivisionSection = 77, RULE_fileSection = 78, 
+		RULE_fileDescriptionEntry = 79, RULE_fileDescriptionEntryClause = 80, 
+		RULE_externalClause = 81, RULE_globalClause = 82, RULE_blockContainsClause = 83, 
+		RULE_blockContainsTo = 84, RULE_recordContainsClause = 85, RULE_recordContainsClauseFormat1 = 86, 
+		RULE_recordContainsClauseFormat2 = 87, RULE_recordContainsClauseFormat3 = 88, 
+		RULE_recordContainsTo = 89, RULE_labelRecordsClause = 90, RULE_valueOfClause = 91, 
+		RULE_valuePair = 92, RULE_dataRecordsClause = 93, RULE_linageClause = 94, 
+		RULE_linageAt = 95, RULE_linageFootingAt = 96, RULE_linageLinesAtTop = 97, 
+		RULE_linageLinesAtBottom = 98, RULE_recordingModeClause = 99, RULE_modeStatement = 100, 
+		RULE_codeSetClause = 101, RULE_reportClause = 102, RULE_dataBaseSection = 103, 
+		RULE_dataBaseSectionEntry = 104, RULE_workingStorageSection = 105, RULE_linkageSection = 106, 
+		RULE_communicationSection = 107, RULE_communicationDescriptionEntry = 108, 
+		RULE_communicationDescriptionEntryFormat1 = 109, RULE_communicationDescriptionEntryFormat2 = 110, 
+		RULE_communicationDescriptionEntryFormat3 = 111, RULE_destinationCountClause = 112, 
+		RULE_destinationTableClause = 113, RULE_endKeyClause = 114, RULE_errorKeyClause = 115, 
+		RULE_messageCountClause = 116, RULE_messageDateClause = 117, RULE_messageTimeClause = 118, 
+		RULE_statusKeyClause = 119, RULE_symbolicDestinationClause = 120, RULE_symbolicQueueClause = 121, 
+		RULE_symbolicSourceClause = 122, RULE_symbolicTerminalClause = 123, RULE_symbolicSubQueueClause = 124, 
+		RULE_textLengthClause = 125, RULE_localStorageSection = 126, RULE_screenSection = 127, 
+		RULE_screenDescriptionEntry = 128, RULE_screenDescriptionBlankClause = 129, 
+		RULE_screenDescriptionBellClause = 130, RULE_screenDescriptionBlinkClause = 131, 
+		RULE_screenDescriptionEraseClause = 132, RULE_screenDescriptionLightClause = 133, 
+		RULE_screenDescriptionGridClause = 134, RULE_screenDescriptionReverseVideoClause = 135, 
+		RULE_screenDescriptionUnderlineClause = 136, RULE_screenDescriptionSizeClause = 137, 
+		RULE_screenDescriptionLineClause = 138, RULE_screenDescriptionColumnClause = 139, 
+		RULE_screenDescriptionForegroundColorClause = 140, RULE_screenDescriptionBackgroundColorClause = 141, 
+		RULE_screenDescriptionControlClause = 142, RULE_screenDescriptionValueClause = 143, 
+		RULE_screenDescriptionPictureClause = 144, RULE_screenDescriptionFromClause = 145, 
+		RULE_screenDescriptionToClause = 146, RULE_screenDescriptionUsingClause = 147, 
+		RULE_screenDescriptionUsageClause = 148, RULE_screenDescriptionBlankWhenZeroClause = 149, 
+		RULE_screenDescriptionJustifiedClause = 150, RULE_screenDescriptionSignClause = 151, 
+		RULE_screenDescriptionAutoClause = 152, RULE_screenDescriptionSecureClause = 153, 
+		RULE_screenDescriptionRequiredClause = 154, RULE_screenDescriptionPromptClause = 155, 
+		RULE_screenDescriptionPromptOccursClause = 156, RULE_screenDescriptionFullClause = 157, 
+		RULE_screenDescriptionZeroFillClause = 158, RULE_reportSection = 159, 
+		RULE_reportDescription = 160, RULE_reportDescriptionEntry = 161, RULE_reportDescriptionGlobalClause = 162, 
+		RULE_reportDescriptionPageLimitClause = 163, RULE_reportDescriptionHeadingClause = 164, 
+		RULE_reportDescriptionFirstDetailClause = 165, RULE_reportDescriptionLastDetailClause = 166, 
+		RULE_reportDescriptionFootingClause = 167, RULE_reportGroupDescriptionEntry = 168, 
+		RULE_reportGroupDescriptionEntryFormat1 = 169, RULE_reportGroupDescriptionEntryFormat2 = 170, 
+		RULE_reportGroupDescriptionEntryFormat3 = 171, RULE_reportGroupBlankWhenZeroClause = 172, 
+		RULE_reportGroupColumnNumberClause = 173, RULE_reportGroupIndicateClause = 174, 
+		RULE_reportGroupJustifiedClause = 175, RULE_reportGroupLineNumberClause = 176, 
+		RULE_reportGroupLineNumberNextPage = 177, RULE_reportGroupLineNumberPlus = 178, 
+		RULE_reportGroupNextGroupClause = 179, RULE_reportGroupNextGroupPlus = 180, 
+		RULE_reportGroupNextGroupNextPage = 181, RULE_reportGroupPictureClause = 182, 
+		RULE_reportGroupResetClause = 183, RULE_reportGroupSignClause = 184, RULE_reportGroupSourceClause = 185, 
+		RULE_reportGroupSumClause = 186, RULE_reportGroupTypeClause = 187, RULE_reportGroupTypeReportHeading = 188, 
+		RULE_reportGroupTypePageHeading = 189, RULE_reportGroupTypeControlHeading = 190, 
+		RULE_reportGroupTypeDetail = 191, RULE_reportGroupTypeControlFooting = 192, 
+		RULE_reportGroupUsageClause = 193, RULE_reportGroupTypePageFooting = 194, 
+		RULE_reportGroupTypeReportFooting = 195, RULE_reportGroupValueClause = 196, 
+		RULE_programLibrarySection = 197, RULE_libraryDescriptionEntry = 198, 
+		RULE_libraryDescriptionEntryFormat1 = 199, RULE_libraryDescriptionEntryFormat2 = 200, 
+		RULE_libraryAttributeClauseFormat1 = 201, RULE_libraryAttributeClauseFormat2 = 202, 
+		RULE_libraryAttributeFunction = 203, RULE_libraryAttributeParameter = 204, 
+		RULE_libraryAttributeTitle = 205, RULE_libraryEntryProcedureClauseFormat1 = 206, 
+		RULE_libraryEntryProcedureClauseFormat2 = 207, RULE_libraryEntryProcedureForClause = 208, 
+		RULE_libraryEntryProcedureGivingClause = 209, RULE_libraryEntryProcedureUsingClause = 210, 
+		RULE_libraryEntryProcedureUsingName = 211, RULE_libraryEntryProcedureWithClause = 212, 
+		RULE_libraryEntryProcedureWithName = 213, RULE_libraryIsCommonClause = 214, 
+		RULE_libraryIsGlobalClause = 215, RULE_dataDescriptionEntry = 216, RULE_dataDescriptionEntryFormat1 = 217, 
+		RULE_dataDescriptionEntryFormat1Clause = 218, RULE_dataDescriptionEntryFormat2 = 219, 
+		RULE_dataDescriptionEntryFormat3 = 220, RULE_dataDescriptionEntryExecSql = 221, 
+		RULE_dataAlignedClause = 222, RULE_dataBlankWhenZeroClause = 223, RULE_dataCommonOwnLocalClause = 224, 
+		RULE_dataExternalClause = 225, RULE_dataGlobalClause = 226, RULE_dataIntegerStringClause = 227, 
+		RULE_dataJustifiedClause = 228, RULE_dataOccursClause = 229, RULE_dataOccursTo = 230, 
+		RULE_dataOccursDepending = 231, RULE_dataOccursSort = 232, RULE_dataOccursIndexed = 233, 
+		RULE_dataPictureClause = 234, RULE_pictureString = 235, RULE_picture = 236, 
+		RULE_pictureChars = 237, RULE_pictureCardinality = 238, RULE_dataReceivedByClause = 239, 
+		RULE_dataRecordAreaClause = 240, RULE_dataRedefinesClause = 241, RULE_dataRenamesClause = 242, 
+		RULE_dataSignClause = 243, RULE_dataSynchronizedClause = 244, RULE_dataThreadLocalClause = 245, 
+		RULE_dataTypeClause = 246, RULE_dataTypeDefClause = 247, RULE_dataUsageClause = 248, 
+		RULE_dataUsingClause = 249, RULE_dataValueClause = 250, RULE_dataValueInterval = 251, 
+		RULE_dataValueIntervalFrom = 252, RULE_dataValueIntervalTo = 253, RULE_dataWithLowerBoundsClause = 254, 
+		RULE_procedureDivision = 255, RULE_procedureDivisionUsingClause = 256, 
+		RULE_procedureDivisionGivingClause = 257, RULE_procedureDivisionUsingParameter = 258, 
+		RULE_procedureDivisionByReferencePhrase = 259, RULE_procedureDivisionByReference = 260, 
+		RULE_procedureDivisionByValuePhrase = 261, RULE_procedureDivisionByValue = 262, 
+		RULE_procedureDeclaratives = 263, RULE_procedureDeclarative = 264, RULE_procedureSectionHeader = 265, 
+		RULE_procedureDivisionBody = 266, RULE_procedureSection = 267, RULE_paragraphs = 268, 
+		RULE_paragraph = 269, RULE_sentence = 270, RULE_statement = 271, RULE_acceptStatement = 272, 
+		RULE_acceptFromDateStatement = 273, RULE_acceptFromMnemonicStatement = 274, 
+		RULE_acceptFromEscapeKeyStatement = 275, RULE_acceptMessageCountStatement = 276, 
+		RULE_roundable = 277, RULE_addStatement = 278, RULE_addToStatement = 279, 
+		RULE_addTo = 280, RULE_addToGivingStatement = 281, RULE_addCorrespondingStatement = 282, 
+		RULE_addFrom = 283, RULE_addToGiving = 284, RULE_addGiving = 285, RULE_alteredGoTo = 286, 
+		RULE_alterStatement = 287, RULE_alterProceedTo = 288, RULE_callStatement = 289, 
+		RULE_callUsingPhrase = 290, RULE_callUsingParameter = 291, RULE_callByReferencePhrase = 292, 
+		RULE_callByReference = 293, RULE_callByValuePhrase = 294, RULE_callByValue = 295, 
+		RULE_callByContentPhrase = 296, RULE_callByContent = 297, RULE_callGivingPhrase = 298, 
+		RULE_cancelStatement = 299, RULE_cancelCall = 300, RULE_closeStatement = 301, 
+		RULE_closeFile = 302, RULE_closeReelUnitStatement = 303, RULE_closeRelativeStatement = 304, 
+		RULE_closePortFileIOStatement = 305, RULE_closePortFileIOUsing = 306, 
+		RULE_closePortFileIOUsingCloseDisposition = 307, RULE_closePortFileIOUsingAssociatedData = 308, 
+		RULE_closePortFileIOUsingAssociatedDataLength = 309, RULE_computeStatement = 310, 
+		RULE_computeStore = 311, RULE_continueStatement = 312, RULE_deleteStatement = 313, 
+		RULE_disableStatement = 314, RULE_displayStatement = 315, RULE_displayOperand = 316, 
+		RULE_displayAt = 317, RULE_displayUpon = 318, RULE_displayWith = 319, 
+		RULE_divideStatement = 320, RULE_divideIntoStatement = 321, RULE_divideIntoGivingStatement = 322, 
+		RULE_divideByGivingStatement = 323, RULE_divideGivingPhrase = 324, RULE_divideInto = 325, 
+		RULE_divideGiving = 326, RULE_divideRemainder = 327, RULE_enableStatement = 328, 
+		RULE_entryStatement = 329, RULE_evaluateStatement = 330, RULE_evaluateSelect = 331, 
+		RULE_evaluateAlsoSelect = 332, RULE_evaluateWhenPhrase = 333, RULE_evaluateWhen = 334, 
+		RULE_evaluateCondition = 335, RULE_evaluateThrough = 336, RULE_evaluateAlsoCondition = 337, 
+		RULE_evaluateWhenOther = 338, RULE_evaluateValue = 339, RULE_execCicsStatement = 340, 
+		RULE_execSqlStatement = 341, RULE_execSqlImsStatement = 342, RULE_exhibitStatement = 343, 
+		RULE_exhibitOperand = 344, RULE_exitStatement = 345, RULE_generateStatement = 346, 
+		RULE_gobackStatement = 347, RULE_goToStatement = 348, RULE_goToStatementSimple = 349, 
+		RULE_goToDependingOnStatement = 350, RULE_ifStatement = 351, RULE_ifThen = 352, 
+		RULE_ifElse = 353, RULE_initializeStatement = 354, RULE_initializeReplacingPhrase = 355, 
+		RULE_initializeReplacingBy = 356, RULE_initiateStatement = 357, RULE_inspectStatement = 358, 
+		RULE_inspectTallyingPhrase = 359, RULE_inspectReplacingPhrase = 360, RULE_inspectTallyingReplacingPhrase = 361, 
+		RULE_inspectConvertingPhrase = 362, RULE_inspectFor = 363, RULE_inspectCharacters = 364, 
+		RULE_inspectReplacingCharacters = 365, RULE_inspectAllLeadings = 366, 
+		RULE_inspectReplacingAllLeadings = 367, RULE_inspectAllLeading = 368, 
+		RULE_inspectReplacingAllLeading = 369, RULE_inspectBy = 370, RULE_inspectTo = 371, 
+		RULE_inspectBeforeAfter = 372, RULE_mergeStatement = 373, RULE_mergeOnKeyClause = 374, 
+		RULE_mergeCollatingSequencePhrase = 375, RULE_mergeCollatingAlphanumeric = 376, 
+		RULE_mergeCollatingNational = 377, RULE_mergeUsing = 378, RULE_mergeOutputProcedurePhrase = 379, 
+		RULE_mergeOutputThrough = 380, RULE_mergeGivingPhrase = 381, RULE_mergeGiving = 382, 
+		RULE_moveStatement = 383, RULE_moveToStatement = 384, RULE_moveToSendingArea = 385, 
+		RULE_moveCorrespondingToStatement = 386, RULE_moveCorrespondingToSendingArea = 387, 
+		RULE_multiplyStatement = 388, RULE_multiplyRegular = 389, RULE_multiplyRegularOperand = 390, 
+		RULE_multiplyGiving = 391, RULE_multiplyGivingOperand = 392, RULE_multiplyGivingResult = 393, 
+		RULE_nextSentenceStatement = 394, RULE_openStatement = 395, RULE_openInputStatement = 396, 
+		RULE_openInput = 397, RULE_openOutputStatement = 398, RULE_openOutput = 399, 
+		RULE_openIOStatement = 400, RULE_openExtendStatement = 401, RULE_performStatement = 402, 
+		RULE_performInlineStatement = 403, RULE_performProcedureStatement = 404, 
+		RULE_performType = 405, RULE_performTimes = 406, RULE_performUntil = 407, 
+		RULE_performVarying = 408, RULE_performVaryingClause = 409, RULE_performVaryingPhrase = 410, 
+		RULE_performAfter = 411, RULE_performFrom = 412, RULE_performBy = 413, 
+		RULE_performTestClause = 414, RULE_purgeStatement = 415, RULE_readStatement = 416, 
+		RULE_readInto = 417, RULE_readWith = 418, RULE_readKey = 419, RULE_receiveStatement = 420, 
+		RULE_receiveFromStatement = 421, RULE_receiveFrom = 422, RULE_receiveIntoStatement = 423, 
+		RULE_receiveNoData = 424, RULE_receiveWithData = 425, RULE_receiveBefore = 426, 
+		RULE_receiveWith = 427, RULE_receiveThread = 428, RULE_receiveSize = 429, 
+		RULE_receiveStatus = 430, RULE_releaseStatement = 431, RULE_returnStatement = 432, 
+		RULE_returnInto = 433, RULE_rewriteStatement = 434, RULE_rewriteFrom = 435, 
+		RULE_searchStatement = 436, RULE_searchVarying = 437, RULE_searchWhen = 438, 
+		RULE_sendStatement = 439, RULE_sendStatementSync = 440, RULE_sendStatementAsync = 441, 
+		RULE_sendFromPhrase = 442, RULE_sendWithPhrase = 443, RULE_sendReplacingPhrase = 444, 
+		RULE_sendAdvancingPhrase = 445, RULE_sendAdvancingPage = 446, RULE_sendAdvancingLines = 447, 
+		RULE_sendAdvancingMnemonic = 448, RULE_setStatement = 449, RULE_setToStatement = 450, 
+		RULE_setUpDownByStatement = 451, RULE_setTo = 452, RULE_setToValue = 453, 
+		RULE_setByValue = 454, RULE_sortStatement = 455, RULE_sortOnKeyClause = 456, 
+		RULE_sortDuplicatesPhrase = 457, RULE_sortCollatingSequencePhrase = 458, 
+		RULE_sortCollatingAlphanumeric = 459, RULE_sortCollatingNational = 460, 
+		RULE_sortInputProcedurePhrase = 461, RULE_sortInputThrough = 462, RULE_sortUsing = 463, 
+		RULE_sortOutputProcedurePhrase = 464, RULE_sortOutputThrough = 465, RULE_sortGivingPhrase = 466, 
+		RULE_sortGiving = 467, RULE_startStatement = 468, RULE_startKey = 469, 
+		RULE_stopStatement = 470, RULE_stopStatementGiving = 471, RULE_stringStatement = 472, 
+		RULE_stringSendingPhrase = 473, RULE_stringSending = 474, RULE_stringDelimitedByPhrase = 475, 
+		RULE_stringForPhrase = 476, RULE_stringIntoPhrase = 477, RULE_stringWithPointerPhrase = 478, 
+		RULE_subtractStatement = 479, RULE_subtractFromStatement = 480, RULE_subtractFromGivingStatement = 481, 
+		RULE_subtractCorrespondingStatement = 482, RULE_subtractSubtrahend = 483, 
+		RULE_subtractMinuend = 484, RULE_subtractMinuendGiving = 485, RULE_subtractGiving = 486, 
+		RULE_subtractMinuendCorresponding = 487, RULE_terminateStatement = 488, 
+		RULE_unstringStatement = 489, RULE_unstringSendingPhrase = 490, RULE_unstringDelimitedByPhrase = 491, 
+		RULE_unstringOrAllPhrase = 492, RULE_unstringIntoPhrase = 493, RULE_unstringInto = 494, 
+		RULE_unstringDelimiterIn = 495, RULE_unstringCountIn = 496, RULE_unstringWithPointerPhrase = 497, 
+		RULE_unstringTallyingPhrase = 498, RULE_useStatement = 499, RULE_useAfterClause = 500, 
+		RULE_useAfterOn = 501, RULE_useDebugClause = 502, RULE_useDebugOn = 503, 
+		RULE_writeStatement = 504, RULE_writeFromPhrase = 505, RULE_writeAdvancingPhrase = 506, 
+		RULE_writeAdvancingPage = 507, RULE_writeAdvancingLines = 508, RULE_writeAdvancingMnemonic = 509, 
+		RULE_writeAtEndOfPagePhrase = 510, RULE_writeNotAtEndOfPagePhrase = 511, 
+		RULE_atEndPhrase = 512, RULE_notAtEndPhrase = 513, RULE_invalidKeyPhrase = 514, 
+		RULE_notInvalidKeyPhrase = 515, RULE_onOverflowPhrase = 516, RULE_notOnOverflowPhrase = 517, 
+		RULE_onSizeErrorPhrase = 518, RULE_notOnSizeErrorPhrase = 519, RULE_onExceptionClause = 520, 
+		RULE_notOnExceptionClause = 521, RULE_arithmeticExpression = 522, RULE_plusMinus = 523, 
+		RULE_multDivs = 524, RULE_multDiv = 525, RULE_powers = 526, RULE_power = 527, 
+		RULE_basis = 528, RULE_condition = 529, RULE_andOrCondition = 530, RULE_combinableCondition = 531, 
+		RULE_simpleCondition = 532, RULE_classCondition = 533, RULE_conditionNameReference = 534, 
+		RULE_conditionNameSubscriptReference = 535, RULE_relationCondition = 536, 
+		RULE_relationSignCondition = 537, RULE_relationArithmeticComparison = 538, 
+		RULE_relationCombinedComparison = 539, RULE_relationCombinedCondition = 540, 
+		RULE_relationalOperator = 541, RULE_abbreviation = 542, RULE_identifier = 543, 
+		RULE_tableCall = 544, RULE_tableCallSubscripts = 545, RULE_functionCall = 546, 
+		RULE_functionCallArguments = 547, RULE_referenceModifier = 548, RULE_characterPosition = 549, 
+		RULE_length = 550, RULE_subscript = 551, RULE_argument = 552, RULE_qualifiedDataName = 553, 
+		RULE_qualifiedDataNameFormat1 = 554, RULE_qualifiedDataNameFormat2 = 555, 
+		RULE_qualifiedDataNameFormat3 = 556, RULE_qualifiedDataNameFormat4 = 557, 
+		RULE_qualifiedInData = 558, RULE_inData = 559, RULE_inFile = 560, RULE_inMnemonic = 561, 
+		RULE_inSection = 562, RULE_inLibrary = 563, RULE_inTable = 564, RULE_alphabetName = 565, 
+		RULE_assignmentName = 566, RULE_basisName = 567, RULE_cdName = 568, RULE_className = 569, 
+		RULE_computerName = 570, RULE_conditionName = 571, RULE_dataName = 572, 
+		RULE_dataDescName = 573, RULE_environmentName = 574, RULE_fileName = 575, 
+		RULE_functionName = 576, RULE_indexName = 577, RULE_languageName = 578, 
+		RULE_libraryName = 579, RULE_localName = 580, RULE_mnemonicName = 581, 
+		RULE_paragraphName = 582, RULE_procedureName = 583, RULE_programName = 584, 
+		RULE_recordName = 585, RULE_reportName = 586, RULE_routineName = 587, 
+		RULE_screenName = 588, RULE_sectionName = 589, RULE_systemName = 590, 
+		RULE_symbolicCharacter = 591, RULE_textName = 592, RULE_cobolWord = 593, 
+		RULE_literal = 594, RULE_booleanLiteral = 595, RULE_numericLiteral = 596, 
+		RULE_integerLiteral = 597, RULE_cicsDfhRespLiteral = 598, RULE_cicsDfhValueLiteral = 599, 
 		RULE_figurativeConstant = 600, RULE_specialRegister = 601, RULE_commentEntry = 602;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"compilationUnit", "programUnit", "endProgramStatement", "identificationDivision",
-			"identificationDivisionBody", "programIdParagraph", "authorParagraph",
-			"installationParagraph", "dateWrittenParagraph", "dateCompiledParagraph",
-			"securityParagraph", "remarksParagraph", "environmentDivision", "environmentDivisionBody",
-			"configurationSection", "configurationSectionParagraph", "sourceComputerParagraph",
-			"objectComputerParagraph", "objectComputerClause", "memorySizeClause",
-			"diskSizeClause", "collatingSequenceClause", "collatingSequenceClauseAlphanumeric",
-			"collatingSequenceClauseNational", "segmentLimitClause", "characterSetClause",
-			"specialNamesParagraph", "specialNameClause", "alphabetClause", "alphabetClauseFormat1",
-			"alphabetLiterals", "alphabetThrough", "alphabetAlso", "alphabetClauseFormat2",
-			"channelClause", "classClause", "classClauseThrough", "classClauseFrom",
-			"classClauseTo", "currencySignClause", "decimalPointClause", "defaultComputationalSignClause",
-			"defaultDisplaySignClause", "environmentSwitchNameClause", "environmentSwitchNameSpecialNamesStatusPhrase",
-			"odtClause", "reserveNetworkClause", "symbolicCharactersClause", "symbolicCharacters",
-			"inputOutputSection", "inputOutputSectionParagraph", "fileControlParagraph",
-			"fileControlEntry", "selectClause", "fileControlClause", "assignClause",
-			"reserveClause", "organizationClause", "paddingCharacterClause", "recordDelimiterClause",
-			"accessModeClause", "recordKeyClause", "alternateRecordKeyClause", "passwordClause",
-			"fileStatusClause", "relativeKeyClause", "ioControlParagraph", "ioControlClause",
-			"rerunClause", "rerunEveryRecords", "rerunEveryOf", "rerunEveryClock",
-			"sameClause", "multipleFileClause", "multipleFilePosition", "commitmentControlClause",
-			"dataDivision", "dataDivisionSection", "fileSection", "fileDescriptionEntry",
-			"fileDescriptionEntryClause", "externalClause", "globalClause", "blockContainsClause",
-			"blockContainsTo", "recordContainsClause", "recordContainsClauseFormat1",
-			"recordContainsClauseFormat2", "recordContainsClauseFormat3", "recordContainsTo",
-			"labelRecordsClause", "valueOfClause", "valuePair", "dataRecordsClause",
-			"linageClause", "linageAt", "linageFootingAt", "linageLinesAtTop", "linageLinesAtBottom",
-			"recordingModeClause", "modeStatement", "codeSetClause", "reportClause",
-			"dataBaseSection", "dataBaseSectionEntry", "workingStorageSection", "linkageSection",
-			"communicationSection", "communicationDescriptionEntry", "communicationDescriptionEntryFormat1",
-			"communicationDescriptionEntryFormat2", "communicationDescriptionEntryFormat3",
-			"destinationCountClause", "destinationTableClause", "endKeyClause", "errorKeyClause",
-			"messageCountClause", "messageDateClause", "messageTimeClause", "statusKeyClause",
-			"symbolicDestinationClause", "symbolicQueueClause", "symbolicSourceClause",
-			"symbolicTerminalClause", "symbolicSubQueueClause", "textLengthClause",
-			"localStorageSection", "screenSection", "screenDescriptionEntry", "screenDescriptionBlankClause",
-			"screenDescriptionBellClause", "screenDescriptionBlinkClause", "screenDescriptionEraseClause",
-			"screenDescriptionLightClause", "screenDescriptionGridClause", "screenDescriptionReverseVideoClause",
-			"screenDescriptionUnderlineClause", "screenDescriptionSizeClause", "screenDescriptionLineClause",
-			"screenDescriptionColumnClause", "screenDescriptionForegroundColorClause",
-			"screenDescriptionBackgroundColorClause", "screenDescriptionControlClause",
-			"screenDescriptionValueClause", "screenDescriptionPictureClause", "screenDescriptionFromClause",
-			"screenDescriptionToClause", "screenDescriptionUsingClause", "screenDescriptionUsageClause",
-			"screenDescriptionBlankWhenZeroClause", "screenDescriptionJustifiedClause",
-			"screenDescriptionSignClause", "screenDescriptionAutoClause", "screenDescriptionSecureClause",
-			"screenDescriptionRequiredClause", "screenDescriptionPromptClause", "screenDescriptionPromptOccursClause",
-			"screenDescriptionFullClause", "screenDescriptionZeroFillClause", "reportSection",
-			"reportDescription", "reportDescriptionEntry", "reportDescriptionGlobalClause",
-			"reportDescriptionPageLimitClause", "reportDescriptionHeadingClause",
-			"reportDescriptionFirstDetailClause", "reportDescriptionLastDetailClause",
-			"reportDescriptionFootingClause", "reportGroupDescriptionEntry", "reportGroupDescriptionEntryFormat1",
-			"reportGroupDescriptionEntryFormat2", "reportGroupDescriptionEntryFormat3",
-			"reportGroupBlankWhenZeroClause", "reportGroupColumnNumberClause", "reportGroupIndicateClause",
-			"reportGroupJustifiedClause", "reportGroupLineNumberClause", "reportGroupLineNumberNextPage",
-			"reportGroupLineNumberPlus", "reportGroupNextGroupClause", "reportGroupNextGroupPlus",
-			"reportGroupNextGroupNextPage", "reportGroupPictureClause", "reportGroupResetClause",
-			"reportGroupSignClause", "reportGroupSourceClause", "reportGroupSumClause",
-			"reportGroupTypeClause", "reportGroupTypeReportHeading", "reportGroupTypePageHeading",
-			"reportGroupTypeControlHeading", "reportGroupTypeDetail", "reportGroupTypeControlFooting",
-			"reportGroupUsageClause", "reportGroupTypePageFooting", "reportGroupTypeReportFooting",
-			"reportGroupValueClause", "programLibrarySection", "libraryDescriptionEntry",
-			"libraryDescriptionEntryFormat1", "libraryDescriptionEntryFormat2", "libraryAttributeClauseFormat1",
-			"libraryAttributeClauseFormat2", "libraryAttributeFunction", "libraryAttributeParameter",
-			"libraryAttributeTitle", "libraryEntryProcedureClauseFormat1", "libraryEntryProcedureClauseFormat2",
-			"libraryEntryProcedureForClause", "libraryEntryProcedureGivingClause",
-			"libraryEntryProcedureUsingClause", "libraryEntryProcedureUsingName",
-			"libraryEntryProcedureWithClause", "libraryEntryProcedureWithName", "libraryIsCommonClause",
-			"libraryIsGlobalClause", "dataDescriptionEntry", "dataDescriptionEntryFormat1",
-			"dataDescriptionEntryFormat1Clause", "dataDescriptionEntryFormat2", "dataDescriptionEntryFormat3",
-			"dataDescriptionEntryExecSql", "dataAlignedClause", "dataBlankWhenZeroClause",
-			"dataCommonOwnLocalClause", "dataExternalClause", "dataGlobalClause",
-			"dataIntegerStringClause", "dataJustifiedClause", "dataOccursClause",
-			"dataOccursTo", "dataOccursDepending", "dataOccursSort", "dataOccursIndexed",
-			"dataPictureClause", "pictureString", "picture", "pictureChars", "pictureCardinality",
-			"dataReceivedByClause", "dataRecordAreaClause", "dataRedefinesClause",
-			"dataRenamesClause", "dataSignClause", "dataSynchronizedClause", "dataThreadLocalClause",
-			"dataTypeClause", "dataTypeDefClause", "dataUsageClause", "dataUsingClause",
-			"dataValueClause", "dataValueInterval", "dataValueIntervalFrom", "dataValueIntervalTo",
-			"dataWithLowerBoundsClause", "procedureDivision", "procedureDivisionUsingClause",
-			"procedureDivisionGivingClause", "procedureDivisionUsingParameter", "procedureDivisionByReferencePhrase",
-			"procedureDivisionByReference", "procedureDivisionByValuePhrase", "procedureDivisionByValue",
-			"procedureDeclaratives", "procedureDeclarative", "procedureSectionHeader",
-			"procedureDivisionBody", "procedureSection", "paragraphs", "paragraph",
-			"sentence", "statement", "acceptStatement", "acceptFromDateStatement",
-			"acceptFromMnemonicStatement", "acceptFromEscapeKeyStatement", "acceptMessageCountStatement",
-			"roundable", "addStatement", "addToStatement", "addTo", "addToGivingStatement",
-			"addCorrespondingStatement", "addFrom", "addToGiving", "addGiving", "alteredGoTo",
-			"alterStatement", "alterProceedTo", "callStatement", "callUsingPhrase",
-			"callUsingParameter", "callByReferencePhrase", "callByReference", "callByValuePhrase",
-			"callByValue", "callByContentPhrase", "callByContent", "callGivingPhrase",
-			"cancelStatement", "cancelCall", "closeStatement", "closeFile", "closeReelUnitStatement",
-			"closeRelativeStatement", "closePortFileIOStatement", "closePortFileIOUsing",
-			"closePortFileIOUsingCloseDisposition", "closePortFileIOUsingAssociatedData",
-			"closePortFileIOUsingAssociatedDataLength", "computeStatement", "computeStore",
-			"continueStatement", "deleteStatement", "disableStatement", "displayStatement",
-			"displayOperand", "displayAt", "displayUpon", "displayWith", "divideStatement",
-			"divideIntoStatement", "divideIntoGivingStatement", "divideByGivingStatement",
-			"divideGivingPhrase", "divideInto", "divideGiving", "divideRemainder",
-			"enableStatement", "entryStatement", "evaluateStatement", "evaluateSelect",
-			"evaluateAlsoSelect", "evaluateWhenPhrase", "evaluateWhen", "evaluateCondition",
-			"evaluateThrough", "evaluateAlsoCondition", "evaluateWhenOther", "evaluateValue",
-			"execCicsStatement", "execSqlStatement", "execSqlImsStatement", "exhibitStatement",
-			"exhibitOperand", "exitStatement", "generateStatement", "gobackStatement",
-			"goToStatement", "goToStatementSimple", "goToDependingOnStatement", "ifStatement",
-			"ifThen", "ifElse", "initializeStatement", "initializeReplacingPhrase",
-			"initializeReplacingBy", "initiateStatement", "inspectStatement", "inspectTallyingPhrase",
-			"inspectReplacingPhrase", "inspectTallyingReplacingPhrase", "inspectConvertingPhrase",
-			"inspectFor", "inspectCharacters", "inspectReplacingCharacters", "inspectAllLeadings",
-			"inspectReplacingAllLeadings", "inspectAllLeading", "inspectReplacingAllLeading",
-			"inspectBy", "inspectTo", "inspectBeforeAfter", "mergeStatement", "mergeOnKeyClause",
-			"mergeCollatingSequencePhrase", "mergeCollatingAlphanumeric", "mergeCollatingNational",
-			"mergeUsing", "mergeOutputProcedurePhrase", "mergeOutputThrough", "mergeGivingPhrase",
-			"mergeGiving", "moveStatement", "moveToStatement", "moveToSendingArea",
-			"moveCorrespondingToStatement", "moveCorrespondingToSendingArea", "multiplyStatement",
-			"multiplyRegular", "multiplyRegularOperand", "multiplyGiving", "multiplyGivingOperand",
-			"multiplyGivingResult", "nextSentenceStatement", "openStatement", "openInputStatement",
-			"openInput", "openOutputStatement", "openOutput", "openIOStatement",
-			"openExtendStatement", "performStatement", "performInlineStatement",
-			"performProcedureStatement", "performType", "performTimes", "performUntil",
-			"performVarying", "performVaryingClause", "performVaryingPhrase", "performAfter",
-			"performFrom", "performBy", "performTestClause", "purgeStatement", "readStatement",
-			"readInto", "readWith", "readKey", "receiveStatement", "receiveFromStatement",
-			"receiveFrom", "receiveIntoStatement", "receiveNoData", "receiveWithData",
-			"receiveBefore", "receiveWith", "receiveThread", "receiveSize", "receiveStatus",
-			"releaseStatement", "returnStatement", "returnInto", "rewriteStatement",
-			"rewriteFrom", "searchStatement", "searchVarying", "searchWhen", "sendStatement",
-			"sendStatementSync", "sendStatementAsync", "sendFromPhrase", "sendWithPhrase",
-			"sendReplacingPhrase", "sendAdvancingPhrase", "sendAdvancingPage", "sendAdvancingLines",
-			"sendAdvancingMnemonic", "setStatement", "setToStatement", "setUpDownByStatement",
-			"setTo", "setToValue", "setByValue", "sortStatement", "sortOnKeyClause",
-			"sortDuplicatesPhrase", "sortCollatingSequencePhrase", "sortCollatingAlphanumeric",
-			"sortCollatingNational", "sortInputProcedurePhrase", "sortInputThrough",
-			"sortUsing", "sortOutputProcedurePhrase", "sortOutputThrough", "sortGivingPhrase",
-			"sortGiving", "startStatement", "startKey", "stopStatement", "stopStatementGiving",
-			"stringStatement", "stringSendingPhrase", "stringSending", "stringDelimitedByPhrase",
-			"stringForPhrase", "stringIntoPhrase", "stringWithPointerPhrase", "subtractStatement",
-			"subtractFromStatement", "subtractFromGivingStatement", "subtractCorrespondingStatement",
-			"subtractSubtrahend", "subtractMinuend", "subtractMinuendGiving", "subtractGiving",
-			"subtractMinuendCorresponding", "terminateStatement", "unstringStatement",
-			"unstringSendingPhrase", "unstringDelimitedByPhrase", "unstringOrAllPhrase",
-			"unstringIntoPhrase", "unstringInto", "unstringDelimiterIn", "unstringCountIn",
-			"unstringWithPointerPhrase", "unstringTallyingPhrase", "useStatement",
-			"useAfterClause", "useAfterOn", "useDebugClause", "useDebugOn", "writeStatement",
-			"writeFromPhrase", "writeAdvancingPhrase", "writeAdvancingPage", "writeAdvancingLines",
-			"writeAdvancingMnemonic", "writeAtEndOfPagePhrase", "writeNotAtEndOfPagePhrase",
-			"atEndPhrase", "notAtEndPhrase", "invalidKeyPhrase", "notInvalidKeyPhrase",
-			"onOverflowPhrase", "notOnOverflowPhrase", "onSizeErrorPhrase", "notOnSizeErrorPhrase",
-			"onExceptionClause", "notOnExceptionClause", "arithmeticExpression",
-			"plusMinus", "multDivs", "multDiv", "powers", "power", "basis", "condition",
-			"andOrCondition", "combinableCondition", "simpleCondition", "classCondition",
-			"conditionNameReference", "conditionNameSubscriptReference", "relationCondition",
-			"relationSignCondition", "relationArithmeticComparison", "relationCombinedComparison",
-			"relationCombinedCondition", "relationalOperator", "abbreviation", "identifier",
-			"tableCall", "tableCallSubscripts", "functionCall", "functionCallArguments",
-			"referenceModifier", "characterPosition", "length", "subscript", "argument",
-			"qualifiedDataName", "qualifiedDataNameFormat1", "qualifiedDataNameFormat2",
-			"qualifiedDataNameFormat3", "qualifiedDataNameFormat4", "qualifiedInData",
-			"inData", "inFile", "inMnemonic", "inSection", "inLibrary", "inTable",
-			"alphabetName", "assignmentName", "basisName", "cdName", "className",
-			"computerName", "conditionName", "dataName", "dataDescName", "environmentName",
-			"fileName", "functionName", "indexName", "languageName", "libraryName",
-			"localName", "mnemonicName", "paragraphName", "procedureName", "programName",
-			"recordName", "reportName", "routineName", "screenName", "sectionName",
-			"systemName", "symbolicCharacter", "textName", "cobolWord", "literal",
-			"booleanLiteral", "numericLiteral", "integerLiteral", "cicsDfhRespLiteral",
+			"compilationUnit", "programUnit", "endProgramStatement", "identificationDivision", 
+			"identificationDivisionBody", "programIdParagraph", "authorParagraph", 
+			"installationParagraph", "dateWrittenParagraph", "dateCompiledParagraph", 
+			"securityParagraph", "remarksParagraph", "environmentDivision", "environmentDivisionBody", 
+			"configurationSection", "configurationSectionParagraph", "sourceComputerParagraph", 
+			"objectComputerParagraph", "objectComputerClause", "memorySizeClause", 
+			"diskSizeClause", "collatingSequenceClause", "collatingSequenceClauseAlphanumeric", 
+			"collatingSequenceClauseNational", "segmentLimitClause", "characterSetClause", 
+			"specialNamesParagraph", "specialNameClause", "alphabetClause", "alphabetClauseFormat1", 
+			"alphabetLiterals", "alphabetThrough", "alphabetAlso", "alphabetClauseFormat2", 
+			"channelClause", "classClause", "classClauseThrough", "classClauseFrom", 
+			"classClauseTo", "currencySignClause", "decimalPointClause", "defaultComputationalSignClause", 
+			"defaultDisplaySignClause", "environmentSwitchNameClause", "environmentSwitchNameSpecialNamesStatusPhrase", 
+			"odtClause", "reserveNetworkClause", "symbolicCharactersClause", "symbolicCharacters", 
+			"inputOutputSection", "inputOutputSectionParagraph", "fileControlParagraph", 
+			"fileControlEntry", "selectClause", "fileControlClause", "assignClause", 
+			"reserveClause", "organizationClause", "paddingCharacterClause", "recordDelimiterClause", 
+			"accessModeClause", "recordKeyClause", "alternateRecordKeyClause", "passwordClause", 
+			"fileStatusClause", "relativeKeyClause", "ioControlParagraph", "ioControlClause", 
+			"rerunClause", "rerunEveryRecords", "rerunEveryOf", "rerunEveryClock", 
+			"sameClause", "multipleFileClause", "multipleFilePosition", "commitmentControlClause", 
+			"dataDivision", "dataDivisionSection", "fileSection", "fileDescriptionEntry", 
+			"fileDescriptionEntryClause", "externalClause", "globalClause", "blockContainsClause", 
+			"blockContainsTo", "recordContainsClause", "recordContainsClauseFormat1", 
+			"recordContainsClauseFormat2", "recordContainsClauseFormat3", "recordContainsTo", 
+			"labelRecordsClause", "valueOfClause", "valuePair", "dataRecordsClause", 
+			"linageClause", "linageAt", "linageFootingAt", "linageLinesAtTop", "linageLinesAtBottom", 
+			"recordingModeClause", "modeStatement", "codeSetClause", "reportClause", 
+			"dataBaseSection", "dataBaseSectionEntry", "workingStorageSection", "linkageSection", 
+			"communicationSection", "communicationDescriptionEntry", "communicationDescriptionEntryFormat1", 
+			"communicationDescriptionEntryFormat2", "communicationDescriptionEntryFormat3", 
+			"destinationCountClause", "destinationTableClause", "endKeyClause", "errorKeyClause", 
+			"messageCountClause", "messageDateClause", "messageTimeClause", "statusKeyClause", 
+			"symbolicDestinationClause", "symbolicQueueClause", "symbolicSourceClause", 
+			"symbolicTerminalClause", "symbolicSubQueueClause", "textLengthClause", 
+			"localStorageSection", "screenSection", "screenDescriptionEntry", "screenDescriptionBlankClause", 
+			"screenDescriptionBellClause", "screenDescriptionBlinkClause", "screenDescriptionEraseClause", 
+			"screenDescriptionLightClause", "screenDescriptionGridClause", "screenDescriptionReverseVideoClause", 
+			"screenDescriptionUnderlineClause", "screenDescriptionSizeClause", "screenDescriptionLineClause", 
+			"screenDescriptionColumnClause", "screenDescriptionForegroundColorClause", 
+			"screenDescriptionBackgroundColorClause", "screenDescriptionControlClause", 
+			"screenDescriptionValueClause", "screenDescriptionPictureClause", "screenDescriptionFromClause", 
+			"screenDescriptionToClause", "screenDescriptionUsingClause", "screenDescriptionUsageClause", 
+			"screenDescriptionBlankWhenZeroClause", "screenDescriptionJustifiedClause", 
+			"screenDescriptionSignClause", "screenDescriptionAutoClause", "screenDescriptionSecureClause", 
+			"screenDescriptionRequiredClause", "screenDescriptionPromptClause", "screenDescriptionPromptOccursClause", 
+			"screenDescriptionFullClause", "screenDescriptionZeroFillClause", "reportSection", 
+			"reportDescription", "reportDescriptionEntry", "reportDescriptionGlobalClause", 
+			"reportDescriptionPageLimitClause", "reportDescriptionHeadingClause", 
+			"reportDescriptionFirstDetailClause", "reportDescriptionLastDetailClause", 
+			"reportDescriptionFootingClause", "reportGroupDescriptionEntry", "reportGroupDescriptionEntryFormat1", 
+			"reportGroupDescriptionEntryFormat2", "reportGroupDescriptionEntryFormat3", 
+			"reportGroupBlankWhenZeroClause", "reportGroupColumnNumberClause", "reportGroupIndicateClause", 
+			"reportGroupJustifiedClause", "reportGroupLineNumberClause", "reportGroupLineNumberNextPage", 
+			"reportGroupLineNumberPlus", "reportGroupNextGroupClause", "reportGroupNextGroupPlus", 
+			"reportGroupNextGroupNextPage", "reportGroupPictureClause", "reportGroupResetClause", 
+			"reportGroupSignClause", "reportGroupSourceClause", "reportGroupSumClause", 
+			"reportGroupTypeClause", "reportGroupTypeReportHeading", "reportGroupTypePageHeading", 
+			"reportGroupTypeControlHeading", "reportGroupTypeDetail", "reportGroupTypeControlFooting", 
+			"reportGroupUsageClause", "reportGroupTypePageFooting", "reportGroupTypeReportFooting", 
+			"reportGroupValueClause", "programLibrarySection", "libraryDescriptionEntry", 
+			"libraryDescriptionEntryFormat1", "libraryDescriptionEntryFormat2", "libraryAttributeClauseFormat1", 
+			"libraryAttributeClauseFormat2", "libraryAttributeFunction", "libraryAttributeParameter", 
+			"libraryAttributeTitle", "libraryEntryProcedureClauseFormat1", "libraryEntryProcedureClauseFormat2", 
+			"libraryEntryProcedureForClause", "libraryEntryProcedureGivingClause", 
+			"libraryEntryProcedureUsingClause", "libraryEntryProcedureUsingName", 
+			"libraryEntryProcedureWithClause", "libraryEntryProcedureWithName", "libraryIsCommonClause", 
+			"libraryIsGlobalClause", "dataDescriptionEntry", "dataDescriptionEntryFormat1", 
+			"dataDescriptionEntryFormat1Clause", "dataDescriptionEntryFormat2", "dataDescriptionEntryFormat3", 
+			"dataDescriptionEntryExecSql", "dataAlignedClause", "dataBlankWhenZeroClause", 
+			"dataCommonOwnLocalClause", "dataExternalClause", "dataGlobalClause", 
+			"dataIntegerStringClause", "dataJustifiedClause", "dataOccursClause", 
+			"dataOccursTo", "dataOccursDepending", "dataOccursSort", "dataOccursIndexed", 
+			"dataPictureClause", "pictureString", "picture", "pictureChars", "pictureCardinality", 
+			"dataReceivedByClause", "dataRecordAreaClause", "dataRedefinesClause", 
+			"dataRenamesClause", "dataSignClause", "dataSynchronizedClause", "dataThreadLocalClause", 
+			"dataTypeClause", "dataTypeDefClause", "dataUsageClause", "dataUsingClause", 
+			"dataValueClause", "dataValueInterval", "dataValueIntervalFrom", "dataValueIntervalTo", 
+			"dataWithLowerBoundsClause", "procedureDivision", "procedureDivisionUsingClause", 
+			"procedureDivisionGivingClause", "procedureDivisionUsingParameter", "procedureDivisionByReferencePhrase", 
+			"procedureDivisionByReference", "procedureDivisionByValuePhrase", "procedureDivisionByValue", 
+			"procedureDeclaratives", "procedureDeclarative", "procedureSectionHeader", 
+			"procedureDivisionBody", "procedureSection", "paragraphs", "paragraph", 
+			"sentence", "statement", "acceptStatement", "acceptFromDateStatement", 
+			"acceptFromMnemonicStatement", "acceptFromEscapeKeyStatement", "acceptMessageCountStatement", 
+			"roundable", "addStatement", "addToStatement", "addTo", "addToGivingStatement", 
+			"addCorrespondingStatement", "addFrom", "addToGiving", "addGiving", "alteredGoTo", 
+			"alterStatement", "alterProceedTo", "callStatement", "callUsingPhrase", 
+			"callUsingParameter", "callByReferencePhrase", "callByReference", "callByValuePhrase", 
+			"callByValue", "callByContentPhrase", "callByContent", "callGivingPhrase", 
+			"cancelStatement", "cancelCall", "closeStatement", "closeFile", "closeReelUnitStatement", 
+			"closeRelativeStatement", "closePortFileIOStatement", "closePortFileIOUsing", 
+			"closePortFileIOUsingCloseDisposition", "closePortFileIOUsingAssociatedData", 
+			"closePortFileIOUsingAssociatedDataLength", "computeStatement", "computeStore", 
+			"continueStatement", "deleteStatement", "disableStatement", "displayStatement", 
+			"displayOperand", "displayAt", "displayUpon", "displayWith", "divideStatement", 
+			"divideIntoStatement", "divideIntoGivingStatement", "divideByGivingStatement", 
+			"divideGivingPhrase", "divideInto", "divideGiving", "divideRemainder", 
+			"enableStatement", "entryStatement", "evaluateStatement", "evaluateSelect", 
+			"evaluateAlsoSelect", "evaluateWhenPhrase", "evaluateWhen", "evaluateCondition", 
+			"evaluateThrough", "evaluateAlsoCondition", "evaluateWhenOther", "evaluateValue", 
+			"execCicsStatement", "execSqlStatement", "execSqlImsStatement", "exhibitStatement", 
+			"exhibitOperand", "exitStatement", "generateStatement", "gobackStatement", 
+			"goToStatement", "goToStatementSimple", "goToDependingOnStatement", "ifStatement", 
+			"ifThen", "ifElse", "initializeStatement", "initializeReplacingPhrase", 
+			"initializeReplacingBy", "initiateStatement", "inspectStatement", "inspectTallyingPhrase", 
+			"inspectReplacingPhrase", "inspectTallyingReplacingPhrase", "inspectConvertingPhrase", 
+			"inspectFor", "inspectCharacters", "inspectReplacingCharacters", "inspectAllLeadings", 
+			"inspectReplacingAllLeadings", "inspectAllLeading", "inspectReplacingAllLeading", 
+			"inspectBy", "inspectTo", "inspectBeforeAfter", "mergeStatement", "mergeOnKeyClause", 
+			"mergeCollatingSequencePhrase", "mergeCollatingAlphanumeric", "mergeCollatingNational", 
+			"mergeUsing", "mergeOutputProcedurePhrase", "mergeOutputThrough", "mergeGivingPhrase", 
+			"mergeGiving", "moveStatement", "moveToStatement", "moveToSendingArea", 
+			"moveCorrespondingToStatement", "moveCorrespondingToSendingArea", "multiplyStatement", 
+			"multiplyRegular", "multiplyRegularOperand", "multiplyGiving", "multiplyGivingOperand", 
+			"multiplyGivingResult", "nextSentenceStatement", "openStatement", "openInputStatement", 
+			"openInput", "openOutputStatement", "openOutput", "openIOStatement", 
+			"openExtendStatement", "performStatement", "performInlineStatement", 
+			"performProcedureStatement", "performType", "performTimes", "performUntil", 
+			"performVarying", "performVaryingClause", "performVaryingPhrase", "performAfter", 
+			"performFrom", "performBy", "performTestClause", "purgeStatement", "readStatement", 
+			"readInto", "readWith", "readKey", "receiveStatement", "receiveFromStatement", 
+			"receiveFrom", "receiveIntoStatement", "receiveNoData", "receiveWithData", 
+			"receiveBefore", "receiveWith", "receiveThread", "receiveSize", "receiveStatus", 
+			"releaseStatement", "returnStatement", "returnInto", "rewriteStatement", 
+			"rewriteFrom", "searchStatement", "searchVarying", "searchWhen", "sendStatement", 
+			"sendStatementSync", "sendStatementAsync", "sendFromPhrase", "sendWithPhrase", 
+			"sendReplacingPhrase", "sendAdvancingPhrase", "sendAdvancingPage", "sendAdvancingLines", 
+			"sendAdvancingMnemonic", "setStatement", "setToStatement", "setUpDownByStatement", 
+			"setTo", "setToValue", "setByValue", "sortStatement", "sortOnKeyClause", 
+			"sortDuplicatesPhrase", "sortCollatingSequencePhrase", "sortCollatingAlphanumeric", 
+			"sortCollatingNational", "sortInputProcedurePhrase", "sortInputThrough", 
+			"sortUsing", "sortOutputProcedurePhrase", "sortOutputThrough", "sortGivingPhrase", 
+			"sortGiving", "startStatement", "startKey", "stopStatement", "stopStatementGiving", 
+			"stringStatement", "stringSendingPhrase", "stringSending", "stringDelimitedByPhrase", 
+			"stringForPhrase", "stringIntoPhrase", "stringWithPointerPhrase", "subtractStatement", 
+			"subtractFromStatement", "subtractFromGivingStatement", "subtractCorrespondingStatement", 
+			"subtractSubtrahend", "subtractMinuend", "subtractMinuendGiving", "subtractGiving", 
+			"subtractMinuendCorresponding", "terminateStatement", "unstringStatement", 
+			"unstringSendingPhrase", "unstringDelimitedByPhrase", "unstringOrAllPhrase", 
+			"unstringIntoPhrase", "unstringInto", "unstringDelimiterIn", "unstringCountIn", 
+			"unstringWithPointerPhrase", "unstringTallyingPhrase", "useStatement", 
+			"useAfterClause", "useAfterOn", "useDebugClause", "useDebugOn", "writeStatement", 
+			"writeFromPhrase", "writeAdvancingPhrase", "writeAdvancingPage", "writeAdvancingLines", 
+			"writeAdvancingMnemonic", "writeAtEndOfPagePhrase", "writeNotAtEndOfPagePhrase", 
+			"atEndPhrase", "notAtEndPhrase", "invalidKeyPhrase", "notInvalidKeyPhrase", 
+			"onOverflowPhrase", "notOnOverflowPhrase", "onSizeErrorPhrase", "notOnSizeErrorPhrase", 
+			"onExceptionClause", "notOnExceptionClause", "arithmeticExpression", 
+			"plusMinus", "multDivs", "multDiv", "powers", "power", "basis", "condition", 
+			"andOrCondition", "combinableCondition", "simpleCondition", "classCondition", 
+			"conditionNameReference", "conditionNameSubscriptReference", "relationCondition", 
+			"relationSignCondition", "relationArithmeticComparison", "relationCombinedComparison", 
+			"relationCombinedCondition", "relationalOperator", "abbreviation", "identifier", 
+			"tableCall", "tableCallSubscripts", "functionCall", "functionCallArguments", 
+			"referenceModifier", "characterPosition", "length", "subscript", "argument", 
+			"qualifiedDataName", "qualifiedDataNameFormat1", "qualifiedDataNameFormat2", 
+			"qualifiedDataNameFormat3", "qualifiedDataNameFormat4", "qualifiedInData", 
+			"inData", "inFile", "inMnemonic", "inSection", "inLibrary", "inTable", 
+			"alphabetName", "assignmentName", "basisName", "cdName", "className", 
+			"computerName", "conditionName", "dataName", "dataDescName", "environmentName", 
+			"fileName", "functionName", "indexName", "languageName", "libraryName", 
+			"localName", "mnemonicName", "paragraphName", "procedureName", "programName", 
+			"recordName", "reportName", "routineName", "screenName", "sectionName", 
+			"systemName", "symbolicCharacter", "textName", "cobolWord", "literal", 
+			"booleanLiteral", "numericLiteral", "integerLiteral", "cicsDfhRespLiteral", 
 			"cicsDfhValueLiteral", "figurativeConstant", "specialRegister", "commentEntry"
 		};
 	}
@@ -519,148 +519,148 @@ public class CobolParser extends Parser {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, null, null, null, null, null, null, null, null, null,
-			null, null, null, "'&'", "'*'", "'**'", "':'", "','", "'*>CE'", "'*>'",
-			"'$'", "'\"'", null, "'='", "'*>EXECCICS'", "'*>EXECSQL'", "'*>EXECSQLIMS'",
-			"'<'", "'<='", "'('", "'-'", "'>'", "'>='", "'<>'", "'+'", "'''", "')'",
-			"'/'", null, "'66'", "'77'", "'88'", null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, "'&'", "'*'", "'**'", "':'", "','", "'*>CE'", "'*>'", 
+			"'$'", "'\"'", null, "'='", "'*>EXECCICS'", "'*>EXECSQL'", "'*>EXECSQLIMS'", 
+			"'<'", "'<='", "'('", "'-'", "'>'", "'>='", "'<>'", "'+'", "'''", "')'", 
+			"'/'", null, "'66'", "'77'", "'88'", null, null, null, null, null, null, 
 			null, null, null, null, "', '"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, "ABORT", "ACCEPT", "ACCESS", "ADD", "ADDRESS", "ADVANCING", "AFTER",
-			"ALIGNED", "ALL", "ALPHABET", "ALPHABETIC", "ALPHABETIC_LOWER", "ALPHABETIC_UPPER",
-			"ALPHANUMERIC", "ALPHANUMERIC_EDITED", "ALSO", "ALTER", "ALTERNATE",
-			"AND", "ANY", "ARE", "AREA", "AREAS", "AS", "ASCENDING", "ASCII", "ASSIGN",
-			"ASSOCIATED_DATA", "ASSOCIATED_DATA_LENGTH", "AT", "ATTRIBUTE", "AUTHOR",
-			"AUTO", "AUTO_SKIP", "BACKGROUND_COLOR", "BACKGROUND_COLOUR", "BASIS",
-			"BEEP", "BEFORE", "BEGINNING", "BELL", "BINARY", "BIT", "BLANK", "BLINK",
-			"BLOB", "BLOCK", "BOUNDS", "BOTTOM", "BY", "BYFUNCTION", "BYTITLE", "CALL",
-			"CANCEL", "CAPABLE", "CCSVERSION", "CD", "CF", "CH", "CHAINING", "CHANGED",
-			"CHANNEL", "CHARACTER", "CHARACTERS", "CLASS", "CLASS_ID", "CLOB", "CLOCK_UNITS",
-			"CLOSE", "CLOSE_DISPOSITION", "COBOL", "CODE", "CODE_SET", "COLLATING",
-			"COL", "COLUMN", "COM_REG", "COMMA", "COMMITMENT", "COMMON", "COMMUNICATION",
-			"COMP", "COMP_1", "COMP_2", "COMP_3", "COMP_4", "COMP_5", "COMPUTATIONAL",
-			"COMPUTATIONAL_1", "COMPUTATIONAL_2", "COMPUTATIONAL_3", "COMPUTATIONAL_4",
-			"COMPUTATIONAL_5", "COMPUTE", "CONFIGURATION", "CONTAINS", "CONTENT",
-			"CONTINUE", "CONTROL", "CONTROL_POINT", "CONTROLS", "CONVENTION", "CONVERTING",
-			"COPY", "CORR", "CORRESPONDING", "COUNT", "CRUNCH", "CURRENCY", "CURSOR",
-			"DATA", "DATA_BASE", "DATE", "DATE_COMPILED", "DATE_WRITTEN", "DAY",
-			"DAY_OF_WEEK", "DBCS", "DBCLOB", "DE", "DEBUG_CONTENTS", "DEBUG_ITEM",
-			"DEBUG_LINE", "DEBUG_NAME", "DEBUG_SUB_1", "DEBUG_SUB_2", "DEBUG_SUB_3",
-			"DEBUGGING", "DECIMAL_POINT", "DECLARATIVES", "DEFAULT", "DEFAULT_DISPLAY",
-			"DEFINITION", "DELETE", "DELIMITED", "DELIMITER", "DEPENDING", "DESCENDING",
-			"DESTINATION", "DETAIL", "DFHRESP", "DFHVALUE", "DISABLE", "DISK", "DISPLAY",
-			"DISPLAY_1", "DIVIDE", "DIVISION", "DONTCARE", "DOUBLE", "DOWN", "DUPLICATES",
-			"DYNAMIC", "EBCDIC", "EGCS", "EGI", "ELSE", "EMI", "EMPTY_CHECK", "ENABLE",
-			"END", "END_ACCEPT", "END_ADD", "END_CALL", "END_COMPUTE", "END_DELETE",
-			"END_DISPLAY", "END_DIVIDE", "END_EVALUATE", "END_IF", "END_MULTIPLY",
-			"END_OF_PAGE", "END_PERFORM", "END_READ", "END_RECEIVE", "END_REMARKS",
-			"END_RETURN", "END_REWRITE", "END_SEARCH", "END_START", "END_STRING",
-			"END_SUBTRACT", "END_UNSTRING", "END_WRITE", "ENDING", "ENTER", "ENTRY",
-			"ENTRY_PROCEDURE", "ENVIRONMENT", "EOP", "EQUAL", "ERASE", "ERROR", "EOL",
-			"EOS", "ESCAPE", "ESI", "EVALUATE", "EVENT", "EVERY", "EXCEPTION", "EXCLUSIVE",
-			"EXHIBIT", "EXIT", "EXPORT", "EXTEND", "EXTENDED", "EXTERNAL", "FALSE",
-			"FD", "FILE", "FILE_CONTROL", "FILLER", "FINAL", "FIRST", "FOOTING",
-			"FOR", "FOREGROUND_COLOR", "FOREGROUND_COLOUR", "FROM", "FULL", "FUNCTION",
-			"FUNCTIONNAME", "FUNCTION_POINTER", "GENERATE", "GOBACK", "GIVING", "GLOBAL",
-			"GO", "GREATER", "GRID", "GROUP", "HEADING", "HIGHLIGHT", "HIGH_VALUE",
-			"HIGH_VALUES", "I_O", "I_O_CONTROL", "ID", "IDENTIFICATION", "IF", "IMPLICIT",
-			"IMPORT", "IN", "INDEX", "INDEXED", "INDICATE", "INITIAL", "INITIALIZE",
-			"INITIATE", "INPUT", "INPUT_OUTPUT", "INSPECT", "INSTALLATION", "INTEGER",
-			"INTO", "INVALID", "INVOKE", "IS", "JUST", "JUSTIFIED", "KANJI", "KEPT",
-			"KEY", "KEYBOARD", "LABEL", "LANGUAGE", "LAST", "LB", "LD", "LEADING",
-			"LEFT", "LEFTLINE", "LENGTH", "LENGTH_CHECK", "LESS", "LIBACCESS", "LIBPARAMETER",
-			"LIBRARY", "LIMIT", "LIMITS", "LINAGE", "LINAGE_COUNTER", "LINE", "LINES",
-			"LINE_COUNTER", "LINKAGE", "LIST", "LOCAL", "LOCAL_STORAGE", "LOCK",
-			"LONG_DATE", "LONG_TIME", "LOWER", "LOWLIGHT", "LOW_VALUE", "LOW_VALUES",
-			"MEMORY", "MERGE", "MESSAGE", "MMDDYYYY", "MODE", "MODULES", "MORE_LABELS",
-			"MOVE", "MULTIPLE", "MULTIPLY", "NAMED", "NATIONAL", "NATIONAL_EDITED",
-			"NATIVE", "NEGATIVE", "NETWORK", "NEXT", "NO", "NO_ECHO", "NOT", "NULL",
-			"NULLS", "NUMBER", "NUMERIC", "NUMERIC_DATE", "NUMERIC_EDITED", "NUMERIC_TIME",
-			"OBJECT_COMPUTER", "OCCURS", "ODT", "OF", "OFF", "OMITTED", "ON", "OPEN",
-			"OPTIONAL", "OR", "ORDER", "ORDERLY", "ORGANIZATION", "OTHER", "OUTPUT",
-			"OVERFLOW", "OVERLINE", "OWN", "PACKED_DECIMAL", "PADDING", "PAGE", "PAGE_COUNTER",
-			"PASSWORD", "PERFORM", "PF", "PH", "PIC", "PICTURE", "PLUS", "POINTER",
-			"POSITION", "POSITIVE", "PORT", "PRINTER", "PRINTING", "PRIVATE", "PROCEDURE",
-			"PROCEDURE_POINTER", "PROCEDURES", "PROCEED", "PROCESS", "PROGRAM", "PROGRAM_ID",
-			"PROGRAM_LIBRARY", "PROMPT", "PURGE", "QUEUE", "QUOTE", "QUOTES", "RANDOM",
-			"READER", "REMOTE", "RD", "REAL", "READ", "RECEIVE", "RECEIVED", "RECORD",
-			"RECORDING", "RECORDS", "RECURSIVE", "REDEFINES", "REEL", "REF", "REFERENCE",
-			"REFERENCES", "RELATIVE", "RELEASE", "REMAINDER", "REMARKS", "REMOVAL",
-			"REMOVE", "RENAMES", "REPLACE", "REPLACING", "REPORT", "REPORTING", "REPORTS",
-			"REQUIRED", "RERUN", "RESERVE", "REVERSE_VIDEO", "RESET", "RETURN", "RETURN_CODE",
-			"RETURNING", "REVERSED", "REWIND", "REWRITE", "RF", "RH", "RIGHT", "ROUNDED",
-			"RUN", "SAME", "SAVE", "SCREEN", "SD", "SEARCH", "SECTION", "SECURE",
-			"SECURITY", "SEGMENT", "SEGMENT_LIMIT", "SELECT", "SEND", "SENTENCE",
-			"SEPARATE", "SEQUENCE", "SEQUENTIAL", "SET", "SHARED", "SHAREDBYALL",
-			"SHAREDBYRUNUNIT", "SHARING", "SHIFT_IN", "SHIFT_OUT", "SHORT_DATE",
-			"SIGN", "SIZE", "SORT", "SORT_CONTROL", "SORT_CORE_SIZE", "SORT_FILE_SIZE",
-			"SORT_MERGE", "SORT_MESSAGE", "SORT_MODE_SIZE", "SORT_RETURN", "SOURCE",
-			"SOURCE_COMPUTER", "SPACE", "SPACES", "SPECIAL_NAMES", "SQL", "STANDARD",
-			"STANDARD_1", "STANDARD_2", "START", "STATUS", "STOP", "STRING", "SUB_QUEUE_1",
-			"SUB_QUEUE_2", "SUB_QUEUE_3", "SUBTRACT", "SUM", "SUPPRESS", "SYMBOL",
-			"SYMBOLIC", "SYNC", "SYNCHRONIZED", "TABLE", "TALLY", "TALLYING", "TASK",
-			"TAPE", "TERMINAL", "TERMINATE", "TEST", "TEXT", "THAN", "THEN", "THREAD",
-			"THREAD_LOCAL", "THROUGH", "THRU", "TIME", "TIMER", "TIMES", "TITLE",
-			"TO", "TODAYS_DATE", "TODAYS_NAME", "TOP", "TRAILING", "TRUE", "TRUNCATED",
-			"TYPE", "TYPEDEF", "UNDERLINE", "UNIT", "UNSTRING", "UNTIL", "UP", "UPON",
-			"USAGE", "USE", "USING", "VALUE", "VALUES", "VARYING", "VIRTUAL", "WAIT",
-			"WHEN", "WHEN_COMPILED", "WITH", "WORDS", "WORKING_STORAGE", "WRITE",
-			"YEAR", "YYYYMMDD", "YYYYDDD", "ZERO", "ZERO_FILL", "ZEROS", "ZEROES",
-			"AMPCHAR", "ASTERISKCHAR", "DOUBLEASTERISKCHAR", "COLONCHAR", "COMMACHAR",
-			"COMMENTENTRYTAG", "COMMENTTAG", "DOLLARCHAR", "DOUBLEQUOTE", "DOT_FS",
-			"EQUALCHAR", "EXECCICSTAG", "EXECSQLTAG", "EXECSQLIMSTAG", "LESSTHANCHAR",
-			"LESSTHANOREQUAL", "LPARENCHAR", "MINUSCHAR", "MORETHANCHAR", "MORETHANOREQUAL",
-			"NOTEQUALCHAR", "PLUSCHAR", "SINGLEQUOTE", "RPARENCHAR", "SLASHCHAR",
-			"NONNUMERICLITERAL", "LEVEL_NUMBER_66", "LEVEL_NUMBER_77", "LEVEL_NUMBER_88",
-			"INTEGERLITERAL", "NUMERICLITERAL", "IDENTIFIER", "NEWLINE", "EXECCICSLINE",
-			"EXECSQLIMSLINE", "EXECSQLLINE", "COMMENTENTRYLINE", "COMMENTLINE", "WS",
+			null, "ABORT", "ACCEPT", "ACCESS", "ADD", "ADDRESS", "ADVANCING", "AFTER", 
+			"ALIGNED", "ALL", "ALPHABET", "ALPHABETIC", "ALPHABETIC_LOWER", "ALPHABETIC_UPPER", 
+			"ALPHANUMERIC", "ALPHANUMERIC_EDITED", "ALSO", "ALTER", "ALTERNATE", 
+			"AND", "ANY", "ARE", "AREA", "AREAS", "AS", "ASCENDING", "ASCII", "ASSIGN", 
+			"ASSOCIATED_DATA", "ASSOCIATED_DATA_LENGTH", "AT", "ATTRIBUTE", "AUTHOR", 
+			"AUTO", "AUTO_SKIP", "BACKGROUND_COLOR", "BACKGROUND_COLOUR", "BASIS", 
+			"BEEP", "BEFORE", "BEGINNING", "BELL", "BINARY", "BIT", "BLANK", "BLINK", 
+			"BLOB", "BLOCK", "BOUNDS", "BOTTOM", "BY", "BYFUNCTION", "BYTITLE", "CALL", 
+			"CANCEL", "CAPABLE", "CCSVERSION", "CD", "CF", "CH", "CHAINING", "CHANGED", 
+			"CHANNEL", "CHARACTER", "CHARACTERS", "CLASS", "CLASS_ID", "CLOB", "CLOCK_UNITS", 
+			"CLOSE", "CLOSE_DISPOSITION", "COBOL", "CODE", "CODE_SET", "COLLATING", 
+			"COL", "COLUMN", "COM_REG", "COMMA", "COMMITMENT", "COMMON", "COMMUNICATION", 
+			"COMP", "COMP_1", "COMP_2", "COMP_3", "COMP_4", "COMP_5", "COMPUTATIONAL", 
+			"COMPUTATIONAL_1", "COMPUTATIONAL_2", "COMPUTATIONAL_3", "COMPUTATIONAL_4", 
+			"COMPUTATIONAL_5", "COMPUTE", "CONFIGURATION", "CONTAINS", "CONTENT", 
+			"CONTINUE", "CONTROL", "CONTROL_POINT", "CONTROLS", "CONVENTION", "CONVERTING", 
+			"COPY", "CORR", "CORRESPONDING", "COUNT", "CRUNCH", "CURRENCY", "CURSOR", 
+			"DATA", "DATA_BASE", "DATE", "DATE_COMPILED", "DATE_WRITTEN", "DAY", 
+			"DAY_OF_WEEK", "DBCS", "DBCLOB", "DE", "DEBUG_CONTENTS", "DEBUG_ITEM", 
+			"DEBUG_LINE", "DEBUG_NAME", "DEBUG_SUB_1", "DEBUG_SUB_2", "DEBUG_SUB_3", 
+			"DEBUGGING", "DECIMAL_POINT", "DECLARATIVES", "DEFAULT", "DEFAULT_DISPLAY", 
+			"DEFINITION", "DELETE", "DELIMITED", "DELIMITER", "DEPENDING", "DESCENDING", 
+			"DESTINATION", "DETAIL", "DFHRESP", "DFHVALUE", "DISABLE", "DISK", "DISPLAY", 
+			"DISPLAY_1", "DIVIDE", "DIVISION", "DONTCARE", "DOUBLE", "DOWN", "DUPLICATES", 
+			"DYNAMIC", "EBCDIC", "EGCS", "EGI", "ELSE", "EMI", "EMPTY_CHECK", "ENABLE", 
+			"END", "END_ACCEPT", "END_ADD", "END_CALL", "END_COMPUTE", "END_DELETE", 
+			"END_DISPLAY", "END_DIVIDE", "END_EVALUATE", "END_IF", "END_MULTIPLY", 
+			"END_OF_PAGE", "END_PERFORM", "END_READ", "END_RECEIVE", "END_REMARKS", 
+			"END_RETURN", "END_REWRITE", "END_SEARCH", "END_START", "END_STRING", 
+			"END_SUBTRACT", "END_UNSTRING", "END_WRITE", "ENDING", "ENTER", "ENTRY", 
+			"ENTRY_PROCEDURE", "ENVIRONMENT", "EOP", "EQUAL", "ERASE", "ERROR", "EOL", 
+			"EOS", "ESCAPE", "ESI", "EVALUATE", "EVENT", "EVERY", "EXCEPTION", "EXCLUSIVE", 
+			"EXHIBIT", "EXIT", "EXPORT", "EXTEND", "EXTENDED", "EXTERNAL", "FALSE", 
+			"FD", "FILE", "FILE_CONTROL", "FILLER", "FINAL", "FIRST", "FOOTING", 
+			"FOR", "FOREGROUND_COLOR", "FOREGROUND_COLOUR", "FROM", "FULL", "FUNCTION", 
+			"FUNCTIONNAME", "FUNCTION_POINTER", "GENERATE", "GOBACK", "GIVING", "GLOBAL", 
+			"GO", "GREATER", "GRID", "GROUP", "HEADING", "HIGHLIGHT", "HIGH_VALUE", 
+			"HIGH_VALUES", "I_O", "I_O_CONTROL", "ID", "IDENTIFICATION", "IF", "IMPLICIT", 
+			"IMPORT", "IN", "INDEX", "INDEXED", "INDICATE", "INITIAL", "INITIALIZE", 
+			"INITIATE", "INPUT", "INPUT_OUTPUT", "INSPECT", "INSTALLATION", "INTEGER", 
+			"INTO", "INVALID", "INVOKE", "IS", "JUST", "JUSTIFIED", "KANJI", "KEPT", 
+			"KEY", "KEYBOARD", "LABEL", "LANGUAGE", "LAST", "LB", "LD", "LEADING", 
+			"LEFT", "LEFTLINE", "LENGTH", "LENGTH_CHECK", "LESS", "LIBACCESS", "LIBPARAMETER", 
+			"LIBRARY", "LIMIT", "LIMITS", "LINAGE", "LINAGE_COUNTER", "LINE", "LINES", 
+			"LINE_COUNTER", "LINKAGE", "LIST", "LOCAL", "LOCAL_STORAGE", "LOCK", 
+			"LONG_DATE", "LONG_TIME", "LOWER", "LOWLIGHT", "LOW_VALUE", "LOW_VALUES", 
+			"MEMORY", "MERGE", "MESSAGE", "MMDDYYYY", "MODE", "MODULES", "MORE_LABELS", 
+			"MOVE", "MULTIPLE", "MULTIPLY", "NAMED", "NATIONAL", "NATIONAL_EDITED", 
+			"NATIVE", "NEGATIVE", "NETWORK", "NEXT", "NO", "NO_ECHO", "NOT", "NULL", 
+			"NULLS", "NUMBER", "NUMERIC", "NUMERIC_DATE", "NUMERIC_EDITED", "NUMERIC_TIME", 
+			"OBJECT_COMPUTER", "OCCURS", "ODT", "OF", "OFF", "OMITTED", "ON", "OPEN", 
+			"OPTIONAL", "OR", "ORDER", "ORDERLY", "ORGANIZATION", "OTHER", "OUTPUT", 
+			"OVERFLOW", "OVERLINE", "OWN", "PACKED_DECIMAL", "PADDING", "PAGE", "PAGE_COUNTER", 
+			"PASSWORD", "PERFORM", "PF", "PH", "PIC", "PICTURE", "PLUS", "POINTER", 
+			"POSITION", "POSITIVE", "PORT", "PRINTER", "PRINTING", "PRIVATE", "PROCEDURE", 
+			"PROCEDURE_POINTER", "PROCEDURES", "PROCEED", "PROCESS", "PROGRAM", "PROGRAM_ID", 
+			"PROGRAM_LIBRARY", "PROMPT", "PURGE", "QUEUE", "QUOTE", "QUOTES", "RANDOM", 
+			"READER", "REMOTE", "RD", "REAL", "READ", "RECEIVE", "RECEIVED", "RECORD", 
+			"RECORDING", "RECORDS", "RECURSIVE", "REDEFINES", "REEL", "REF", "REFERENCE", 
+			"REFERENCES", "RELATIVE", "RELEASE", "REMAINDER", "REMARKS", "REMOVAL", 
+			"REMOVE", "RENAMES", "REPLACE", "REPLACING", "REPORT", "REPORTING", "REPORTS", 
+			"REQUIRED", "RERUN", "RESERVE", "REVERSE_VIDEO", "RESET", "RETURN", "RETURN_CODE", 
+			"RETURNING", "REVERSED", "REWIND", "REWRITE", "RF", "RH", "RIGHT", "ROUNDED", 
+			"RUN", "SAME", "SAVE", "SCREEN", "SD", "SEARCH", "SECTION", "SECURE", 
+			"SECURITY", "SEGMENT", "SEGMENT_LIMIT", "SELECT", "SEND", "SENTENCE", 
+			"SEPARATE", "SEQUENCE", "SEQUENTIAL", "SET", "SHARED", "SHAREDBYALL", 
+			"SHAREDBYRUNUNIT", "SHARING", "SHIFT_IN", "SHIFT_OUT", "SHORT_DATE", 
+			"SIGN", "SIZE", "SORT", "SORT_CONTROL", "SORT_CORE_SIZE", "SORT_FILE_SIZE", 
+			"SORT_MERGE", "SORT_MESSAGE", "SORT_MODE_SIZE", "SORT_RETURN", "SOURCE", 
+			"SOURCE_COMPUTER", "SPACE", "SPACES", "SPECIAL_NAMES", "SQL", "STANDARD", 
+			"STANDARD_1", "STANDARD_2", "START", "STATUS", "STOP", "STRING", "SUB_QUEUE_1", 
+			"SUB_QUEUE_2", "SUB_QUEUE_3", "SUBTRACT", "SUM", "SUPPRESS", "SYMBOL", 
+			"SYMBOLIC", "SYNC", "SYNCHRONIZED", "TABLE", "TALLY", "TALLYING", "TASK", 
+			"TAPE", "TERMINAL", "TERMINATE", "TEST", "TEXT", "THAN", "THEN", "THREAD", 
+			"THREAD_LOCAL", "THROUGH", "THRU", "TIME", "TIMER", "TIMES", "TITLE", 
+			"TO", "TODAYS_DATE", "TODAYS_NAME", "TOP", "TRAILING", "TRUE", "TRUNCATED", 
+			"TYPE", "TYPEDEF", "UNDERLINE", "UNIT", "UNSTRING", "UNTIL", "UP", "UPON", 
+			"USAGE", "USE", "USING", "VALUE", "VALUES", "VARYING", "VIRTUAL", "WAIT", 
+			"WHEN", "WHEN_COMPILED", "WITH", "WORDS", "WORKING_STORAGE", "WRITE", 
+			"YEAR", "YYYYMMDD", "YYYYDDD", "ZERO", "ZERO_FILL", "ZEROS", "ZEROES", 
+			"AMPCHAR", "ASTERISKCHAR", "DOUBLEASTERISKCHAR", "COLONCHAR", "COMMACHAR", 
+			"COMMENTENTRYTAG", "COMMENTTAG", "DOLLARCHAR", "DOUBLEQUOTE", "DOT_FS", 
+			"EQUALCHAR", "EXECCICSTAG", "EXECSQLTAG", "EXECSQLIMSTAG", "LESSTHANCHAR", 
+			"LESSTHANOREQUAL", "LPARENCHAR", "MINUSCHAR", "MORETHANCHAR", "MORETHANOREQUAL", 
+			"NOTEQUALCHAR", "PLUSCHAR", "SINGLEQUOTE", "RPARENCHAR", "SLASHCHAR", 
+			"NONNUMERICLITERAL", "LEVEL_NUMBER_66", "LEVEL_NUMBER_77", "LEVEL_NUMBER_88", 
+			"INTEGERLITERAL", "NUMERICLITERAL", "IDENTIFIER", "NEWLINE", "EXECCICSLINE", 
+			"EXECSQLIMSLINE", "EXECSQLLINE", "COMMENTENTRYLINE", "COMMENTLINE", "WS", 
 			"SEPARATOR"
 		};
 	}
@@ -871,7 +871,7 @@ public class CobolParser extends Parser {
 					setState(1224);
 					programUnit();
 					}
-					}
+					} 
 				}
 				setState(1229);
 				_errHandler.sync(this);
@@ -1844,7 +1844,7 @@ public class CobolParser extends Parser {
 					setState(1327);
 					configurationSectionParagraph();
 					}
-					}
+					} 
 				}
 				setState(1332);
 				_errHandler.sync(this);
@@ -2756,7 +2756,7 @@ public class CobolParser extends Parser {
 				}
 			}
 
-			setState(1408);
+			setState(1408); 
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -2772,7 +2772,7 @@ public class CobolParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(1410);
+				setState(1410); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,41,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -3109,7 +3109,7 @@ public class CobolParser extends Parser {
 			_la = _input.LA(1);
 			if (((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717342722L) != 0 || (((_la - 65)) & ~0x3f) == 0 && ((1L << (_la - 65)) & 18076142959345765L) != 0 || (((_la - 129)) & ~0x3f) == 0 && ((1L << (_la - 129)) & -8502796095365009379L) != 0 || (((_la - 194)) & ~0x3f) == 0 && ((1L << (_la - 194)) & 2306688672889579815L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434315076821L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111195157L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4611772880399632001L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103635575018455171L) != 0 || _la==IDENTIFIER) {
 				{
-				setState(1449);
+				setState(1449); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				do {
@@ -3119,7 +3119,7 @@ public class CobolParser extends Parser {
 					specialNameClause();
 					}
 					}
-					setState(1451);
+					setState(1451); 
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717342722L) != 0 || (((_la - 65)) & ~0x3f) == 0 && ((1L << (_la - 65)) & 18076142959345765L) != 0 || (((_la - 129)) & ~0x3f) == 0 && ((1L << (_la - 129)) & -8502796095365009379L) != 0 || (((_la - 194)) & ~0x3f) == 0 && ((1L << (_la - 194)) & 2306688672889579815L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434315076821L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111195157L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4611772880399632001L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103635575018455171L) != 0 || _la==IDENTIFIER );
@@ -3470,7 +3470,7 @@ public class CobolParser extends Parser {
 				break;
 			case 7:
 				{
-				setState(1490);
+				setState(1490); 
 				_errHandler.sync(this);
 				_alt = 1;
 				do {
@@ -3486,7 +3486,7 @@ public class CobolParser extends Parser {
 					default:
 						throw new NoViableAltException(this);
 					}
-					setState(1492);
+					setState(1492); 
 					_errHandler.sync(this);
 					_alt = getInterpreter().adaptivePredict(_input,55,_ctx);
 				} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -3560,7 +3560,7 @@ public class CobolParser extends Parser {
 				break;
 			case ALSO:
 				{
-				setState(1499);
+				setState(1499); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				do {
@@ -3570,7 +3570,7 @@ public class CobolParser extends Parser {
 					alphabetAlso();
 					}
 					}
-					setState(1501);
+					setState(1501); 
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				} while ( _la==ALSO );
@@ -3848,7 +3848,7 @@ public class CobolParser extends Parser {
 			{
 			setState(1508);
 			match(ALSO);
-			setState(1510);
+			setState(1510); 
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -3864,7 +3864,7 @@ public class CobolParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(1512);
+				setState(1512); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,59,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -4130,7 +4130,7 @@ public class CobolParser extends Parser {
 				}
 			}
 
-			setState(1547);
+			setState(1547); 
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -4146,7 +4146,7 @@ public class CobolParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(1549);
+				setState(1549); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,67,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -5373,7 +5373,7 @@ public class CobolParser extends Parser {
 				}
 				break;
 			}
-			setState(1697);
+			setState(1697); 
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -5389,7 +5389,7 @@ public class CobolParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(1699);
+				setState(1699); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,107,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -5460,7 +5460,7 @@ public class CobolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(1706);
+			setState(1706); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -5470,7 +5470,7 @@ public class CobolParser extends Parser {
 				symbolicCharacter();
 				}
 				}
-				setState(1708);
+				setState(1708); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341698L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 4514637693325337L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336444789907L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434315076821L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111195137L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4611772880399631489L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103635575018455169L) != 0 || _la==IDENTIFIER );
@@ -5492,7 +5492,7 @@ public class CobolParser extends Parser {
 				}
 			}
 
-			setState(1714);
+			setState(1714); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -5502,7 +5502,7 @@ public class CobolParser extends Parser {
 				integerLiteral();
 				}
 				}
-				setState(1716);
+				setState(1716); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( (((_la - 557)) & ~0x3f) == 0 && ((1L << (_la - 557)) & 15L) != 0 );
@@ -5724,7 +5724,7 @@ public class CobolParser extends Parser {
 					setState(1737);
 					fileControlEntry();
 					}
-					}
+					} 
 				}
 				setState(1742);
 				_errHandler.sync(this);
@@ -7658,7 +7658,7 @@ public class CobolParser extends Parser {
 				}
 			}
 
-			setState(1978);
+			setState(1978); 
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -7674,7 +7674,7 @@ public class CobolParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(1980);
+				setState(1980); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,167,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -7754,7 +7754,7 @@ public class CobolParser extends Parser {
 				}
 			}
 
-			setState(1991);
+			setState(1991); 
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -7770,7 +7770,7 @@ public class CobolParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(1993);
+				setState(1993); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,170,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -8279,7 +8279,7 @@ public class CobolParser extends Parser {
 					setState(2041);
 					fileDescriptionEntryClause();
 					}
-					}
+					} 
 				}
 				setState(2046);
 				_errHandler.sync(this);
@@ -9357,7 +9357,7 @@ public class CobolParser extends Parser {
 			case ZERO_FILL:
 			case IDENTIFIER:
 				{
-				setState(2158);
+				setState(2158); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				do {
@@ -9367,7 +9367,7 @@ public class CobolParser extends Parser {
 					dataName();
 					}
 					}
-					setState(2160);
+					setState(2160); 
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341698L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 4514637693325337L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336444789907L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434315076821L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111195137L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4611772880399631489L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103635575018455169L) != 0 || _la==IDENTIFIER );
@@ -9429,7 +9429,7 @@ public class CobolParser extends Parser {
 			match(VALUE);
 			setState(2165);
 			match(OF);
-			setState(2167);
+			setState(2167); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -9439,7 +9439,7 @@ public class CobolParser extends Parser {
 				valuePair();
 				}
 				}
-				setState(2169);
+				setState(2169); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341698L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 4514637693325337L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336444789907L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434315076821L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111195137L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4611772880399631489L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103635575018455169L) != 0 || _la==IDENTIFIER );
@@ -9614,7 +9614,7 @@ public class CobolParser extends Parser {
 			default:
 				throw new NoViableAltException(this);
 			}
-			setState(2191);
+			setState(2191); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -9624,7 +9624,7 @@ public class CobolParser extends Parser {
 				dataName();
 				}
 				}
-				setState(2193);
+				setState(2193); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341698L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 4514637693325337L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336444789907L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434315076821L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111195137L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4611772880399631489L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103635575018455169L) != 0 || _la==IDENTIFIER );
@@ -10868,7 +10868,7 @@ public class CobolParser extends Parser {
 			default:
 				throw new NoViableAltException(this);
 			}
-			setState(2278);
+			setState(2278); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -10878,7 +10878,7 @@ public class CobolParser extends Parser {
 				reportName();
 				}
 				}
-				setState(2280);
+				setState(2280); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341698L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 4514637693325337L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336444789907L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434316125397L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111195137L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4611772880399631489L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103635575018455169L) != 0 || (((_la - 557)) & ~0x3f) == 0 && ((1L << (_la - 557)) & 47L) != 0 );
@@ -12276,7 +12276,7 @@ public class CobolParser extends Parser {
 				match(INDEXED);
 				setState(2412);
 				match(BY);
-				setState(2414);
+				setState(2414); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				do {
@@ -12286,7 +12286,7 @@ public class CobolParser extends Parser {
 					indexName();
 					}
 					}
-					setState(2416);
+					setState(2416); 
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341698L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 4514637693325337L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336444789907L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434315076821L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111195137L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4611772880399631489L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103635575018455169L) != 0 || _la==IDENTIFIER );
@@ -15764,7 +15764,7 @@ public class CobolParser extends Parser {
 			{
 			setState(2751);
 			reportDescriptionEntry();
-			setState(2753);
+			setState(2753); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -15774,7 +15774,7 @@ public class CobolParser extends Parser {
 				reportGroupDescriptionEntry();
 				}
 				}
-				setState(2755);
+				setState(2755); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( (((_la - 557)) & ~0x3f) == 0 && ((1L << (_la - 557)) & 15L) != 0 );
@@ -17927,7 +17927,7 @@ public class CobolParser extends Parser {
 					setState(2964);
 					identifier();
 					}
-					}
+					} 
 				}
 				setState(2969);
 				_errHandler.sync(this);
@@ -19959,7 +19959,7 @@ public class CobolParser extends Parser {
 			{
 			setState(3154);
 			match(USING);
-			setState(3156);
+			setState(3156); 
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -19975,7 +19975,7 @@ public class CobolParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(3158);
+				setState(3158); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,391,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -20090,7 +20090,7 @@ public class CobolParser extends Parser {
 			{
 			setState(3164);
 			match(WITH);
-			setState(3166);
+			setState(3166); 
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -20106,7 +20106,7 @@ public class CobolParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(3168);
+				setState(3168); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,393,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -20871,7 +20871,7 @@ public class CobolParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(3237);
+			setState(3237); 
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -20887,7 +20887,7 @@ public class CobolParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(3239);
+				setState(3239); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,401,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -21643,7 +21643,7 @@ public class CobolParser extends Parser {
 				}
 			}
 
-			setState(3311);
+			setState(3311); 
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -21659,7 +21659,7 @@ public class CobolParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(3313);
+				setState(3313); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,417,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -21736,7 +21736,7 @@ public class CobolParser extends Parser {
 				}
 				break;
 			}
-			setState(3323);
+			setState(3323); 
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -21752,7 +21752,7 @@ public class CobolParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(3325);
+				setState(3325); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,420,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -21872,7 +21872,7 @@ public class CobolParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(3334);
+			setState(3334); 
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -21888,7 +21888,7 @@ public class CobolParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(3336);
+				setState(3336); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,422,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -21943,7 +21943,7 @@ public class CobolParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			{
-			setState(3339);
+			setState(3339); 
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -21959,7 +21959,7 @@ public class CobolParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(3341);
+				setState(3341); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,423,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -23360,7 +23360,7 @@ public class CobolParser extends Parser {
 					setState(3492);
 					dataValueInterval();
 					}
-					}
+					} 
 				}
 				setState(3497);
 				_errHandler.sync(this);
@@ -23974,7 +23974,7 @@ public class CobolParser extends Parser {
 				}
 			}
 
-			setState(3554);
+			setState(3554); 
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -23990,7 +23990,7 @@ public class CobolParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(3556);
+				setState(3556); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,459,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -24309,7 +24309,7 @@ public class CobolParser extends Parser {
 
 			setState(3571);
 			match(VALUE);
-			setState(3573);
+			setState(3573); 
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -24325,7 +24325,7 @@ public class CobolParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(3575);
+				setState(3575); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,464,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -24458,7 +24458,7 @@ public class CobolParser extends Parser {
 			match(DECLARATIVES);
 			setState(3583);
 			match(DOT_FS);
-			setState(3585);
+			setState(3585); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -24468,7 +24468,7 @@ public class CobolParser extends Parser {
 				procedureDeclarative();
 				}
 				}
-				setState(3587);
+				setState(3587); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341698L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 4514637693325337L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336444789907L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434315076821L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111195137L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4611772880399631489L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103635575018455169L) != 0 || (((_la - 557)) & ~0x3f) == 0 && ((1L << (_la - 557)) & 47L) != 0 );
@@ -24800,7 +24800,7 @@ public class CobolParser extends Parser {
 					setState(3621);
 					paragraph();
 					}
-					}
+					} 
 				}
 				setState(3626);
 				_errHandler.sync(this);
@@ -26157,7 +26157,7 @@ public class CobolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(3771);
+			setState(3771); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -26167,13 +26167,13 @@ public class CobolParser extends Parser {
 				addFrom();
 				}
 				}
-				setState(3773);
+				setState(3773); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717342242L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 2294102467001978905L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153347635113907347L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 3000769851151211733L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615294796227985921L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 6475190002782315649L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 572150674022301857L) != 0 || (((_la - 556)) & ~0x3f) == 0 && ((1L << (_la - 556)) & 127L) != 0 );
 			setState(3775);
 			match(TO);
-			setState(3777);
+			setState(3777); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -26183,7 +26183,7 @@ public class CobolParser extends Parser {
 				addTo();
 				}
 				}
-				setState(3779);
+				setState(3779); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341730L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 2294102467001978905L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336579007635L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434324516053L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111719425L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4745807745872045185L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103776312507334817L) != 0 || (((_la - 557)) & ~0x3f) == 0 && ((1L << (_la - 557)) & 47L) != 0 );
@@ -26293,7 +26293,7 @@ public class CobolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(3784);
+			setState(3784); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -26303,7 +26303,7 @@ public class CobolParser extends Parser {
 				addFrom();
 				}
 				}
-				setState(3786);
+				setState(3786); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717342242L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 2294102467001978905L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153347635113907347L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 3000769851151211733L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615294796227985921L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 6475190002782315649L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 572150674022301857L) != 0 || (((_la - 556)) & ~0x3f) == 0 && ((1L << (_la - 556)) & 127L) != 0 );
@@ -26314,7 +26314,7 @@ public class CobolParser extends Parser {
 				{
 				setState(3788);
 				match(TO);
-				setState(3790);
+				setState(3790); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				do {
@@ -26324,7 +26324,7 @@ public class CobolParser extends Parser {
 					addToGiving();
 					}
 					}
-					setState(3792);
+					setState(3792); 
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717342242L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 2294102467001978905L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153347635113907347L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 3000769851151211733L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615294796227985921L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 6475190002782315649L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 572150674022301857L) != 0 || (((_la - 556)) & ~0x3f) == 0 && ((1L << (_la - 556)) & 127L) != 0 );
@@ -26333,7 +26333,7 @@ public class CobolParser extends Parser {
 
 			setState(3796);
 			match(GIVING);
-			setState(3798);
+			setState(3798); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -26343,7 +26343,7 @@ public class CobolParser extends Parser {
 				addGiving();
 				}
 				}
-				setState(3800);
+				setState(3800); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341730L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 2294102467001978905L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336579007635L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434324516053L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111719425L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4745807745872045185L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103776312507334817L) != 0 || (((_la - 557)) & ~0x3f) == 0 && ((1L << (_la - 557)) & 47L) != 0 );
@@ -26688,7 +26688,7 @@ public class CobolParser extends Parser {
 			{
 			setState(3823);
 			match(ALTER);
-			setState(3825);
+			setState(3825); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -26698,7 +26698,7 @@ public class CobolParser extends Parser {
 				alterProceedTo();
 				}
 				}
-				setState(3827);
+				setState(3827); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341698L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 4514637693325337L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336444789907L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434315076821L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111195137L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4611772880399631489L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103635575018455169L) != 0 || (((_la - 557)) & ~0x3f) == 0 && ((1L << (_la - 557)) & 47L) != 0 );
@@ -26991,7 +26991,7 @@ public class CobolParser extends Parser {
 					setState(3865);
 					callUsingParameter();
 					}
-					}
+					} 
 				}
 				setState(3870);
 				_errHandler.sync(this);
@@ -27138,7 +27138,7 @@ public class CobolParser extends Parser {
 				}
 			}
 
-			setState(3883);
+			setState(3883); 
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -27154,7 +27154,7 @@ public class CobolParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(3885);
+				setState(3885); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,513,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -27514,7 +27514,7 @@ public class CobolParser extends Parser {
 
 			setState(3904);
 			match(VALUE);
-			setState(3906);
+			setState(3906); 
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -27530,7 +27530,7 @@ public class CobolParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(3908);
+				setState(3908); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,518,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -27690,7 +27690,7 @@ public class CobolParser extends Parser {
 
 			setState(3925);
 			match(CONTENT);
-			setState(3927);
+			setState(3927); 
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -27706,7 +27706,7 @@ public class CobolParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(3929);
+				setState(3929); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,523,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -27919,7 +27919,7 @@ public class CobolParser extends Parser {
 			{
 			setState(3947);
 			match(CANCEL);
-			setState(3949);
+			setState(3949); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -27929,7 +27929,7 @@ public class CobolParser extends Parser {
 				cancelCall();
 				}
 				}
-				setState(3951);
+				setState(3951); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717342242L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 2294102467001978905L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153347635113907347L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 3000769851151211733L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615294796227985921L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 6475190002782315649L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 572150674022301857L) != 0 || (((_la - 556)) & ~0x3f) == 0 && ((1L << (_la - 556)) & 127L) != 0 );
@@ -28454,7 +28454,7 @@ public class CobolParser extends Parser {
 				{
 				setState(4011);
 				match(USING);
-				setState(4013);
+				setState(4013); 
 				_errHandler.sync(this);
 				_alt = 1;
 				do {
@@ -28470,7 +28470,7 @@ public class CobolParser extends Parser {
 					default:
 						throw new NoViableAltException(this);
 					}
-					setState(4015);
+					setState(4015); 
 					_errHandler.sync(this);
 					_alt = getInterpreter().adaptivePredict(_input,541,_ctx);
 				} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -28821,7 +28821,7 @@ public class CobolParser extends Parser {
 			{
 			setState(4043);
 			match(COMPUTE);
-			setState(4045);
+			setState(4045); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -28831,7 +28831,7 @@ public class CobolParser extends Parser {
 				computeStore();
 				}
 				}
-				setState(4047);
+				setState(4047); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341730L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 2294102467001978905L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336579007635L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434324516053L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111719425L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4745807745872045185L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103776312507334817L) != 0 || (((_la - 557)) & ~0x3f) == 0 && ((1L << (_la - 557)) & 47L) != 0 );
@@ -29789,7 +29789,7 @@ public class CobolParser extends Parser {
 			{
 			setState(4168);
 			match(INTO);
-			setState(4170);
+			setState(4170); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -29799,7 +29799,7 @@ public class CobolParser extends Parser {
 				divideInto();
 				}
 				}
-				setState(4172);
+				setState(4172); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341730L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 2294102467001978905L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336579007635L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434324516053L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111719425L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4745807745872045185L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103776312507334817L) != 0 || (((_la - 557)) & ~0x3f) == 0 && ((1L << (_la - 557)) & 47L) != 0 );
@@ -30011,7 +30011,7 @@ public class CobolParser extends Parser {
 			{
 			setState(4190);
 			match(GIVING);
-			setState(4192);
+			setState(4192); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -30021,7 +30021,7 @@ public class CobolParser extends Parser {
 				divideGiving();
 				}
 				}
-				setState(4194);
+				setState(4194); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341730L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 2294102467001978905L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336579007635L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434324516053L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111719425L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4745807745872045185L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103776312507334817L) != 0 || (((_la - 557)) & ~0x3f) == 0 && ((1L << (_la - 557)) & 47L) != 0 );
@@ -30351,7 +30351,7 @@ public class CobolParser extends Parser {
 				{
 				setState(4224);
 				match(USING);
-				setState(4226);
+				setState(4226); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				do {
@@ -30361,7 +30361,7 @@ public class CobolParser extends Parser {
 					identifier();
 					}
 					}
-					setState(4228);
+					setState(4228); 
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341730L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 2294102467001978905L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336579007635L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434324516053L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111719425L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4745807745872045185L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103776312507334817L) != 0 || (((_la - 557)) & ~0x3f) == 0 && ((1L << (_la - 557)) & 47L) != 0 );
@@ -30458,7 +30458,7 @@ public class CobolParser extends Parser {
 					setState(4240);
 					evaluateWhenPhrase();
 					}
-					}
+					} 
 				}
 				setState(4245);
 				_errHandler.sync(this);
@@ -30666,7 +30666,7 @@ public class CobolParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(4262);
+			setState(4262); 
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -30682,7 +30682,7 @@ public class CobolParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(4264);
+				setState(4264); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,595,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -30696,7 +30696,7 @@ public class CobolParser extends Parser {
 					setState(4266);
 					statement();
 					}
-					}
+					} 
 				}
 				setState(4271);
 				_errHandler.sync(this);
@@ -31044,7 +31044,7 @@ public class CobolParser extends Parser {
 					setState(4300);
 					statement();
 					}
-					}
+					} 
 				}
 				setState(4305);
 				_errHandler.sync(this);
@@ -31166,7 +31166,7 @@ public class CobolParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(4312);
+			setState(4312); 
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -31182,7 +31182,7 @@ public class CobolParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(4314);
+				setState(4314); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,603,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -31231,7 +31231,7 @@ public class CobolParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(4317);
+			setState(4317); 
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -31247,7 +31247,7 @@ public class CobolParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(4319);
+				setState(4319); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,604,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -31296,7 +31296,7 @@ public class CobolParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(4322);
+			setState(4322); 
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -31312,7 +31312,7 @@ public class CobolParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(4324);
+				setState(4324); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,605,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -31388,7 +31388,7 @@ public class CobolParser extends Parser {
 				}
 				break;
 			}
-			setState(4334);
+			setState(4334); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -31398,7 +31398,7 @@ public class CobolParser extends Parser {
 				exhibitOperand();
 				}
 				}
-				setState(4336);
+				setState(4336); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717342242L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 2294102467001978905L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153347635113907347L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 3000769851151211733L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615294796227985921L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 6475190002782315649L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 572150674022301857L) != 0 || (((_la - 556)) & ~0x3f) == 0 && ((1L << (_la - 556)) & 127L) != 0 );
@@ -31927,7 +31927,7 @@ public class CobolParser extends Parser {
 			case IDENTIFIER:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(4363);
+				setState(4363); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				do {
@@ -31937,7 +31937,7 @@ public class CobolParser extends Parser {
 					procedureName();
 					}
 					}
-					setState(4365);
+					setState(4365); 
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341698L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 4514637693325337L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336444789907L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434315076821L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111195137L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4611772880399631489L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103635575018455169L) != 0 || (((_la - 557)) & ~0x3f) == 0 && ((1L << (_la - 557)) & 47L) != 0 );
@@ -32128,7 +32128,7 @@ public class CobolParser extends Parser {
 						setState(4390);
 						statement();
 						}
-						}
+						} 
 					}
 					setState(4395);
 					_errHandler.sync(this);
@@ -32212,7 +32212,7 @@ public class CobolParser extends Parser {
 						setState(4401);
 						statement();
 						}
-						}
+						} 
 					}
 					setState(4406);
 					_errHandler.sync(this);
@@ -32364,7 +32364,7 @@ public class CobolParser extends Parser {
 			{
 			setState(4423);
 			match(REPLACING);
-			setState(4425);
+			setState(4425); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -32374,7 +32374,7 @@ public class CobolParser extends Parser {
 				initializeReplacingBy();
 				}
 				}
-				setState(4427);
+				setState(4427); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 51200L) != 0 || _la==DBCS || _la==EGCS || (((_la - 309)) & ~0x3f) == 0 && ((1L << (_la - 309)) & 20483L) != 0 );
@@ -32524,7 +32524,7 @@ public class CobolParser extends Parser {
 			{
 			setState(4438);
 			match(INITIATE);
-			setState(4440);
+			setState(4440); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -32534,7 +32534,7 @@ public class CobolParser extends Parser {
 				reportName();
 				}
 				}
-				setState(4442);
+				setState(4442); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341698L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 4514637693325337L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336444789907L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434316125397L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111195137L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4611772880399631489L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103635575018455169L) != 0 || (((_la - 557)) & ~0x3f) == 0 && ((1L << (_la - 557)) & 47L) != 0 );
@@ -32676,7 +32676,7 @@ public class CobolParser extends Parser {
 			{
 			setState(4452);
 			match(TALLYING);
-			setState(4454);
+			setState(4454); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -32686,7 +32686,7 @@ public class CobolParser extends Parser {
 				inspectFor();
 				}
 				}
-				setState(4456);
+				setState(4456); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341730L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 2294102467001978905L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336579007635L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434324516053L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111719425L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4745807745872045185L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103776312507334817L) != 0 || (((_la - 557)) & ~0x3f) == 0 && ((1L << (_la - 557)) & 47L) != 0 );
@@ -32746,7 +32746,7 @@ public class CobolParser extends Parser {
 			{
 			setState(4458);
 			match(REPLACING);
-			setState(4461);
+			setState(4461); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -32773,7 +32773,7 @@ public class CobolParser extends Parser {
 					throw new NoViableAltException(this);
 				}
 				}
-				setState(4463);
+				setState(4463); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( (((_la - 9)) & ~0x3f) == 0 && ((1L << (_la - 9)) & 54043195528445953L) != 0 || _la==FIRST || _la==LEADING );
@@ -32833,7 +32833,7 @@ public class CobolParser extends Parser {
 			{
 			setState(4465);
 			match(TALLYING);
-			setState(4467);
+			setState(4467); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -32843,11 +32843,11 @@ public class CobolParser extends Parser {
 				inspectFor();
 				}
 				}
-				setState(4469);
+				setState(4469); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341730L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 2294102467001978905L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336579007635L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434324516053L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111719425L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4745807745872045185L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103776312507334817L) != 0 || (((_la - 557)) & ~0x3f) == 0 && ((1L << (_la - 557)) & 47L) != 0 );
-			setState(4472);
+			setState(4472); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -32857,7 +32857,7 @@ public class CobolParser extends Parser {
 				inspectReplacingPhrase();
 				}
 				}
-				setState(4474);
+				setState(4474); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( _la==REPLACING );
@@ -33013,7 +33013,7 @@ public class CobolParser extends Parser {
 			identifier();
 			setState(4489);
 			match(FOR);
-			setState(4492);
+			setState(4492); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -33039,7 +33039,7 @@ public class CobolParser extends Parser {
 					throw new NoViableAltException(this);
 				}
 				}
-				setState(4494);
+				setState(4494); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( (((_la - 9)) & ~0x3f) == 0 && ((1L << (_la - 9)) & 54043195528445953L) != 0 || _la==LEADING );
@@ -33254,7 +33254,7 @@ public class CobolParser extends Parser {
 				_errHandler.reportMatch(this);
 				consume();
 			}
-			setState(4513);
+			setState(4513); 
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -33270,7 +33270,7 @@ public class CobolParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(4515);
+				setState(4515); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,643,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -33335,7 +33335,7 @@ public class CobolParser extends Parser {
 				_errHandler.reportMatch(this);
 				consume();
 			}
-			setState(4519);
+			setState(4519); 
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -33351,7 +33351,7 @@ public class CobolParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(4521);
+				setState(4521); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,644,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -33816,7 +33816,7 @@ public class CobolParser extends Parser {
 			match(MERGE);
 			setState(4563);
 			fileName();
-			setState(4565);
+			setState(4565); 
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -33832,7 +33832,7 @@ public class CobolParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(4567);
+				setState(4567); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,653,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -33965,7 +33965,7 @@ public class CobolParser extends Parser {
 				}
 			}
 
-			setState(4595);
+			setState(4595); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -33975,7 +33975,7 @@ public class CobolParser extends Parser {
 				qualifiedDataName();
 				}
 				}
-				setState(4597);
+				setState(4597); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341698L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 4514637693325337L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336444789907L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434316125397L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111195137L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4611772880399631489L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103635575018455169L) != 0 || (((_la - 557)) & ~0x3f) == 0 && ((1L << (_la - 557)) & 47L) != 0 );
@@ -34058,7 +34058,7 @@ public class CobolParser extends Parser {
 				}
 			}
 
-			setState(4607);
+			setState(4607); 
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -34074,7 +34074,7 @@ public class CobolParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(4609);
+				setState(4609); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,663,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -34282,7 +34282,7 @@ public class CobolParser extends Parser {
 			{
 			setState(4633);
 			match(USING);
-			setState(4635);
+			setState(4635); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -34292,7 +34292,7 @@ public class CobolParser extends Parser {
 				fileName();
 				}
 				}
-				setState(4637);
+				setState(4637); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341698L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 4514637693325337L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336444789907L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434315076821L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111195137L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4611772880399631489L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103635575018455169L) != 0 || _la==IDENTIFIER );
@@ -34480,7 +34480,7 @@ public class CobolParser extends Parser {
 			{
 			setState(4651);
 			match(GIVING);
-			setState(4653);
+			setState(4653); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -34490,7 +34490,7 @@ public class CobolParser extends Parser {
 				mergeGiving();
 				}
 				}
-				setState(4655);
+				setState(4655); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341698L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 4514637693325337L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336444789907L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434315076821L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111195137L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4611772880399631489L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103635575018455169L) != 0 || _la==IDENTIFIER );
@@ -35063,7 +35063,7 @@ public class CobolParser extends Parser {
 			moveCorrespondingToSendingArea();
 			setState(4695);
 			match(TO);
-			setState(4697);
+			setState(4697); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -35073,7 +35073,7 @@ public class CobolParser extends Parser {
 				identifier();
 				}
 				}
-				setState(4699);
+				setState(4699); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341730L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 2294102467001978905L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336579007635L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434324516053L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111719425L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4745807745872045185L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103776312507334817L) != 0 || (((_la - 557)) & ~0x3f) == 0 && ((1L << (_la - 557)) & 47L) != 0 );
@@ -35296,7 +35296,7 @@ public class CobolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(4723);
+			setState(4723); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -35306,7 +35306,7 @@ public class CobolParser extends Parser {
 				multiplyRegularOperand();
 				}
 				}
-				setState(4725);
+				setState(4725); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341730L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 2294102467001978905L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336579007635L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434324516053L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111719425L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4745807745872045185L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103776312507334817L) != 0 || (((_la - 557)) & ~0x3f) == 0 && ((1L << (_la - 557)) & 47L) != 0 );
@@ -35410,7 +35410,7 @@ public class CobolParser extends Parser {
 			multiplyGivingOperand();
 			setState(4730);
 			match(GIVING);
-			setState(4732);
+			setState(4732); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -35420,7 +35420,7 @@ public class CobolParser extends Parser {
 				multiplyGivingResult();
 				}
 				}
-				setState(4734);
+				setState(4734); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341730L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 2294102467001978905L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336579007635L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434324516053L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111719425L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4745807745872045185L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103776312507334817L) != 0 || (((_la - 557)) & ~0x3f) == 0 && ((1L << (_la - 557)) & 47L) != 0 );
@@ -35648,7 +35648,7 @@ public class CobolParser extends Parser {
 			{
 			setState(4745);
 			match(OPEN);
-			setState(4755);
+			setState(4755); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -35696,7 +35696,7 @@ public class CobolParser extends Parser {
 				}
 				}
 				}
-				setState(4757);
+				setState(4757); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( (((_la - 206)) & ~0x3f) == 0 && ((1L << (_la - 206)) & 35186519572481L) != 0 || _la==OUTPUT || _la==COMMACHAR );
@@ -35777,7 +35777,7 @@ public class CobolParser extends Parser {
 					setState(4764);
 					openInput();
 					}
-					}
+					} 
 				}
 				setState(4769);
 				_errHandler.sync(this);
@@ -35938,7 +35938,7 @@ public class CobolParser extends Parser {
 					setState(4784);
 					openOutput();
 					}
-					}
+					} 
 				}
 				setState(4789);
 				_errHandler.sync(this);
@@ -36092,7 +36092,7 @@ public class CobolParser extends Parser {
 					setState(4803);
 					fileName();
 					}
-					}
+					} 
 				}
 				setState(4808);
 				_errHandler.sync(this);
@@ -36175,7 +36175,7 @@ public class CobolParser extends Parser {
 					setState(4814);
 					fileName();
 					}
-					}
+					} 
 				}
 				setState(4819);
 				_errHandler.sync(this);
@@ -37140,7 +37140,7 @@ public class CobolParser extends Parser {
 			{
 			setState(4907);
 			match(PURGE);
-			setState(4909);
+			setState(4909); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -37150,7 +37150,7 @@ public class CobolParser extends Parser {
 				cdName();
 				}
 				}
-				setState(4911);
+				setState(4911); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341698L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 4514637693325337L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336444789907L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434315076821L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111195137L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4611772880399631489L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103635575018455169L) != 0 || _la==IDENTIFIER );
@@ -37749,7 +37749,7 @@ public class CobolParser extends Parser {
 					default:
 						throw new NoViableAltException(this);
 					}
-					}
+					} 
 				}
 				setState(4988);
 				_errHandler.sync(this);
@@ -37994,7 +37994,7 @@ public class CobolParser extends Parser {
 					setState(5011);
 					statement();
 					}
-					}
+					} 
 				}
 				setState(5016);
 				_errHandler.sync(this);
@@ -38063,7 +38063,7 @@ public class CobolParser extends Parser {
 					setState(5019);
 					statement();
 					}
-					}
+					} 
 				}
 				setState(5024);
 				_errHandler.sync(this);
@@ -38858,7 +38858,7 @@ public class CobolParser extends Parser {
 				}
 			}
 
-			setState(5112);
+			setState(5112); 
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -38874,7 +38874,7 @@ public class CobolParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(5114);
+				setState(5114); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,763,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -39016,7 +39016,7 @@ public class CobolParser extends Parser {
 						setState(5126);
 						statement();
 						}
-						}
+						} 
 					}
 					setState(5131);
 					_errHandler.sync(this);
@@ -40138,7 +40138,7 @@ public class CobolParser extends Parser {
 			switch ( getInterpreter().adaptivePredict(_input,782,_ctx) ) {
 			case 1:
 				{
-				setState(5201);
+				setState(5201); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				do {
@@ -40148,7 +40148,7 @@ public class CobolParser extends Parser {
 					setToStatement();
 					}
 					}
-					setState(5203);
+					setState(5203); 
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341730L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 2294102467001978905L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336579007635L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434324516053L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111719425L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4745807745872045185L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103776312507334817L) != 0 || (((_la - 557)) & ~0x3f) == 0 && ((1L << (_la - 557)) & 47L) != 0 );
@@ -40216,7 +40216,7 @@ public class CobolParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(5209);
+			setState(5209); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -40226,13 +40226,13 @@ public class CobolParser extends Parser {
 				setTo();
 				}
 				}
-				setState(5211);
+				setState(5211); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341730L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 2294102467001978905L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336579007635L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434324516053L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111719425L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4745807745872045185L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103776312507334817L) != 0 || (((_la - 557)) & ~0x3f) == 0 && ((1L << (_la - 557)) & 47L) != 0 );
 			setState(5213);
 			match(TO);
-			setState(5215);
+			setState(5215); 
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -40248,7 +40248,7 @@ public class CobolParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(5217);
+				setState(5217); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,784,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -40305,7 +40305,7 @@ public class CobolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(5220);
+			setState(5220); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -40315,7 +40315,7 @@ public class CobolParser extends Parser {
 				setTo();
 				}
 				}
-				setState(5222);
+				setState(5222); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341730L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 2294102467001978905L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336579007635L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434324516053L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111719425L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4745807745872045185L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103776312507334817L) != 0 || (((_la - 557)) & ~0x3f) == 0 && ((1L << (_la - 557)) & 47L) != 0 );
@@ -40630,7 +40630,7 @@ public class CobolParser extends Parser {
 			match(SORT);
 			setState(5250);
 			fileName();
-			setState(5252);
+			setState(5252); 
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -40646,7 +40646,7 @@ public class CobolParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(5254);
+				setState(5254); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,790,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -40799,7 +40799,7 @@ public class CobolParser extends Parser {
 				}
 			}
 
-			setState(5288);
+			setState(5288); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -40809,7 +40809,7 @@ public class CobolParser extends Parser {
 				qualifiedDataName();
 				}
 				}
-				setState(5290);
+				setState(5290); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341698L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 4514637693325337L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336444789907L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434316125397L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111195137L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4611772880399631489L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103635575018455169L) != 0 || (((_la - 557)) & ~0x3f) == 0 && ((1L << (_la - 557)) & 47L) != 0 );
@@ -40969,7 +40969,7 @@ public class CobolParser extends Parser {
 				}
 			}
 
-			setState(5310);
+			setState(5310); 
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -40985,7 +40985,7 @@ public class CobolParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(5312);
+				setState(5312); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,805,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -41327,7 +41327,7 @@ public class CobolParser extends Parser {
 			{
 			setState(5348);
 			match(USING);
-			setState(5350);
+			setState(5350); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -41337,7 +41337,7 @@ public class CobolParser extends Parser {
 				fileName();
 				}
 				}
-				setState(5352);
+				setState(5352); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341698L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 4514637693325337L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336444789907L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434315076821L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111195137L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4611772880399631489L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103635575018455169L) != 0 || _la==IDENTIFIER );
@@ -41525,7 +41525,7 @@ public class CobolParser extends Parser {
 			{
 			setState(5366);
 			match(GIVING);
-			setState(5368);
+			setState(5368); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -41535,7 +41535,7 @@ public class CobolParser extends Parser {
 				sortGiving();
 				}
 				}
-				setState(5370);
+				setState(5370); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341698L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 4514637693325337L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336444789907L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434315076821L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111195137L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4611772880399631489L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103635575018455169L) != 0 || _la==IDENTIFIER );
@@ -42131,7 +42131,7 @@ public class CobolParser extends Parser {
 			{
 			setState(5445);
 			match(STRING);
-			setState(5447);
+			setState(5447); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -42141,7 +42141,7 @@ public class CobolParser extends Parser {
 				stringSendingPhrase();
 				}
 				}
-				setState(5449);
+				setState(5449); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717342242L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 2294102467001978905L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153347635113907347L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 3000769851151211733L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615294796227985921L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 6475190002782315649L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 572150674022301857L) != 0 || (((_la - 556)) & ~0x3f) == 0 && ((1L << (_la - 556)) & 127L) != 0 );
@@ -42771,7 +42771,7 @@ public class CobolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(5521);
+			setState(5521); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -42781,13 +42781,13 @@ public class CobolParser extends Parser {
 				subtractSubtrahend();
 				}
 				}
-				setState(5523);
+				setState(5523); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717342242L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 2294102467001978905L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153347635113907347L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 3000769851151211733L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615294796227985921L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 6475190002782315649L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 572150674022301857L) != 0 || (((_la - 556)) & ~0x3f) == 0 && ((1L << (_la - 556)) & 127L) != 0 );
 			setState(5525);
 			match(FROM);
-			setState(5527);
+			setState(5527); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -42797,7 +42797,7 @@ public class CobolParser extends Parser {
 				subtractMinuend();
 				}
 				}
-				setState(5529);
+				setState(5529); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341730L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 2294102467001978905L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336579007635L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434324516053L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111719425L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4745807745872045185L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103776312507334817L) != 0 || (((_la - 557)) & ~0x3f) == 0 && ((1L << (_la - 557)) & 47L) != 0 );
@@ -42859,7 +42859,7 @@ public class CobolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(5532);
+			setState(5532); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -42869,7 +42869,7 @@ public class CobolParser extends Parser {
 				subtractSubtrahend();
 				}
 				}
-				setState(5534);
+				setState(5534); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717342242L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 2294102467001978905L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153347635113907347L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 3000769851151211733L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615294796227985921L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 6475190002782315649L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 572150674022301857L) != 0 || (((_la - 556)) & ~0x3f) == 0 && ((1L << (_la - 556)) & 127L) != 0 );
@@ -42879,7 +42879,7 @@ public class CobolParser extends Parser {
 			subtractMinuendGiving();
 			setState(5538);
 			match(GIVING);
-			setState(5540);
+			setState(5540); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -42889,7 +42889,7 @@ public class CobolParser extends Parser {
 				subtractGiving();
 				}
 				}
-				setState(5542);
+				setState(5542); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341730L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 2294102467001978905L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336579007635L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434324516053L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111719425L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4745807745872045185L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103776312507334817L) != 0 || (((_la - 557)) & ~0x3f) == 0 && ((1L << (_la - 557)) & 47L) != 0 );
@@ -43686,7 +43686,7 @@ public class CobolParser extends Parser {
 			{
 			setState(5615);
 			match(INTO);
-			setState(5617);
+			setState(5617); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -43696,7 +43696,7 @@ public class CobolParser extends Parser {
 				unstringInto();
 				}
 				}
-				setState(5619);
+				setState(5619); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341730L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 2294102467001978905L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336579007635L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434324516053L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111719425L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4745807745872045185L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103776312507334817L) != 0 || (((_la - 557)) & ~0x3f) == 0 && ((1L << (_la - 557)) & 47L) != 0 );
@@ -44389,7 +44389,7 @@ public class CobolParser extends Parser {
 			case IDENTIFIER:
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(5676);
+				setState(5676); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				do {
@@ -44399,7 +44399,7 @@ public class CobolParser extends Parser {
 					fileName();
 					}
 					}
-					setState(5678);
+					setState(5678); 
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717341698L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 4514637693325337L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336444789907L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434315076821L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111195137L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4611772880399631489L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103635575018455169L) != 0 || _la==IDENTIFIER );
@@ -44479,7 +44479,7 @@ public class CobolParser extends Parser {
 				}
 			}
 
-			setState(5690);
+			setState(5690); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -44489,7 +44489,7 @@ public class CobolParser extends Parser {
 				useDebugOn();
 				}
 				}
-				setState(5692);
+				setState(5692); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 7026018246717342210L) != 0 || (((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & 4514637693325337L) != 0 || (((_la - 131)) & ~0x3f) == 0 && ((1L << (_la - 131)) & -6737385042268640249L) != 0 || (((_la - 195)) & ~0x3f) == 0 && ((1L << (_la - 195)) & 1153344336444789907L) != 0 || (((_la - 263)) & ~0x3f) == 0 && ((1L << (_la - 263)) & 2892683434315076821L) != 0 || (((_la - 327)) & ~0x3f) == 0 && ((1L << (_la - 327)) & 2615189243111195137L) != 0 || (((_la - 396)) & ~0x3f) == 0 && ((1L << (_la - 396)) & 4611772880399631489L) != 0 || (((_la - 472)) & ~0x3f) == 0 && ((1L << (_la - 472)) & 103635575018455169L) != 0 || (((_la - 557)) & ~0x3f) == 0 && ((1L << (_la - 557)) & 47L) != 0 );
@@ -45150,7 +45150,7 @@ public class CobolParser extends Parser {
 					setState(5760);
 					statement();
 					}
-					}
+					} 
 				}
 				setState(5765);
 				_errHandler.sync(this);
@@ -45240,7 +45240,7 @@ public class CobolParser extends Parser {
 					setState(5771);
 					statement();
 					}
-					}
+					} 
 				}
 				setState(5776);
 				_errHandler.sync(this);
@@ -45318,7 +45318,7 @@ public class CobolParser extends Parser {
 					setState(5781);
 					statement();
 					}
-					}
+					} 
 				}
 				setState(5786);
 				_errHandler.sync(this);
@@ -45399,7 +45399,7 @@ public class CobolParser extends Parser {
 					setState(5792);
 					statement();
 					}
-					}
+					} 
 				}
 				setState(5797);
 				_errHandler.sync(this);
@@ -45477,7 +45477,7 @@ public class CobolParser extends Parser {
 					setState(5802);
 					statement();
 					}
-					}
+					} 
 				}
 				setState(5807);
 				_errHandler.sync(this);
@@ -45558,7 +45558,7 @@ public class CobolParser extends Parser {
 					setState(5813);
 					statement();
 					}
-					}
+					} 
 				}
 				setState(5818);
 				_errHandler.sync(this);
@@ -45636,7 +45636,7 @@ public class CobolParser extends Parser {
 					setState(5823);
 					statement();
 					}
-					}
+					} 
 				}
 				setState(5828);
 				_errHandler.sync(this);
@@ -45717,7 +45717,7 @@ public class CobolParser extends Parser {
 					setState(5834);
 					statement();
 					}
-					}
+					} 
 				}
 				setState(5839);
 				_errHandler.sync(this);
@@ -45798,7 +45798,7 @@ public class CobolParser extends Parser {
 					setState(5845);
 					statement();
 					}
-					}
+					} 
 				}
 				setState(5850);
 				_errHandler.sync(this);
@@ -45882,7 +45882,7 @@ public class CobolParser extends Parser {
 					setState(5857);
 					statement();
 					}
-					}
+					} 
 				}
 				setState(5862);
 				_errHandler.sync(this);
@@ -45960,7 +45960,7 @@ public class CobolParser extends Parser {
 					setState(5867);
 					statement();
 					}
-					}
+					} 
 				}
 				setState(5872);
 				_errHandler.sync(this);
@@ -46041,7 +46041,7 @@ public class CobolParser extends Parser {
 					setState(5878);
 					statement();
 					}
-					}
+					} 
 				}
 				setState(5883);
 				_errHandler.sync(this);
@@ -46109,7 +46109,7 @@ public class CobolParser extends Parser {
 					setState(5885);
 					plusMinus();
 					}
-					}
+					} 
 				}
 				setState(5890);
 				_errHandler.sync(this);
@@ -46648,7 +46648,7 @@ public class CobolParser extends Parser {
 				break;
 			case 2:
 				{
-				setState(5935);
+				setState(5935); 
 				_errHandler.sync(this);
 				_alt = 1;
 				do {
@@ -46664,7 +46664,7 @@ public class CobolParser extends Parser {
 					default:
 						throw new NoViableAltException(this);
 					}
-					setState(5937);
+					setState(5937); 
 					_errHandler.sync(this);
 					_alt = getInterpreter().adaptivePredict(_input,928,_ctx);
 				} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -47151,7 +47151,7 @@ public class CobolParser extends Parser {
 						setState(5972);
 						inData();
 						}
-						}
+						} 
 					}
 					setState(5977);
 					_errHandler.sync(this);
@@ -47610,7 +47610,7 @@ public class CobolParser extends Parser {
 			{
 			setState(6032);
 			arithmeticExpression();
-			setState(6035);
+			setState(6035); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -47630,7 +47630,7 @@ public class CobolParser extends Parser {
 				arithmeticExpression();
 				}
 				}
-				setState(6037);
+				setState(6037); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( _la==AND || _la==OR );
@@ -48117,7 +48117,7 @@ public class CobolParser extends Parser {
 					setState(6106);
 					tableCallSubscripts();
 					}
-					}
+					} 
 				}
 				setState(6111);
 				_errHandler.sync(this);
@@ -48284,7 +48284,7 @@ public class CobolParser extends Parser {
 					setState(6130);
 					functionCallArguments();
 					}
-					}
+					} 
 				}
 				setState(6135);
 				_errHandler.sync(this);
@@ -48922,7 +48922,7 @@ public class CobolParser extends Parser {
 			switch ( getInterpreter().adaptivePredict(_input,980,_ctx) ) {
 			case 1:
 				{
-				setState(6201);
+				setState(6201); 
 				_errHandler.sync(this);
 				_alt = 1;
 				do {
@@ -48938,7 +48938,7 @@ public class CobolParser extends Parser {
 					default:
 						throw new NoViableAltException(this);
 					}
-					setState(6203);
+					setState(6203); 
 					_errHandler.sync(this);
 					_alt = getInterpreter().adaptivePredict(_input,978,_ctx);
 				} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -52404,7 +52404,7 @@ public class CobolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(6406);
+			setState(6406); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -52414,7 +52414,7 @@ public class CobolParser extends Parser {
 				match(COMMENTENTRYLINE);
 				}
 				}
-				setState(6408);
+				setState(6408); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( _la==COMMENTENTRYLINE );

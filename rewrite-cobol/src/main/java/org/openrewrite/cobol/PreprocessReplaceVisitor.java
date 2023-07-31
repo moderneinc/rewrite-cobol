@@ -389,7 +389,8 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
                                     null,
                                     null,
                                     null,
-                                    null
+                                    null,
+                                    Collections.emptyList()
                             );
 
                             Replacement.OriginalWord originalWord = new Replacement.OriginalWord(addedWord, false);
@@ -515,7 +516,8 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
                                 null,
                                 null,
                                 null,
-                                null
+                                null,
+                                Collections.emptyList()
                         )
                 ));
             }

@@ -1065,6 +1065,8 @@ public interface Cobol extends Tree {
         @Nullable
         Replacement replacement;
 
+        List<CobolPreprocessor> preprocessorStatements;
+
         @Override
         public <P> Cobol acceptCobol(CobolVisitor<P> v, P p) {
             return v.visitWord(this, p);
