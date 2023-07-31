@@ -2250,7 +2250,7 @@ public interface Cobol extends Tree {
         Space prefix;
         Markers markers;
         Word display;
-        List<Name> operands;
+        List<Cobol> operands;
 
         @Nullable
         DisplayAt displayAt;
@@ -4574,7 +4574,7 @@ public interface Cobol extends Tree {
         Markers markers;
         Name from;
         Word to;
-        List<Identifier> names;
+        List<Cobol> names;
 
         @Override
         public <P> Cobol acceptCobol(CobolVisitor<P> v, P p) {
@@ -4862,7 +4862,7 @@ public interface Cobol extends Tree {
         Space prefix;
         Markers markers;
         Word word;
-        List<Openable> openInput;
+        List<Cobol> openInput;
 
         @Override
         public <P> Cobol acceptCobol(CobolVisitor<P> v, P p) {
@@ -4881,7 +4881,7 @@ public interface Cobol extends Tree {
         Space prefix;
         Markers markers;
         Word word;
-        List<Name> fileNames;
+        List<Cobol> fileNames;
 
         @Override
         public <P> Cobol acceptCobol(CobolVisitor<P> v, P p) {

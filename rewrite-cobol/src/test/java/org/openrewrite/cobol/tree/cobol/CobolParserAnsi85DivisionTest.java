@@ -193,6 +193,142 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
         );
     }
 
+    @Test
+    void commentBlockAfterCommentEntry() {
+        rewriteRun(
+          cobol(
+            """
+              000000 IDENTIFICATION DIVISION.
+                     PROGRAM-ID. HELLO.
+                     AUTHOR.
+                    * Comments
+                    * Comments
+                    * Comments
+                    * Comments
+                     DATA DIVISION.
+                         WORKING-STORAGE SECTION.
+                             77 X PIC 99.                                             C_AREA.05
+                             77 Y PIC 99.                                             C_AREA.06
+                             77 Z PIC 99.                                             C_AREA.07
+              """
+          )
+        );
+    }
+
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/42")
+    @Test
+    void commaDelimitedMoveToStatement() {
+        rewriteRun(
+          cobol(
+            """
+              000001 IDENTIFICATION DIVISION .                                        000000000
+                     PROGRAM-ID . HELLO-WORLD .                                       000000000
+                     PROCEDURE DIVISION .                                             000000000
+                         NAME SECTION 01.                                             000000000
+                             MOVE NAME01 TO NAME02,
+                                            NAME02,
+                                            NAME03.
+                     STOP RUN .                                                       000000000
+              """
+          )
+        );
+    }
+
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/42")
+    @Test
+    void commaDelimitedOpenStatement() {
+        rewriteRun(
+          cobol(
+            """
+              000001 IDENTIFICATION DIVISION .                                        000000000
+                     PROGRAM-ID . HELLO-WORLD .                                       000000000
+                     PROCEDURE DIVISION .                                             000000000
+                         NAME SECTION 01.                                             000000000
+                             OPEN INPUT NAME01,
+                                  INPUT NAME02,
+                                  INPUT NAME03.
+                     STOP RUN .                                                       000000000
+              """
+          )
+        );
+    }
+
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/42")
+    @Test
+    void commaDelimitedOpenInputStatement() {
+        rewriteRun(
+          cobol(
+            """
+              000001 IDENTIFICATION DIVISION .                                        000000000
+                     PROGRAM-ID . HELLO-WORLD .                                       000000000
+                     PROCEDURE DIVISION .                                             000000000
+                         NAME SECTION 01.                                             000000000
+                             OPEN INPUT NAME01,
+                                        NAME02,
+                                        NAME03.
+                     STOP RUN .                                                       000000000
+              """
+          )
+        );
+    }
+
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/42")
+    @Test
+    void commaDelimitedOpenOutputStatement() {
+        rewriteRun(
+          cobol(
+            """
+              000001 IDENTIFICATION DIVISION .                                        000000000
+                     PROGRAM-ID . HELLO-WORLD .                                       000000000
+                     PROCEDURE DIVISION .                                             000000000
+                         NAME SECTION 01.                                             000000000
+                             OPEN OUTPUT NAME01,
+                                         NAME02,
+                                         NAME03.
+                     STOP RUN .                                                       000000000
+              """
+          )
+        );
+    }
+
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/42")
+    @Test
+    void commaDelimitedOpenIOStatement() {
+        rewriteRun(
+          cobol(
+            """
+              000001 IDENTIFICATION DIVISION .                                        000000000
+                     PROGRAM-ID . HELLO-WORLD .                                       000000000
+                     PROCEDURE DIVISION .                                             000000000
+                         NAME SECTION 01.                                             000000000
+                             OPEN I-O NAME01,
+                                         NAME02,
+                                         NAME03.
+                     STOP RUN .                                                       000000000
+              """
+          )
+        );
+    }
+
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/42")
+    @Test
+    void commaDelimitedOpenExtendStatement() {
+        rewriteRun(
+          cobol(
+            """
+              000001 IDENTIFICATION DIVISION .                                        000000000
+                     PROGRAM-ID . HELLO-WORLD .                                       000000000
+                     PROCEDURE DIVISION .                                             000000000
+                         NAME SECTION 01.                                             000000000
+                             OPEN EXTEND NAME01,
+                                         NAME02,
+                                         NAME03.
+                     STOP RUN .                                                       000000000
+              """
+          )
+        );
+    }
+
     @Issue("https://github.com/openrewrite/rewrite-cobol/issues/38")
     @Test
     void commaDelimitedInitializeStatement() {

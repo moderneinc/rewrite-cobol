@@ -377,7 +377,7 @@ fileSection
    ;
 
 fileDescriptionEntry
-   : (FD | SD) fileName (DOT_FS? fileDescriptionEntryClause)* DOT_FS dataDescriptionEntry*
+   : (FD | SD) fileName ((DOT_FS | COMMACHAR)? fileDescriptionEntryClause)* DOT_FS dataDescriptionEntry*
    ;
 
 fileDescriptionEntryClause
@@ -1105,7 +1105,7 @@ procedureDivision
    ;
 
 procedureDivisionUsingClause
-   : (USING | CHAINING) procedureDivisionUsingParameter+
+   : (USING | CHAINING) procedureDivisionUsingParameter (COMMACHAR? procedureDivisionUsingParameter)*
    ;
 
 procedureDivisionGivingClause
@@ -1366,7 +1366,7 @@ disableStatement
 // display statement
 
 displayStatement
-   : DISPLAY displayOperand+ displayAt? displayUpon? displayWith? onExceptionClause? notOnExceptionClause? END_DISPLAY?
+   : DISPLAY displayOperand (COMMACHAR? displayOperand)* displayAt? displayUpon? displayWith? onExceptionClause? notOnExceptionClause? END_DISPLAY?
    ;
 
 displayOperand
@@ -1678,7 +1678,7 @@ moveStatement
    ;
 
 moveToStatement
-   : moveToSendingArea TO identifier+
+   : moveToSendingArea TO identifier (COMMACHAR? identifier)*
    ;
 
 moveToSendingArea
@@ -1728,11 +1728,11 @@ nextSentenceStatement
 // open statement
 
 openStatement
-   : OPEN (openInputStatement | openOutputStatement | openIOStatement | openExtendStatement)+
+   : OPEN (COMMACHAR? (openInputStatement | openOutputStatement | openIOStatement | openExtendStatement))+
    ;
 
 openInputStatement
-   : INPUT openInput+
+   : INPUT openInput (COMMACHAR? openInput)*
    ;
 
 openInput
@@ -1740,7 +1740,7 @@ openInput
    ;
 
 openOutputStatement
-   : OUTPUT openOutput+
+   : OUTPUT openOutput (COMMACHAR? openOutput)*
    ;
 
 openOutput
@@ -1748,11 +1748,11 @@ openOutput
    ;
 
 openIOStatement
-   : I_O fileName+
+   : I_O fileName (COMMACHAR? fileName)*
    ;
 
 openExtendStatement
-   : EXTEND fileName+
+   : EXTEND fileName (COMMACHAR? fileName)*
    ;
 
 // perform statement

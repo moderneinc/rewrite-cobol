@@ -999,7 +999,7 @@ public class CobolVisitor<P> extends TreeVisitor<Cobol, P> {
         d = d.withPrefix(visitSpace(d.getPrefix(), Space.Location.DISPLAY_PREFIX, p));
         d = d.withMarkers(visitMarkers(d.getMarkers(), p));
         d = d.withDisplay((Cobol.Word) visit(d.getDisplay(), p));
-        d = d.withOperands(ListUtils.map(d.getOperands(), t -> (Name) visit(t, p)));
+        d = d.withOperands(ListUtils.map(d.getOperands(), t -> visit(t, p)));
         d = d.withDisplayAt((Cobol.DisplayAt) visit(d.getDisplayAt(), p));
         d = d.withDisplayUpon((Cobol.DisplayUpon) visit(d.getDisplayUpon(), p));
         d = d.withDisplayWith(ListUtils.map(d.getDisplayWith(), it -> (Cobol.Word) visit(it, p)));
@@ -2058,7 +2058,7 @@ public class CobolVisitor<P> extends TreeVisitor<Cobol, P> {
         m = m.withMarkers(visitMarkers(m.getMarkers(), p));
         m = m.withFrom((Name) visit(m.getFrom(), p));
         m = m.withTo((Cobol.Word) visit(m.getTo(), p));
-        m = m.withNames(ListUtils.map(m.getNames(), it -> (Identifier) visit(it, p)));
+        m = m.withNames(ListUtils.map(m.getNames(), it -> visit(it, p)));
         return m;
     }
 
@@ -2181,7 +2181,7 @@ public class CobolVisitor<P> extends TreeVisitor<Cobol, P> {
         o = o.withPrefix(visitSpace(o.getPrefix(), Space.Location.OPEN_IO_EXTEND_STATEMENT_PREFIX, p));
         o = o.withMarkers(visitMarkers(o.getMarkers(), p));
         o = o.withWord((Cobol.Word) visit(o.getWord(), p));
-        o = o.withFileNames(ListUtils.map(o.getFileNames(), t -> (Name) visit(t, p)));
+        o = o.withFileNames(ListUtils.map(o.getFileNames(), t -> visit(t, p)));
         return o;
     }
 
@@ -2190,7 +2190,7 @@ public class CobolVisitor<P> extends TreeVisitor<Cobol, P> {
         o = o.withPrefix(visitSpace(o.getPrefix(), Space.Location.OPEN_INPUT_OUTPUT_STATEMENT_PREFIX, p));
         o = o.withMarkers(visitMarkers(o.getMarkers(), p));
         o = o.withWord((Cobol.Word) visit(o.getWord(), p));
-        o = o.withOpenInput(ListUtils.map(o.getOpenInput(), t -> (Cobol.Openable) visit(t, p)));
+        o = o.withOpenInput(ListUtils.map(o.getOpenInput(), t -> visit(t, p)));
         return o;
     }
 
