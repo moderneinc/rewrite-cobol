@@ -3294,7 +3294,7 @@ public interface Cobol extends Tree {
         Space prefix;
         Markers markers;
         Word initialize;
-        List<Identifier> identifiers;
+        List<Cobol> identifiers;
 
         @Nullable
         InitializeReplacingPhrase initializeReplacingPhrase;

@@ -162,7 +162,7 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
 
     @Issue("https://github.com/openrewrite/rewrite-cobol/issues/38")
     @Test
-    void delimiterEndsInContentArea() {
+    void commaDelimitedCloseStatement() {
         rewriteRun(
           preprocessor(
             """
@@ -173,6 +173,25 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
                              CLOSE NAME01,
                                    NAME02,
                                    NAME03.
+                     STOP RUN .                                                       000000000
+              """
+          )
+        );
+    }
+
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/38")
+    @Test
+    void commaDelimitedInitializeStatement() {
+        rewriteRun(
+          preprocessor(
+            """
+              000001 IDENTIFICATION DIVISION .                                        000000000
+                     PROGRAM-ID . HELLO-WORLD .                                       000000000
+                     PROCEDURE DIVISION .                                             000000000
+                         NAME SECTION 01.                                             000000000
+                             INITIALIZE NAME01,
+                                        NAME02,
+                                        NAME03.
                      STOP RUN .                                                       000000000
               """
           )

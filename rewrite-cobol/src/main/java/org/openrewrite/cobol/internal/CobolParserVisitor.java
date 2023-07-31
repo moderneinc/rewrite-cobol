@@ -2403,7 +2403,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.INITIALIZE()),
-                convertAll(ctx.identifier()),
+                convertAllList(ctx.COMMACHAR(), ctx.identifier()),
                 visitNullable(ctx.initializeReplacingPhrase())
         );
     }
