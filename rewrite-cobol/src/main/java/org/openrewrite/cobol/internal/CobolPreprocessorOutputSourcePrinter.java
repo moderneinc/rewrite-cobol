@@ -184,6 +184,9 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
             copyTemplate(copyStatement, p);
         } else {
             visit(copyStatement.getCopyBook(), p);
+            if (!p.getOut().endsWith("\n")) {
+                p.append("\n");
+            }
         }
 
         return copyStatement;

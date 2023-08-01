@@ -445,13 +445,13 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                   outputCapture = new PrintOutputCapture<>(new InMemoryExecutionContext());
                   printer.visit(kp007, outputCapture);
                   result = Assertions.trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
-                  assertThat(result).isEqualTo("PERFORM PASS.\n");
+                  assertThat(result).isEqualTo("PERFORM PASS.\n\n");
 
                   CobolPreprocessor.CopyStatement kp008 = statements.get(7);
                   outputCapture = new PrintOutputCapture<>(new InMemoryExecutionContext());
                   printer.visit(kp008, outputCapture);
                   result = Assertions.trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
-                  assertThat(result).isEqualTo("PERFORM PASS.\n\n");
+                  assertThat(result).isEqualTo("PERFORM PASS.\n\n\n");
 
                   CobolPreprocessor.CopyStatement kp009 = statements.get(8);
                   outputCapture = new PrintOutputCapture<>(new InMemoryExecutionContext());
