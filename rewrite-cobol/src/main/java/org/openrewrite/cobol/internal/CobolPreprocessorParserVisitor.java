@@ -19,6 +19,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -897,16 +898,11 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
 
     @SafeVarargs
     private final <C extends CobolPreprocessor> List<C> convertAll(List<? extends ParserRuleContext>... trees) {
-        List<ParserRuleContext> list = new ArrayList<>();
-        for (List<? extends ParserRuleContext> tree : trees) {
-            if (tree != null) {
-                for (ParserRuleContext parserRuleContext : tree) {
-                    list.add(parserRuleContext);
-                }
-            }
-        }
-        list.sort(Comparator.comparingInt(it -> it.start.getStartIndex()));
-        return convertAll(list);
+        return convertAll(Arrays.stream(trees)
+                .filter(Objects::nonNull)
+                .flatMap(Collection::stream)
+                .sorted(Comparator.comparingInt(it -> it.start.getStartIndex()))
+                .collect(Collectors.toList()));
     }
 
     private <C extends CobolPreprocessor, T extends ParseTree> List<C> convertAll(List<T> trees) {
@@ -916,22 +912,13 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
 
     @SafeVarargs
     private final List<CobolPreprocessor> convertAllList(List<? extends ParseTree>... trees) {
-        List<ParseTree> toSort = new ArrayList<>();
-        for (List<? extends ParseTree> tree : trees) {
-            for (ParseTree it : tree) {
-                if (it != null) {
-                    toSort.add(it);
-                }
-            }
-        }
-        toSort.sort(Comparator.comparingInt(it -> it instanceof TerminalNode ? ((TerminalNode) it).getSymbol().getStartIndex() :
-                ((ParserRuleContext) it).getStart().getStartIndex()));
-        List<CobolPreprocessor> list = new ArrayList<>();
-        for (ParseTree it : toSort) {
-            CobolPreprocessor visit = (CobolPreprocessor) visit(it);
-            list.add(visit);
-        }
-        return list;
+        return Arrays.stream(trees)
+                .flatMap(Collection::stream)
+                .filter(Objects::nonNull)
+                .sorted(Comparator.comparingInt(it -> it instanceof TerminalNode ? ((TerminalNode) it).getSymbol().getStartIndex() :
+                        ((ParserRuleContext) it).getStart().getStartIndex()))
+                .map(it -> (CobolPreprocessor) visit(it))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -945,13 +932,9 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
         sequenceArea();
         indicatorArea();
 
-        Integer nextIndicator = null;
-        for (Integer integer : indicatorAreas.keySet()) {
-            if (integer > cursor) {
-                nextIndicator = integer;
-                break;
-            }
-        }
+        Integer nextIndicator = indicatorAreas.keySet().stream()
+                .filter(it -> it > cursor)
+                .findFirst().orElse(null);
         boolean isContinued = nextIndicator != null && indicatorAreas.get(nextIndicator).equals("-");
 
         Character delimiter = null;
@@ -963,13 +946,10 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
         // Detect a continued keyword or identifier.
         if (isContinued && delimiter == null) {
             // CommentAreas are optional text that will precede the end of line.
-            Integer nextCommentArea = null;
-            for (Integer it : commentAreas.keySet()) {
-                if (it > cursor) {
-                    nextCommentArea = it;
-                    break;
-                }
-            }
+            Integer nextCommentArea = commentAreas.keySet().stream()
+                    .filter(it -> it > cursor)
+                    .findFirst()
+                    .orElse(null);
 
             String current = source.substring(cursor);
             int newLinePos = current.indexOf("\n");
@@ -1007,11 +987,8 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
 
             List<CobolLine> lines = new ArrayList<>();
 
-            int max = 0;
-            while (true) {
-                if (max == 20000) {
-                    throw new RuntimeException("Cursor is likely out of position.");
-                }
+            int iterations = 0;
+            while (iterations < 250) {
                 // Stop after all the trailing comments have been parsed.
                 if (source.substring(cursor).isEmpty() || isSubstituteCharacter(String.valueOf(source.substring(cursor).charAt(0)))) {
                     break;
@@ -1033,7 +1010,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
                 saveCursor = cursor;
                 sequenceArea = sequenceArea();
                 indicatorArea = indicatorArea();
-                max++;
+                iterations++;
             }
             if (!lines.isEmpty()) {
                 objects.add(lines);
@@ -1068,11 +1045,8 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
         }
 
         int matchedCount = 0;
-        int max = 0;
-        while (true) {
-            if (max == 20000) {
-                throw new RuntimeException("Cursor is likely out of position.");
-            }
+        int iterations = 0;
+        while (iterations < 250) {
             continuation = new ArrayList<>(3);
 
             String current = source.substring(cursor);
@@ -1116,7 +1090,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
                 continuations.put(matchedCount, continuation);
             }
 
-            max++;
+            iterations++;
         }
 
         objects.add(new Continuation(Markers.EMPTY, continuations));
@@ -1187,11 +1161,8 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
 
         String current;
         int matchedCount = 0;
-        int max = 0;
-        while (true) {
-            if (max == 20000) {
-                throw new RuntimeException("Cursor is likely out of position.");
-            }
+        int iterations = 0;
+        while (iterations < 250) {
             continuation = new ArrayList<>(3);
 
             current = source.substring(cursor);
@@ -1235,7 +1206,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
                 continuations.put(matchedCount, continuation);
             }
 
-            max++;
+            iterations++;
         }
         objects.add(new Continuation(Markers.EMPTY, continuations));
         return prefix;
