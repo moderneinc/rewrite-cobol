@@ -98,6 +98,8 @@ public class CobolLineReader {
                             processedSource.delete(processedSource.length() - previousNewLineLength, processedSource.length());
                             // Remove the leading delimiter.
                             trimmedContentArea = trimLeadingChar(trimmedContentArea);
+                        } else {
+                            inLiteralOrHexnumber = true;
                         }
                     } else {
                         // Remove the previous newline character to concatenate the literal.
@@ -105,8 +107,8 @@ public class CobolLineReader {
 
                         // Remove trailing whitespace to concatenate the word or identifier.
                         processedSource.delete(processedSource.length() - trailingWhitespaceLength, processedSource.length());
+                        inLiteralOrHexnumber = startOfLiteralOrHexNumber(trimmedContentArea);
                     }
-                    inLiteralOrHexnumber = startOfLiteralOrHexNumber(contentArea);
                     processedSource.append(trimmedContentArea);
                 } else {
                     inLiteralOrHexnumber = startOfLiteralOrHexNumber(trimmedContentArea);
@@ -136,6 +138,7 @@ public class CobolLineReader {
     private static boolean startOfLiteralOrHexNumber(String contentArea) {
         int ticks = 0;
         int quotes = 0;
+
         for (char c : contentArea.toCharArray()) {
             if (c == '\'') {
                 ticks++;

@@ -258,19 +258,19 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
     void continuationVariant1() {
         rewriteRun(
           cobol("""
-            000000* The continuation tests assert a literal was not split into     \s
-                  * multiple tokens.                                               \s
-                   IDENTIFICATION DIVISION.                                        \s
-                   PROGRAM-ID.                                                     \s
-                       CM101M.                                                     \s
-                   DATA DIVISION.                                                  \s
-                   WORKING-STORAGE SECTION.                                        \s
-                   01  LOG-HDR-4.                                                  \s
-                           02  FILLER PIC X VALUE                                  \s
-                  -        'this is a variant of the continuation of a literal     \s
-                  -        'and will print without issues if detected correctly'.  \s
-                       02  FILLER PIC X(11) VALUE ALL "-".                         \s
-                       02  FILLER PIC X VALUE SPACES.                              \s
+            000000* The continuation tests assert a literal was not split into      00000000
+                  * multiple tokens.                                                00000000
+                   IDENTIFICATION DIVISION.                                         00000000
+                   PROGRAM-ID.                                                      00000000
+                       CM101M.                                                      00000000
+                   DATA DIVISION.                                                   00000000
+                   WORKING-STORAGE SECTION.                                         00000000
+                   01  LOG-HDR-4.                                                   00000000
+                           02  FILLER PIC X VALUE                                   00000000
+                  -        'this is a variant of the continuation of a literal      00000000
+                  -        'and will print without issues if detected correctly'.   00000000
+                       02  FILLER PIC X(11) VALUE ALL "-".                          00000000
+                       02  FILLER PIC X VALUE SPACES.                               00000000
             """
           )
         );
@@ -281,18 +281,18 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
     void continuationVariant2() {
         rewriteRun(
           cobol("""
-            000000* The continuation tests assert a literal was not split into     \s
-                  * multiple tokens.                                               \s
-                   IDENTIFICATION DIVISION.                                        \s
-                   PROGRAM-ID.                                                     \s
-                       CM101M.                                                     \s
-                   DATA DIVISION.                                                  \s
-                   WORKING-STORAGE SECTION.                                        \s
-                   01  LOG-HDR-4.                                                  \s
-                           02  FILLER PIC X VALUE                           "this is
-                  -        "another variant of a continuation".                    \s
-                       02  FILLER PIC X(11) VALUE ALL "-".                         \s
-                       02  FILLER PIC X VALUE SPACES.                              \s
+            000000* The continuation tests assert a literal was not split into      00000000
+                  * multiple tokens.                                                00000000
+                   IDENTIFICATION DIVISION.                                         00000000
+                   PROGRAM-ID.                                                      00000000
+                       CM101M.                                                      00000000
+                   DATA DIVISION.                                                   00000000
+                   WORKING-STORAGE SECTION.                                         00000000
+                   01  LOG-HDR-4.                                                   00000000
+                           02  FILLER PIC X VALUE                           "this is00000000
+                  -        "another variant of a continuation".                     00000000
+                       02  FILLER PIC X(11) VALUE ALL "-".                          00000000
+                       02  FILLER PIC X VALUE SPACES.                               00000000
             """
           )
         );
@@ -303,18 +303,129 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
     void continuationVariant3() {
         rewriteRun(
           cobol("""
-            000000* The continuation tests assert a literal was not split into     \s
-                  * multiple tokens.                                               \s
-                   IDENTIFICATION DIVISION.                                        \s
-                   PROGRAM-ID.                                                     \s
-                       CM101M.                                                     \s
-                   DATA DIVISION.                                                  \s
-                   WORKING-STORAGE SECTION.                                        \s
-                   01  LOG-HDR-4.                                                  \s
-                           02  FILLER PIC X VALUE                          "this is"
-                  -        ""another variant of a continuation".                   \s
-                       02  FILLER PIC X(11) VALUE ALL "-".                         \s
-                       02  FILLER PIC X VALUE SPACES.                              \s
+            000000* The continuation tests assert a literal was not split into      00000000
+                  * multiple tokens.                                                00000000
+                   IDENTIFICATION DIVISION.                                         00000000
+                   PROGRAM-ID.                                                      00000000
+                       CM101M.                                                      00000000
+                   DATA DIVISION.                                                   00000000
+                   WORKING-STORAGE SECTION.                                         00000000
+                   01  LOG-HDR-4.                                                   00000000
+                           02  FILLER PIC X VALUE                          "this is"00000000
+                  -        ""another variant of a continuation".                    00000000
+                       02  FILLER PIC X(11) VALUE ALL "-".                          00000000
+                       02  FILLER PIC X VALUE SPACES.                               00000000
+            """
+          )
+        );
+    }
+
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/45")
+    @Test
+    void continuationVariant4() {
+        rewriteRun(
+          cobol("""
+            000100 IDENTIFICATION DIVISION.                                         00000000
+                   PROGRAM-ID.                                                      00000000
+                       CM101M.                                                      00000000
+                   DATA DIVISION.                                                   00000000
+                   WORKING-STORAGE SECTION.                                         00000000
+                   01  LOG-HDR-4.                                                   00000000
+                           02  FILLER PIC X VALUE                                   00000000
+                  -        'A''line                                              one00000000
+                  -        'line                                               two.'00000000
+                  -        .                                                        00000000
+                       02  FILLER PIC X(11) VALUE ALL "-".                          00000000
+                       02  FILLER PIC X VALUE SPACES.                               00000000
+            """
+          )
+        );
+    }
+
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/45")
+    @Test
+    void continuationVariant5() {
+        rewriteRun(
+          cobol("""
+            000100 IDENTIFICATION DIVISION.                                         00000000
+                   PROGRAM-ID.                                                      00000000
+                       CM101M.                                                      00000000
+                   DATA DIVISION.                                                   00000000
+                   WORKING-STORAGE SECTION.                                         00000000
+                   01  LOG-HDR-4.                                                   00000000
+                           02  FILLER PIC X VALUE                                   00000000
+                  -        'line 1                                            today'00000000
+                  -        ''s date                                          line 2 00000000
+                  -        'line 3'.                                                00000000
+                       02  FILLER PIC X(11) VALUE ALL "-".                          00000000
+                       02  FILLER PIC X VALUE SPACES.                               00000000
+            """
+          )
+        );
+    }
+
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/45")
+    @Test
+    void continuationVariant6() {
+        rewriteRun(
+          cobol("""
+            000100 IDENTIFICATION DIVISION.                                         00000000
+                   PROGRAM-ID.                                                      00000000
+                       CM101M.                                                      00000000
+                   DATA DIVISION.                                                   00000000
+                   WORKING-STORAGE SECTION.                                         00000000
+                   01  LOG-HDR-4.                                                   00000000
+                           02  FILLER PIC X VALUE  "********************************00000000
+                  -        "**************".                                        00000000
+                       02  FILLER PIC X(11) VALUE ALL "-".                          00000000
+                       02  FILLER PIC X VALUE SPACES.                               00000000
+            """
+          )
+        );
+    }
+
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/45")
+    @Test
+    void continuationVariant7() {
+        rewriteRun(
+          cobol("""
+            000100 IDENTIFICATION DIVISION.                                         00000000
+                   PROGRAM-ID.                                                      00000000
+                       CM101M.                                                      00000000
+                   DATA DIVISION.                                                   00000000
+                   WORKING-STORAGE SECTION.                                         00000000
+                   01  LOG-HDR-4.                                                   00000000
+                       02  FILLER PIC X VALUE  "************************************00000000
+                  -    "**************".                                            00000000
+                       02  FILLER PIC X VALUE  "************************************00000000
+                  -    "**************".                                            00000000
+                       02  FILLER PIC X(11) VALUE ALL "-".                          00000000
+                       02  FILLER PIC X VALUE SPACES.                               00000000
+            """
+          )
+        );
+    }
+
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/45")
+    @Test
+    void continuationVariant8() {
+        rewriteRun(
+          cobol("""
+            000100 IDENTIFICATION DIVISION.                                         00000000
+                   PROGRAM-ID.                                                      00000000
+                       CM101M.                                                      00000000
+                   DATA DIVISION.                                                   00000000
+                   WORKING-STORAGE SECTION.                                         00000000
+                   77  WS-TEST-12-DATA                                              00000000
+                                          PIC S9(                                   00000000
+                  -                              6)V9(6).                           00000000
+                   77  PROCEDURE                                                    00000000
+                  -    DIVISION PICTURE X.                                          00000000
+                   77  CONT-                                                        00000000
+                  -         A             PIC                                       00000000
+                  -                          TURE X(10) VAL                         00000000
+                  -                                        UE               "GOVERNM00000000
+                  -    "ENT".                                                       00000000
             """
           )
         );
