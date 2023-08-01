@@ -6101,7 +6101,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
             List<CobolLine> lines = new ArrayList<>();
 
             int iterations = 0;
-            int max = 250;
+            int max = 10000;
             while (iterations < max) {
                 // Stop after all the trailing comments have been parsed.
                 if (source.substring(cursor).isEmpty()) {
