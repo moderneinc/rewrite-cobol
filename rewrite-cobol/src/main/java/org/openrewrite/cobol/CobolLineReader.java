@@ -31,6 +31,7 @@ public class CobolLineReader {
 
         StringBuilder processedSource = new StringBuilder();
 
+        boolean inLiteralOrHexnumber = false;
         int previousNewLineLength = 0;
         int trailingWhitespaceLength = 0;
         int cursor = 0;
@@ -92,10 +93,12 @@ public class CobolLineReader {
                 String trimmedContentArea = trimLeadingWhitespace(contentArea);
                 if ("-".equals(indicator)) {
                     if (trimmedContentArea.startsWith("\"") || trimmedContentArea.startsWith("'")) {
-                        // Remove the previous newline character to concatenate the literal.
-                        processedSource.delete(processedSource.length() - previousNewLineLength, processedSource.length());
-                        // Remove the leading delimiter.
-                        trimmedContentArea = trimLeadingChar(trimmedContentArea);
+                        if (inLiteralOrHexnumber) {
+                            // Remove the previous newline character to concatenate the literal.
+                            processedSource.delete(processedSource.length() - previousNewLineLength, processedSource.length());
+                            // Remove the leading delimiter.
+                            trimmedContentArea = trimLeadingChar(trimmedContentArea);
+                        }
                     } else {
                         // Remove the previous newline character to concatenate the literal.
                         processedSource.delete(processedSource.length() - previousNewLineLength, processedSource.length());
@@ -103,8 +106,10 @@ public class CobolLineReader {
                         // Remove trailing whitespace to concatenate the word or identifier.
                         processedSource.delete(processedSource.length() - trailingWhitespaceLength, processedSource.length());
                     }
+                    inLiteralOrHexnumber = startOfLiteralOrHexNumber(contentArea);
                     processedSource.append(trimmedContentArea);
                 } else {
+                    inLiteralOrHexnumber = startOfLiteralOrHexNumber(trimmedContentArea);
                     processedSource.append(contentArea);
                 }
             }
@@ -123,6 +128,22 @@ public class CobolLineReader {
             }
         }
         return processedSource.toString();
+    }
+
+    /**
+     * Detect whether the previous content area may be continued as a literal or hex number.
+     */
+    private static boolean startOfLiteralOrHexNumber(String contentArea) {
+        int ticks = 0;
+        int quotes = 0;
+        for (char c : contentArea.toCharArray()) {
+            if (c == '\'') {
+                ticks++;
+            } else if (c == '"') {
+                quotes++;
+            }
+        }
+        return ticks % 2 != 0 || quotes % 2 != 0 || contentArea.endsWith("'") || contentArea.endsWith("\"");
     }
 
     private static String getFirstWords(String line) {

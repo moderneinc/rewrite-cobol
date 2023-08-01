@@ -253,6 +253,73 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
         );
     }
 
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/45")
+    @Test
+    void continuationVariant1() {
+        rewriteRun(
+          cobol("""
+            000000* The continuation tests assert a literal was not split into     \s
+                  * multiple tokens.                                               \s
+                   IDENTIFICATION DIVISION.                                        \s
+                   PROGRAM-ID.                                                     \s
+                       CM101M.                                                     \s
+                   DATA DIVISION.                                                  \s
+                   WORKING-STORAGE SECTION.                                        \s
+                   01  LOG-HDR-4.                                                  \s
+                           02  FILLER PIC X VALUE                                  \s
+                  -        'this is a variant of the continuation of a literal     \s
+                  -        'and will print without issues if detected correctly'.  \s
+                       02  FILLER PIC X(11) VALUE ALL "-".                         \s
+                       02  FILLER PIC X VALUE SPACES.                              \s
+            """
+          )
+        );
+    }
+
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/45")
+    @Test
+    void continuationVariant2() {
+        rewriteRun(
+          cobol("""
+            000000* The continuation tests assert a literal was not split into     \s
+                  * multiple tokens.                                               \s
+                   IDENTIFICATION DIVISION.                                        \s
+                   PROGRAM-ID.                                                     \s
+                       CM101M.                                                     \s
+                   DATA DIVISION.                                                  \s
+                   WORKING-STORAGE SECTION.                                        \s
+                   01  LOG-HDR-4.                                                  \s
+                           02  FILLER PIC X VALUE                           "this is
+                  -        "another variant of a continuation".                    \s
+                       02  FILLER PIC X(11) VALUE ALL "-".                         \s
+                       02  FILLER PIC X VALUE SPACES.                              \s
+            """
+          )
+        );
+    }
+
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/45")
+    @Test
+    void continuationVariant3() {
+        rewriteRun(
+          cobol("""
+            000000* The continuation tests assert a literal was not split into     \s
+                  * multiple tokens.                                               \s
+                   IDENTIFICATION DIVISION.                                        \s
+                   PROGRAM-ID.                                                     \s
+                       CM101M.                                                     \s
+                   DATA DIVISION.                                                  \s
+                   WORKING-STORAGE SECTION.                                        \s
+                   01  LOG-HDR-4.                                                  \s
+                           02  FILLER PIC X VALUE                          "this is"
+                  -        ""another variant of a continuation".                   \s
+                       02  FILLER PIC X(11) VALUE ALL "-".                         \s
+                       02  FILLER PIC X VALUE SPACES.                              \s
+            """
+          )
+        );
+    }
+
     @Issue("https://github.com/openrewrite/rewrite-cobol/issues/42")
     @Test
     void commaDelimitedOpenInputStatement() {
