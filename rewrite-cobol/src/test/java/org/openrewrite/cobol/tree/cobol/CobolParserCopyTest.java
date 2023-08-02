@@ -31,6 +31,113 @@ class CobolParserCopyTest extends CobolTest {
         );
     }
 
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/47")
+    @Test
+    void mixedOrderPreprocessorDirectives() {
+        rewriteRun(
+          cobolPostProcess(
+            """
+              000000 IDENTIFICATION DIVISION.                                         *
+                         PROGRAM-ID.                                                  *
+                             IC109A.                                                  *
+                         DATA DIVISION.                                               *
+                         LINKAGE SECTION.                                             *
+                         01  GRP-01.                                                  *
+                             SKIP2                                                    *
+                             COPY PREPROCESSOR_DIRECTIVE.                             *
+                    /                                                                 *
+                             EJECT
+                             COPY PREPROCESSOR_DIRECTIVE.                             *
+                             SKIP3
+                             02  SPECIAL-FLAGS.                                       *
+                                 03  DN7 PICTURE X.                                   *
+                                 03  DN8 PICTURE X.                                   *
+                                 03  DN9 PICTURE X.                                   *
+              """,
+            """
+              IDENTIFICATION DIVISION.
+                  PROGRAM-ID.
+                      IC109A.
+                  DATA DIVISION.
+                  LINKAGE SECTION.
+                  01  GRP-01.
+                      02  SUB-CALLED.
+                          03  DN1  PICTURE X(6).
+                          03  DN2  PICTURE X(6).
+                          03  DN3  PICTURE X(6).
+                      02  SUB-CALLED.
+                          03  DN1  PICTURE X(6).
+                          03  DN2  PICTURE X(6).
+                          03  DN3  PICTURE X(6).
+                      02  SPECIAL-FLAGS.
+                          03  DN7 PICTURE X.
+                          03  DN8 PICTURE X.
+                          03  DN9 PICTURE X.
+              """, true
+          )
+        );
+    }
+
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/47")
+    @Test
+    void preprocessorDirectiveInCopiedSource() {
+        rewriteRun(
+          cobolPostProcess(
+            """
+              000000 IDENTIFICATION DIVISION.                                         *
+                         PROGRAM-ID.                                                  *
+                             IC109A.                                                  *
+                         DATA DIVISION.                                               *
+                         LINKAGE SECTION.                                             *
+                         01  GRP-01.                                                  *
+                             COPY PREPROCESSOR_DIRECTIVE.                             *
+                    /                                                                 *
+                             COPY PREPROCESSOR_DIRECTIVE.                             *
+                    /                                                                 *
+                             02  SUB-CALLED.                                          *
+                                 03  DN1  PICTURE X(6).                               *
+                                 03  DN2  PICTURE X(6).                               *
+                                 03  DN3  PICTURE X(6).                               *
+                                                                                      *
+                             COPY PREPROCESSOR_DIRECTIVE.                             *
+                    /                                                                 *
+                             02  SPECIAL-FLAGS.                                       *
+                                 03  DN7 PICTURE X.                                   *
+                                 03  DN8 PICTURE X.                                   *
+                                 03  DN9 PICTURE X.                                   *
+              """,
+            """
+              IDENTIFICATION DIVISION.
+                  PROGRAM-ID.
+                      IC109A.
+                  DATA DIVISION.
+                  LINKAGE SECTION.
+                  01  GRP-01.
+                      02  SUB-CALLED.
+                          03  DN1  PICTURE X(6).
+                          03  DN2  PICTURE X(6).
+                          03  DN3  PICTURE X(6).
+                      02  SUB-CALLED.
+                          03  DN1  PICTURE X(6).
+                          03  DN2  PICTURE X(6).
+                          03  DN3  PICTURE X(6).
+                      02  SUB-CALLED.
+                          03  DN1  PICTURE X(6).
+                          03  DN2  PICTURE X(6).
+                          03  DN3  PICTURE X(6).
+                      02  SUB-CALLED.
+                          03  DN1  PICTURE X(6).
+                          03  DN2  PICTURE X(6).
+                          03  DN3  PICTURE X(6).
+                      02  SPECIAL-FLAGS.
+                          03  DN7 PICTURE X.
+                          03  DN8 PICTURE X.
+                          03  DN9 PICTURE X.
+              """, true
+          )
+        );
+    }
+
     @Issue("https://github.com/openrewrite/rewrite-cobol/issues/15")
     @Test
     void commentAfterMissingCopyBook() {

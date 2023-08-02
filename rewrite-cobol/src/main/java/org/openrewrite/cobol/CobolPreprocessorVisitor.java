@@ -93,7 +93,7 @@ public class CobolPreprocessorVisitor<P> extends TreeVisitor<CobolPreprocessor, 
         CobolPreprocessor.CopyBook c = copyBook;
         c = c.withPrefix(visitSpace(c.getPrefix(), Space.Location.COPY_BOOK_PREFIX, p));
         c = c.withMarkers(visitMarkers(c.getMarkers(), p));
-        c = c.withAst(visit(c.getAst(), p));
+        c = c.withLst(ListUtils.map(c.getLst(), it -> visit(it, p)));
         c = c.withEof((CobolPreprocessor.Word) visit(c.getEof(), p));
         return c;
     }

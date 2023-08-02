@@ -42,14 +42,15 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
                     FindReplaceableAreasVisitor findReplaceableAreasVisitor = new FindReplaceableAreasVisitor(entry.getKey());
 
                     //noinspection ConstantConditions
-                    CobolPreprocessor preprocessor = c.getCopyBook().getAst();
-                    findReplaceableAreasVisitor.visit(preprocessor, replaceWords);
-
-                    if (!replaceWords.isEmpty()) {
-                        ReplaceVisitor replaceVisitor = new ReplaceVisitor(replaceWords, entry.getValue());
-                        preprocessor = replaceVisitor.visit(preprocessor, new InMemoryExecutionContext(), getCursor());
-                        c = c.withCopyBook(c.getCopyBook().withAst(preprocessor));
-                    }
+                    c = c.withCopyBook(c.getCopyBook().withLst(ListUtils.map(c.getCopyBook().getLst(), preprocessor -> {
+                        findReplaceableAreasVisitor.visit(preprocessor, replaceWords);
+                        if (!replaceWords.isEmpty()) {
+                            ReplaceVisitor replaceVisitor = new ReplaceVisitor(replaceWords, entry.getValue());
+                            replaceWords.clear();
+                            return replaceVisitor.visit(preprocessor, new InMemoryExecutionContext(), getCursor());
+                        }
+                        return preprocessor;
+                    })));
                 }
             }
         }
@@ -151,7 +152,7 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
 
         @Override
         public CobolPreprocessor.CopyBook visitCopyBook(CobolPreprocessor.CopyBook copyBook, ExecutionContext executionContext) {
-            copyBook = copyBook.withAst(visit(copyBook.getAst(), executionContext));
+            copyBook = copyBook.withLst(ListUtils.map(copyBook.getLst(), it -> visit(it, executionContext)));
             return copyBook;
         }
 
@@ -386,9 +387,6 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
                                     toWord.getCobolWord().getWord(),
                                     null,
                                     null,
-                                    null,
-                                    null,
-                                    null,
                                     Collections.emptyList()
                             );
 
@@ -509,9 +507,6 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
                                 null,
                                 null,
                                 "",
-                                null,
-                                null,
-                                null,
                                 null,
                                 null,
                                 Collections.emptyList()

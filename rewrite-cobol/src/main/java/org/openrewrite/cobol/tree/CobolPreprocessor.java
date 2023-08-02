@@ -250,7 +250,7 @@ public interface CobolPreprocessor extends Tree {
             return withCharsetName(charset.name());
         }
 
-        CobolPreprocessor ast;
+        List<CobolPreprocessor> lst;
         CobolPreprocessor.Word eof;
 
         @Override

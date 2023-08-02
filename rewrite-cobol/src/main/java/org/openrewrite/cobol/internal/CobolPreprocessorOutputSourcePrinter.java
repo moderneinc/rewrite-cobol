@@ -170,7 +170,16 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
     public CobolPreprocessor visitCopyBook(CobolPreprocessor.CopyBook copyBook, PrintOutputCapture<P> p) {
         visitSpace(copyBook.getPrefix(), Space.Location.COPY_BOOK_PREFIX, p);
         visitMarkers(copyBook.getMarkers(), p);
-        visit(copyBook.getAst(), p);
+        for (CobolPreprocessor cobolPreprocessor : copyBook.getLst()) {
+            if (!(cobolPreprocessor instanceof CobolPreprocessor.CompilerOptions ||
+                    cobolPreprocessor instanceof CobolPreprocessor.EjectStatement ||
+                    cobolPreprocessor instanceof CobolPreprocessor.ExecStatement ||
+                    cobolPreprocessor instanceof CobolPreprocessor.SkipStatement ||
+                    cobolPreprocessor instanceof CobolPreprocessor.TitleStatement)) {
+                visit(cobolPreprocessor, p);
+            }
+        }
+
         visit(copyBook.getEof(), p);
         return copyBook;
     }

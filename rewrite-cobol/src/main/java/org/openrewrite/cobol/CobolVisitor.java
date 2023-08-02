@@ -4289,21 +4289,9 @@ public class CobolVisitor<P> extends TreeVisitor<Cobol, P> {
     }
 
     public Cobol visitWord(Cobol.Word word, P p) {
-        if (word.getCopyStatement() == null && word.getMarkers().findFirst(CopiedWord.class).isPresent()) {
-            return word;
-        }
-
         Cobol.Word w = word;
         // Preprocessed COBOL preservation.
-        if (w.getReplaceByStatement() != null) {
-            w = w.withReplaceByStatement((CobolPreprocessor.ReplaceByStatement) getCobolPreprocessorVisitor().visit(w.getReplaceByStatement(), p));
-            return w;
-        }
-
-        if (w.getReplaceOffStatement() != null) {
-            w = w.withReplaceOffStatement((CobolPreprocessor.ReplaceOffStatement) getCobolPreprocessorVisitor().visit(w.getReplaceOffStatement(), p));
-            return w;
-        }
+        w = w.withPreprocessorStatements(ListUtils.map(w.getPreprocessorStatements(), it -> getCobolPreprocessorVisitor().visit(it, p)));
 
         if (word.getReplacement() != null) {
             if (word.getReplacement().getType() == Replacement.Type.EQUAL || word.getReplacement().getType() == Replacement.Type.REDUCTIVE) {
@@ -4312,13 +4300,6 @@ public class CobolVisitor<P> extends TreeVisitor<Cobol, P> {
             }
             return w;
         }
-
-        if (w.getCopyStatement() != null) {
-            w = w.withCopyStatement((CobolPreprocessor.CopyStatement) getCobolPreprocessorVisitor().visit(w.getCopyStatement(), p));
-            return w;
-        }
-
-        w = w.withPreprocessorStatements(ListUtils.map(w.getPreprocessorStatements(), it -> getCobolPreprocessorVisitor().visit(it, p)));
 
         w = w.withPrefix(visitSpace(w.getPrefix(), Space.Location.WORD_PREFIX, p));
         w = w.withMarkers(visitMarkers(w.getMarkers(), p));

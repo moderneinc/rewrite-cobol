@@ -17,6 +17,7 @@ import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.marker.Marker;
 import org.openrewrite.marker.Markers;
 
+import java.util.Optional;
 import java.util.function.UnaryOperator;
 
 /**
@@ -4315,14 +4316,21 @@ public class CobolSourcePrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
 
     @Override
     public Cobol visitWord(Cobol.Word word, PrintOutputCapture<P> p) {
-        if (word.getCopyStatement() == null && word.getMarkers().findFirst(CopiedWord.class).isPresent()) {
+        Optional<CopiedWord> copiedWord = word.getMarkers().findFirst(CopiedWord.class);
+        CobolPreprocessor.CopyStatement copyStatement = null;
+        for (CobolPreprocessor preprocessorStatement : word.getPreprocessorStatements()) {
+            if (preprocessorStatement instanceof CobolPreprocessor.CopyStatement) {
+                copyStatement = (CobolPreprocessor.CopyStatement) preprocessorStatement;
+            } else {
+                getCobolPreprocessorVisitor().visit(preprocessorStatement, p);
+            }
+        }
+
+        if (copyStatement == null && copiedWord.isPresent()) {
             return word;
         }
 
-        getCobolPreprocessorVisitor().visit(word.getReplaceByStatement(), p);
-        getCobolPreprocessorVisitor().visit(word.getReplaceOffStatement(), p);
-
-        if (word.getReplacement() != null && word.getCopyStatement() == null) {
+        if (word.getReplacement() != null && copyStatement == null) {
             if (word.getReplacement().getType() == Replacement.Type.EQUAL) {
                 int startLength = p.getOut().length();
                 Replacement.OriginalWord originalWord = word.getReplacement().getOriginalWords().get(0);
@@ -4353,14 +4361,12 @@ public class CobolSourcePrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
         }
 
         // The COBOL word is a product of a copy statement.
-        if (word.getCopyStatement() != null) {
-            getCobolPreprocessorVisitor().visit(word.getCopyStatement(), p);
-            if (!word.getCopyStatement().getMarkers().findFirst(MissingCopyBook.class).isPresent()) {
+        if (copyStatement != null) {
+            getCobolPreprocessorVisitor().visit(copyStatement, p);
+            if (!copyStatement.getMarkers().findFirst(MissingCopyBook.class).isPresent()) {
                 return word;
             }
         }
-
-        getCobolPreprocessorVisitor().visit(word.getPreprocessorStatements(), p);
 
         if (printColumns) {
             if (word.getLines() != null) {
