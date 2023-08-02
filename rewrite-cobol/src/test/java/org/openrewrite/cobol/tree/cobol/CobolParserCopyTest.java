@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.openrewrite.Issue;
 import org.openrewrite.cobol.CobolTest;
 
+import static org.openrewrite.cobol.Assertions.cobol;
 import static org.openrewrite.cobol.Assertions.cobolPostProcess;
 
 class CobolParserCopyTest extends CobolTest {
@@ -28,6 +29,38 @@ class CobolParserCopyTest extends CobolTest {
                      COPY MISSING-COPYBOOK.
                      01  DUMMY-RECORD PICTURE X(120).
               """)
+        );
+    }
+
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/47")
+    @Test
+    void preprocessorDirective() {
+        rewriteRun(
+          cobol(
+            """
+              000000 IDENTIFICATION DIVISION.                                         *
+                         PROGRAM-ID.                                                  *
+                             IC109A.                                                  *
+                         DATA DIVISION.                                               *
+                         LINKAGE SECTION.                                             *
+                         01  GRP-01.                                                  *
+                             COPY PREPROCESSOR_DIRECTIVE.                             *
+                    /                                                                 *
+                             COPY PREPROCESSOR_DIRECTIVE.                             *
+                    /                                                                 *
+                             02  SUB-CALLED.                                          *
+                                 03  DN1  PICTURE X(6).                               *
+                                 03  DN2  PICTURE X(6).                               *
+                                 03  DN3  PICTURE X(6).                               *
+                                                                                      *
+                             COPY PREPROCESSOR_DIRECTIVE.                             *
+                    /                                                                 *
+                             02  SPECIAL-FLAGS.                                       *
+                                 03  DN7 PICTURE X.                                   *
+                                 03  DN8 PICTURE X.                                   *
+                                 03  DN9 PICTURE X.                                   *
+              """, true
+          )
         );
     }
 

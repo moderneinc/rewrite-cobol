@@ -6459,7 +6459,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                         null,
                         false,
                         null,
-                        new CobolPreprocessor.Word(EMPTY, Markers.EMPTY,
+                        singletonList(new CobolPreprocessor.Word(EMPTY, Markers.EMPTY,
                                 new Cobol.Word(
                                         EMPTY,
                                         Markers.EMPTY,
@@ -6473,7 +6473,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                                         null,
                                         null,
                                         null,
-                                        emptyList())),
+                                        emptyList()))),
                         new CobolPreprocessor.Word(EMPTY, Markers.EMPTY,
                                 new Cobol.Word(
                                         EMPTY,

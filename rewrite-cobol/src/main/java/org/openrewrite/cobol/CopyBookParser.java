@@ -87,7 +87,7 @@ public class CopyBookParser implements Parser {
                         );
 
                         CobolPreprocessor.CompilationUnit preprocessedCU = parserVisitor.visitCompilationUnit(parser.compilationUnit());
-                        CobolPreprocessor parsedCopySource = preprocessedCU.getCobols().get(0);
+                        List<CobolPreprocessor> parsedCopySource = preprocessedCU.getCobols();
 
                         CobolPreprocessor.CopyBook copyBook = new CobolPreprocessor.CopyBook(
                                 randomId(),

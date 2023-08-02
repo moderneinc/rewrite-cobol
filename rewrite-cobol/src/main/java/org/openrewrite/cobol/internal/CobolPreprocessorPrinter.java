@@ -27,7 +27,7 @@ public class CobolPreprocessorPrinter<P> extends CobolPreprocessorSourcePrinter<
     @Override
     public CobolPreprocessor visitCopyBook(CobolPreprocessor.CopyBook copyBook, PrintOutputCapture<P> p) {
         beforeSyntax(copyBook, Space.Location.COPY_BOOK_PREFIX, p);
-        visit(copyBook.getAst(), p);
+        visit(copyBook.getLst(), p);
         afterSyntax(copyBook, p);
         return copyBook;
     }
