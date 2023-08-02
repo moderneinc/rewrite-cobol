@@ -387,9 +387,6 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
                                     toWord.getCobolWord().getWord(),
                                     null,
                                     null,
-                                    null,
-                                    null,
-                                    null,
                                     Collections.emptyList()
                             );
 
@@ -510,9 +507,6 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
                                 null,
                                 null,
                                 "",
-                                null,
-                                null,
-                                null,
                                 null,
                                 null,
                                 Collections.emptyList()

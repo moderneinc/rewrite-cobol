@@ -82,12 +82,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     private boolean inCopiedText;
 
     @Nullable
-    private CobolPreprocessor.CopyStatement currentCopy = null;
-
-    @Nullable
     private CopiedWord copiedWord = null;
-
-    boolean copyBookNotFound = false;
 
     private String replaceStartComment = null;
     private String replaceStopComment = null;
@@ -5593,9 +5588,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         SequenceArea sequenceArea = null;
         IndicatorArea indicatorArea = null;
         CommentArea commentArea = null;
-        CobolPreprocessor.CopyStatement copyStatement = null;
-        CobolPreprocessor.ReplaceByStatement replaceByStatement = null;
-        CobolPreprocessor.ReplaceOffStatement replaceOffStatement = null;
         Replacement replacement = null;
         List<CobolPreprocessor> preprocessorStatements = new ArrayList<>();
 
@@ -5611,37 +5603,30 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 indicatorArea = (IndicatorArea) object;
             } else if (object instanceof CommentArea) {
                 commentArea = (CommentArea) object;
-            } else if (object instanceof CobolPreprocessor.CopyStatement) {
-                copyStatement = (CobolPreprocessor.CopyStatement) object;
-                if (copiedWord == null && !copyBookNotFound) {
-                    copiedWord = new CopiedWord(randomId(), copyStatement.getId().toString());
-                }
-            } else if (object instanceof CobolPreprocessor.ReplaceByStatement) {
-                replaceByStatement = (CobolPreprocessor.ReplaceByStatement) object;
-            } else if (object instanceof CobolPreprocessor.ReplaceOffStatement) {
-                replaceOffStatement = (CobolPreprocessor.ReplaceOffStatement) object;
             } else if (object instanceof Replacement) {
                 replacement = (Replacement) object;
-            } else if (object instanceof CobolPreprocessor.EjectStatement ||
+            } else if (object instanceof CobolPreprocessor.CopyStatement ||
+                    object instanceof CobolPreprocessor.ReplaceByStatement ||
+                    object instanceof CobolPreprocessor.ReplaceOffStatement ||
+                    object instanceof CobolPreprocessor.EjectStatement ||
                     object instanceof CobolPreprocessor.ExecStatement ||
                     object instanceof CobolPreprocessor.SkipStatement ||
                     object instanceof CobolPreprocessor.TitleStatement) {
+                if (object instanceof CobolPreprocessor.CopyStatement) {
+                    if (copiedWord == null && !((CobolPreprocessor.CopyStatement) object).getMarkers().findFirst(MissingCopyBook.class).isPresent()) {
+                        copiedWord = new CopiedWord(randomId(), ((CobolPreprocessor.CopyStatement) object).getId().toString());
+                    }
+                }
                 preprocessorStatements.add((CobolPreprocessor) object);
             }
         }
 
         // An unresolved copy book will not have any words from a copied source to add the statement to.
         // So the current copy is set to null on the next word that occurs in the LST.
-        if (copyBookNotFound) {
-            if (copyStatement == null) {
-                copyStatement = currentCopy;
-            }
-            currentCopy = null;
-            copyBookNotFound = false;
-        } else if (copiedWord != null) {
+        if (copiedWord != null) {
             markers = markers.addIfAbsent(copiedWord);
         }
-        Cobol.Word word = new Cobol.Word(
+        return new Cobol.Word(
                 prefix,
                 markers,
                 cobolLines,
@@ -5650,14 +5635,9 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 indicatorArea,
                 text,
                 commentArea,
-                copyStatement,
-                replaceByStatement,
-                replaceOffStatement,
                 replacement,
                 preprocessorStatements.isEmpty() ? emptyList() : preprocessorStatements
         );
-        currentCopy = null;
-        return word;
     }
 
     @Override
@@ -6117,51 +6097,53 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
 
                 if (templateKeys.contains(contentArea)) {
                     if (replaceByStartComment.equals(contentArea)) {
-                        CobolPreprocessor.ReplaceByStatement replaceBy = getReplaceBy();
-                        objects.add(replaceBy);
+                        objects.add(getReplaceBy());
                     } else if (replaceStartComment.equals(contentArea)) {
                         replaceStartComment();
                     } else if (replaceAdditiveWhitespaceComment.equals(contentArea)) {
                         replaceAdditiveWhitespace();
                     } else if (replaceUuidComment.equals(contentArea)) {
-                        Replacement replace = getReplace();
-                        objects.add(replace);
+                        objects.add(getReplace());
                     } else if (replaceAdditiveTypeStartComment.equals(contentArea)) {
                         replaceAdditiveStartComment();
                     } else if (replaceAdditiveTypeStopComment.equals(contentArea)) {
                         replaceAdditiveStopComment();
                     } else if (replaceReductiveTypeStartComment.equals(contentArea)) {
-                        Replacement replaceReductiveType = getReplaceReductiveType();
-                        objects.add(replaceReductiveType);
+                        objects.add(getReplaceReductiveType());
                     } else if (replaceAddWordStartComment.equals(contentArea)) {
                         parseComment(replaceAddWordStartComment);
                         iterations = max;
                     } else if (replaceAddWordStopComment.equals(contentArea)) {
                         parseComment(replaceAddWordStopComment);
                     } else if (replaceOffStartComment.equals(contentArea)) {
-                        CobolPreprocessor.ReplaceOffStatement replaceOff = getReplaceOff();
-                        objects.add(replaceOff);
+                        objects.add(getReplaceOff());
                     } else if (copyStartComment.equals(contentArea)) {
                         copyStartComment();
                     } else if (copyUuidComment.equals(contentArea)) {
-                        copyUuidComment();
+                        CobolPreprocessor.CopyStatement copyStatement = copyUuidComment();
+                        int savedCursor = cursor;
+                        sequenceArea();
+                        indicatorArea();
+                        newLinePos = cursor + (source.substring(cursor).contains("\n") ? source.substring(cursor).indexOf("\n") : source.substring(cursor).length());
+                        endOfContentArea = cursor - cobolDialect.getColumns().getIndicatorArea() - 1 + cobolDialect.getColumns().getOtherArea();
+                        contentArea = source.substring(cursor, Math.min(newLinePos, endOfContentArea));
+                        if (copyBookNotFoundComment.equals(contentArea)) {
+                            copyStatement = copyBookNotFoundComment(copyStatement, lines);
+                            lines.clear();
+                        } else {
+                            cursor = savedCursor;
+                        }
+                        objects.add(copyStatement);
                     } else if (copyStopComment.equals(contentArea)) {
                         copyStopComment();
-                    } else if (copyBookNotFoundComment.equals(contentArea)) {
-                        copyBookNotFoundComment(lines);
-                        lines.clear();
                     } else if (ejectStartComment.equals(contentArea)) {
-                        CobolPreprocessor.EjectStatement eject = getEjectStatement();
-                        objects.add(eject);
+                        objects.add(getEjectStatement());
                     } else if (execStartComment.equals(contentArea)) {
-                        CobolPreprocessor.ExecStatement exec = getExecStatement();
-                        objects.add(exec);
+                        objects.add(getExecStatement());
                     } else if (skipStartComment.equals(contentArea)) {
-                        CobolPreprocessor.SkipStatement skip = getSkipStatement();
-                        objects.add(skip);
+                        objects.add(getSkipStatement());
                     } else if (titleStartComment.equals(contentArea)) {
-                        CobolPreprocessor.TitleStatement title = getTitleStatement();
-                        objects.add(title);
+                        objects.add(getTitleStatement());
                     }
                 } else {
                     cursor += contentArea.length();
@@ -6258,9 +6240,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         }
 
         objects.add(new Continuation(Markers.EMPTY, continuations));
-        if (currentCopy != null) {
-            objects.add(currentCopy);
-        }
         return prefix;
     }
 
@@ -6395,9 +6374,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
             }
         }
 
-        if (currentCopy != null) {
-            objects.add(currentCopy);
-        }
         return prefix;
     }
 
@@ -6414,7 +6390,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         removeTemplateCommentArea = true;
 
         // Reset copy info.
-        currentCopy = null;
         removeColumnMarkers = false;
         nextIndex = null;
     }
@@ -6433,23 +6408,21 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         nextIndex = Integer.valueOf(numberOfSpaces.trim());
     }
 
-    private void copyUuidComment() {
+    private CobolPreprocessor.CopyStatement copyUuidComment() {
         parseComment(copyUuidComment);
 
         removeTemplateCommentArea = false;
 
         String uuid = getUuid();
-        currentCopy = copyMap.get(uuid.trim());
+        return copyMap.get(uuid.trim());
     }
 
-    private void copyBookNotFoundComment(List<CobolLine> lines) {
+    private CobolPreprocessor.CopyStatement copyBookNotFoundComment(CobolPreprocessor.CopyStatement copyStatement, List<CobolLine> lines) {
         parseComment(copyBookNotFoundComment);
-        copyBookNotFound = true;
-        assert currentCopy != null;
         // Rather than heavily modify the COBOL grammar, we inject a CopyBook into the CopyStatement.
         // The injected CopyBook is used to preserve the original source code.
-        currentCopy = currentCopy
-                .withMarkers(currentCopy.getMarkers().addIfAbsent(new MissingCopyBook(randomId())))
+        return copyStatement
+                .withMarkers(copyStatement.getMarkers().addIfAbsent(new MissingCopyBook(randomId())))
                 .withCopyBook(new CobolPreprocessor.CopyBook(
                         randomId(),
                         EMPTY,
@@ -6470,9 +6443,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                                         "",
                                         null,
                                         null,
-                                        null,
-                                        null,
-                                        null,
                                         emptyList()))),
                         new CobolPreprocessor.Word(EMPTY, Markers.EMPTY,
                                 new Cobol.Word(
@@ -6483,9 +6453,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                                         null,
                                         null,
                                         "",
-                                        null,
-                                        null,
-                                        null,
                                         null,
                                         null,
                                         emptyList()))

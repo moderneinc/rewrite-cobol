@@ -932,16 +932,6 @@ public interface Cobol extends Tree {
         @Nullable
         CommentArea commentArea;
 
-        // Preprocessor elements
-        @Nullable
-        CobolPreprocessor.CopyStatement copyStatement;
-
-        @Nullable
-        CobolPreprocessor.ReplaceByStatement replaceByStatement;
-
-        @Nullable
-        CobolPreprocessor.ReplaceOffStatement replaceOffStatement;
-
         @Nullable
         Replacement replacement;
 

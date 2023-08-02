@@ -8,12 +8,14 @@ package org.openrewrite.cobol.internal;
 import org.openrewrite.Cursor;
 import org.openrewrite.PrintOutputCapture;
 import org.openrewrite.cobol.CobolPreprocessorVisitor;
+import org.openrewrite.cobol.markers.CopiedWord;
 import org.openrewrite.cobol.tree.*;
 import org.openrewrite.internal.StringUtils;
 import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.marker.Marker;
 import org.openrewrite.marker.Markers;
 
+import java.util.Optional;
 import java.util.function.UnaryOperator;
 
 /**
@@ -253,10 +255,21 @@ public class CobolPreprocessorSourcePrinter<P> extends CobolPreprocessorVisitor<
 
     @Override
     public CobolPreprocessor visitWord(CobolPreprocessor.Word word, PrintOutputCapture<P> p) {
-        visit(word.getCobolWord().getReplaceByStatement(), p);
-        visit(word.getCobolWord().getReplaceOffStatement(), p);
+        Optional<CopiedWord> copiedWord = word.getMarkers().findFirst(CopiedWord.class);
+        CobolPreprocessor.CopyStatement copyStatement = null;
+        for (CobolPreprocessor preprocessorStatement : word.getCobolWord().getPreprocessorStatements()) {
+            if (preprocessorStatement instanceof CobolPreprocessor.CopyStatement) {
+                copyStatement = (CobolPreprocessor.CopyStatement) preprocessorStatement;
+            } else {
+                cobolSourcePrinter.visit(preprocessorStatement, p);
+            }
+        }
 
-        if (word.getCobolWord().getReplacement() != null && word.getCobolWord().getCopyStatement() == null) {
+        if (copyStatement == null && copiedWord.isPresent()) {
+            return word;
+        }
+
+        if (word.getCobolWord().getReplacement() != null) {
             if (word.getCobolWord().getReplacement().getType() == Replacement.Type.EQUAL) {
                 Replacement.OriginalWord originalWord = word.getCobolWord().getReplacement().getOriginalWords().get(0);
                 cobolSourcePrinter.visitWord(originalWord.getOriginal(), p);
@@ -283,9 +296,9 @@ public class CobolPreprocessorSourcePrinter<P> extends CobolPreprocessorVisitor<
         }
 
         // The COBOL word is a product of a copy statement.
-        if (word.getCobolWord().getCopyStatement() != null) {
+        if (copyStatement != null) {
             // Print the original Copy Statement in place of the first word from the copied source.
-            visit(word.getCobolWord().getCopyStatement(), p);
+            visit(copyStatement, p);
 
             // Do not print the AST for the copied source.
             return word;

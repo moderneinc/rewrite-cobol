@@ -11,6 +11,7 @@ import org.openrewrite.*;
 import org.openrewrite.cobol.CobolIsoVisitor;
 import org.openrewrite.cobol.format.RemoveWords;
 import org.openrewrite.cobol.format.ShiftSequenceAreas;
+import org.openrewrite.cobol.markers.CopiedWord;
 import org.openrewrite.cobol.tree.*;
 import org.openrewrite.internal.lang.Nullable;
 
@@ -79,8 +80,13 @@ public class RemoveWithDebuggingMode extends Recipe {
                 Cobol.SourceComputerDefinition s = super.visitSourceComputerDefinition(sourceComputerDefinition, executionContext);
                 if (s.getDebuggingMode() != null) {
                     // Do not change copied or replaced code until the transformations are understood.
-                    boolean isSupported = s.getDebuggingMode().stream().noneMatch(it ->
-                            it.getCopyStatement() != null || it.getReplacement() != null);
+                    boolean isSupported = true;
+                    for (Cobol.Word word : s.getDebuggingMode()) {
+                        if (word.getReplacement() != null || word.getMarkers().findFirst(CopiedWord.class).isPresent()) {
+                            isSupported = false;
+                            break;
+                        }
+                    }
 
                     if (isSupported) {
                         if (s.getComputerName().getCommentArea() != null && !s.getComputerName().getCommentArea().getPrefix().getWhitespace().isEmpty()) {

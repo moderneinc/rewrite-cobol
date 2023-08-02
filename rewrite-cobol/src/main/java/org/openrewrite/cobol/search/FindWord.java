@@ -13,6 +13,7 @@ import org.openrewrite.Recipe;
 import org.openrewrite.TreeVisitor;
 import org.openrewrite.cobol.CobolPreprocessorIsoVisitor;
 import org.openrewrite.cobol.NameVisitor;
+import org.openrewrite.cobol.markers.CopiedWord;
 import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
 import org.openrewrite.cobol.tree.Replacement;
@@ -20,6 +21,7 @@ import org.openrewrite.internal.ListUtils;
 import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.marker.SearchResult;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
 
 @EqualsAndHashCode(callSuper = true)
@@ -68,14 +70,15 @@ public class FindWord extends Recipe {
         @Override
         public Cobol.Word visitWord(Cobol.Word word, ExecutionContext executionContext) {
             Cobol.Word w = super.visitWord(word, executionContext);
-            // Preprocessed COBOL preservation.
-            if (w.getReplaceByStatement() != null) {
-                w = w.withReplaceByStatement((CobolPreprocessor.ReplaceByStatement) preprocessorSearch.visit(w.getReplaceByStatement(), executionContext));
-                return w;
-            }
+            AtomicBoolean hasCopyStatement = new AtomicBoolean(false);
+            w = w.withPreprocessorStatements(ListUtils.map(w.getPreprocessorStatements(), it -> {
+                if (it instanceof CobolPreprocessor.CopyStatement && !hasCopyStatement.get()) {
+                    hasCopyStatement.set(true);
+                }
+                return preprocessorSearch.visit(it, executionContext);
+            }));
 
-            if (w.getReplaceOffStatement() != null) {
-                w = w.withReplaceOffStatement((CobolPreprocessor.ReplaceOffStatement) preprocessorSearch.visit(w.getReplaceOffStatement(), executionContext));
+            if (hasCopyStatement.get() || w.getMarkers().findFirst(CopiedWord.class).isPresent()) {
                 return w;
             }
 
@@ -84,11 +87,6 @@ public class FindWord extends Recipe {
                     w = w.withReplacement(w.getReplacement().withOriginalWords(
                             ListUtils.map(w.getReplacement().getOriginalWords(), it -> it.withOriginal(visitAndCast(it.getOriginal(), executionContext)))));
                 }
-                return w;
-            }
-
-            if (w.getCopyStatement() != null) {
-                w = w.withCopyStatement((CobolPreprocessor.CopyStatement) preprocessorSearch.visit(w.getCopyStatement(), executionContext));
                 return w;
             }
 

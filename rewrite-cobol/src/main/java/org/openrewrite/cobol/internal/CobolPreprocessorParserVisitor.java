@@ -137,7 +137,6 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
     @Override
     public Object visitCharData(CobolPreprocessorParser.CharDataContext ctx) {
         return new CobolPreprocessor.CharData(
-
                 EMPTY,
                 Markers.EMPTY,
                 convertAll(ctx.charDataLine())
@@ -153,7 +152,6 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
     @Override
     public Object visitCharDataLine(CobolPreprocessorParser.CharDataLineContext ctx) {
         return new CobolPreprocessor.CharDataLine(
-
                 EMPTY,
                 Markers.EMPTY,
                 convertAllList(ctx.cobolWord(), ctx.literal(), ctx.filename(), ctx.commentEntry(), ctx.TEXT(), ctx.DOT(), ctx.LPARENCHAR(), ctx.RPARENCHAR())
@@ -163,7 +161,6 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
     @Override
     public Object visitCharDataLineNoDot(CobolPreprocessorParser.CharDataLineNoDotContext ctx) {
         return new CobolPreprocessor.CharDataLine(
-
                 EMPTY,
                 Markers.EMPTY,
                 convertAllList(ctx.cobolWord(), ctx.literal(), ctx.filename(), ctx.commentEntry(), ctx.TEXT(), ctx.LPARENCHAR(), ctx.RPARENCHAR())
@@ -173,7 +170,6 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
     @Override
     public Object visitCharDataSql(CobolPreprocessorParser.CharDataSqlContext ctx) {
         return new CobolPreprocessor.CharDataSql(
-
                 EMPTY,
                 Markers.EMPTY,
                 convertAllList(ctx.charDataLine())
@@ -189,7 +185,6 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
     @Override
     public Object visitCommentEntry(CobolPreprocessorParser.CommentEntryContext ctx) {
         return new CobolPreprocessor.CommentEntry(
-
                 EMPTY,
                 Markers.EMPTY,
                 convertAll(ctx.COMMENTENTRYLINE())
@@ -199,7 +194,6 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
     @Override
     public Object visitCompilerOption(CobolPreprocessorParser.CompilerOptionContext ctx) {
         return new CobolPreprocessor.CompilerOption(
-
                 EMPTY,
                 Markers.EMPTY,
                 convertAllList(
@@ -510,7 +504,6 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
     @Override
     public Object visitCompilerXOpts(CobolPreprocessorParser.CompilerXOptsContext ctx) {
         return new CobolPreprocessor.CompilerXOpts(
-
                 EMPTY,
                 Markers.EMPTY,
                 (CobolPreprocessor.Word) visit(ctx.XOPTS()),
@@ -525,7 +518,6 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
         init();
 
         return new CobolPreprocessor.CompilationUnit(
-
                 path,
                 fileAttributes,
                 EMPTY,
@@ -557,7 +549,6 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
     @Override
     public Object visitCopySource(CobolPreprocessorParser.CopySourceContext ctx) {
         return new CobolPreprocessor.CopySource(
-
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.literal(), ctx.cobolWord(), ctx.filename()),
@@ -667,7 +658,6 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
     @Override
     public Object visitPseudoText(CobolPreprocessorParser.PseudoTextContext ctx) {
         return new CobolPreprocessor.PseudoText(
-
                 EMPTY,
                 Markers.EMPTY,
                 (CobolPreprocessor.Word) visit(ctx.DOUBLEEQUALCHAR().get(0)),
@@ -777,9 +767,6 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
         SequenceArea sequenceArea = null;
         IndicatorArea indicatorArea = null;
         CommentArea commentArea = null;
-        CobolPreprocessor.CopyStatement copyStatement = null;
-        CobolPreprocessor.ReplaceByStatement replaceByStatement = null;
-        CobolPreprocessor.ReplaceOffStatement replaceOffStatement = null;
         Replacement replacement = null;
         List<CobolPreprocessor> preprocessorStatements = new ArrayList<>();
 
@@ -795,15 +782,12 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
                 indicatorArea = (IndicatorArea) object;
             } else if (object instanceof CommentArea) {
                 commentArea = (CommentArea) object;
-            } else if (object instanceof CobolPreprocessor.CopyStatement) {
-                copyStatement = (CobolPreprocessor.CopyStatement) object;
-            } else if (object instanceof CobolPreprocessor.ReplaceByStatement) {
-                replaceByStatement = (CobolPreprocessor.ReplaceByStatement) object;
-            } else if (object instanceof CobolPreprocessor.ReplaceOffStatement) {
-                replaceOffStatement = (CobolPreprocessor.ReplaceOffStatement) object;
             } else if (object instanceof Replacement) {
                 replacement = (Replacement) object;
-            } else if (object instanceof CobolPreprocessor.EjectStatement ||
+            } else if (object instanceof CobolPreprocessor.CopyStatement ||
+                    object instanceof CobolPreprocessor.ReplaceByStatement ||
+                    object instanceof CobolPreprocessor.ReplaceOffStatement ||
+                    object instanceof CobolPreprocessor.EjectStatement ||
                     object instanceof CobolPreprocessor.ExecStatement ||
                     object instanceof CobolPreprocessor.SkipStatement ||
                     object instanceof CobolPreprocessor.TitleStatement) {
@@ -812,11 +796,9 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
         }
 
         return new CobolPreprocessor.Word(
-
                 EMPTY,
                 Markers.EMPTY,
                 new Cobol.Word(
-
                         prefix,
                         Markers.EMPTY,
                         cobolLines,
@@ -825,9 +807,6 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
                         indicatorArea,
                         text,
                         commentArea,
-                        copyStatement,
-                        replaceByStatement,
-                        replaceOffStatement,
                         replacement,
                         preprocessorStatements.isEmpty() ? emptyList() : preprocessorStatements
                 )

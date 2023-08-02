@@ -11,6 +11,7 @@ import org.openrewrite.ExecutionContext;
 import org.openrewrite.Incubating;
 import org.openrewrite.cobol.CobolIsoVisitor;
 import org.openrewrite.cobol.CobolPrinterUtils;
+import org.openrewrite.cobol.markers.CopiedWord;
 import org.openrewrite.cobol.search.FindWords;
 import org.openrewrite.cobol.tree.*;
 import org.openrewrite.internal.ListUtils;
@@ -39,7 +40,7 @@ public class RemoveWords extends CobolIsoVisitor<ExecutionContext> {
     public Cobol.Word visitWord(Cobol.Word word, ExecutionContext executionContext) {
         Cobol.Word w = super.visitWord(word, executionContext);
         if (removeWords.contains(w) && !w.getWord().trim().isEmpty()) {
-            if (word.getCopyStatement() != null || word.getReplacement() != null) {
+            if (word.getReplacement() != null || word.getMarkers().findFirst(CopiedWord.class).isPresent()) {
                 // The NIST test does not provide examples of these types of transformation, so it hasn't been implemented yet.
                 throw new UnsupportedOperationException("RemoveWords does not support changes on copied sources or replaced words.");
             }
