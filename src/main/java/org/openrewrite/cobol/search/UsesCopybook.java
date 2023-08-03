@@ -22,16 +22,16 @@ import java.util.List;
 public class UsesCopybook extends CobolIsoVisitor<ExecutionContext> {
 
     @Nullable
-    String copyBookName;
+    String copybookName;
 
-    public UsesCopybook(@Nullable String copyBookName) {
-        this.copyBookName = copyBookName;
+    public UsesCopybook(@Nullable String copybookName) {
+        this.copybookName = copybookName;
     }
 
     @Override
-    public Cobol.CompilationUnit visitCompilationUnit(Cobol.CompilationUnit compilationUnit, ExecutionContext executionContext) {
+    public Cobol.CompilationUnit visitCompilationUnit(Cobol.CompilationUnit compilationUnit, ExecutionContext ctx) {
         Cobol.CompilationUnit cu = compilationUnit;
-        if (FindCopySource.find(cu, copyBookName) != null) {
+        if (FindCopySource.find(cu, copybookName) != null) {
             cu = SearchResult.found(cu);
         }
         return cu;

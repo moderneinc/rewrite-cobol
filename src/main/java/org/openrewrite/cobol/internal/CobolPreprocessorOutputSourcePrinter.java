@@ -35,7 +35,7 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
     public static final String COPY_START_KEY = "__COPY_START__";
     public static final String COPY_STOP_KEY = "__COPY_STOP__";
     public static final String COPY_UUID_KEY = "__COPY_UUID__";
-    public static final String COPY_BOOK_NOT_FOUND = "__COPY_BOOK_NOT_FOUND__";
+    public static final String COPYBOOK_NOT_FOUND = "__COPYBOOK_NOT_FOUND__";
 
     public static final String REPLACE_START_KEY = "__REPLACE_START__";
     public static final String REPLACE_STOP_KEY = "__REPLACE_STOP__";
@@ -85,7 +85,7 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
     private String copyStartComment = null;
     private String copyStopComment = null;
     private String copyUuidComment = null;
-    private String copyBookNotFoundComment = null;
+    private String copybookNotFoundComment = null;
 
     private String replaceStartComment = null;
     private String replaceStopComment = null;
@@ -167,10 +167,10 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
     }
 
     @Override
-    public CobolPreprocessor visitCopyBook(CobolPreprocessor.CopyBook copyBook, PrintOutputCapture<P> p) {
-        visitSpace(copyBook.getPrefix(), Space.Location.COPY_BOOK_PREFIX, p);
-        visitMarkers(copyBook.getMarkers(), p);
-        for (CobolPreprocessor cobolPreprocessor : copyBook.getLst()) {
+    public CobolPreprocessor visitCopybook(CobolPreprocessor.Copybook copybook, PrintOutputCapture<P> p) {
+        visitSpace(copybook.getPrefix(), Space.Location.COPY_BOOK_PREFIX, p);
+        visitMarkers(copybook.getMarkers(), p);
+        for (CobolPreprocessor cobolPreprocessor : copybook.getLst()) {
             if (!(cobolPreprocessor instanceof CobolPreprocessor.CompilerOptions ||
                     cobolPreprocessor instanceof CobolPreprocessor.EjectStatement ||
                     cobolPreprocessor instanceof CobolPreprocessor.ExecStatement ||
@@ -180,8 +180,8 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
             }
         }
 
-        visit(copyBook.getEof(), p);
-        return copyBook;
+        visit(copybook.getEof(), p);
+        return copybook;
     }
 
     @Override
@@ -192,7 +192,7 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
         if (printColumns) {
             copyTemplate(copyStatement, p);
         } else {
-            visit(copyStatement.getCopyBook(), p);
+            visit(copyStatement.getCopybook(), p);
             if (!p.getOut().endsWith("\n")) {
                 p.append("\n");
             }
@@ -228,7 +228,7 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
         // Print markers like Lines, SequenceArea, and Indicator if the line starts with COPY.
         visit(copyStatement.getWord(), p);
 
-        // Remove the prefix of and the word COPY, because the statement is replaced by the CopyBook.
+        // Remove the prefix of and the word COPY, because the statement is replaced by the Copybook.
         p.out.delete(p.getOut().length() - copyStatement.getWord().getCobolWord().getWord().length() -
                 copyStatement.getWord().getPrefix().getWhitespace().length(), p.getOut().length());
 
@@ -239,11 +239,11 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
         addUuidKey(getCopyUuidKey(), copyStatement.getId(), p);
 
         // Print copied source.
-        if (copyStatement.getCopyBook() == null) {
+        if (copyStatement.getCopybook() == null) {
             // Assume the copy statement is not found, and the copybook is not sub grammatical.
-            p.append(getCopyBookNotFound());
+            p.append(getCopybookNotFound());
         } else {
-            visit(copyStatement.getCopyBook(), p);
+            visit(copyStatement.getCopybook(), p);
         }
         if (!p.getOut().endsWith("\n")) {
             // Add a new line character if the copied source does not end with one already.
@@ -779,11 +779,11 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
         return copyUuidComment;
     }
 
-    public String getCopyBookNotFound() {
-        if (copyBookNotFoundComment == null) {
-            copyBookNotFoundComment = getTemplateComment(COPY_BOOK_NOT_FOUND);
+    public String getCopybookNotFound() {
+        if (copybookNotFoundComment == null) {
+            copybookNotFoundComment = getTemplateComment(COPYBOOK_NOT_FOUND);
         }
-        return copyBookNotFoundComment;
+        return copybookNotFoundComment;
     }
 
     public String getReplaceStartComment() {

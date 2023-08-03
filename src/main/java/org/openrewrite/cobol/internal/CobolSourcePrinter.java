@@ -10,7 +10,7 @@ import org.openrewrite.PrintOutputCapture;
 import org.openrewrite.cobol.CobolPreprocessorVisitor;
 import org.openrewrite.cobol.CobolVisitor;
 import org.openrewrite.cobol.markers.CopiedWord;
-import org.openrewrite.cobol.markers.MissingCopyBook;
+import org.openrewrite.cobol.markers.MissingCopybook;
 import org.openrewrite.cobol.tree.*;
 import org.openrewrite.internal.StringUtils;
 import org.openrewrite.internal.lang.Nullable;
@@ -4363,7 +4363,7 @@ public class CobolSourcePrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
         // The COBOL word is a product of a copy statement.
         if (copyStatement != null) {
             getCobolPreprocessorVisitor().visit(copyStatement, p);
-            if (!copyStatement.getMarkers().findFirst(MissingCopyBook.class).isPresent()) {
+            if (!copyStatement.getMarkers().findFirst(MissingCopybook.class).isPresent()) {
                 return word;
             }
         }

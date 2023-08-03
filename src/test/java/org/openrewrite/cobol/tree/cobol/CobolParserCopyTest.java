@@ -15,7 +15,7 @@ class CobolParserCopyTest extends CobolTest {
 
     @Issue("https://github.com/openrewrite/rewrite-cobol/issues/15")
     @Test
-    void missingCopyBook() {
+    void missingCopybook() {
         rewriteRun(
           cobolPostProcess(
             """
@@ -140,7 +140,7 @@ class CobolParserCopyTest extends CobolTest {
 
     @Issue("https://github.com/openrewrite/rewrite-cobol/issues/15")
     @Test
-    void commentAfterMissingCopyBook() {
+    void commentAfterMissingCopybook() {
         rewriteRun(
           cobolPostProcess(
             """
@@ -160,7 +160,7 @@ class CobolParserCopyTest extends CobolTest {
 
     @Issue("https://github.com/openrewrite/rewrite-cobol/issues/27")
     @Test
-    void newLineInContentAreaBeforeCopyBook() {
+    void newLineInContentAreaBeforeCopybook() {
         rewriteRun(
           cobolPostProcess(getNistResource("ISSUE_27.CBL"),
             """

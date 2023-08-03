@@ -13,7 +13,7 @@ import org.openrewrite.cobol.internal.CobolPreprocessorPrinter;
 
 import static org.openrewrite.cobol.Assertions.preprocessor;
 
-public class CobolPreprocessorCopyBookTest extends CobolTest {
+public class CobolPreprocessorCopybookTest extends CobolTest {
     private final CobolPreprocessorPrinter<ExecutionContext> printer = new CobolPreprocessorPrinter<>(false, true);
 
     @Test
@@ -49,7 +49,7 @@ public class CobolPreprocessorCopyBookTest extends CobolTest {
 
     @Issue("https://github.com/openrewrite/rewrite-cobol/issues/27")
     @Test
-    void newLineInContentAreaBeforeCopyBook() {
+    void newLineInContentAreaBeforeCopybook() {
         rewriteRun(
           preprocessor(getNistResource("ISSUE_27.CBL"))
         );

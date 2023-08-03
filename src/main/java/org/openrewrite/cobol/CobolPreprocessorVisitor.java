@@ -89,8 +89,8 @@ public class CobolPreprocessorVisitor<P> extends TreeVisitor<CobolPreprocessor, 
         return c;
     }
 
-    public CobolPreprocessor visitCopyBook(CobolPreprocessor.CopyBook copyBook, P p) {
-        CobolPreprocessor.CopyBook c = copyBook;
+    public CobolPreprocessor visitCopybook(CobolPreprocessor.Copybook copybook, P p) {
+        CobolPreprocessor.Copybook c = copybook;
         c = c.withPrefix(visitSpace(c.getPrefix(), Space.Location.COPY_BOOK_PREFIX, p));
         c = c.withMarkers(visitMarkers(c.getMarkers(), p));
         c = c.withLst(ListUtils.map(c.getLst(), it -> visit(it, p)));
@@ -116,7 +116,7 @@ public class CobolPreprocessorVisitor<P> extends TreeVisitor<CobolPreprocessor, 
         c = c.withCopySource((CobolPreprocessor.CopySource) visit(c.getCopySource(), p));
         c = c.withCobols(ListUtils.map(c.getCobols(), it -> visit(it, p)));
         c = c.withDot((CobolPreprocessor.Word) visit(c.getDot(), p));
-        c = c.withCopyBook((CobolPreprocessor.CopyBook) visit(c.getCopyBook(), p));
+        c = c.withCopybook((CobolPreprocessor.Copybook) visit(c.getCopybook(), p));
         return c;
     }
 

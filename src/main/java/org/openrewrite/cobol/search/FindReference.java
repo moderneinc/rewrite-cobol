@@ -36,19 +36,19 @@ public class FindReference extends Recipe {
 
     @Override
     public String getDisplayName() {
-        return "Find matching identifiers in COBOL, CopyBooks, and JCL";
+        return "Find matching identifiers in COBOL, copybooks, and JCL";
     }
 
     @Override
     public String getDescription() {
-        return "Finds an identifier by an exact match or regex pattern in COBOL, CopyBooks, and/or JCL.";
+        return "Finds an identifier by an exact match or regex pattern in COBOL, copybooks, and/or JCL.";
     }
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {
         return new TreeVisitor<Tree, ExecutionContext>() {
             private final CobolReference cobolReference = new CobolReference();
-            private final CopyBookReference copyBookReference = new CopyBookReference();
+            private final CopybookReference copybookReference = new CopybookReference();
             private final JclReference jclReference = new JclReference();
 
             @Nullable
@@ -57,16 +57,16 @@ public class FindReference extends Recipe {
             @Override
             public boolean isAcceptable(SourceFile sourceFile, ExecutionContext executionContext) {
                 return cobolReference.isAcceptable(sourceFile, executionContext) ||
-                        copyBookReference.isAcceptable(sourceFile, executionContext) ||
-                        jclReference.isAcceptable(sourceFile, executionContext);
+                       copybookReference.isAcceptable(sourceFile, executionContext) ||
+                       jclReference.isAcceptable(sourceFile, executionContext);
             }
 
             @Override
             public @Nullable Tree visit(@Nullable Tree tree, ExecutionContext executionContext) {
                 if (tree instanceof Cobol) {
                     return cobolReference.visit(tree, executionContext);
-                } else if (tree instanceof CobolPreprocessor.CopyBook) {
-                    return copyBookReference.visit(tree, executionContext);
+                } else if (tree instanceof CobolPreprocessor.Copybook) {
+                    return copybookReference.visit(tree, executionContext);
                 } else if (tree instanceof Jcl.CompilationUnit) {
                     return jclReference.visit(tree, executionContext);
                 }
@@ -83,7 +83,7 @@ public class FindReference extends Recipe {
                 }
             }
 
-            class CopyBookReference extends CobolPreprocessorVisitor<ExecutionContext> {
+            class CopybookReference extends CobolPreprocessorVisitor<ExecutionContext> {
                 @Override
                 public CobolPreprocessor visitWord(CobolPreprocessor.Word word, ExecutionContext executionContext) {
                     if (matches(word.getCobolWord().getWord())) {

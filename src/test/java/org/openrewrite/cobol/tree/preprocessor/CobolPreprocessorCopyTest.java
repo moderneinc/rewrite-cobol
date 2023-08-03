@@ -43,16 +43,16 @@ public class CobolPreprocessorCopyTest extends CobolTest {
 
             @Override
             public CobolPreprocessor visitCopyStatement(CobolPreprocessor.CopyStatement copyStatement, ExecutionContext p) {
-                assertThat(copyStatement.getCopyBook()).isNotNull();
-                assertThat(copyStatement.getCopyBook().getSourcePath()).isNotNull();
-                CobolPreprocessor.CopyBook copyBook = copyStatement.getCopyBook();
+                assertThat(copyStatement.getCopybook()).isNotNull();
+                assertThat(copyStatement.getCopybook().getSourcePath()).isNotNull();
+                CobolPreprocessor.Copybook copybook = copyStatement.getCopybook();
 
                 PrintOutputCapture<ExecutionContext> output = new PrintOutputCapture<>(new InMemoryExecutionContext());
                 CobolPreprocessorOutputSourcePrinter<ExecutionContext> printer =
                   new CobolPreprocessorOutputSourcePrinter<>(CobolDialect.ibmAnsi85(), true);
-                printer.visit(copyBook, output);
+                printer.visit(copybook, output);
 
-                String source = getSource(copyBook.getSourcePath().toString());
+                String source = getSource(copybook.getSourcePath().toString());
                 assertThat(source).isEqualTo(output.getOut());
 
                 return super.visitCopyStatement(copyStatement, p);
@@ -60,8 +60,8 @@ public class CobolPreprocessorCopyTest extends CobolTest {
         }));
     }
 
-    private String getSource(String copyBook) {
-        String searchPath = PathUtils.separatorsToUnix(copyBook);
+    private String getSource(String copybook) {
+        String searchPath = PathUtils.separatorsToUnix(copybook);
         try(ScanResult scan = new ClassGraph().scan()) {
             //noinspection OptionalGetWithoutIsPresent
             return scan.getResourcesWithExtension("cpy").stream()

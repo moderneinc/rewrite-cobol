@@ -47,9 +47,9 @@ public class Assertions {
     public static SourceSpecs preprocessor(@Nullable String before, Consumer<SourceSpec<CobolPreprocessor.CompilationUnit>> spec, boolean enableCopyAndReplace) {
         CobolPreprocessorParser.Builder builder;
         if (enableCopyAndReplace) {
-            List<SourceFile> copyBooks = getCopyBookSources();
+            List<SourceFile> copybooks = getCopybookSources();
             builder = CobolPreprocessorParser.builder()
-                    .setCopyBooks(copyBooks);
+                    .setCopybooks(copybooks);
         } else {
             builder = CobolPreprocessorParser.builder()
                     .setEnableCopy(false)
@@ -83,9 +83,9 @@ public class Assertions {
                                            Consumer<SourceSpec<CobolPreprocessor.CompilationUnit>> spec, boolean enableCopyAndReplace) {
         CobolPreprocessorParser.Builder builder;
         if (enableCopyAndReplace) {
-            List<SourceFile> copyBooks = getCopyBookSources();
+            List<SourceFile> copybooks = getCopybookSources();
             builder = CobolPreprocessorParser.builder()
-                    .setCopyBooks(copyBooks);
+                    .setCopybooks(copybooks);
         } else {
             builder = CobolPreprocessorParser.builder()
                     .setEnableCopy(false)
@@ -136,9 +136,9 @@ public class Assertions {
     public static SourceSpecs cobol(@Nullable String before, Consumer<SourceSpec<Cobol.CompilationUnit>> spec, boolean enableCopyAndReplace) {
         CobolParser.Builder builder;
         if (enableCopyAndReplace) {
-            List<SourceFile> copyBooks = getCopyBookSources();
+            List<SourceFile> copybooks = getCopybookSources();
             builder = CobolParser.builder()
-                    .setCopyBooks(copyBooks);
+                    .setCopybooks(copybooks);
         } else {
             builder = CobolParser.builder()
                     .setEnableCopy(false)
@@ -169,13 +169,18 @@ public class Assertions {
         return cobol(before, after, spec, false);
     }
 
+    /*
+     * @deprecated use {@link #cobol(String, String, Consumer)} instead.
+     */
+    @Deprecated
     public static SourceSpecs cobol(@Nullable String before, @Nullable String after,
-                                    Consumer<SourceSpec<Cobol.CompilationUnit>> spec, boolean enableCopyAndReplace) {
+                                    Consumer<SourceSpec<Cobol.CompilationUnit>> spec,
+                                    boolean enableCopyAndReplace) {
         CobolParser.Builder builder;
         if (enableCopyAndReplace) {
-            List<SourceFile> copyBooks = getCopyBookSources();
+            List<SourceFile> copybooks = getCopybookSources();
             builder = CobolParser.builder()
-                    .setCopyBooks(copyBooks);
+                    .setCopybooks(copybooks);
         } else {
             builder = CobolParser.builder()
                     .setEnableCopy(false)
@@ -215,9 +220,9 @@ public class Assertions {
                                     Consumer<SourceSpec<Cobol.CompilationUnit>> spec, boolean enableCopyAndReplace) {
         CobolParser.Builder builder;
         if (enableCopyAndReplace) {
-            List<SourceFile> copyBooks = getCopyBookSources();
+            List<SourceFile> copybooks = getCopybookSources();
             builder = CobolParser.builder()
-                    .setCopyBooks(copyBooks);
+                    .setCopybooks(copybooks);
         } else {
             builder = CobolParser.builder()
                     .setEnableCopy(false)
@@ -279,7 +284,7 @@ public class Assertions {
         return result.toString();
     }
 
-    private static List<SourceFile> getCopyBookSources() {
+    private static List<SourceFile> getCopybookSources() {
         try(ScanResult scan = new ClassGraph().scan()) {
             List<Parser.Input> copyInputs = scan.getResourcesWithExtension("cpy").stream()
                     .map(res -> new Parser.Input(Paths.get(res.getPath()), () -> {

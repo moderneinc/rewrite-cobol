@@ -30,7 +30,7 @@ public class FindIndicators extends Recipe {
 
     @Override
     public String getDescription() {
-        return "Find matching indicators. Currently, this recipe will not mark indicators on CopyBook code.";
+        return "Find matching indicators. Currently, this recipe will not mark indicators on copybook code.";
     }
 
     @Override

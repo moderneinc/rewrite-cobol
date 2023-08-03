@@ -27,7 +27,7 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
     public CobolPreprocessor.CopyStatement visitCopyStatement(CobolPreprocessor.CopyStatement copyStatement, P p) {
         CobolPreprocessor.CopyStatement c = super.visitCopyStatement(copyStatement, p);
 
-        if (c.getCopyBook() != null) {
+        if (c.getCopybook() != null) {
             List<CobolPreprocessor.ReplacingPhrase> phrases = c.getCobols().stream()
                     .filter(is -> is instanceof CobolPreprocessor.ReplacingPhrase)
                     .map(it -> (CobolPreprocessor.ReplacingPhrase) it)
@@ -42,7 +42,7 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
                     FindReplaceableAreasVisitor findReplaceableAreasVisitor = new FindReplaceableAreasVisitor(entry.getKey());
 
                     //noinspection ConstantConditions
-                    c = c.withCopyBook(c.getCopyBook().withLst(ListUtils.map(c.getCopyBook().getLst(), preprocessor -> {
+                    c = c.withCopybook(c.getCopybook().withLst(ListUtils.map(c.getCopybook().getLst(), preprocessor -> {
                         findReplaceableAreasVisitor.visit(preprocessor, replaceWords);
                         if (!replaceWords.isEmpty()) {
                             ReplaceVisitor replaceVisitor = new ReplaceVisitor(replaceWords, entry.getValue());
@@ -151,15 +151,15 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
         }
 
         @Override
-        public CobolPreprocessor.CopyBook visitCopyBook(CobolPreprocessor.CopyBook copyBook, ExecutionContext executionContext) {
-            copyBook = copyBook.withLst(ListUtils.map(copyBook.getLst(), it -> visit(it, executionContext)));
-            return copyBook;
+        public CobolPreprocessor.Copybook visitCopybook(CobolPreprocessor.Copybook copybook, ExecutionContext executionContext) {
+            copybook = copybook.withLst(ListUtils.map(copybook.getLst(), it -> visit(it, executionContext)));
+            return copybook;
         }
 
         @Override
         public CobolPreprocessor.CopyStatement visitCopyStatement(CobolPreprocessor.CopyStatement copyStatement, ExecutionContext executionContext) {
-            if (copyStatement.getCopyBook() != null ) {
-                copyStatement = copyStatement.withCopyBook(visitCopyBook(copyStatement.getCopyBook(), executionContext));
+            if (copyStatement.getCopybook() != null ) {
+                copyStatement = copyStatement.withCopybook(visitCopybook(copyStatement.getCopybook(), executionContext));
             }
             return copyStatement;
         }

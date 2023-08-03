@@ -72,11 +72,11 @@ public class PreprocessorAssertions {
     }
 
     public static SourceSpecs cobolPreprocessorCopy(@Nullable String before, Consumer<SourceSpec<CobolPreprocessor.CompilationUnit>> spec) {
-        List<SourceFile> copyBooks = getCopyBookSources();
+        List<SourceFile> copybooks = getCopybookSources();
 
         SourceSpec<CobolPreprocessor.CompilationUnit> cobol = new SourceSpec<>(CobolPreprocessor.CompilationUnit.class, null,
                 CobolPreprocessorParser.builder()
-                        .setCopyBooks(copyBooks),
+                        .setCopybooks(copybooks),
                 before,
                 SourceSpec.EachResult.noop,
                 PreprocessorAssertions::customizeExecutionContext);
@@ -91,11 +91,11 @@ public class PreprocessorAssertions {
 
     public static SourceSpecs cobolPreprocessorCopy(@Nullable String before, @Nullable String after,
                                                     Consumer<SourceSpec<CobolPreprocessor.CompilationUnit>> spec) {
-        List<SourceFile> copyBooks = getCopyBookSources();
+        List<SourceFile> copybooks = getCopybookSources();
 
         SourceSpec<CobolPreprocessor.CompilationUnit> cobol = new SourceSpec<>(CobolPreprocessor.CompilationUnit.class, null,
                 CobolPreprocessorParser.builder()
-                        .setCopyBooks(copyBooks),
+                        .setCopybooks(copybooks),
                 before,
                 SourceSpec.EachResult.noop,
                 PreprocessorAssertions::customizeExecutionContext).after(s -> after);
@@ -109,7 +109,7 @@ public class PreprocessorAssertions {
         spec.accept(cobol);
     }
 
-    private static List<SourceFile> getCopyBookSources() {
+    private static List<SourceFile> getCopybookSources() {
         try(ScanResult scan = new ClassGraph().scan()) {
             List<Parser.Input> copyInputs = scan.getResourcesWithExtension("cpy").stream()
                     .map(res -> new Parser.Input(Paths.get(res.getPath()), () -> {

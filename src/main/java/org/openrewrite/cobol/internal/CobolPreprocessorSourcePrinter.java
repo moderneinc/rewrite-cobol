@@ -103,9 +103,9 @@ public class CobolPreprocessorSourcePrinter<P> extends CobolPreprocessorVisitor<
     }
 
     @Override
-    public CobolPreprocessor visitCopyBook(CobolPreprocessor.CopyBook copyBook, PrintOutputCapture<P> p) {
-        // The CopyBook is not printed as a part of the original source.
-        return copyBook;
+    public CobolPreprocessor visitCopybook(CobolPreprocessor.Copybook copybook, PrintOutputCapture<P> p) {
+        // The Copybook is not printed as a part of the original source.
+        return copybook;
     }
 
     @Override

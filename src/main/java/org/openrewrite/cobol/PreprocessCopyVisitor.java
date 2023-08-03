@@ -18,13 +18,13 @@ import java.util.Map;
 @Value
 public class PreprocessCopyVisitor<P> extends CobolPreprocessorIsoVisitor<P> {
 
-    Map<String, SourceFile> copyBooks = new HashMap<>();
+    Map<String, SourceFile> copybooks = new HashMap<>();
 
-    public PreprocessCopyVisitor(List<SourceFile> copyBooks) {
-        copyBooks.forEach(it -> {
-            // Note: this implementation ASSUMES CopyBooks are resolved by FileName and will require changes.
+    public PreprocessCopyVisitor(List<SourceFile> copybooks) {
+        copybooks.forEach(it -> {
+            // Note: this implementation ASSUMES copybooks are resolved by FileName and will require changes.
             String fileName = it.getSourcePath().getFileName().toString();
-            this.copyBooks.putIfAbsent(fileName.substring(0, fileName.indexOf(".")), it);
+            this.copybooks.putIfAbsent(fileName.substring(0, fileName.indexOf(".")), it);
         });
     }
 
@@ -32,8 +32,8 @@ public class PreprocessCopyVisitor<P> extends CobolPreprocessorIsoVisitor<P> {
     public CobolPreprocessor.CopyStatement visitCopyStatement(CobolPreprocessor.CopyStatement copyStatement, P p) {
         CobolPreprocessor.CopyStatement c = super.visitCopyStatement(copyStatement, p);
 
-        if (copyBooks.containsKey(copyStatement.getCopySource().getName().getCobolWord().getWord())) {
-            c = c.withCopyBook((CobolPreprocessor.CopyBook) copyBooks.get(copyStatement.getCopySource().getName().getCobolWord().getWord()));
+        if (copybooks.containsKey(copyStatement.getCopySource().getName().getCobolWord().getWord())) {
+            c = c.withCopybook((CobolPreprocessor.Copybook) copybooks.get(copyStatement.getCopySource().getName().getCobolWord().getWord()));
         }
         return c;
     }

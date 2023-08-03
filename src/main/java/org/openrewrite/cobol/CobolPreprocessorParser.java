@@ -183,7 +183,7 @@ public class CobolPreprocessorParser implements Parser {
     public static class Builder extends org.openrewrite.Parser.Builder {
 
         private CobolDialect cobolDialect = CobolDialect.ibmAnsi85();
-        private List<SourceFile> copyBooks = emptyList();
+        private List<SourceFile> copybooks = emptyList();
         private boolean enableCopy = true;
         private boolean enableReplace = true;
 
@@ -195,7 +195,7 @@ public class CobolPreprocessorParser implements Parser {
         public CobolPreprocessorParser build() {
             return new CobolPreprocessorParser(
                     cobolDialect,
-                    copyBooks,
+                    copybooks,
                     enableCopy,
                     enableReplace
             );
@@ -206,16 +206,19 @@ public class CobolPreprocessorParser implements Parser {
             return this;
         }
 
-        public Builder setCopyBooks(List<SourceFile> copyBooks) {
-            this.copyBooks = copyBooks;
+        @Deprecated
+        public Builder setCopybooks(List<SourceFile> copybooks) {
+            this.copybooks = copybooks;
             return this;
         }
 
+        @Deprecated
         public Builder setEnableCopy(boolean enableCopy) {
             this.enableCopy = enableCopy;
             return this;
         }
 
+        @Deprecated
         public Builder setEnableReplace(boolean enableReplace) {
             this.enableReplace = enableReplace;
             return this;

@@ -36,16 +36,16 @@ public class CobolParser implements Parser {
     public static final List<String> COBOL_FILE_EXTENSIONS = singletonList(".cbl");
 
     private final CobolDialect cobolDialect;
-    private final List<SourceFile> copyBooks;
+    private final List<SourceFile> copybooks;
     private final boolean enableCopy;
     private final boolean enableReplace;
 
     public CobolParser(CobolDialect cobolDialect,
-                       List<SourceFile> copyBooks,
+                       List<SourceFile> copybooks,
                        boolean enableCopy,
                        boolean enableReplace) {
         this.cobolDialect = cobolDialect;
-        this.copyBooks = copyBooks;
+        this.copybooks = copybooks;
         this.enableCopy = enableCopy;
         this.enableReplace = enableReplace;
     }
@@ -55,7 +55,7 @@ public class CobolParser implements Parser {
         ParsingExecutionContextView pctx = ParsingExecutionContextView.view(ctx);
         ParsingEventListener parsingListener = pctx.getParsingListener();
         List<Input> accepted = acceptedInputs(sourceFiles).collect(toList());
-        List<Input> copyBookInputs = new ArrayList<>();
+        List<Input> copybookInputs = new ArrayList<>();
         List<Input> cobolInputs = new ArrayList<>();
 
         for (Input input : accepted) {
@@ -65,22 +65,22 @@ public class CobolParser implements Parser {
                 }
             }
 
-            for (String copyBookFileExtension : COPYBOOK_FILE_EXTENSIONS) {
-                if (input.getPath().getFileName().toString().toLowerCase().endsWith(copyBookFileExtension)) {
-                    copyBookInputs.add(input);
+            for (String copybookFileExtension : COPYBOOK_FILE_EXTENSIONS) {
+                if (input.getPath().getFileName().toString().toLowerCase().endsWith(copybookFileExtension)) {
+                    copybookInputs.add(input);
                 }
             }
         }
 
-        CopybookParser copyBookParser = new CopybookParser(cobolDialect);
-        List<SourceFile> copyBooks = copyBookParser.parseInputs(copyBookInputs, relativeTo, ctx).collect(toList());
+        CopybookParser copybookParser = new CopybookParser(cobolDialect);
+        List<SourceFile> copybooks = copybookParser.parseInputs(copybookInputs, relativeTo, ctx).collect(toList());
 
         CobolPreprocessorParser cobolPreprocessorParser = CobolPreprocessorParser.builder()
                 .setCobolDialect(cobolDialect)
                 .setEnableCopy(enableCopy)
                 .setEnableReplace(enableReplace)
                 .build();
-        cobolPreprocessorParser.setCopybooks(!this.copyBooks.isEmpty() ? this.copyBooks : copyBooks);
+        cobolPreprocessorParser.setCopybooks(!this.copybooks.isEmpty() ? this.copybooks : copybooks);
 
         Stream<SourceFile> sources;
         sources = cobolInputs.stream()
@@ -141,7 +141,7 @@ public class CobolParser implements Parser {
                     }
                 });
 
-        return Stream.concat(sources, copyBooks.stream());
+        return Stream.concat(sources, copybooks.stream());
     }
 
     @Override
@@ -189,7 +189,7 @@ public class CobolParser implements Parser {
     public static class Builder extends org.openrewrite.Parser.Builder {
 
         private CobolDialect cobolDialect = CobolDialect.ibmAnsi85();
-        private List<SourceFile> copyBooks = emptyList();
+        private List<SourceFile> copybooks = emptyList();
         private boolean enableCopy = true;
         private boolean enableReplace = true;
 
@@ -201,7 +201,7 @@ public class CobolParser implements Parser {
         public CobolParser build() {
             return new CobolParser(
                     cobolDialect,
-                    copyBooks,
+                    copybooks,
                     enableCopy,
                     enableReplace);
         }
@@ -211,16 +211,19 @@ public class CobolParser implements Parser {
             return this;
         }
 
-        public Builder setCopyBooks(List<SourceFile> copyBooks) {
-            this.copyBooks = copyBooks;
+        @Deprecated
+        public Builder setCopybooks(List<SourceFile> copybooks) {
+            this.copybooks = copybooks;
             return this;
         }
 
+        @Deprecated
         public Builder setEnableCopy(boolean enableCopy) {
             this.enableCopy = enableCopy;
             return this;
         }
 
+        @Deprecated
         public Builder setEnableReplace(boolean enableReplace) {
             this.enableReplace = enableReplace;
             return this;

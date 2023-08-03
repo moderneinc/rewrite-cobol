@@ -218,7 +218,7 @@ public interface CobolPreprocessor extends Tree {
     @Value
     @EqualsAndHashCode(callSuper = false)
     @With
-    class CopyBook implements CobolPreprocessor, CobolSourceFile {
+    class Copybook implements CobolPreprocessor, CobolSourceFile {
 
         UUID id;
         Space prefix;
@@ -255,7 +255,7 @@ public interface CobolPreprocessor extends Tree {
 
         @Override
         public <P> CobolPreprocessor acceptCobolPreprocessor(CobolPreprocessorVisitor<P> v, P p) {
-            return v.visitCopyBook(this, p);
+            return v.visitCopybook(this, p);
         }
 
         @Override
@@ -305,7 +305,7 @@ public interface CobolPreprocessor extends Tree {
 
         // TODO: temp POC clean up.
         @Nullable
-        CopyBook copyBook;
+        CobolPreprocessor.Copybook copybook;
 
         @Override
         public <P> CobolPreprocessor acceptCobolPreprocessor(CobolPreprocessorVisitor<P> v, P p) {
@@ -466,7 +466,7 @@ public interface CobolPreprocessor extends Tree {
     }
 
     /**
-     * A ReplaceClause is a rule to change COBOL words that is applied to code in either a {@link CopyBook} or {@link ReplaceArea}.
+     * A ReplaceClause is a rule to change COBOL words that is applied to code in either a {@link Copybook} or {@link ReplaceArea}.
      */
     @Value
     @EqualsAndHashCode(callSuper = false)

@@ -13,6 +13,6 @@ import java.util.UUID;
 
 @With
 @Value
-public class MissingCopyBook implements Marker {
+public class MissingCopybook implements Marker {
     UUID id;
 }

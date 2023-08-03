@@ -54,8 +54,8 @@ public class CobolPreprocessorIsoVisitor<P> extends CobolPreprocessorVisitor<P> 
     }
 
     @Override
-    public CobolPreprocessor.CopyBook visitCopyBook(CobolPreprocessor.CopyBook copyBook, P p) {
-        return (CobolPreprocessor.CopyBook) super.visitCopyBook(copyBook, p);
+    public CobolPreprocessor.Copybook visitCopybook(CobolPreprocessor.Copybook copybook, P p) {
+        return (CobolPreprocessor.Copybook) super.visitCopybook(copybook, p);
     }
 
     @Override

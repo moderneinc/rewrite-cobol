@@ -89,7 +89,7 @@ public class CopybookParser implements Parser {
                         CobolPreprocessor.CompilationUnit preprocessedCU = parserVisitor.visitCompilationUnit(parser.compilationUnit());
                         List<CobolPreprocessor> parsedCopySource = preprocessedCU.getCobols();
 
-                        CobolPreprocessor.CopyBook copyBook = new CobolPreprocessor.CopyBook(
+                        CobolPreprocessor.Copybook copybook = new CobolPreprocessor.Copybook(
                                 randomId(),
                                 Space.EMPTY,
                                 Markers.EMPTY,
@@ -104,7 +104,7 @@ public class CopybookParser implements Parser {
 
                         sample.stop(MetricsHelper.successTags(timer).register(Metrics.globalRegistry));
                         parsingListener.parsed(sourceFile, preprocessedCU);
-                        return copyBook;
+                        return copybook;
                     } catch (Throwable t) {
                         sample.stop(MetricsHelper.errorTags(timer, t).register(Metrics.globalRegistry));
                         ctx.getOnError().accept(t);
@@ -159,7 +159,7 @@ public class CopybookParser implements Parser {
 
         @Override
         public String getDslName() {
-            return "copyBook";
+            return "copybook";
         }
     }
 }

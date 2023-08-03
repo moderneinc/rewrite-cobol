@@ -25,11 +25,11 @@ public class CobolPreprocessorPrinter<P> extends CobolPreprocessorSourcePrinter<
     }
 
     @Override
-    public CobolPreprocessor visitCopyBook(CobolPreprocessor.CopyBook copyBook, PrintOutputCapture<P> p) {
-        beforeSyntax(copyBook, Space.Location.COPY_BOOK_PREFIX, p);
-        visit(copyBook.getLst(), p);
-        afterSyntax(copyBook, p);
-        return copyBook;
+    public CobolPreprocessor visitCopybook(CobolPreprocessor.Copybook copybook, PrintOutputCapture<P> p) {
+        beforeSyntax(copybook, Space.Location.COPY_BOOK_PREFIX, p);
+        visit(copybook.getLst(), p);
+        afterSyntax(copybook, p);
+        return copybook;
     }
 
     @Override
@@ -37,9 +37,9 @@ public class CobolPreprocessorPrinter<P> extends CobolPreprocessorSourcePrinter<
         if (printOriginalSource) {
             return super.visitCopyStatement(copyStatement, p);
         }
-        if (copyStatement.getCopyBook() != null) {
+        if (copyStatement.getCopybook() != null) {
             beforeSyntax(copyStatement, Space.Location.COPY_STATEMENT_PREFIX, p);
-            visit(copyStatement.getCopyBook(), p);
+            visit(copyStatement.getCopybook(), p);
             if (!p.getOut().endsWith("\n")) {
                 p.append("\n");
             }

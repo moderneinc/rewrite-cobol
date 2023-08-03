@@ -13,7 +13,7 @@ import org.openrewrite.FileAttributes;
 import org.openrewrite.cobol.internal.grammar.CobolBaseVisitor;
 import org.openrewrite.cobol.internal.grammar.CobolParser;
 import org.openrewrite.cobol.markers.CopiedWord;
-import org.openrewrite.cobol.markers.MissingCopyBook;
+import org.openrewrite.cobol.markers.MissingCopybook;
 import org.openrewrite.cobol.tree.*;
 import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.marker.Markers;
@@ -76,7 +76,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     private String copyStartComment = null;
     private String copyStopComment = null;
     private String copyUuidComment = null;
-    private String copyBookNotFoundComment = null;
+    private String copybookNotFoundComment = null;
 
     // Set to true when the parser detects the CopyStartComment to add the currentCopy to each `Cobol$Word`.
     private boolean inCopiedText;
@@ -233,8 +233,8 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
             this.copyUuidComment = getCommentFromKey(templatePrinter.getCopyUuidKey());
             this.templateKeys.add(copyUuidComment);
 
-            this.copyBookNotFoundComment = getCommentFromKey(templatePrinter.getCopyBookNotFound());
-            this.templateKeys.add(copyBookNotFoundComment);
+            this.copybookNotFoundComment = getCommentFromKey(templatePrinter.getCopybookNotFound());
+            this.templateKeys.add(copybookNotFoundComment);
 
             this.replaceStartComment = getCommentFromKey(templatePrinter.getReplaceStartComment());
             this.templateKeys.add(replaceStartComment);
@@ -5613,7 +5613,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                     object instanceof CobolPreprocessor.SkipStatement ||
                     object instanceof CobolPreprocessor.TitleStatement) {
                 if (object instanceof CobolPreprocessor.CopyStatement) {
-                    if (copiedWord == null && !((CobolPreprocessor.CopyStatement) object).getMarkers().findFirst(MissingCopyBook.class).isPresent()) {
+                    if (copiedWord == null && !((CobolPreprocessor.CopyStatement) object).getMarkers().findFirst(MissingCopybook.class).isPresent()) {
                         copiedWord = new CopiedWord(randomId(), ((CobolPreprocessor.CopyStatement) object).getId().toString());
                     }
                 }
@@ -6127,8 +6127,8 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                         newLinePos = cursor + (source.substring(cursor).contains("\n") ? source.substring(cursor).indexOf("\n") : source.substring(cursor).length());
                         endOfContentArea = cursor - cobolDialect.getColumns().getIndicatorArea() - 1 + cobolDialect.getColumns().getOtherArea();
                         contentArea = source.substring(cursor, Math.min(newLinePos, endOfContentArea));
-                        if (copyBookNotFoundComment.equals(contentArea)) {
-                            copyStatement = copyBookNotFoundComment(copyStatement, lines);
+                        if (copybookNotFoundComment.equals(contentArea)) {
+                            copyStatement = copybookNotFoundComment(copyStatement, lines);
                             lines.clear();
                         } else {
                             cursor = savedCursor;
@@ -6417,13 +6417,13 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         return copyMap.get(uuid.trim());
     }
 
-    private CobolPreprocessor.CopyStatement copyBookNotFoundComment(CobolPreprocessor.CopyStatement copyStatement, List<CobolLine> lines) {
-        parseComment(copyBookNotFoundComment);
-        // Rather than heavily modify the COBOL grammar, we inject a CopyBook into the CopyStatement.
-        // The injected CopyBook is used to preserve the original source code.
+    private CobolPreprocessor.CopyStatement copybookNotFoundComment(CobolPreprocessor.CopyStatement copyStatement, List<CobolLine> lines) {
+        parseComment(copybookNotFoundComment);
+        // Rather than heavily modify the COBOL grammar, we inject a Copybook into the CopyStatement.
+        // The injected Copybook is used to preserve the original source code.
         return copyStatement
-                .withMarkers(copyStatement.getMarkers().addIfAbsent(new MissingCopyBook(randomId())))
-                .withCopyBook(new CobolPreprocessor.CopyBook(
+                .withMarkers(copyStatement.getMarkers().addIfAbsent(new MissingCopybook(randomId())))
+                .withCopybook(new CobolPreprocessor.Copybook(
                         randomId(),
                         EMPTY,
                         Markers.EMPTY,
