@@ -20,9 +20,9 @@ public class CopybookSource extends DataTable<CopybookSource.Row> {
 
     @Value
     public static class Row {
-        @Option(displayName = "Source",
-                description = "The source path of the source file that contains the copy statement.")
-        String source;
+        @Option(displayName = "COBOL source path",
+                description = "The source path of the COBOL source file that contains the copy statement.")
+        String cobolSourcePath;
 
         @Column(displayName = "Copybook name",
                 description = "The copybook name from a copy statement in a COBOL source.")
