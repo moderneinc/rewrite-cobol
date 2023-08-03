@@ -20,7 +20,7 @@ public class CopybookSource extends DataTable<CopybookSource.Row> {
 
     @Value
     public static class Row {
-        @Option(displayName = "Source path",
+        @Column(displayName = "Source path",
                 description = "The source path of the file that contains the copy statement.")
         String source;
 
