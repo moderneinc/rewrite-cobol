@@ -80,10 +80,15 @@ val testConf = configurations.create("test").apply {
 val testOutputFile = file("build/libs/${project.name}-${project.version}-test.jar")
 val testJar = tasks.register<Jar>("testJar") {
     from(sourceSets.test.get().output)
-    getArchiveClassifier().set("test")
+    archiveClassifier.set("test")
 }
 
 artifacts {
     add(testConf.name, testJar)
+}
+
+configure<nl.javadude.gradle.plugins.license.LicenseExtension> {
+    excludePatterns.add("**/*.cbl")
+    excludePatterns.add("**/*.CPY")
 }
 
