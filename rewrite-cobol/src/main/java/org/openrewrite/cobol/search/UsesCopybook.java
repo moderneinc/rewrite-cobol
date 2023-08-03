@@ -19,12 +19,12 @@ import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Value
-public class UsesCopyBook extends CobolIsoVisitor<ExecutionContext> {
+public class UsesCopybook extends CobolIsoVisitor<ExecutionContext> {
 
     @Nullable
     String copyBookName;
 
-    public UsesCopyBook(@Nullable String copyBookName) {
+    public UsesCopybook(@Nullable String copyBookName) {
         this.copyBookName = copyBookName;
     }
 

@@ -5,29 +5,27 @@
  */
 package org.openrewrite.cobol.tree.cobol.search;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.openrewrite.PathUtils;
 import org.openrewrite.Tree;
 import org.openrewrite.TreeVisitor;
 import org.openrewrite.cobol.CobolTest;
-import org.openrewrite.cobol.search.FindCopyBook;
-import org.openrewrite.cobol.table.CopyBookSource;
+import org.openrewrite.cobol.search.FindCopybook;
+import org.openrewrite.cobol.table.CopybookSource;
 import org.openrewrite.marker.Marker;
 import org.openrewrite.marker.SearchResult;
 import org.openrewrite.test.RecipeSpec;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openrewrite.cobol.Assertions.cobol;
 
-public class FindCopyBookTest extends CobolTest {
+public class FindCopybookTest extends CobolTest {
 
     @Override
     public void defaults(RecipeSpec spec) {
-        spec.recipe(new FindCopyBook("KP008"));
+        spec.recipe(new FindCopybook("KP008"));
     }
 
     private final TreeVisitor<Tree, List<SearchResult>> visitor = new TreeVisitor<>() {
@@ -50,12 +48,12 @@ public class FindCopyBookTest extends CobolTest {
     @Test
     void sm103A() {
         rewriteRun(
-          spec -> spec.recipe(new FindCopyBook(""))
-            .dataTable(CopyBookSource.Row.class, rows -> {
+          spec -> spec.recipe(new FindCopybook(""))
+            .dataTable(CopybookSource.Row.class, rows -> {
                 assertThat(rows).hasSize(7);
-                CopyBookSource.Row r0 = rows.get(0);
+                CopybookSource.Row r0 = rows.get(0);
                 assertThat(r0.getCopyBookName()).isEqualTo("K3SCA");
-                assertThat(r0.getResolutionStatus()).isEqualTo(CopyBookSource.ResolutionStatus.RESOLVED);
+                assertThat(r0.getResolutionStatus()).isEqualTo(CopybookSource.ResolutionStatus.RESOLVED);
                 assertThat(PathUtils.separatorsToUnix(r0.getCopyBookSourcePath())).isEqualTo("gov/nist/copybooks/K3SCA.CPY");
             }),
           cobol(
@@ -587,18 +585,18 @@ public class FindCopyBookTest extends CobolTest {
     @Test
     void sm206a() {
         rewriteRun(
-          spec -> spec.dataTable(CopyBookSource.Row.class, rows -> {
+          spec -> spec.dataTable(CopybookSource.Row.class, rows -> {
               assertThat(rows).isNotEmpty();
               assertThat(rows).hasSize(3);
-              CopyBookSource.Row r0 = rows.get(0);
+              CopybookSource.Row r0 = rows.get(0);
               assertThat(r0.getCopyBookName()).isEqualTo("KP001");
-              assertThat(r0.getResolutionStatus()).isEqualTo(CopyBookSource.ResolutionStatus.MISSING_SOURCE);
-              CopyBookSource.Row r1 = rows.get(1);
+              assertThat(r0.getResolutionStatus()).isEqualTo(CopybookSource.ResolutionStatus.MISSING_SOURCE);
+              CopybookSource.Row r1 = rows.get(1);
               assertThat(r1.getCopyBookName()).isEqualTo("KP002");
-              assertThat(r1.getResolutionStatus()).isEqualTo(CopyBookSource.ResolutionStatus.MISSING_SOURCE);
-              CopyBookSource.Row r2 = rows.get(2);
+              assertThat(r1.getResolutionStatus()).isEqualTo(CopybookSource.ResolutionStatus.MISSING_SOURCE);
+              CopybookSource.Row r2 = rows.get(2);
               assertThat(r2.getCopyBookName()).isEqualTo("KP008");
-              assertThat(r2.getResolutionStatus()).isEqualTo(CopyBookSource.ResolutionStatus.MISSING_SOURCE);
+              assertThat(r2.getResolutionStatus()).isEqualTo(CopybookSource.ResolutionStatus.MISSING_SOURCE);
           }),
           cobol(
             """

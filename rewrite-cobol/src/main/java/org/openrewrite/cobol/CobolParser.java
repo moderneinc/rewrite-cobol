@@ -72,7 +72,7 @@ public class CobolParser implements Parser {
             }
         }
 
-        CopyBookParser copyBookParser = new CopyBookParser(cobolDialect);
+        CopybookParser copyBookParser = new CopybookParser(cobolDialect);
         List<SourceFile> copyBooks = copyBookParser.parseInputs(copyBookInputs, relativeTo, ctx).collect(toList());
 
         CobolPreprocessorParser cobolPreprocessorParser = CobolPreprocessorParser.builder()

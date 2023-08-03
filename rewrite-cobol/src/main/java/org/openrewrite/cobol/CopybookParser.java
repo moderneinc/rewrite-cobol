@@ -37,12 +37,12 @@ import static org.openrewrite.Tree.randomId;
 /**
  * Read preprocessed COBOL and execute preprocessor commands.
  */
-public class CopyBookParser implements Parser {
+public class CopybookParser implements Parser {
     public static final List<String> COPYBOOK_FILE_EXTENSIONS = Collections.singletonList(".cpy");
 
     private final CobolDialect cobolDialect;
 
-    public CopyBookParser(CobolDialect cobolDialect) {
+    public CopybookParser(CobolDialect cobolDialect) {
         this.cobolDialect = cobolDialect;
     }
 
@@ -135,8 +135,8 @@ public class CopyBookParser implements Parser {
         return prefix.resolve("file.CPY");
     }
 
-    public static CopyBookParser.Builder builder() {
-        return new CopyBookParser.Builder();
+    public static CopybookParser.Builder builder() {
+        return new CopybookParser.Builder();
     }
 
     public static class Builder extends Parser.Builder {
@@ -148,8 +148,8 @@ public class CopyBookParser implements Parser {
         }
 
         @Override
-        public CopyBookParser build() {
-            return new CopyBookParser(cobolDialect);
+        public CopybookParser build() {
+            return new CopybookParser(cobolDialect);
         }
 
         public Builder setCobolDialect(CobolDialect cobolDialect) {

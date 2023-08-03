@@ -27,7 +27,7 @@ public class CopyBookAssertions {
 
     public static SourceSpecs copyBook(@Nullable String before, Consumer<SourceSpec<CobolPreprocessor.CopyBook>> spec) {
         SourceSpec<CobolPreprocessor.CopyBook> copyBook = new SourceSpec<>(CobolPreprocessor.CopyBook.class, null,
-                CopyBookParser.builder(),
+                CopybookParser.builder(),
                 before,
                 SourceSpec.EachResult.noop,
                 CopyBookAssertions::customizeExecutionContext);
@@ -43,7 +43,7 @@ public class CopyBookAssertions {
     public static SourceSpecs copyBook(@Nullable String before, @Nullable String after,
                                                     Consumer<SourceSpec<CobolPreprocessor.CopyBook>> spec) {
         SourceSpec<CobolPreprocessor.CopyBook> copyBook = new SourceSpec<>(CobolPreprocessor.CopyBook.class, null,
-                CopyBookParser.builder(),
+                CopybookParser.builder(),
                 before,
                 SourceSpec.EachResult.noop,
                 CopyBookAssertions::customizeExecutionContext).after(s -> after);

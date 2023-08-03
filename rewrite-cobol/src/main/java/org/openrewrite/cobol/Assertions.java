@@ -290,7 +290,7 @@ public class Assertions {
                         }
                     }))
                     .collect(Collectors.toList());
-            return CopyBookParser.builder().build()
+            return CopybookParser.builder().build()
                     .parseInputs(copyInputs, null, new InMemoryExecutionContext())
                     .collect(Collectors.toList());
         }

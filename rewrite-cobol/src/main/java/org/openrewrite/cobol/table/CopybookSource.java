@@ -11,9 +11,9 @@ import org.openrewrite.DataTable;
 import org.openrewrite.Option;
 import org.openrewrite.Recipe;
 
-public class CopyBookSource extends DataTable<CopyBookSource.Row> {
+public class CopybookSource extends DataTable<CopybookSource.Row> {
 
-    public CopyBookSource(Recipe recipe) {
+    public CopybookSource(Recipe recipe) {
         super(recipe, "CopyBook source information",
                 "Information about copybook references in a COBOL source.");
     }

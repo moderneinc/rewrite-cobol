@@ -10,7 +10,7 @@ import lombok.Value;
 import org.openrewrite.*;
 import org.openrewrite.cobol.CobolIsoVisitor;
 import org.openrewrite.cobol.markers.MissingCopyBook;
-import org.openrewrite.cobol.table.CopyBookSource;
+import org.openrewrite.cobol.table.CopybookSource;
 import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
 import org.openrewrite.internal.ListUtils;
@@ -19,15 +19,15 @@ import org.openrewrite.marker.SearchResult;
 
 @EqualsAndHashCode(callSuper = true)
 @Value
-public class FindCopyBook extends Recipe {
-    transient CopyBookSource copyBookSource = new CopyBookSource(this);
+public class FindCopybook extends Recipe {
+    transient CopybookSource copybookSource = new CopybookSource(this);
 
     @Option(displayName = "Copybook name",
             description = "The copybook name to search for. If not provided, all copy statements will be returned.",
             example = "KP008",
             required = false)
     @Nullable
-    String copyBookName;
+    String copybookName;
 
     @Override
     public String getDisplayName() {
@@ -41,7 +41,7 @@ public class FindCopyBook extends Recipe {
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {
-        return Preconditions.check(new UsesCopyBook(copyBookName), new CobolIsoVisitor<ExecutionContext>() {
+        return Preconditions.check(new UsesCopybook(copybookName), new CobolIsoVisitor<ExecutionContext>() {
 
             @Override
             public Cobol.Word visitWord(Cobol.Word word, ExecutionContext executionContext) {
@@ -51,28 +51,28 @@ public class FindCopyBook extends Recipe {
                         CobolPreprocessor.CopyStatement copyStatement = (CobolPreprocessor.CopyStatement) ps;
                         if (copyStatement.getMarkers().findFirst(MissingCopyBook.class).isPresent()) {
                             //noinspection DataFlowIssue
-                            copyBookSource.insertRow(executionContext,
-                                    new CopyBookSource.Row(
+                            copybookSource.insertRow(executionContext,
+                                    new CopybookSource.Row(
                                             getCursor().firstEnclosing(Cobol.CompilationUnit.class).getSourcePath().toString(),
                                             copyStatement.getCopySource().getName().getCobolWord().getWord(),
                                             "",
-                                            CopyBookSource.ResolutionStatus.MISSING_SOURCE,
+                                            CopybookSource.ResolutionStatus.MISSING_SOURCE,
                                             ""));
                             return copyStatement.withCopySource(
                                     copyStatement.getCopySource().withName(
                                             SearchResult.found(copyStatement.getCopySource().getName())));
                         } else {
-                            if (copyBookName == null || copyBookName.isEmpty() || copyBookName.equals(copyStatement.getCopySource().getName().getCobolWord().getWord())) {
+                            if (copybookName == null || copybookName.isEmpty() || copybookName.equals(copyStatement.getCopySource().getName().getCobolWord().getWord())) {
                                 CobolPreprocessor.CopyStatement updated = copyStatement.withCopySource(copyStatement.getCopySource().withName(
                                         SearchResult.found(copyStatement.getCopySource().getName(), null)));
                                 boolean copySourceResolved = copyStatement.getCopyBook() != null;
                                 //noinspection DataFlowIssue
-                                copyBookSource.insertRow(executionContext,
-                                        new CopyBookSource.Row(
+                                copybookSource.insertRow(executionContext,
+                                        new CopybookSource.Row(
                                                 getCursor().firstEnclosing(Cobol.CompilationUnit.class).getSourcePath().toString(),
                                                 copyStatement.getCopySource().getName().getCobolWord().getWord(),
                                                 copySourceResolved ? copyStatement.getCopyBook().getSourcePath().toString() : "",
-                                                copySourceResolved ? CopyBookSource.ResolutionStatus.RESOLVED : CopyBookSource.ResolutionStatus.NO_SOURCE_PATH,
+                                                copySourceResolved ? CopybookSource.ResolutionStatus.RESOLVED : CopybookSource.ResolutionStatus.NO_SOURCE_PATH,
                                                 word.getWord()));
                                 return updated;
                             }
