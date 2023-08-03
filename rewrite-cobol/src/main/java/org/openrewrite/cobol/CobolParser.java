@@ -91,7 +91,7 @@ public class CobolParser implements Parser {
                     Timer.Sample sample = Timer.start();
                     try {
                         EncodingDetectingInputStream is = sourceFile.getSource(ctx);
-
+                        cobolPreprocessorParser.reset();
                         CobolPreprocessor.CompilationUnit preprocessedCU = (CobolPreprocessor.CompilationUnit) cobolPreprocessorParser.parseInputs(singletonList(sourceFile), relativeTo, ctx).findFirst().orElse(null);
 
                         // Print processed code to parse COBOL.
