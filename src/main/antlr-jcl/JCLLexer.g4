@@ -141,6 +141,7 @@ PARAMETER
 
 PARAMETER_LITERAL
     : SINGLEQUOTE .*? SINGLEQUOTE
+    | SINGLEQUOTEFANCY .*? SINGLEQUOTEFANCY
     ;
 
 // parameter names
@@ -318,6 +319,7 @@ PLUS : '+';
 MINUS : '-';
 
 SINGLEQUOTE : '\'';
+SINGLEQUOTEFANCY : '’';
 DOUBLEQUOTE : '"';
 
 // names
