@@ -50,7 +50,6 @@ public class FindCopybook extends Recipe {
                     if (ps instanceof CobolPreprocessor.CopyStatement) {
                         CobolPreprocessor.CopyStatement copyStatement = (CobolPreprocessor.CopyStatement) ps;
                         if (copyStatement.getMarkers().findFirst(MissingCopybook.class).isPresent()) {
-                            //noinspection DataFlowIssue
                             copybookSource.insertRow(executionContext,
                                     new CopybookSource.Row(
                                             getCursor().firstEnclosingOrThrow(Cobol.CompilationUnit.class).getSourcePath().toString(),
@@ -66,7 +65,6 @@ public class FindCopybook extends Recipe {
                                 CobolPreprocessor.CopyStatement updated = copyStatement.withCopySource(copyStatement.getCopySource().withName(
                                         SearchResult.found(copyStatement.getCopySource().getName(), null)));
                                 boolean copySourceResolved = copyStatement.getCopybook() != null;
-                                //noinspection DataFlowIssue
                                 copybookSource.insertRow(executionContext,
                                         new CopybookSource.Row(
                                                 getCursor().firstEnclosingOrThrow(Cobol.CompilationUnit.class).getSourcePath().toString(),
