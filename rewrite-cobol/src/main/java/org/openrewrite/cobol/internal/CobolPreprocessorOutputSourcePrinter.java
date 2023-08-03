@@ -240,7 +240,7 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
 
         // Print copied source.
         if (copyStatement.getCopyBook() == null) {
-            // Assume the copy statement is not found, and the copy book is not sub grammatical.
+            // Assume the copy statement is not found, and the copybook is not sub grammatical.
             p.append(getCopyBookNotFound());
         } else {
             visit(copyStatement.getCopyBook(), p);

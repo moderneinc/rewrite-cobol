@@ -22,8 +22,8 @@ import org.openrewrite.marker.SearchResult;
 public class FindCopyBook extends Recipe {
     transient CopyBookSource copyBookSource = new CopyBookSource(this);
 
-    @Option(displayName = "Copy book name",
-            description = "The copy book name to search for. If not provided, all copy statements will be returned.",
+    @Option(displayName = "Copybook name",
+            description = "The copybook name to search for. If not provided, all copy statements will be returned.",
             example = "KP008",
             required = false)
     @Nullable
@@ -31,7 +31,7 @@ public class FindCopyBook extends Recipe {
 
     @Override
     public String getDisplayName() {
-        return "Find copy book usage";
+        return "Find copybook usage";
     }
 
     @Override

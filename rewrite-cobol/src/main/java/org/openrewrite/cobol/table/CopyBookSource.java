@@ -15,7 +15,7 @@ public class CopyBookSource extends DataTable<CopyBookSource.Row> {
 
     public CopyBookSource(Recipe recipe) {
         super(recipe, "CopyBook source information",
-                "Information about copy book references in a COBOL source.");
+                "Information about copybook references in a COBOL source.");
     }
     public enum ResolutionStatus {
         MISSING_SOURCE,
@@ -28,16 +28,16 @@ public class CopyBookSource extends DataTable<CopyBookSource.Row> {
                 description = "The source path of the COBOL source file that contains the copy statement.")
         String sourcePath;
 
-        @Column(displayName = "Copy book name",
-                description = "The copy book name from a copy statement in a COBOL source.")
+        @Column(displayName = "copybook name",
+                description = "The copybook name from a copy statement in a COBOL source.")
         String copyBookName;
 
-        @Column(displayName = "Copy book Source path",
-                description = "The source path of the copy book that was resolved during resolution of copy books.")
+        @Column(displayName = "copybook Source path",
+                description = "The source path of the copybook that was resolved during resolution of copybooks.")
         String copyBookSourcePath;
 
         @Column(displayName = "Resolution status",
-                description = "The status of the resolved copy book in a copy statement.")
+                description = "The status of the resolved copybook in a copy statement.")
         ResolutionStatus resolutionStatus;
 
         @Column(displayName = "Marked word",
