@@ -103,3 +103,8 @@ configure<nl.javadude.gradle.plugins.license.LicenseExtension> {
     excludePatterns.add("**/*.cbl")
     excludePatterns.add("**/*.CPY")
 }
+
+tasks.named("extractRecipeExamples").configure {
+    enabled = false
+}
+
