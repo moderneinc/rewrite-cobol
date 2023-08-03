@@ -24,8 +24,8 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Function;
 
-import static java.util.Collections.*;
-import static java.util.stream.Collectors.toList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.openrewrite.Tree.randomId;
 import static org.openrewrite.cobol.internal.CobolGrammarToken.COMMENT_ENTRY;
 import static org.openrewrite.cobol.internal.CobolGrammarToken.END_OF_FILE;
@@ -6008,11 +6008,14 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
 
     @SafeVarargs
     private final <C extends Cobol> List<C> convertAll(List<? extends ParserRuleContext>... trees) {
-        return convertAll(Arrays.stream(trees)
-                .filter(Objects::nonNull)
-                .flatMap(Collection::stream)
-                .sorted(Comparator.comparingInt(it -> it.start.getStartIndex()))
-                .collect(toList()));
+        List<ParserRuleContext> rules = new ArrayList<>();
+        for (List<? extends ParserRuleContext> tree : trees) {
+            if (tree != null) {
+                rules.addAll(tree);
+            }
+        }
+        rules.sort(Comparator.comparingInt(it -> it.start.getStartIndex()));
+        return convertAll(rules);
     }
 
     private <C extends Cobol, T extends ParseTree> List<C> convertAll(List<T> trees) {
@@ -6022,13 +6025,22 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
 
     @SafeVarargs
     private final List<Cobol> convertAllList(List<? extends ParseTree>... trees) {
-        return Arrays.stream(trees)
-                .flatMap(Collection::stream)
-                .filter(Objects::nonNull)
-                .sorted(Comparator.comparingInt(it -> it instanceof TerminalNode ? ((TerminalNode) it).getSymbol().getStartIndex() :
-                        ((ParserRuleContext) it).getStart().getStartIndex()))
-                .map(it -> (Cobol) visit(it))
-                .collect(toList());
+        List<ParseTree> parseTrees = new ArrayList<>();
+        for (List<? extends ParseTree> tree : trees) {
+            for (ParseTree it : tree) {
+                if (it != null) {
+                    parseTrees.add(it);
+                }
+            }
+        }
+        parseTrees.sort(Comparator.comparingInt(it -> it instanceof TerminalNode ? ((TerminalNode) it).getSymbol().getStartIndex() :
+                ((ParserRuleContext) it).getStart().getStartIndex()));
+
+        List<Cobol> parsed = new ArrayList<>();
+        for (ParseTree pt : parseTrees) {
+            parsed.add((Cobol) visit(pt));
+        }
+        return parsed;
     }
 
     /**
@@ -6043,10 +6055,13 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         sequenceArea();
         indicatorArea();
 
-        Integer nextIndicator = indicatorAreas.keySet().stream()
-                .filter(it -> it > cursor)
-                .findFirst()
-                .orElse(null);
+        Integer nextIndicator = null;
+        for (Integer it : indicatorAreas.keySet()) {
+            if (it > cursor) {
+                nextIndicator = it;
+                break;
+            }
+        }
         boolean isContinued = nextIndicator != null && indicatorAreas.get(nextIndicator).equals("-");
         cursor = saveCursor;
 
@@ -6260,10 +6275,13 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         boolean isContinued = false;
         if (checkContinuation) {
             // CommentAreas are optional text that will precede the end of line.
-            Integer nextCommentArea = commentAreas.keySet().stream()
-                    .filter(it -> it > cursor)
-                    .findFirst()
-                    .orElse(null);
+            Integer nextCommentArea = null;
+            for (Integer it : commentAreas.keySet()) {
+                if (it > cursor) {
+                    nextCommentArea = it;
+                    break;
+                }
+            }
 
             String current = source.substring(cursor);
             int newLinePos = current.indexOf("\n");
