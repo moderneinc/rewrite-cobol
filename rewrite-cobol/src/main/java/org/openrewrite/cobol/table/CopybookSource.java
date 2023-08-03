@@ -14,27 +14,23 @@ import org.openrewrite.Recipe;
 public class CopybookSource extends DataTable<CopybookSource.Row> {
 
     public CopybookSource(Recipe recipe) {
-        super(recipe, "CopyBook source information",
+        super(recipe, "Copybook source information",
                 "Information about copybook references in a COBOL source.");
     }
-    public enum ResolutionStatus {
-        MISSING_SOURCE,
-        NO_SOURCE_PATH,
-        RESOLVED
-    }
+
     @Value
     public static class Row {
         @Option(displayName = "Source path",
                 description = "The source path of the COBOL source file that contains the copy statement.")
         String sourcePath;
 
-        @Column(displayName = "copybook name",
+        @Column(displayName = "Copybook name",
                 description = "The copybook name from a copy statement in a COBOL source.")
-        String copyBookName;
+        String copybookName;
 
-        @Column(displayName = "copybook Source path",
+        @Column(displayName = "Copybook source path",
                 description = "The source path of the copybook that was resolved during resolution of copybooks.")
-        String copyBookSourcePath;
+        String copybookSourcePath;
 
         @Column(displayName = "Resolution status",
                 description = "The status of the resolved copybook in a copy statement.")
@@ -43,7 +39,11 @@ public class CopybookSource extends DataTable<CopybookSource.Row> {
         @Column(displayName = "Marked word",
                 description = "The current word being visited from the post-processed LST.")
         String markedWord;
+    }
 
-
+    public enum ResolutionStatus {
+        MISSING_SOURCE,
+        NO_SOURCE_PATH,
+        RESOLVED
     }
 }

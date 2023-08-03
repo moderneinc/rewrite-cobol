@@ -80,7 +80,7 @@ public class CobolParser implements Parser {
                 .setEnableCopy(enableCopy)
                 .setEnableReplace(enableReplace)
                 .build();
-        cobolPreprocessorParser.setCopyBooks(!this.copyBooks.isEmpty() ? this.copyBooks : copyBooks);
+        cobolPreprocessorParser.setCopybooks(!this.copyBooks.isEmpty() ? this.copyBooks : copyBooks);
 
         Stream<SourceFile> sources;
         sources = cobolInputs.stream()

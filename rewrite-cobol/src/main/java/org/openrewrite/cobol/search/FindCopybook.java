@@ -53,7 +53,7 @@ public class FindCopybook extends Recipe {
                             //noinspection DataFlowIssue
                             copybookSource.insertRow(executionContext,
                                     new CopybookSource.Row(
-                                            getCursor().firstEnclosing(Cobol.CompilationUnit.class).getSourcePath().toString(),
+                                            getCursor().firstEnclosingOrThrow(Cobol.CompilationUnit.class).getSourcePath().toString(),
                                             copyStatement.getCopySource().getName().getCobolWord().getWord(),
                                             "",
                                             CopybookSource.ResolutionStatus.MISSING_SOURCE,
@@ -69,7 +69,7 @@ public class FindCopybook extends Recipe {
                                 //noinspection DataFlowIssue
                                 copybookSource.insertRow(executionContext,
                                         new CopybookSource.Row(
-                                                getCursor().firstEnclosing(Cobol.CompilationUnit.class).getSourcePath().toString(),
+                                                getCursor().firstEnclosingOrThrow(Cobol.CompilationUnit.class).getSourcePath().toString(),
                                                 copyStatement.getCopySource().getName().getCobolWord().getWord(),
                                                 copySourceResolved ? copyStatement.getCopyBook().getSourcePath().toString() : "",
                                                 copySourceResolved ? CopybookSource.ResolutionStatus.RESOLVED : CopybookSource.ResolutionStatus.NO_SOURCE_PATH,

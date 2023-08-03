@@ -39,7 +39,7 @@ public class CobolPreprocessorParser implements Parser {
     private final boolean enableCopy;
     private final boolean enableReplace;
 
-    private List<SourceFile> copyBooks;
+    private List<SourceFile> copybooks;
 
     // Lazily loaded sets of the original source objects.
     private Set<CobolPreprocessor.CopyStatement> copyStatements = null;
@@ -55,11 +55,11 @@ public class CobolPreprocessorParser implements Parser {
     private Set<CobolPreprocessor.TitleStatement> titleStatements = null;
 
     public CobolPreprocessorParser(CobolDialect cobolDialect,
-                                   List<SourceFile> copyBooks,
+                                   List<SourceFile> copybooks,
                                    boolean enableCopy,
                                    boolean enableReplace) {
         this.cobolDialect = cobolDialect;
-        this.copyBooks = copyBooks;
+        this.copybooks = copybooks;
         this.enableCopy = enableCopy;
         this.enableReplace = enableReplace;
     }
@@ -97,7 +97,7 @@ public class CobolPreprocessorParser implements Parser {
                         CobolPreprocessor.CompilationUnit preprocessedCU = parserVisitor.visitCompilationUnit(parser.compilationUnit());
 
                         if (enableCopy) {
-                            PreprocessCopyVisitor<ExecutionContext> copyPhase = new PreprocessCopyVisitor<>(copyBooks);
+                            PreprocessCopyVisitor<ExecutionContext> copyPhase = new PreprocessCopyVisitor<>(copybooks);
 
                             // CU after copy includes the copied source.
                             preprocessedCU = (CobolPreprocessor.CompilationUnit) copyPhase.visit(preprocessedCU, new InMemoryExecutionContext());
@@ -123,8 +123,8 @@ public class CobolPreprocessorParser implements Parser {
                 });
     }
 
-    public void setCopyBooks(List<SourceFile> copyBooks) {
-        this.copyBooks = copyBooks;
+    public void setCopybooks(List<SourceFile> copybooks) {
+        this.copybooks = copybooks;
     }
 
     @Override

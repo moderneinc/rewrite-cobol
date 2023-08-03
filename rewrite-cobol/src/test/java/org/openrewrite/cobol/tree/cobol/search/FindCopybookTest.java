@@ -52,9 +52,9 @@ public class FindCopybookTest extends CobolTest {
             .dataTable(CopybookSource.Row.class, rows -> {
                 assertThat(rows).hasSize(7);
                 CopybookSource.Row r0 = rows.get(0);
-                assertThat(r0.getCopyBookName()).isEqualTo("K3SCA");
+                assertThat(r0.getCopybookName()).isEqualTo("K3SCA");
                 assertThat(r0.getResolutionStatus()).isEqualTo(CopybookSource.ResolutionStatus.RESOLVED);
-                assertThat(PathUtils.separatorsToUnix(r0.getCopyBookSourcePath())).isEqualTo("gov/nist/copybooks/K3SCA.CPY");
+                assertThat(PathUtils.separatorsToUnix(r0.getCopybookSourcePath())).isEqualTo("gov/nist/copybooks/K3SCA.CPY");
             }),
           cobol(
             """
@@ -589,13 +589,13 @@ public class FindCopybookTest extends CobolTest {
               assertThat(rows).isNotEmpty();
               assertThat(rows).hasSize(3);
               CopybookSource.Row r0 = rows.get(0);
-              assertThat(r0.getCopyBookName()).isEqualTo("KP001");
+              assertThat(r0.getCopybookName()).isEqualTo("KP001");
               assertThat(r0.getResolutionStatus()).isEqualTo(CopybookSource.ResolutionStatus.MISSING_SOURCE);
               CopybookSource.Row r1 = rows.get(1);
-              assertThat(r1.getCopyBookName()).isEqualTo("KP002");
+              assertThat(r1.getCopybookName()).isEqualTo("KP002");
               assertThat(r1.getResolutionStatus()).isEqualTo(CopybookSource.ResolutionStatus.MISSING_SOURCE);
               CopybookSource.Row r2 = rows.get(2);
-              assertThat(r2.getCopyBookName()).isEqualTo("KP008");
+              assertThat(r2.getCopybookName()).isEqualTo("KP008");
               assertThat(r2.getResolutionStatus()).isEqualTo(CopybookSource.ResolutionStatus.MISSING_SOURCE);
           }),
           cobol(
