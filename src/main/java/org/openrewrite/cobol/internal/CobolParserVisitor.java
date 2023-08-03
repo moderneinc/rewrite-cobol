@@ -6048,7 +6048,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
      * Markers consist of COBOL areas that are removed during preprocessing.
      */
     private Space processTokenText(String text, List<Object> objects) {
-
         parseCommentsAndEmptyLines(text, objects);
 
         int saveCursor = cursor;
