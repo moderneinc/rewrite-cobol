@@ -5,11 +5,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = "rewrite-cobol-organizer"
-
-include("rewrite-cobol")
-include("rewrite-jcl")
-include("cobol-analysis")
+rootProject.name = "rewrite-cobol"
 
 plugins {
     id("com.gradle.enterprise") version "3.13.3"
