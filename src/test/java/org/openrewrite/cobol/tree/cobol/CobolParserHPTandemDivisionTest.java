@@ -19,7 +19,7 @@ class CobolParserHPTandemDivisionTest extends CobolTest {
 
     @Override
     public void defaults(RecipeSpec spec) {
-        spec.parser(CobolParser.builder().setEnableCopy(false).setEnableReplace(false).setCobolDialect(CobolDialect.hpTandem()));
+        spec.parser(CobolParser.builder().setCobolDialect(CobolDialect.hpTandem()));
     }
 
     @Test
@@ -221,15 +221,15 @@ class CobolParserHPTandemDivisionTest extends CobolTest {
         rewriteRun(
           cobol(
             """
-              * Comment
-               IDENTIFICATION DIVISION.
-               PROGRAM-ID. MOVETEST.
-               DATA DIVISION.
-               PROCEDURE DIVISION USING GRP-01.
-               PARA-MOVETEST.
-                   MOVE "MOVETEST" TO DN1.
-                   MOVE SPACE TO WS1.
-            """
+                * Comment
+                 IDENTIFICATION DIVISION.
+                 PROGRAM-ID. MOVETEST.
+                 DATA DIVISION.
+                 PROCEDURE DIVISION USING GRP-01.
+                 PARA-MOVETEST.
+                     MOVE "MOVETEST" TO DN1.
+                     MOVE SPACE TO WS1.
+              """
           )
         );
     }
@@ -257,12 +257,12 @@ class CobolParserHPTandemDivisionTest extends CobolTest {
         rewriteRun(
           cobol(
             """
-              * Comment
-               IDENTIFICATION DIVISION.
-               PROGRAM-ID. MULTIPLYTEST.
-               PROCEDURE DIVISION.
-               MULTIPLY -1.3 BY MULT4 ROUNDED.
-            """
+                * Comment
+                 IDENTIFICATION DIVISION.
+                 PROGRAM-ID. MULTIPLYTEST.
+                 PROCEDURE DIVISION.
+                 MULTIPLY -1.3 BY MULT4 ROUNDED.
+              """
           )
         );
     }
@@ -289,12 +289,12 @@ class CobolParserHPTandemDivisionTest extends CobolTest {
         rewriteRun(
           cobol(
             """
-            * Comment
-             IDENTIFICATION DIVISION.
-             PROGRAM-ID. PARSERTEST.
-             PROCEDURE DIVISION.
-             PERFORM ST301M-MERGE THRU ST301M-SORT 1 TIMES.
-            """
+              * Comment
+               IDENTIFICATION DIVISION.
+               PROGRAM-ID. PARSERTEST.
+               PROCEDURE DIVISION.
+               PERFORM ST301M-MERGE THRU ST301M-SORT 1 TIMES.
+              """
           )
         );
     }
@@ -319,13 +319,13 @@ class CobolParserHPTandemDivisionTest extends CobolTest {
         rewriteRun(
           cobol(
             """
-              * Comment
-               IDENTIFICATION DIVISION.
-               PROGRAM-ID. MERGETEST.
-               PROCEDURE DIVISION.
-               RECEIVE CM-INQUE-1 MESSAGE INTO MSG-72
-                   NO DATA.
-            """
+                * Comment
+                 IDENTIFICATION DIVISION.
+                 PROGRAM-ID. MERGETEST.
+                 PROCEDURE DIVISION.
+                 RECEIVE CM-INQUE-1 MESSAGE INTO MSG-72
+                     NO DATA.
+              """
           )
         );
     }
@@ -488,16 +488,16 @@ class CobolParserHPTandemDivisionTest extends CobolTest {
         rewriteRun(
           cobol(
             """
-              * Comment
-               IDENTIFICATION DIVISION.
-               PROGRAM-ID. acceptStatement.
-               PROCEDURE DIVISION.
-               PARAGRAPH_NAME.
-               ACCEPT identifier FROM DATE YYYYMMDD END-ACCEPT
-               ACCEPT identifier FROM ESCAPE KEY
-               ACCEPT identifier FROM mnemonicName
-               ACCEPT identifier MESSAGE COUNT.
-            """
+                * Comment
+                 IDENTIFICATION DIVISION.
+                 PROGRAM-ID. acceptStatement.
+                 PROCEDURE DIVISION.
+                 PARAGRAPH_NAME.
+                 ACCEPT identifier FROM DATE YYYYMMDD END-ACCEPT
+                 ACCEPT identifier FROM ESCAPE KEY
+                 ACCEPT identifier FROM mnemonicName
+                 ACCEPT identifier MESSAGE COUNT.
+              """
           )
         );
     }
@@ -1049,14 +1049,14 @@ class CobolParserHPTandemDivisionTest extends CobolTest {
         rewriteRun(
           cobol(
             """
-              * Comment
-               IDENTIFICATION DIVISION.
-               PROGRAM-ID. subtractStatement.
-               PROCEDURE DIVISION.
-               INI-TEST-GF-1-0.
-                   INITIALIZE IDENTIFIER IN IDENTIFIER REPLACING NATIONAL DATA BY 42.
-               .
-            """
+                * Comment
+                 IDENTIFICATION DIVISION.
+                 PROGRAM-ID. subtractStatement.
+                 PROCEDURE DIVISION.
+                 INI-TEST-GF-1-0.
+                     INITIALIZE IDENTIFIER IN IDENTIFIER REPLACING NATIONAL DATA BY 42.
+                 .
+              """
           )
         );
     }

@@ -33,32 +33,15 @@ public class Assertions {
     }
 
     public static SourceSpecs preprocessor(@Nullable String before) {
-        return preprocessor(before, false);
-    }
-
-    public static SourceSpecs preprocessor(@Nullable String before, boolean enableCopyAndReplace) {
-        return preprocessor(before, s -> {}, enableCopyAndReplace);
+        return preprocessor(before, s -> {
+        });
     }
 
     public static SourceSpecs preprocessor(@Nullable String before, Consumer<SourceSpec<CobolPreprocessor.CompilationUnit>> spec) {
-        return preprocessor(before, spec, false);
-    }
-
-    public static SourceSpecs preprocessor(@Nullable String before, Consumer<SourceSpec<CobolPreprocessor.CompilationUnit>> spec, boolean enableCopyAndReplace) {
-        CobolPreprocessorParser.Builder builder;
-        if (enableCopyAndReplace) {
-            List<SourceFile> copybooks = getCopybookSources();
-            builder = CobolPreprocessorParser.builder()
-                    .setCopybooks(copybooks);
-        } else {
-            builder = CobolPreprocessorParser.builder()
-                    .setEnableCopy(false)
-                    .setEnableReplace(false);
-        }
-
+        List<SourceFile> copybooks = getCopybookSources();
         SourceSpec<CobolPreprocessor.CompilationUnit> cobol = new SourceSpec<>(
                 CobolPreprocessor.CompilationUnit.class, null,
-                builder,
+                CobolPreprocessorParser.builder().setCopybooks(copybooks),
                 before,
                 SourceSpec.EachResult.noop,
                 Assertions::customizeExecutionContext);
@@ -67,11 +50,8 @@ public class Assertions {
     }
 
     public static SourceSpecs preprocessor(@Nullable String before, @Nullable String after) {
-        return preprocessor(before, after, false);
-    }
-
-    public static SourceSpecs preprocessor(@Nullable String before, @Nullable String after, boolean enableCopyAndReplace) {
-        return preprocessor(before, after, s -> {}, enableCopyAndReplace);
+        return preprocessor(before, after, s -> {
+        });
     }
 
     public static SourceSpecs preprocessor(@Nullable String before, @Nullable String after,
@@ -121,33 +101,15 @@ public class Assertions {
     }
 
     public static SourceSpecs cobol(@Nullable String before) {
-        return cobol(before, false);
-    }
-
-    public static SourceSpecs cobol(@Nullable String before, boolean enableCopyAndReplace) {
         return cobol(before, s -> {
-        }, enableCopyAndReplace);
+        });
     }
 
     public static SourceSpecs cobol(@Nullable String before, Consumer<SourceSpec<Cobol.CompilationUnit>> spec) {
-        return cobol(before, spec, false);
-    }
-
-    public static SourceSpecs cobol(@Nullable String before, Consumer<SourceSpec<Cobol.CompilationUnit>> spec, boolean enableCopyAndReplace) {
-        CobolParser.Builder builder;
-        if (enableCopyAndReplace) {
-            List<SourceFile> copybooks = getCopybookSources();
-            builder = CobolParser.builder()
-                    .setCopybooks(copybooks);
-        } else {
-            builder = CobolParser.builder()
-                    .setEnableCopy(false)
-                    .setEnableReplace(false);
-        }
-
+        List<SourceFile> copybooks = getCopybookSources();
         SourceSpec<Cobol.CompilationUnit> cobol = new SourceSpec<>(
                 Cobol.CompilationUnit.class, null,
-                builder,
+                CobolParser.builder().setCopybooks(copybooks),
                 before,
                 SourceSpec.EachResult.noop,
                 Assertions::customizeExecutionContext);
@@ -156,41 +118,17 @@ public class Assertions {
     }
 
     public static SourceSpecs cobol(@Nullable String before, @Nullable String after) {
-        return cobol(before, after, false);
-    }
-
-    public static SourceSpecs cobol(@Nullable String before, @Nullable String after, boolean enableCopyAndReplace) {
-        return cobol(before, after, s -> {
-        }, enableCopyAndReplace);
+        return cobol(before, after, spec -> {
+        });
     }
 
     public static SourceSpecs cobol(@Nullable String before, @Nullable String after,
                                     Consumer<SourceSpec<Cobol.CompilationUnit>> spec) {
-        return cobol(before, after, spec, false);
-    }
-
-    /*
-     * @deprecated use {@link #cobol(String, String, Consumer)} instead.
-     */
-    @Deprecated
-    public static SourceSpecs cobol(@Nullable String before, @Nullable String after,
-                                    Consumer<SourceSpec<Cobol.CompilationUnit>> spec,
-                                    boolean enableCopyAndReplace) {
-        CobolParser.Builder builder;
-        if (enableCopyAndReplace) {
-            List<SourceFile> copybooks = getCopybookSources();
-            builder = CobolParser.builder()
-                    .setCopybooks(copybooks);
-        } else {
-            builder = CobolParser.builder()
-                    .setEnableCopy(false)
-                    .setEnableReplace(false);
-        }
-
+        List<SourceFile> copybooks = getCopybookSources();
         SourceSpec<Cobol.CompilationUnit> cobol =
                 new SourceSpec<>(Cobol.CompilationUnit.class,
                         null,
-                        builder,
+                        CobolParser.builder().setCopybooks(copybooks),
                         before,
                         SourceSpec.EachResult.noop,
                         Assertions::customizeExecutionContext).after(s -> after);
@@ -199,39 +137,20 @@ public class Assertions {
     }
 
     public static SourceSpecs cobolPostProcess(@Nullable String before) {
-        return cobolPostProcess(before, null, false);
+        return cobolPostProcess(before, null);
     }
 
     public static SourceSpecs cobolPostProcess(@Nullable String before, @Nullable String after) {
-        return cobolPostProcess(before, after, false);
-    }
-
-    public static SourceSpecs cobolPostProcess(@Nullable String before, @Nullable String after, boolean enableCopyAndReplace) {
         return cobolPostProcess(before, after, s -> {
-        }, enableCopyAndReplace);
+        });
     }
 
     public static SourceSpecs cobolPostProcess(@Nullable String before, @Nullable String after,
-                                    Consumer<SourceSpec<Cobol.CompilationUnit>> spec) {
-        return cobolPostProcess(before, after, spec, false);
-    }
-
-    public static SourceSpecs cobolPostProcess(@Nullable String before, @Nullable String after,
-                                    Consumer<SourceSpec<Cobol.CompilationUnit>> spec, boolean enableCopyAndReplace) {
-        CobolParser.Builder builder;
-        if (enableCopyAndReplace) {
-            List<SourceFile> copybooks = getCopybookSources();
-            builder = CobolParser.builder()
-                    .setCopybooks(copybooks);
-        } else {
-            builder = CobolParser.builder()
-                    .setEnableCopy(false)
-                    .setEnableReplace(false);
-        }
-
+                                               Consumer<SourceSpec<Cobol.CompilationUnit>> spec) {
+        List<SourceFile> copybooks = getCopybookSources();
         SourceSpec<Cobol.CompilationUnit> cobol = new SourceSpec<>(
                 Cobol.CompilationUnit.class, null,
-                builder,
+                CobolParser.builder().setCopybooks(copybooks),
                 before,
                 SourceSpec.EachResult.noop,
                 Assertions::customizeExecutionContext);
@@ -285,7 +204,7 @@ public class Assertions {
     }
 
     private static List<SourceFile> getCopybookSources() {
-        try(ScanResult scan = new ClassGraph().scan()) {
+        try (ScanResult scan = new ClassGraph().scan()) {
             List<Parser.Input> copyInputs = scan.getResourcesWithExtension("cpy").stream()
                     .map(res -> new Parser.Input(Paths.get(res.getPath()), () -> {
                         try {

@@ -42,15 +42,14 @@ public class FindCopybook extends Recipe {
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {
         return Preconditions.check(new UsesCopybook(copybookName), new CobolIsoVisitor<ExecutionContext>() {
-
             @Override
-            public Cobol.Word visitWord(Cobol.Word word, ExecutionContext executionContext) {
-                Cobol.Word w = super.visitWord(word, executionContext);
+            public Cobol.Word visitWord(Cobol.Word word, ExecutionContext ctx) {
+                Cobol.Word w = super.visitWord(word, ctx);
                 w = w.withPreprocessorStatements(ListUtils.map(w.getPreprocessorStatements(), ps -> {
                     if (ps instanceof CobolPreprocessor.CopyStatement) {
                         CobolPreprocessor.CopyStatement copyStatement = (CobolPreprocessor.CopyStatement) ps;
                         if (copyStatement.getMarkers().findFirst(MissingCopybook.class).isPresent()) {
-                            copybookSource.insertRow(executionContext,
+                            copybookSource.insertRow(ctx,
                                     new CopybookSource.Row(
                                             getCursor().firstEnclosingOrThrow(Cobol.CompilationUnit.class).getSourcePath().toString(),
                                             copyStatement.getCopySource().getName().getCobolWord().getWord(),
@@ -65,7 +64,7 @@ public class FindCopybook extends Recipe {
                                 CobolPreprocessor.CopyStatement updated = copyStatement.withCopySource(copyStatement.getCopySource().withName(
                                         SearchResult.found(copyStatement.getCopySource().getName(), null)));
                                 boolean copySourceResolved = copyStatement.getCopybook() != null;
-                                copybookSource.insertRow(executionContext,
+                                copybookSource.insertRow(ctx,
                                         new CopybookSource.Row(
                                                 getCursor().firstEnclosingOrThrow(Cobol.CompilationUnit.class).getSourcePath().toString(),
                                                 copyStatement.getCopySource().getName().getCobolWord().getWord(),

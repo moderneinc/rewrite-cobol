@@ -17,12 +17,11 @@ import org.openrewrite.test.RewriteTest;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.openrewrite.test.RewriteTest.toRecipe;
 
 public class CobolTest implements RewriteTest {
-
-    private static final CobolDialect DIALECT = CobolDialect.ibmAnsi85();
-    private List<String> nistResourcePaths = null;
+    private volatile List<String> nistResourcePaths;
 
     @Override
     public void defaults(RecipeSpec spec) {
@@ -30,7 +29,7 @@ public class CobolTest implements RewriteTest {
             @Override
             public Space visitSpace(Space space, Space.Location location, ExecutionContext ctx) {
                 String whitespace = space.getWhitespace().trim();
-                if (!(whitespace.isEmpty() || DIALECT.getSeparators().contains(whitespace + " "))) {
+                if (!(whitespace.isEmpty() || CobolDialect.ibmAnsi85().getSeparators().contains(whitespace + " "))) {
                     return space.withWhitespace("(~~>${space.whitespace}<~~)");
                 }
                 return space;
@@ -49,10 +48,9 @@ public class CobolTest implements RewriteTest {
 
     public String getNistResource(String sourceName) {
         Optional<String> source = getNistResourcePaths().stream()
-                .filter(it -> it.endsWith(sourceName))
-                .findFirst();
-
-        assert source.isPresent();
+          .filter(it -> it.toLowerCase().endsWith(sourceName.toLowerCase()))
+          .findFirst();
+        assertThat(source).isPresent();
         return StringUtils.readFully(getClass().getClassLoader().getResourceAsStream(source.get()));
     }
 }

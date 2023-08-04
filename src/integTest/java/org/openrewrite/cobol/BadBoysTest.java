@@ -6,15 +6,28 @@
 package org.openrewrite.cobol;
 
 import org.junit.jupiter.api.Test;
+import org.openrewrite.ExecutionContext;
+import org.openrewrite.InMemoryExecutionContext;
+import org.openrewrite.PrintOutputCapture;
+import org.openrewrite.cobol.internal.CobolDialect;
+import org.openrewrite.cobol.internal.CobolPreprocessorOutputSourcePrinter;
 
-import static org.openrewrite.cobol.Assertions.cobol;
+import static org.openrewrite.cobol.Assertions.preprocessor;
 
 public class BadBoysTest extends CobolTest {
 
     @Test
     void NC246A() {
         rewriteRun(
-          cobol(getNistResource("NC246A.CBL"))
+//          cobol(getNistResource("NC246A.CBL")),
+          preprocessor(
+            getNistResource("NC246A.CBL"),
+            spec -> spec.beforeRecipe(cu -> {
+                PrintOutputCapture<ExecutionContext> cobolParserOutput = new PrintOutputCapture<>(new InMemoryExecutionContext());
+                CobolPreprocessorOutputSourcePrinter<ExecutionContext> printWithoutColumns = new CobolPreprocessorOutputSourcePrinter<>(CobolDialect.ibmAnsi85(), false);
+                printWithoutColumns.visit(cu, cobolParserOutput);
+                System.out.println(cobolParserOutput.getOut());
+            }))
         );
     }
 }

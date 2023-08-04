@@ -80,56 +80,56 @@ public class CobolPreprocessorCopyTest extends CobolTest {
     @Test
     void sm101A() {
         rewriteRun(
-          preprocessor(getNistResource("SM101A.CBL"), true)
+          preprocessor(getNistResource("SM101A.CBL"))
         );
     }
 
     @Test
     void sm103A() {
         rewriteRun(
-          preprocessor(getNistResource("SM103A.CBL"), true)
+          preprocessor(getNistResource("SM103A.CBL"))
         );
     }
 
     @Test
     void sm105A() {
         rewriteRun(
-          preprocessor(getNistResource("SM105A.CBL"), true)
+          preprocessor(getNistResource("SM105A.CBL"))
         );
     }
 
     @Test
     void sm106A() {
         rewriteRun(
-          preprocessor(getNistResource("SM106A.CBL"), true)
+          preprocessor(getNistResource("SM106A.CBL"))
         );
     }
 
     @Test
     void sm107A() {
         rewriteRun(
-          preprocessor(getNistResource("SM107A.CBL"), true)
+          preprocessor(getNistResource("SM107A.CBL"))
         );
     }
 
     @Test
     void sm207A() {
         rewriteRun(
-          preprocessor(getNistResource("SM207A.CBL"), true)
+          preprocessor(getNistResource("SM207A.CBL"))
         );
     }
 
     @Test
     void sm301M() {
         rewriteRun(
-          preprocessor(getNistResource("SM301M.CBL"), true)
+          preprocessor(getNistResource("SM301M.CBL"))
         );
     }
 
     @Test
     void sm401M() {
         rewriteRun(
-          preprocessor(getNistResource("SM401M.CBL"), true)
+          preprocessor(getNistResource("SM401M.CBL"))
         );
     }
 }

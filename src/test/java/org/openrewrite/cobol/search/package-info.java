@@ -4,6 +4,6 @@
  * See: https://creativecommons.org/licenses/by-nc-sa/4.0/
  */
 @NonNullApi
-package org.openrewrite.cobol.tree.cobol.search;
+package org.openrewrite.cobol.search;
 
 import org.openrewrite.internal.lang.NonNullApi;

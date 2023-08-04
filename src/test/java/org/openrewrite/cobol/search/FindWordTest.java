@@ -3,7 +3,7 @@
  * For everyone else, this is licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International.
  * See: https://creativecommons.org/licenses/by-nc-sa/4.0/
  */
-package org.openrewrite.cobol.tree.cobol.search;
+package org.openrewrite.cobol.search;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -18,6 +18,7 @@ import org.openrewrite.test.RecipeSpec;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.openrewrite.cobol.Assertions.cobol;
 
 public class FindWordTest extends CobolTest {
@@ -39,7 +40,7 @@ public class FindWordTest extends CobolTest {
     @Test
     void wordIsNotUsed() {
         rewriteRun(
-          cobol(getNistResource("DB101A.CBL"), true)
+          cobol(getNistResource("DB101A.CBL"))
         );
     }
 
@@ -52,8 +53,8 @@ public class FindWordTest extends CobolTest {
             sm101A, spec -> spec.afterRecipe(cu -> {
                 List<SearchResult> searchResults = new ArrayList<>(3);
                 visitor.visit(cu, searchResults);
-                Assertions.assertThat(searchResults).hasSize(3);
-            }), true)
+                assertThat(searchResults).hasSize(3);
+            }))
         );
     }
 
@@ -98,8 +99,8 @@ public class FindWordTest extends CobolTest {
             spec -> spec.afterRecipe(cu -> {
                 List<SearchResult> searchResults = new ArrayList<>(1);
                 visitor.visit(cu, searchResults);
-                Assertions.assertThat(searchResults).hasSize(1);
-            }), true)
+                assertThat(searchResults).hasSize(1);
+            }))
         );
     }
 
@@ -771,8 +772,8 @@ public class FindWordTest extends CobolTest {
             spec -> spec.afterRecipe(cu -> {
                 List<SearchResult> searchResults = new ArrayList<>(39);
                 visitor.visit(cu, searchResults);
-                Assertions.assertThat(searchResults).hasSize(39);
-            }), true
+                assertThat(searchResults).hasSize(39);
+            })
           )
         );
     }

@@ -3,14 +3,13 @@
  * For everyone else, this is licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International.
  * See: https://creativecommons.org/licenses/by-nc-sa/4.0/
  */
-package org.openrewrite.cobol.tree.cobol.search;
+package org.openrewrite.cobol.search;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.openrewrite.Tree;
 import org.openrewrite.TreeVisitor;
 import org.openrewrite.cobol.CobolTest;
-import org.openrewrite.cobol.search.FindIndicators;
 import org.openrewrite.config.CompositeRecipe;
 import org.openrewrite.marker.Marker;
 import org.openrewrite.marker.SearchResult;
@@ -761,7 +760,7 @@ public class FindIndicatorsTest extends CobolTest {
                 List<SearchResult> searchResults = new ArrayList<>(11);
                 visitor.visit(cu, searchResults);
                 Assertions.assertThat(searchResults).hasSize(11);
-            }), true
+            })
           )
         );
     }

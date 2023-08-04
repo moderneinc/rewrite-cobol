@@ -22,7 +22,7 @@ public class RemoveWithDebuggingModeTest extends CobolTest {
     @Test
     public void noChange() {
         rewriteRun(
-          cobol(getNistResource("CM101M.CBL"), true)
+          cobol(getNistResource("CM101M.CBL"))
         );
     }
 
@@ -145,14 +145,17 @@ public class RemoveWithDebuggingModeTest extends CobolTest {
               001100-         O                                                      \s
               001200-          D                                                     \s
               001300-           E.                                                   \s
-              """, "" +
-              "000100 IDENTIFICATION DIVISION.                                         \n" +
-              "000200 PROGRAM-ID.                                                      \n" +
-              "000300     CONTINUED.                                                   \n" +
-              "000400 ENVIRONMENT DIVISION.                                            \n" +
-              "000500 CONFIGURATION SECTION.                                           \n" +
-              "000600 SOURCE-COMPUTER.                                                 \n" +
-              "000700     XXXXX082.                                                    SHIFTED\n\n"
+              """,
+            """
+              000100 IDENTIFICATION DIVISION.                                        \s
+              000200 PROGRAM-ID.                                                     \s
+              000300     CONTINUED.                                                  \s
+              000400 ENVIRONMENT DIVISION.                                           \s
+              000500 CONFIGURATION SECTION.                                          \s
+              000600 SOURCE-COMPUTER.                                                \s
+              000700     XXXXX082.                                                    SHIFTED
+
+              """
           )
         );
     }
