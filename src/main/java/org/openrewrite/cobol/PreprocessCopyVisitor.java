@@ -8,17 +8,23 @@ package org.openrewrite.cobol;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.openrewrite.SourceFile;
+import org.openrewrite.cobol.markers.CopiedStatement;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
+import org.openrewrite.internal.ListUtils;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
+
+import static org.openrewrite.Tree.randomId;
 
 @EqualsAndHashCode(callSuper = true)
 @Value
 public class PreprocessCopyVisitor<P> extends CobolPreprocessorIsoVisitor<P> {
 
     Map<String, SourceFile> copybooks = new HashMap<>();
+    Stack<CobolPreprocessor.CopyStatement> copyStack = new Stack<>();
 
     public PreprocessCopyVisitor(List<SourceFile> copybooks) {
         copybooks.forEach(it -> {
@@ -31,10 +37,17 @@ public class PreprocessCopyVisitor<P> extends CobolPreprocessorIsoVisitor<P> {
     @Override
     public CobolPreprocessor.CopyStatement visitCopyStatement(CobolPreprocessor.CopyStatement copyStatement, P p) {
         CobolPreprocessor.CopyStatement c = super.visitCopyStatement(copyStatement, p);
+        copyStack.push(c);
 
         if (copybooks.containsKey(copyStatement.getCopySource().getName().getCobolWord().getWord())) {
-            c = c.withCopybook((CobolPreprocessor.Copybook) copybooks.get(copyStatement.getCopySource().getName().getCobolWord().getWord()));
+            CobolPreprocessor.Copybook cb = (CobolPreprocessor.Copybook) copybooks.get(copyStatement.getCopySource().getName().getCobolWord().getWord());
+            cb = cb.withLst(ListUtils.map(cb.getLst(), l -> visit(l, p)));
+            c = c.withCopybook(cb);
+            if (copyStack.size() > 1) {
+                c = c.withMarkers(c.getMarkers().addIfAbsent(new CopiedStatement(randomId())));
+            }
         }
+        copyStack.pop();
         return c;
     }
 }

@@ -9,6 +9,7 @@ import org.openrewrite.Cursor;
 import org.openrewrite.PrintOutputCapture;
 import org.openrewrite.cobol.CobolPreprocessorVisitor;
 import org.openrewrite.cobol.CobolVisitor;
+import org.openrewrite.cobol.markers.CopiedStatement;
 import org.openrewrite.cobol.markers.CopiedWord;
 import org.openrewrite.cobol.markers.MissingCopybook;
 import org.openrewrite.cobol.tree.*;
@@ -4326,7 +4327,8 @@ public class CobolSourcePrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
             }
         }
 
-        if (copyStatement == null && copiedWord.isPresent()) {
+        if (copyStatement == null && copiedWord.isPresent() ||
+                copyStatement!= null && copyStatement.getMarkers().findFirst(CopiedStatement.class).isPresent()) {
             return word;
         }
 
