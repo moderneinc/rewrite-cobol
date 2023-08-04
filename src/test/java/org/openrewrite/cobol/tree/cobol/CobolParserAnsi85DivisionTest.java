@@ -7,9 +7,12 @@ package org.openrewrite.cobol.tree.cobol;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.junitpioneer.jupiter.ExpectedToFail;
 import org.openrewrite.Issue;
 import org.openrewrite.cobol.CobolTest;
+import org.openrewrite.internal.StringUtils;
 
 import static org.openrewrite.cobol.Assertions.cobol;
 
@@ -60,45 +63,6 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
         );
     }
 
-    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/26")
-    @Test
-    void emptyLineAfterCommentEntry() {
-        rewriteRun(
-          cobol(
-            """
-              000000 IDENTIFICATION DIVISION.
-                     PROGRAM-ID. HELLO.
-                     AUTHOR.  MODERNE.
-              
-                     DATA DIVISION.
-                         WORKING-STORAGE SECTION.
-                             77 X PIC 99.                                             C_AREA.05
-                             77 Y PIC 99.                                             C_AREA.06
-                             77 Z PIC 99.                                             C_AREA.07
-              """
-          )
-        );
-    }
-
-    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/29")
-    @Test
-    void cblRent() {
-        rewriteRun(
-          cobol(
-            """
-                     CBL RENT
-                     CBL ADATA
-                     CBL DBCS
-              000001 IDENTIFICATION  DIVISION .                                       C_AREA.01
-              000002 PROGRAM-ID    . HELLO     .                                      C_AREA.02
-              000003 PROCEDURE DIVISION.                                              C_AREA.03
-              000004 DISPLAY 'Hello world!'.                                          C_AREA.04
-              000005 STOP RUN.                                                        C_AREA.05
-              """
-          )
-        );
-    }
-
     @Issue("https://github.com/openrewrite/rewrite-cobol/issues/31")
     @Test
     void startTriggerInComment() {
@@ -119,85 +83,68 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
         );
     }
 
-    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/51")
-    @Test
-    void commentsAfterCommentEntry() {
+    @ParameterizedTest
+    @ValueSource(strings = {
+      // Empty line.
+      "",
+      // Empty indicator.
+      "000000",
+      // Partial content.
+      "000000       ",
+      // Empty comment.
+      """
+        000000/
+              ******************************************************************
+              ******************************************************************
+              /
+        """,
+      // Trigger stop in comment.
+      """
+        000000*DATE_COMPILED.
+              *REMARKS.
+              *DATA DIVISION.
+              *    WORKING-STORAGE SECTION.
+        """,
+      // Comment block.
+      """
+        000000* Comments
+              * Comments
+              * Comments
+              * Comments
+        """
+    })
+    void afterCommentEntry(String afterCommentEntry) {
         rewriteRun(
           cobol(
             """
               000000 IDENTIFICATION DIVISION.
                      PROGRAM-ID. HELLO.
                      AUTHOR.  MODERNE.
-                    /
-                    ******************************************************************
-                    ******************************************************************
-                    /
+              %s
                      DATA DIVISION.
                          WORKING-STORAGE SECTION.
                              77 X PIC 99.                                             C_AREA.05
                              77 Y PIC 99.                                             C_AREA.06
                              77 Z PIC 99.                                             C_AREA.07
-              """
+              """.formatted(StringUtils.trimIndent(afterCommentEntry))
           )
         );
     }
 
-    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/31")
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/29")
     @Test
-    void triggerStopInComment() {
+    void cblRent() {
         rewriteRun(
           cobol(
             """
-              000000 IDENTIFICATION DIVISION.
-                     PROGRAM-ID. HELLO.
-                     AUTHOR.  MODERNE.
-                    *DATE_COMPILED.
-                    *REMARKS.
-                    *DATA DIVISION.
-                    *    WORKING-STORAGE SECTION.
-                     DATA DIVISION.
-                         WORKING-STORAGE SECTION.
-                             77 X PIC 99.                                             C_AREA.05
-                             77 Y PIC 99.                                             C_AREA.06
-                             77 Z PIC 99.                                             C_AREA.07
-              """
-          )
-        );
-    }
-
-    @Test
-    void emptyIndicatorAfterCommentEntry() {
-        rewriteRun(
-          cobol(
-            """
-              000000 IDENTIFICATION DIVISION.
-                     PROGRAM-ID. HELLO.
-                     AUTHOR.  MODERNE.
-                   \s
-                     DATA DIVISION.
-                         WORKING-STORAGE SECTION.
-                             77 X PIC 99.                                             C_AREA.05
-                             77 Y PIC 99.                                             C_AREA.06
-                             77 Z PIC 99.                                             C_AREA.07
-              """
-          )
-        );
-    }
-
-    @Test
-    void partialContentAreaAfterCommentEntry() {
-        rewriteRun(
-          cobol(
-            """
-              000000 IDENTIFICATION DIVISION.
-                     PROGRAM-ID. HELLO.
-                     AUTHOR.  MODERNE.
-                          \s
-                     DATA DIVISION.
-                         WORKING-STORAGE SECTION.
-                             77 X PIC 99.                                             C_AREA.05
-                             77 Y PIC 99.                                             C_AREA.06
-                             77 Z PIC 99.                                             C_AREA.07
+                     CBL RENT
+                     CBL ADATA
+                     CBL DBCS
+              000001 IDENTIFICATION  DIVISION .                                       C_AREA.01
+              000002 PROGRAM-ID    . HELLO     .                                      C_AREA.02
+              000003 PROCEDURE DIVISION.                                              C_AREA.03
+              000004 DISPLAY 'Hello world!'.                                          C_AREA.04
+              000005 STOP RUN.                                                        C_AREA.05
               """
           )
         );
@@ -253,28 +200,6 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
         );
     }
 
-    @Test
-    void commentBlockAfterCommentEntry() {
-        rewriteRun(
-          cobol(
-            """
-              000000 IDENTIFICATION DIVISION.
-                     PROGRAM-ID. HELLO.
-                     AUTHOR.
-                    * Comments
-                    * Comments
-                    * Comments
-                    * Comments
-                     DATA DIVISION.
-                         WORKING-STORAGE SECTION.
-                             77 X PIC 99.                                             C_AREA.05
-                             77 Y PIC 99.                                             C_AREA.06
-                             77 Z PIC 99.                                             C_AREA.07
-              """
-          )
-        );
-    }
-
     @Issue("https://github.com/openrewrite/rewrite-cobol/issues/42")
     @Test
     void commaDelimitedMoveToStatement() {
@@ -314,8 +239,53 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
     }
 
     @Issue("https://github.com/openrewrite/rewrite-cobol/issues/45")
-    @Test
-    void continuationVariant1() {
+    @ParameterizedTest
+    @ValueSource(strings = {
+      """
+        000000 01  LOG-HDR-4.                                                   00000000
+                       02  FILLER PIC X VALUE                                   00000000
+              -        'this is a variant of the continuation of a literal      00000000
+              -        'and will print without issues if detected correctly'.   00000000
+        """,
+      """
+        000000 01  LOG-HDR-4.                                                   00000000
+                       02  FILLER PIC X VALUE                           "this is00000000
+              -        "another variant of a continuation".                     00000000
+        """,
+      """
+        000000 01  LOG-HDR-4.                                                   00000000
+                       02  FILLER PIC X VALUE                          "this is"00000000
+              -        ""another variant of a continuation".                    00000000
+        """,
+      """
+        000000 01  LOG-HDR-4.                                                   00000000
+                       02  FILLER PIC X VALUE                                   00000000
+              -        'A''line                                              one00000000
+              -        'line                                               two.'00000000
+              -        .                                                        00000000
+        """,
+      """
+        000000 01  LOG-HDR-4.                                                   00000000
+                       02  FILLER PIC X VALUE                                   00000000
+              -        'line 1                                            today'00000000
+              -        ''s date                                          line 2 00000000
+              -        'line 3'.                                                00000000
+        """,
+      """
+        000000 01  LOG-HDR-4.                                                   00000000
+                       02  FILLER PIC X VALUE  "********************************00000000
+              -        "**************".                                        00000000
+        """,
+      """
+        000000 01  LOG-HDR-4.                                                   00000000
+                   02  FILLER PIC X VALUE  "************************************00000000
+              -    "**************".                                            00000000
+                   02  FILLER PIC X VALUE  "************************************00000000
+              -    "**************".                                            00000000
+        """
+
+    })
+    void continuedLiterals(String continuation) {
         rewriteRun(
           cobol("""
             000000* The continuation tests assert a literal was not split into      00000000
@@ -325,150 +295,17 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
                        CM101M.                                                      00000000
                    DATA DIVISION.                                                   00000000
                    WORKING-STORAGE SECTION.                                         00000000
-                   01  LOG-HDR-4.                                                   00000000
-                           02  FILLER PIC X VALUE                                   00000000
-                  -        'this is a variant of the continuation of a literal      00000000
-                  -        'and will print without issues if detected correctly'.   00000000
+            %s
                        02  FILLER PIC X(11) VALUE ALL "-".                          00000000
                        02  FILLER PIC X VALUE SPACES.                               00000000
-            """
+            """.formatted(StringUtils.trimIndent(continuation))
           )
         );
     }
 
     @Issue("https://github.com/openrewrite/rewrite-cobol/issues/45")
     @Test
-    void continuationVariant2() {
-        rewriteRun(
-          cobol("""
-            000000* The continuation tests assert a literal was not split into      00000000
-                  * multiple tokens.                                                00000000
-                   IDENTIFICATION DIVISION.                                         00000000
-                   PROGRAM-ID.                                                      00000000
-                       CM101M.                                                      00000000
-                   DATA DIVISION.                                                   00000000
-                   WORKING-STORAGE SECTION.                                         00000000
-                   01  LOG-HDR-4.                                                   00000000
-                           02  FILLER PIC X VALUE                           "this is00000000
-                  -        "another variant of a continuation".                     00000000
-                       02  FILLER PIC X(11) VALUE ALL "-".                          00000000
-                       02  FILLER PIC X VALUE SPACES.                               00000000
-            """
-          )
-        );
-    }
-
-    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/45")
-    @Test
-    void continuationVariant3() {
-        rewriteRun(
-          cobol("""
-            000000* The continuation tests assert a literal was not split into      00000000
-                  * multiple tokens.                                                00000000
-                   IDENTIFICATION DIVISION.                                         00000000
-                   PROGRAM-ID.                                                      00000000
-                       CM101M.                                                      00000000
-                   DATA DIVISION.                                                   00000000
-                   WORKING-STORAGE SECTION.                                         00000000
-                   01  LOG-HDR-4.                                                   00000000
-                           02  FILLER PIC X VALUE                          "this is"00000000
-                  -        ""another variant of a continuation".                    00000000
-                       02  FILLER PIC X(11) VALUE ALL "-".                          00000000
-                       02  FILLER PIC X VALUE SPACES.                               00000000
-            """
-          )
-        );
-    }
-
-    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/45")
-    @Test
-    void continuationVariant4() {
-        rewriteRun(
-          cobol("""
-            000100 IDENTIFICATION DIVISION.                                         00000000
-                   PROGRAM-ID.                                                      00000000
-                       CM101M.                                                      00000000
-                   DATA DIVISION.                                                   00000000
-                   WORKING-STORAGE SECTION.                                         00000000
-                   01  LOG-HDR-4.                                                   00000000
-                           02  FILLER PIC X VALUE                                   00000000
-                  -        'A''line                                              one00000000
-                  -        'line                                               two.'00000000
-                  -        .                                                        00000000
-                       02  FILLER PIC X(11) VALUE ALL "-".                          00000000
-                       02  FILLER PIC X VALUE SPACES.                               00000000
-            """
-          )
-        );
-    }
-
-    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/45")
-    @Test
-    void continuationVariant5() {
-        rewriteRun(
-          cobol("""
-            000100 IDENTIFICATION DIVISION.                                         00000000
-                   PROGRAM-ID.                                                      00000000
-                       CM101M.                                                      00000000
-                   DATA DIVISION.                                                   00000000
-                   WORKING-STORAGE SECTION.                                         00000000
-                   01  LOG-HDR-4.                                                   00000000
-                           02  FILLER PIC X VALUE                                   00000000
-                  -        'line 1                                            today'00000000
-                  -        ''s date                                          line 2 00000000
-                  -        'line 3'.                                                00000000
-                       02  FILLER PIC X(11) VALUE ALL "-".                          00000000
-                       02  FILLER PIC X VALUE SPACES.                               00000000
-            """
-          )
-        );
-    }
-
-    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/45")
-    @Test
-    void continuationVariant6() {
-        rewriteRun(
-          cobol("""
-            000100 IDENTIFICATION DIVISION.                                         00000000
-                   PROGRAM-ID.                                                      00000000
-                       CM101M.                                                      00000000
-                   DATA DIVISION.                                                   00000000
-                   WORKING-STORAGE SECTION.                                         00000000
-                   01  LOG-HDR-4.                                                   00000000
-                           02  FILLER PIC X VALUE  "********************************00000000
-                  -        "**************".                                        00000000
-                       02  FILLER PIC X(11) VALUE ALL "-".                          00000000
-                       02  FILLER PIC X VALUE SPACES.                               00000000
-            """
-          )
-        );
-    }
-
-    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/45")
-    @Test
-    void continuationVariant7() {
-        rewriteRun(
-          cobol("""
-            000100 IDENTIFICATION DIVISION.                                         00000000
-                   PROGRAM-ID.                                                      00000000
-                       CM101M.                                                      00000000
-                   DATA DIVISION.                                                   00000000
-                   WORKING-STORAGE SECTION.                                         00000000
-                   01  LOG-HDR-4.                                                   00000000
-                       02  FILLER PIC X VALUE  "************************************00000000
-                  -    "**************".                                            00000000
-                       02  FILLER PIC X VALUE  "************************************00000000
-                  -    "**************".                                            00000000
-                       02  FILLER PIC X(11) VALUE ALL "-".                          00000000
-                       02  FILLER PIC X VALUE SPACES.                               00000000
-            """
-          )
-        );
-    }
-
-    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/45")
-    @Test
-    void continuationVariant8() {
+    void continuedWords() {
         rewriteRun(
           cobol("""
             000100 IDENTIFICATION DIVISION.                                         00000000
