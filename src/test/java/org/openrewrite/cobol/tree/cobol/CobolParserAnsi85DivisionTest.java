@@ -69,8 +69,7 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
               000000 IDENTIFICATION DIVISION.
                      PROGRAM-ID. HELLO.
                      AUTHOR.  MODERNE.
-                    \s
-                   \s
+              
                      DATA DIVISION.
                          WORKING-STORAGE SECTION.
                              77 X PIC 99.                                             C_AREA.05
@@ -156,6 +155,44 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
                     *REMARKS.
                     *DATA DIVISION.
                     *    WORKING-STORAGE SECTION.
+                     DATA DIVISION.
+                         WORKING-STORAGE SECTION.
+                             77 X PIC 99.                                             C_AREA.05
+                             77 Y PIC 99.                                             C_AREA.06
+                             77 Z PIC 99.                                             C_AREA.07
+              """
+          )
+        );
+    }
+
+    @Test
+    void emptyIndicatorAfterCommentEntry() {
+        rewriteRun(
+          cobol(
+            """
+              000000 IDENTIFICATION DIVISION.
+                     PROGRAM-ID. HELLO.
+                     AUTHOR.  MODERNE.
+                   \s
+                     DATA DIVISION.
+                         WORKING-STORAGE SECTION.
+                             77 X PIC 99.                                             C_AREA.05
+                             77 Y PIC 99.                                             C_AREA.06
+                             77 Z PIC 99.                                             C_AREA.07
+              """
+          )
+        );
+    }
+
+    @Test
+    void partialContentAreaAfterCommentEntry() {
+        rewriteRun(
+          cobol(
+            """
+              000000 IDENTIFICATION DIVISION.
+                     PROGRAM-ID. HELLO.
+                     AUTHOR.  MODERNE.
+                          \s
                      DATA DIVISION.
                          WORKING-STORAGE SECTION.
                              77 X PIC 99.                                             C_AREA.05
