@@ -6142,6 +6142,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                         contentArea = source.substring(cursor, Math.min(newLinePos, endOfContentArea));
                         if (copybookNotFoundComment.equals(contentArea)) {
                             copyStatement = copybookNotFoundComment(copyStatement, lines);
+                            copiedWordStack.add(new CopiedWord(randomId(), copyStatement.getId().toString()));
                             lines.clear();
                         } else {
                             cursor = savedCursor;
@@ -6440,7 +6441,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         // Rather than heavily modify the COBOL grammar, we inject a Copybook into the CopyStatement.
         // The injected Copybook is used to preserve the original source code.
         return copyStatement
-                .withMarkers(copyStatement.getMarkers().addIfAbsent(new MissingCopybook(randomId())))
                 .withCopybook(new CobolPreprocessor.Copybook(
                         randomId(),
                         EMPTY,

@@ -166,14 +166,53 @@ class CobolParserCopyTest extends CobolTest {
           cobolPostProcess(
             """
               000000 IDENTIFICATION DIVISION.                                         *
+                     PROGRAM-ID. IC109A.                                              *
+                     DATA DIVISION.                                                   *
+                     LINKAGE SECTION.                                                 *
+                         01  GRP-01.                                                  *
+              
+                             COPY INCEPTION.                                          *
+              
+                    *******************************************************************
+                    /                                                                 *
+                             02  SPECIAL-FLAGS.                                       *
+                                 03  DN7 PICTURE X.                                   *
+                                 03  DN8 PICTURE X.                                   *
+                                 03  DN9 PICTURE X.                                   *
+              """,
+            """
+              IDENTIFICATION DIVISION.
+              PROGRAM-ID. IC109A.
+              DATA DIVISION.
+              LINKAGE SECTION.
+                  01  GRP-01.
+             
+                      02  SUB-CALLED.
+                          03  DN1  PICTURE X(6).
+                          03  DN2  PICTURE X(6).
+                          03  DN3  PICTURE X(6).
+                      02  SPECIAL-FLAGS.
+                          03  DN7 PICTURE X.
+                          03  DN8 PICTURE X.
+                          03  DN9 PICTURE X.
+              """
+          )
+        );
+    }
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/53")
+    @Test
+    void missingCopybookInACopy() {
+        rewriteRun(
+          cobolPostProcess(
+            """
+              000000 IDENTIFICATION DIVISION.                                         *
                          PROGRAM-ID.                                                  *
                              IC109A.                                                  *
                          DATA DIVISION.                                               *
                          LINKAGE SECTION.                                             *
                          01  GRP-01.                                                  *
-                            
-                             COPY INCEPTION.                                          *
-                            
+                             COPY MISSING_BOOK.                                       *
+              
                     *******************************************************************
                     /                                                                 *
                              02  SPECIAL-FLAGS.                                       *
@@ -188,10 +227,7 @@ class CobolParserCopyTest extends CobolTest {
                   DATA DIVISION.
                   LINKAGE SECTION.
                   01  GRP-01.
-                            
                       02  SUB-CALLED.
-                          03  DN3  PICTURE X(6).
-                          03  DN3  PICTURE X(6).
                           03  DN3  PICTURE X(6).
                       02  SPECIAL-FLAGS.
                           03  DN7 PICTURE X.
