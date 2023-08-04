@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.openrewrite.SourceFile;
 import org.openrewrite.cobol.markers.CopiedStatement;
+import org.openrewrite.cobol.markers.MissingCopybook;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
 import org.openrewrite.internal.ListUtils;
 
@@ -43,9 +44,12 @@ public class PreprocessCopyVisitor<P> extends CobolPreprocessorIsoVisitor<P> {
             CobolPreprocessor.Copybook cb = (CobolPreprocessor.Copybook) copybooks.get(copyStatement.getCopySource().getName().getCobolWord().getWord());
             cb = cb.withLst(ListUtils.map(cb.getLst(), l -> visit(l, p)));
             c = c.withCopybook(cb);
-            if (copyStack.size() > 1) {
-                c = c.withMarkers(c.getMarkers().addIfAbsent(new CopiedStatement(randomId())));
-            }
+        } else {
+            c = c.withMarkers(c.getMarkers().addIfAbsent(new MissingCopybook(randomId())));
+        }
+
+        if (copyStack.size() > 1) {
+            c = c.withMarkers(c.getMarkers().addIfAbsent(new CopiedStatement(randomId())));
         }
         copyStack.pop();
         return c;
