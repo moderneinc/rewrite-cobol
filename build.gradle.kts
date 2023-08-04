@@ -100,6 +100,6 @@ artifacts {
 }
 
 configure<nl.javadude.gradle.plugins.license.LicenseExtension> {
-    excludePatterns.add("**/*.cbl")
+    excludePatterns.add("**/*.CBL")
     excludePatterns.add("**/*.CPY")
 }
