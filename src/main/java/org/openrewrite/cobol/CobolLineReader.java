@@ -64,8 +64,8 @@ public class CobolLineReader {
             boolean isValidText = !(" ".equals(indicator) && contentArea.trim().isEmpty());
 
             boolean isCommentLine = !indicator.isEmpty() && cobolDialect.getCommentIndicators().contains(indicator.charAt(0));
-            if (inCommentEntry) {
-                if (!isCommentLine && startsWithTrigger(contentArea, triggersEnd)) {
+            if (inCommentEntry && !line.isEmpty()) {
+                if (startsWithTrigger(contentArea, triggersEnd)) {
                     inCommentEntry = false;
                 } else {
                     // Mark the comment entry.
