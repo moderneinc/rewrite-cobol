@@ -841,6 +841,35 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
         );
     }
 
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/59")
+    @Test
+    void fileDescriptionEntryClauses() {
+        rewriteRun(
+          cobol(
+            """
+              000001 IDENTIFICATION DIVISION.                                         C_AREA.01
+              000002 PROGRAM-ID.                                                      C_AREA.02
+              000003     IC109A.                                                      C_AREA.03
+              000004 DATA DIVISION.                                                   C_AREA.04
+              000005 FILE SECTION.                                                    C_AREA.05
+              000006 FD  PRINT-FILE.                                                  C_AREA.06
+              000007 LABEL RECORD IS STANDARD.                                        C_AREA.08
+              000008 LABEL RECORD ARE STANDARD.                                       C_AREA.07
+              000009 LABEL RECORDS ARE STANDARD.                                      C_AREA.09
+              000010 LABEL RECORDS IS STANDARD.                                       C_AREA.10
+              000011 DATA RECORD IS IDENTIFIER.                                       C_AREA.11
+              000012 DATA RECORD ARE IDENTIFIER.                                      C_AREA.12
+              000013 DATA RECORDS ARE IDENTIFIER.                                     C_AREA.13
+              000014 DATA RECORDS IS IDENTIFIER.                                      C_AREA.14
+              000015 REPORT IS IDENTIFIER.                                            C_AREA.15
+              000016 REPORT ARE IDENTIFIER.                                           C_AREA.16
+              000017 REPORTS ARE IDENTIFIER.                                          C_AREA.17
+              000018 REPORTS IS IDENTIFIER.                                           C_AREA.18
+              """
+          )
+        );
+    }
+
     @Test
     void fileSection() {
         rewriteRun(

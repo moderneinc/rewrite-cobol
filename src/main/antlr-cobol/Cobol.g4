@@ -421,7 +421,7 @@ recordContainsTo
    ;
 
 labelRecordsClause
-   : LABEL (RECORD IS? | RECORDS ARE?) (OMITTED | STANDARD | dataName+)
+   : LABEL (RECORD | RECORDS) (IS | ARE)? (OMITTED | STANDARD | dataName+)
    ;
 
 valueOfClause
@@ -433,7 +433,7 @@ valuePair
    ;
 
 dataRecordsClause
-   : DATA (RECORD IS? | RECORDS ARE?) dataName+
+   : DATA (RECORD | RECORDS) (IS | ARE)? dataName+
    ;
 
 linageClause
@@ -469,7 +469,7 @@ codeSetClause
    ;
 
 reportClause
-   : (REPORT IS? | REPORTS ARE?) reportName+
+   : (REPORT | REPORTS) (IS | ARE)? reportName+
    ;
 
 // -- data base section ----------------------------------
@@ -727,7 +727,7 @@ reportDescriptionGlobalClause
    ;
 
 reportDescriptionPageLimitClause
-   : PAGE (LIMIT IS? | LIMITS ARE?)? integerLiteral (LINE | LINES)?
+   : PAGE (LIMIT | LIMITS) (IS | ARE)? integerLiteral (LINE | LINES)?
    ;
 
 reportDescriptionHeadingClause
