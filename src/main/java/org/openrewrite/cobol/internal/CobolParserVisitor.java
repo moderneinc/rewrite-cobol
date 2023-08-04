@@ -1385,7 +1385,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         return new Cobol.DataRecordsClause(
                 EMPTY,
                 Markers.EMPTY,
-                wordsList(ctx.DATA(), ctx.RECORD(), ctx.IS(), ctx.RECORDS(), ctx.ARE()),
+                wordsList(ctx.DATA(), ctx.RECORD(), ctx.RECORDS(), ctx.IS(), ctx.ARE()),
                 convertAll(ctx.dataName())
         );
     }
@@ -2481,7 +2481,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         return new Cobol.LabelRecordsClause(
                 EMPTY,
                 Markers.EMPTY,
-                wordsList(ctx.LABEL(), ctx.RECORD(), ctx.IS(), ctx.RECORDS(), ctx.ARE(), ctx.OMITTED(), ctx.STANDARD()),
+                wordsList(ctx.LABEL(), ctx.RECORD(), ctx.RECORDS(), ctx.IS(), ctx.ARE(), ctx.OMITTED(), ctx.STANDARD()),
                 convertAll(ctx.dataName())
         );
     }
@@ -4003,7 +4003,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         return new Cobol.ReportClause(
                 EMPTY,
                 Markers.EMPTY,
-                wordsList(ctx.REPORT(), ctx.IS(), ctx.REPORTS(), ctx.ARE()),
+                wordsList(ctx.REPORT(), ctx.REPORTS(), ctx.IS(), ctx.ARE()),
                 convertAll(ctx.reportName())
         );
     }
