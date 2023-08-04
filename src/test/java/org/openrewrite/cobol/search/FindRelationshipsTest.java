@@ -7,41 +7,57 @@ package org.openrewrite.cobol.search;
 
 import org.junit.jupiter.api.Test;
 import org.openrewrite.cobol.CobolTest;
-import org.openrewrite.cobol.table.CobolRelationships;
+import org.openrewrite.cobol.table.CobolRelationships.Row;
 import org.openrewrite.test.RecipeSpec;
 
+import java.util.stream.IntStream;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.openrewrite.cobol.Assertions.cobol;
+import static org.openrewrite.cobol.table.CobolRelationships.ResourceAction.CALL;
+import static org.openrewrite.cobol.table.CobolRelationships.ResourceAction.COPY;
+import static org.openrewrite.cobol.table.CobolRelationships.ResourceType.COBOL;
+import static org.openrewrite.cobol.table.CobolRelationships.ResourceType.COPYBOOK;
 
 public class FindRelationshipsTest extends CobolTest {
 
     @Override
     public void defaults(RecipeSpec spec) {
-        spec.recipe(new FindCopybook("KP008"));
+        spec.recipe(new FindRelationships());
     }
 
     @Test
-    void sm103A() {
+    void IC201A() {
         rewriteRun(
-//          spec -> spec.recipe(new FindCopybook(""))
-//            .dataTable(CobolRelationships.Row.class, rows -> {
-//            }),
+          spec -> spec.dataTable(Row.class, rows -> {
+              assertThat(rows.stream().map(Row::getDependent)).containsOnly("IC201A.CBL");
+              assertThat(rows.stream().map(Row::getDependency)).containsOnly("IC202A");
+              assertThat(rows.stream().map(Row::getDependencyType)).containsOnly(COBOL);
+              assertThat(rows.stream().map(Row::getAction)).containsOnly(CALL);
+          }),
           cobol(
-            getNistResource("SM103A.CBL"),
+            getNistResource("IC201A.CBL"),
             "",
-            spec -> spec.after(s -> s)
+            spec -> spec.after(s -> s).path("IC201A.CBL")
           )
         );
     }
 
     @Test
-    void sm206a() {
+    void SM206A() {
         rewriteRun(
-//          spec -> spec.dataTable(CobolRelationships.Row.class, rows -> {
-//          }),
+          spec -> spec.dataTable(Row.class, rows -> {
+              assertThat(rows.stream().map(Row::getDependent)).containsOnly("SM206A.CBL");
+              assertThat(rows.stream().map(Row::getDependency))
+                .containsExactly(IntStream.range(1, 10).mapToObj(n -> "KP00" + n).toArray(String[]::new));
+              assertThat(rows.stream().map(Row::isDependencyMissing)).containsOnly(false);
+              assertThat(rows.stream().map(Row::getDependencyType)).containsOnly(COPYBOOK);
+              assertThat(rows.stream().map(Row::getAction)).containsOnly(COPY);
+          }),
           cobol(
             getNistResource("SM206A.CBL"),
             "",
-            spec -> spec.after(s -> s)
+            spec -> spec.after(s -> s).path("SM206A.CBL")
           ));
     }
 }

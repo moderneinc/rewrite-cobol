@@ -7,7 +7,7 @@ package org.openrewrite.cobol.search;
 
 import org.junit.jupiter.api.Test;
 import org.openrewrite.cobol.CobolTest;
-import org.openrewrite.cobol.table.CopybookSource;
+import org.openrewrite.cobol.table.CopybookSource.Row;
 import org.openrewrite.test.RecipeSpec;
 
 import java.util.stream.IntStream;
@@ -35,9 +35,9 @@ public class FindCopybookTest extends CobolTest {
     @Test
     void sm103A() {
         rewriteRun(
-          spec -> spec.dataTable(CopybookSource.Row.class, rows -> {
+          spec -> spec.dataTable(Row.class, rows -> {
               assertThat(rows).hasSize(7);
-              CopybookSource.Row r0 = rows.get(0);
+              Row r0 = rows.get(0);
               assertThat(r0.getCopybookName()).isEqualTo("K3SCA");
               assertThat(r0.getResolutionStatus()).isEqualTo(RESOLVED);
               assertThat(separatorsToUnix(r0.getCopybookSourcePath())).isEqualTo("gov/nist/copybooks/K3SCA.CPY");
@@ -53,11 +53,10 @@ public class FindCopybookTest extends CobolTest {
     @Test
     void sm206a() {
         rewriteRun(
-          spec -> spec.dataTable(CopybookSource.Row.class, rows -> {
-              assertThat(rows.stream().map(CopybookSource.Row::getCopybookName))
+          spec -> spec.dataTable(Row.class, rows -> {
+              assertThat(rows.stream().map(Row::getCopybookName))
                 .containsExactly(IntStream.range(1, 10).mapToObj(n -> "KP00" + n).toArray(String[]::new));
-              assertThat(rows.stream().map(CopybookSource.Row::getResolutionStatus))
-                .containsOnly(RESOLVED);
+              assertThat(rows.stream().map(Row::getResolutionStatus)).containsOnly(RESOLVED);
           }),
           cobol(
             getNistResource("SM206A.CBL"),

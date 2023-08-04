@@ -56,9 +56,22 @@ public class FindRelationships extends Recipe {
 
             @Override
             public Cobol.Call visitCall(Cobol.Call call, ExecutionContext ctx) {
-//                if(call.getIdentifier()) {
-//
-//                }
+                if (call.getIdentifier() instanceof Cobol.Word) {
+                    Cobol.Word word = (Cobol.Word) call.getIdentifier();
+                    if (word.getWord().startsWith("\"")) {
+                        cobolRelationships.insertRow(ctx,
+                                new CobolRelationships.Row(
+                                        getCursor().firstEnclosingOrThrow(Cobol.CompilationUnit.class).getSourcePath().toString(),
+                                        COBOL,
+                                        CALL,
+                                        word.getWord().replace("\"", ""),
+                                        COBOL,
+                                        false
+                                )
+                        );
+                        return call.withIdentifier(SearchResult.found(call.getIdentifier()));
+                    }
+                }
                 return super.visitCall(call, ctx);
             }
         };
