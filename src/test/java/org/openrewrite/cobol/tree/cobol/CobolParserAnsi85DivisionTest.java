@@ -120,6 +120,29 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
         );
     }
 
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/51")
+    @Test
+    void commentsAfterCommentEntry() {
+        rewriteRun(
+          cobol(
+            """
+              000000 IDENTIFICATION DIVISION.
+                     PROGRAM-ID. HELLO.
+                     AUTHOR.  MODERNE.
+                    /
+                    ******************************************************************
+                    ******************************************************************
+                    /
+                     DATA DIVISION.
+                         WORKING-STORAGE SECTION.
+                             77 X PIC 99.                                             C_AREA.05
+                             77 Y PIC 99.                                             C_AREA.06
+                             77 Z PIC 99.                                             C_AREA.07
+              """
+          )
+        );
+    }
+
     @Issue("https://github.com/openrewrite/rewrite-cobol/issues/31")
     @Test
     void triggerStopInComment() {
