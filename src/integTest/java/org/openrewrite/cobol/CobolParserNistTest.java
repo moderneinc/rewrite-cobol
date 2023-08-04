@@ -6,7 +6,6 @@
 package org.openrewrite.cobol;
 
 import org.junit.jupiter.api.Test;
-import org.openrewrite.cobol.CobolTest;
 
 import static org.openrewrite.cobol.Assertions.cobol;
 
