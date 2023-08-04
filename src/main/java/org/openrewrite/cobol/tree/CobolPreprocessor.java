@@ -303,7 +303,6 @@ public interface CobolPreprocessor extends Tree {
 
         Word dot;
 
-        // TODO: temp POC clean up.
         @Nullable
         CobolPreprocessor.Copybook copybook;
 

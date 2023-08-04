@@ -158,6 +158,48 @@ class CobolParserCopyTest extends CobolTest {
         );
     }
 
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/53")
+    @Test
+    void aCopyInACopy() {
+        rewriteRun(
+          cobolPostProcess(
+            """
+              000000 IDENTIFICATION DIVISION.                                         *
+                         PROGRAM-ID.                                                  *
+                             IC109A.                                                  *
+                         DATA DIVISION.                                               *
+                         LINKAGE SECTION.                                             *
+                         01  GRP-01.                                                  *
+              
+                             COPY INCEPTION.                                          *
+              
+                    *******************************************************************
+                    /                                                                 *
+                             02  SPECIAL-FLAGS.                                       *
+                                 03  DN7 PICTURE X.                                   *
+                                 03  DN8 PICTURE X.                                   *
+                                 03  DN9 PICTURE X.                                   *
+              """,
+            """
+              IDENTIFICATION DIVISION.
+                  PROGRAM-ID.
+                      IC109A.
+                  DATA DIVISION.
+                  LINKAGE SECTION.
+                  01  GRP-01.
+              
+                      02  SUB-CALLED.
+                          03  DN3  PICTURE X(6).
+                          03  DN3  PICTURE X(6).
+                          03  DN3  PICTURE X(6).
+                      02  SPECIAL-FLAGS.
+                          03  DN7 PICTURE X.
+                          03  DN8 PICTURE X.
+                          03  DN9 PICTURE X.
+              """, true)
+        );
+    }
+
     @Issue("https://github.com/openrewrite/rewrite-cobol/issues/27")
     @Test
     void newLineInContentAreaBeforeCopybook() {

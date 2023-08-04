@@ -81,8 +81,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     // Set to true when the parser detects the CopyStartComment to add the currentCopy to each `Cobol$Word`.
     private boolean inCopiedText;
 
-    @Nullable
-    private CopiedWord copiedWord = null;
+    private final Stack<CopiedWord> copiedWordStack = new Stack<>();
 
     private String replaceStartComment = null;
     private String replaceStopComment = null;
@@ -5613,8 +5612,8 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                     object instanceof CobolPreprocessor.SkipStatement ||
                     object instanceof CobolPreprocessor.TitleStatement) {
                 if (object instanceof CobolPreprocessor.CopyStatement) {
-                    if (copiedWord == null && !((CobolPreprocessor.CopyStatement) object).getMarkers().findFirst(MissingCopybook.class).isPresent()) {
-                        copiedWord = new CopiedWord(randomId(), ((CobolPreprocessor.CopyStatement) object).getId().toString());
+                    if (!((CobolPreprocessor.CopyStatement) object).getMarkers().findFirst(MissingCopybook.class).isPresent()) {
+                        copiedWordStack.add(new CopiedWord(randomId(), ((CobolPreprocessor.CopyStatement) object).getId().toString()));
                     }
                 }
                 preprocessorStatements.add((CobolPreprocessor) object);
@@ -5623,8 +5622,8 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
 
         // An unresolved copybook will not have any words from a copied source to add the statement to.
         // So the current copy is set to null on the next word that occurs in the LST.
-        if (copiedWord != null) {
-            markers = markers.addIfAbsent(copiedWord);
+        if (!copiedWordStack.isEmpty()) {
+            markers = markers.addIfAbsent(copiedWordStack.peek());
         }
         return new Cobol.Word(
                 prefix,
@@ -6414,7 +6413,9 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     private void copyStopComment() {
         parseComment(copyStopComment);
 
-        copiedWord = null;
+        if (!copiedWordStack.isEmpty()) {
+            copiedWordStack.pop();
+        }
         inCopiedText = false;
 
         sequenceArea();
