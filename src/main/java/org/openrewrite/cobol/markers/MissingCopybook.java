@@ -15,4 +15,10 @@ import java.util.UUID;
 @Value
 public class MissingCopybook implements Marker {
     UUID id;
+    Status status;
+
+    public enum Status {
+        MISSING,
+        PARSE_ERROR
+    }
 }

@@ -12,6 +12,7 @@ import org.openrewrite.cobol.markers.CopiedStatement;
 import org.openrewrite.cobol.markers.MissingCopybook;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
 import org.openrewrite.internal.ListUtils;
+import org.openrewrite.tree.ParseError;
 
 import java.util.HashMap;
 import java.util.List;
@@ -40,11 +41,17 @@ public class PreprocessCopyVisitor<P> extends CobolPreprocessorIsoVisitor<P> {
         copyStack.push(c);
 
         if (copybooks.containsKey(copyStatement.getCopySource().getName().getCobolWord().getWord())) {
-            CobolPreprocessor.Copybook cb = (CobolPreprocessor.Copybook) copybooks.get(copyStatement.getCopySource().getName().getCobolWord().getWord());
+            SourceFile sf = copybooks.get(copyStatement.getCopySource().getName().getCobolWord().getWord());
+            if (sf instanceof ParseError) {
+                c = c.withMarkers(c.getMarkers().addIfAbsent(new MissingCopybook(randomId(), MissingCopybook.Status.PARSE_ERROR)));
+                return c;
+            }
+
+            CobolPreprocessor.Copybook cb = (CobolPreprocessor.Copybook) sf;
             cb = cb.withLst(ListUtils.map(cb.getLst(), l -> visit(l, p)));
             c = c.withCopybook(cb);
         } else {
-            c = c.withMarkers(c.getMarkers().addIfAbsent(new MissingCopybook(randomId())));
+            c = c.withMarkers(c.getMarkers().addIfAbsent(new MissingCopybook(randomId(), MissingCopybook.Status.MISSING)));
         }
 
         if (copyStack.size() > 1) {

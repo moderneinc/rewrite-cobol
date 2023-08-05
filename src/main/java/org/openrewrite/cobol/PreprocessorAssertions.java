@@ -38,9 +38,7 @@ public class PreprocessorAssertions {
     public static SourceSpecs cobolPreprocess(@Nullable String before, Consumer<SourceSpec<CobolPreprocessor.CompilationUnit>> spec) {
         SourceSpec<CobolPreprocessor.CompilationUnit> cobol = new SourceSpec<>(
                 CobolPreprocessor.CompilationUnit.class, null,
-                CobolPreprocessorParser.builder()
-                        .setEnableCopy(false)
-                        .setEnableReplace(false),
+                CobolPreprocessorParser.builder(),
                 before,
                 SourceSpec.EachResult.noop,
                 PreprocessorAssertions::customizeExecutionContext);
@@ -56,9 +54,7 @@ public class PreprocessorAssertions {
     public static SourceSpecs cobolPreprocess(@Nullable String before, @Nullable String after,
                                               Consumer<SourceSpec<CobolPreprocessor.CompilationUnit>> spec) {
         SourceSpec<CobolPreprocessor.CompilationUnit> cobol = new SourceSpec<>(CobolPreprocessor.CompilationUnit.class, null,
-                CobolPreprocessorParser.builder()
-                        .setEnableCopy(false)
-                        .setEnableReplace(false),
+                CobolPreprocessorParser.builder(),
                 before,
                 SourceSpec.EachResult.noop,
                 PreprocessorAssertions::customizeExecutionContext).after(s -> after);

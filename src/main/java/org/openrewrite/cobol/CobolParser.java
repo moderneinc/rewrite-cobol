@@ -37,17 +37,11 @@ public class CobolParser implements Parser {
 
     private final CobolDialect cobolDialect;
     private final List<SourceFile> copybooks;
-    private final boolean enableCopy;
-    private final boolean enableReplace;
 
     public CobolParser(CobolDialect cobolDialect,
-                       List<SourceFile> copybooks,
-                       boolean enableCopy,
-                       boolean enableReplace) {
+                       List<SourceFile> copybooks) {
         this.cobolDialect = cobolDialect;
         this.copybooks = copybooks;
-        this.enableCopy = enableCopy;
-        this.enableReplace = enableReplace;
     }
 
     @Override
@@ -77,8 +71,6 @@ public class CobolParser implements Parser {
 
         CobolPreprocessorParser cobolPreprocessorParser = CobolPreprocessorParser.builder()
                 .setCobolDialect(cobolDialect)
-                .setEnableCopy(enableCopy)
-                .setEnableReplace(enableReplace)
                 .build();
         cobolPreprocessorParser.setCopybooks(!this.copybooks.isEmpty() ? this.copybooks : copybooks);
 
@@ -185,8 +177,6 @@ public class CobolParser implements Parser {
 
         private CobolDialect cobolDialect = CobolDialect.ibmAnsi85();
         private List<SourceFile> copybooks = emptyList();
-        private boolean enableCopy = true;
-        private boolean enableReplace = true;
 
         public Builder() {
             super(Cobol.CompilationUnit.class);
@@ -196,9 +186,7 @@ public class CobolParser implements Parser {
         public CobolParser build() {
             return new CobolParser(
                     cobolDialect,
-                    copybooks,
-                    enableCopy,
-                    enableReplace);
+                    copybooks);
         }
 
         public Builder setCobolDialect(CobolDialect cobolDialect) {
@@ -209,18 +197,6 @@ public class CobolParser implements Parser {
         @Deprecated
         public Builder setCopybooks(List<SourceFile> copybooks) {
             this.copybooks = copybooks;
-            return this;
-        }
-
-        @Deprecated
-        public Builder setEnableCopy(boolean enableCopy) {
-            this.enableCopy = enableCopy;
-            return this;
-        }
-
-        @Deprecated
-        public Builder setEnableReplace(boolean enableReplace) {
-            this.enableReplace = enableReplace;
             return this;
         }
 

@@ -67,9 +67,7 @@ public class Assertions {
             builder = CobolPreprocessorParser.builder()
                     .setCopybooks(copybooks);
         } else {
-            builder = CobolPreprocessorParser.builder()
-                    .setEnableCopy(false)
-                    .setEnableReplace(false);
+            builder = CobolPreprocessorParser.builder();
         }
 
         SourceSpec<CobolPreprocessor.CompilationUnit> cobol = new SourceSpec<>(CobolPreprocessor.CompilationUnit.class, null,

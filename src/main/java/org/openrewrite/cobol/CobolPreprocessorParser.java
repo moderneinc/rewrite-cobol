@@ -15,7 +15,6 @@ import org.openrewrite.cobol.internal.CobolPreprocessorParserVisitor;
 import org.openrewrite.cobol.internal.grammar.CobolPreprocessorLexer;
 import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
-import org.openrewrite.cobol.tree.Replacement;
 import org.openrewrite.internal.EncodingDetectingInputStream;
 import org.openrewrite.internal.MetricsHelper;
 import org.openrewrite.internal.lang.Nullable;
@@ -36,25 +35,12 @@ public class CobolPreprocessorParser implements Parser {
     private static final List<String> COBOL_FILE_EXTENSIONS = Collections.singletonList(".cbl");
 
     private final CobolDialect cobolDialect;
-    private final boolean enableCopy;
-    private final boolean enableReplace;
-
     private List<SourceFile> copybooks;
 
-    // Lazily loaded sets of the original source objects.
-    private Map<String, CobolPreprocessor> preprocessorMap = null;
-    private Set<Replacement> replaces = null;
-    private Set<Replacement> replaceAdditiveTypes = null;
-    private Set<Replacement> replaceReductiveTypes = null;
-
     public CobolPreprocessorParser(CobolDialect cobolDialect,
-                                   List<SourceFile> copybooks,
-                                   boolean enableCopy,
-                                   boolean enableReplace) {
+                                   List<SourceFile> copybooks) {
         this.cobolDialect = cobolDialect;
         this.copybooks = copybooks;
-        this.enableCopy = enableCopy;
-        this.enableReplace = enableReplace;
     }
 
     @Override
@@ -157,8 +143,6 @@ public class CobolPreprocessorParser implements Parser {
 
         private CobolDialect cobolDialect = CobolDialect.ibmAnsi85();
         private List<SourceFile> copybooks = emptyList();
-        private boolean enableCopy = true;
-        private boolean enableReplace = true;
 
         public Builder() {
             super(Cobol.CompilationUnit.class);
@@ -168,9 +152,7 @@ public class CobolPreprocessorParser implements Parser {
         public CobolPreprocessorParser build() {
             return new CobolPreprocessorParser(
                     cobolDialect,
-                    copybooks,
-                    enableCopy,
-                    enableReplace
+                    copybooks
             );
         }
 
@@ -182,18 +164,6 @@ public class CobolPreprocessorParser implements Parser {
         @Deprecated
         public Builder setCopybooks(List<SourceFile> copybooks) {
             this.copybooks = copybooks;
-            return this;
-        }
-
-        @Deprecated
-        public Builder setEnableCopy(boolean enableCopy) {
-            this.enableCopy = enableCopy;
-            return this;
-        }
-
-        @Deprecated
-        public Builder setEnableReplace(boolean enableReplace) {
-            this.enableReplace = enableReplace;
             return this;
         }
 
