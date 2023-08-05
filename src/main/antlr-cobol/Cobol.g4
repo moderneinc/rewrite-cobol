@@ -1968,11 +1968,11 @@ setStatement
    ;
 
 setToStatement
-   : setTo+ TO setToValue+
+   : setTo (COMMACHAR? setTo)* TO setToValue+
    ;
 
 setUpDownByStatement
-   : setTo+ (UP BY | DOWN BY) setByValue
+   : setTo (COMMACHAR? setTo)* (UP BY | DOWN BY) setByValue
    ;
 
 setTo

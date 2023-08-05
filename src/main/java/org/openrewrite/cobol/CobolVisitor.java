@@ -3732,7 +3732,7 @@ public class CobolVisitor<P> extends TreeVisitor<Cobol, P> {
         Cobol.SetTo s = setTo;
         s = s.withPrefix(visitSpace(s.getPrefix(), Space.Location.SET_TO_PREFIX, p));
         s = s.withMarkers(visitMarkers(s.getMarkers(), p));
-        s = s.withIdentifiers(ListUtils.map(s.getIdentifiers(), t -> (Identifier) visit(t, p)));
+        s = s.withIdentifiers(ListUtils.map(s.getIdentifiers(), t -> visit(t, p)));
         s = s.withTo((Cobol.Word) visit(s.getTo(), p));
         s = s.withValues(ListUtils.map(s.getValues(), t -> visit(t, p)));
         return s;
@@ -3742,7 +3742,7 @@ public class CobolVisitor<P> extends TreeVisitor<Cobol, P> {
         Cobol.SetUpDown s = setUpDown;
         s = s.withPrefix(visitSpace(s.getPrefix(), Space.Location.SET_UP_DOWN_PREFIX, p));
         s = s.withMarkers(visitMarkers(s.getMarkers(), p));
-        s = s.withTo(ListUtils.map(s.getTo(), t -> (Identifier) visit(t, p)));
+        s = s.withTo(ListUtils.map(s.getTo(), t -> visit(t, p)));
         s = s.withOperation(ListUtils.map(s.getOperation(), it -> (Cobol.Word) visit(it, p)));
         s = s.withValue((Name) visit(s.getValue(), p));
         return s;
