@@ -43,25 +43,13 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     private final boolean charsetBomMarked;
     private final CobolDialect cobolDialect;
 
-    private final Map<String, CobolPreprocessor.CopyStatement> copyMap = new HashMap<>();
-    private final Map<String, CobolPreprocessor.ReplaceByStatement> replaceByMap = new HashMap<>();
-    private final Map<String, CobolPreprocessor.ReplaceOffStatement> replaceOffMap = new HashMap<>();
-    private final Map<String, Replacement> replaceMap = new HashMap<>();
-    private final Map<String, Replacement> replaceAdditiveTypeMap = new HashMap<>();
-    private final Map<String, Replacement> replaceReductiveTypeMap = new HashMap<>();
-    private final Map<String, CobolPreprocessor.CompilerOptions> compilersOptionsMap = new HashMap<>();
-    private final Map<String, CobolPreprocessor.EjectStatement> ejectMap = new HashMap<>();
-    private final Map<String, CobolPreprocessor.ExecStatement> execMap = new HashMap<>();
-    private final Map<String, CobolPreprocessor.SkipStatement> skipMap = new HashMap<>();
-    private final Map<String, CobolPreprocessor.TitleStatement> titleMap = new HashMap<>();
+    private final Map<String, CobolPreprocessor> preprocessorMap;
+    private final Map<String, Replacement> replaceMap;
     private final Set<String> templateKeys = new HashSet<>();
 
-    // Areas may be a Set of Integer to reduce memory, each method to create the marker would generate the string.
     private final Map<Integer, String> sequenceAreas = new HashMap<>();
-
-    // A LinkedHash map is used for Indicators to collect information about the next line of code. I.E. continuation indicators.
+    // A LinkedHash map is used to collect information about the next line of code. I.E. continuation indicators.
     private final Map<Integer, String> indicatorAreas = new LinkedHashMap<>();
-    // A LinkedHash map is used for CommentAreas to determine if the current token ends the line.
     private final Map<Integer, String> commentAreas = new LinkedHashMap<>();
 
     private final Set<String> separators = new HashSet<>();
@@ -78,21 +66,12 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     private String copyUuidComment = null;
     private String copybookNotFoundComment = null;
 
-    // Set to true when the parser detects the CopyStartComment to add the currentCopy to each `Cobol$Word`.
-    private boolean inCopiedText;
-
     private final Stack<CopiedWord> copiedWordStack = new Stack<>();
 
     private String replaceStartComment = null;
     private String replaceStopComment = null;
     private String replaceAdditiveWhitespaceComment = null;
     private String replaceUuidComment = null;
-
-    private String replaceByStartComment = null;
-    private String replaceByStopComment = null;
-
-    private String replaceOffStartComment = null;
-    private String replaceOffStopComment = null;
 
     private String replaceAdditiveTypeStartComment = null;
     private String replaceAdditiveTypeStopComment = null;
@@ -109,17 +88,8 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     private String compileOptionStartComment = null;
     private String compileOptionStopComment = null;
 
-    private String ejectStartComment = null;
-    private String ejectStopComment = null;
-
-    private String execStartComment = null;
-    private String execStopComment = null;
-
-    private String skipStartComment = null;
-    private String skipStopComment = null;
-
-    private String titleStartComment = null;
-    private String titleStopComment = null;
+    private String preprocessorStartComment = null;
+    private String preprocessorStopComment = null;
 
     private String uuidComment = null;
     private Integer nextIndex = null;
@@ -130,35 +100,16 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                               Charset charset,
                               boolean charsetBomMarked,
                               CobolDialect cobolDialect,
-                              Collection<CobolPreprocessor.CopyStatement> copyStatements,
-                              Collection<CobolPreprocessor.ReplaceByStatement> replaceByStatements,
-                              Collection<CobolPreprocessor.ReplaceOffStatement> replaceOffStatements,
-                              Collection<Replacement> replaces,
-                              Collection<Replacement> replaceAdditiveTypes,
-                              Collection<Replacement> replaceReductiveTypes,
-                              Collection<CobolPreprocessor.CompilerOptions> compilerOptions,
-                              Collection<CobolPreprocessor.EjectStatement> ejectStatements,
-                              Collection<CobolPreprocessor.ExecStatement> execStatements,
-                              Collection<CobolPreprocessor.SkipStatement> skipStatements,
-                              Collection<CobolPreprocessor.TitleStatement> titleStatements) {
+                              Map<String, CobolPreprocessor> preprocessorMap,
+                              Map<String, Replacement> replaceMap) {
         this.path = path;
         this.fileAttributes = fileAttributes;
         this.source = source;
         this.charset = charset;
         this.charsetBomMarked = charsetBomMarked;
         this.cobolDialect = cobolDialect;
-
-        copyStatements.forEach(it -> copyMap.putIfAbsent(it.getId().toString(), it));
-        replaceByStatements.forEach(it -> replaceByMap.putIfAbsent(it.getId().toString(), it));
-        replaceOffStatements.forEach(it -> replaceOffMap.putIfAbsent(it.getId().toString(), it));
-        replaces.forEach(it -> replaceMap.putIfAbsent(it.getId().toString(), it));
-        replaceAdditiveTypes.forEach(it -> replaceAdditiveTypeMap.putIfAbsent(it.getId().toString(), it));
-        replaceReductiveTypes.forEach(it -> replaceReductiveTypeMap.putIfAbsent(it.getId().toString(), it));
-        compilerOptions.forEach(it -> compilersOptionsMap.putIfAbsent(it.getId().toString(), it));
-        ejectStatements.forEach(it -> ejectMap.putIfAbsent(it.getId().toString(), it));
-        execStatements.forEach(it -> execMap.putIfAbsent(it.getId().toString(), it));
-        skipStatements.forEach(it -> skipMap.putIfAbsent(it.getId().toString(), it));
-        titleStatements.forEach(it -> titleMap.putIfAbsent(it.getId().toString(), it));
+        this.preprocessorMap = preprocessorMap;
+        this.replaceMap = replaceMap;
     }
 
     public <T> T visit(@Nullable ParseTree... trees) {
@@ -247,18 +198,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
             this.replaceAdditiveWhitespaceComment = getCommentFromKey(templatePrinter.getReplaceAddedWhitespaceComment());
             this.templateKeys.add(replaceAdditiveWhitespaceComment);
 
-            this.replaceByStartComment = getCommentFromKey(templatePrinter.getReplaceByStartComment());
-            this.templateKeys.add(replaceByStartComment);
-
-            this.replaceByStopComment = getCommentFromKey(templatePrinter.getReplaceByStopComment());
-            this.templateKeys.add(replaceByStopComment);
-
-            this.replaceOffStartComment = getCommentFromKey(templatePrinter.getReplaceOffStartComment());
-            this.templateKeys.add(replaceOffStartComment);
-
-            this.replaceOffStopComment = getCommentFromKey(templatePrinter.getReplaceOffStopComment());
-            this.templateKeys.add(replaceOffStopComment);
-
             this.replaceAddWordStartComment = getCommentFromKey(templatePrinter.getReplaceAddWordStartComment());
             this.templateKeys.add(replaceAddWordStartComment);
 
@@ -283,29 +222,11 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
             this.compileOptionStopComment = getCommentFromKey(templatePrinter.getCompilerOptionsStopComment());
             this.templateKeys.add(compileOptionStopComment);
 
-            this.ejectStartComment = getCommentFromKey(templatePrinter.getEjectStartComment());
-            this.templateKeys.add(ejectStartComment);
+            this.preprocessorStartComment = getCommentFromKey(templatePrinter.getPreprocessorStartComment());
+            this.templateKeys.add(preprocessorStartComment);
 
-            this.ejectStopComment = getCommentFromKey(templatePrinter.getEjectStopComment());
-            this.templateKeys.add(ejectStopComment);
-
-            this.execStartComment = getCommentFromKey(templatePrinter.getExecStartComment());
-            this.templateKeys.add(execStartComment);
-
-            this.execStopComment = getCommentFromKey(templatePrinter.getExecStopComment());
-            this.templateKeys.add(execStopComment);
-
-            this.skipStartComment = getCommentFromKey(templatePrinter.getSkipStartComment());
-            this.templateKeys.add(skipStartComment);
-
-            this.skipStopComment = getCommentFromKey(templatePrinter.getSkipStopComment());
-            this.templateKeys.add(skipStopComment);
-
-            this.titleStartComment = getCommentFromKey(templatePrinter.getTitleStartComment());
-            this.templateKeys.add(titleStartComment);
-
-            this.titleStopComment = getCommentFromKey(templatePrinter.getTitleStopComment());
-            this.templateKeys.add(titleStopComment);
+            this.preprocessorStopComment = getCommentFromKey(templatePrinter.getPreprocessorStopComment());
+            this.templateKeys.add(preprocessorStopComment);
 
             this.uuidComment = getCommentFromKey(templatePrinter.getUuidComment());
             this.templateKeys.add(uuidComment);
@@ -6109,9 +6030,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 }
 
                 if (templateKeys.contains(contentArea)) {
-                    if (replaceByStartComment.equals(contentArea)) {
-                        objects.add(getReplaceBy());
-                    } else if (replaceStartComment.equals(contentArea)) {
+                    if (replaceStartComment.equals(contentArea)) {
                         replaceStartComment();
                     } else if (replaceAdditiveWhitespaceComment.equals(contentArea)) {
                         replaceAdditiveWhitespace();
@@ -6128,8 +6047,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                         iterations = max;
                     } else if (replaceAddWordStopComment.equals(contentArea)) {
                         parseComment(replaceAddWordStopComment);
-                    } else if (replaceOffStartComment.equals(contentArea)) {
-                        objects.add(getReplaceOff());
                     } else if (copyStartComment.equals(contentArea)) {
                         copyStartComment();
                     } else if (copyUuidComment.equals(contentArea)) {
@@ -6150,20 +6067,14 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                         objects.add(copyStatement);
                     } else if (copyStopComment.equals(contentArea)) {
                         copyStopComment();
-                    } else if (ejectStartComment.equals(contentArea)) {
-                        objects.add(getEjectStatement());
-                    } else if (execStartComment.equals(contentArea)) {
-                        objects.add(getExecStatement());
-                    } else if (skipStartComment.equals(contentArea)) {
-                        objects.add(getSkipStatement());
-                    } else if (titleStartComment.equals(contentArea)) {
-                        objects.add(getTitleStatement());
+                    } else if (preprocessorStartComment.equals(contentArea)) {
+                        objects.add(getPreprocessorStatement());
                     }
                 } else {
                     cursor += contentArea.length();
                     CommentArea commentArea = commentArea();
-                    CobolLine line = indicatorArea != null && "*".equals(indicatorArea.getIndicator()) ? new CommentLine(Markers.EMPTY, sequenceArea, indicatorArea, contentArea, commentArea, inCopiedText) :
-                            new BlankLine(Markers.EMPTY, sequenceArea, indicatorArea, contentArea, commentArea, inCopiedText);
+                    CobolLine line = indicatorArea != null && "*".equals(indicatorArea.getIndicator()) ? new CommentLine(Markers.EMPTY, sequenceArea, indicatorArea, contentArea, commentArea, !copiedWordStack.isEmpty()) :
+                            new BlankLine(Markers.EMPTY, sequenceArea, indicatorArea, contentArea, commentArea, !copiedWordStack.isEmpty());
                     lines.add(line);
                 }
 
@@ -6403,7 +6314,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     private void copyStartComment() {
         parseComment(copyStartComment);
 
-        inCopiedText = true;
         removeTemplateCommentArea = true;
 
         // Reset copy info.
@@ -6417,7 +6327,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         if (!copiedWordStack.isEmpty()) {
             copiedWordStack.pop();
         }
-        inCopiedText = false;
 
         sequenceArea();
         indicatorArea();
@@ -6433,7 +6342,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         removeTemplateCommentArea = false;
 
         String uuid = getUuid();
-        return copyMap.get(uuid.trim());
+        return (CobolPreprocessor.CopyStatement) preprocessorMap.get(uuid.trim());
     }
 
     private CobolPreprocessor.CopyStatement copybookNotFoundComment(CobolPreprocessor.CopyStatement copyStatement, List<CobolLine> lines) {
@@ -6477,21 +6386,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 ));
     }
 
-    private void replaceByStartComment() {
-        parseComment(replaceByStartComment);
-
-        removeTemplateCommentArea = true;
-        isAdditiveCommentArea = false;
-
-        // Reset replace info.
-        removeColumnMarkers = false;
-        nextIndex = null;
-
-        String current = source.substring(cursor);
-        current = current.substring(0, current.indexOf("\n") + 1);
-        cursor += current.length();
-    }
-
     private void replaceAdditiveWhitespace() {
         parseComment(replaceAdditiveWhitespaceComment);
 
@@ -6522,7 +6416,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
 
         String uuid = getUuid();
 
-        this.replaceAdditiveType = replaceAdditiveTypeMap.get(uuid.trim());
+        this.replaceAdditiveType = replaceMap.get(uuid.trim());
     }
 
     private void replaceAdditiveStopComment() {
@@ -6580,7 +6474,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
 
         String uuid = getUuid();
 
-        Replacement replacement = replaceReductiveTypeMap.get(uuid.trim());
+        Replacement replacement = replaceMap.get(uuid.trim());
 
         parseComment(replaceReductiveTypeStopComment);
 
@@ -6592,45 +6486,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         nextIndex = Integer.valueOf(numberOfSpaces.trim());
 
         return replacement;
-    }
-
-    private CobolPreprocessor.ReplaceOffStatement getReplaceOff() {
-        parseFully(replaceOffStartComment);
-
-        parseComment(uuidComment);
-
-        String uuid = getUuid();
-
-        parseComment(replaceOffStopComment);
-
-        sequenceArea();
-        indicatorArea();
-
-        // Unknown; this might contend with other methods that set nextIndex.
-        String numberOfSpaces = source.substring(cursor, cursor + source.substring(cursor).indexOf("\n") + 1);
-        cursor += numberOfSpaces.length();
-        nextIndex = Integer.valueOf(numberOfSpaces.trim());
-
-        return replaceOffMap.get(uuid.trim());
-    }
-
-    private CobolPreprocessor.ReplaceByStatement getReplaceBy() {
-        replaceByStartComment();
-
-        parseComment(uuidComment);
-
-        String uuid = getUuid();
-
-        parseComment(replaceByStopComment);
-
-        sequenceArea();
-        indicatorArea();
-
-        String numberOfSpaces = source.substring(cursor, cursor + source.substring(cursor).indexOf("\n") + 1);
-        cursor += numberOfSpaces.length();
-        nextIndex = Integer.valueOf(numberOfSpaces.trim());
-
-        return replaceByMap.get(uuid.trim());
     }
 
     // The spec says compiler options cannot be continued and must be declared 1 per line.
@@ -6660,7 +6515,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
             indicatorArea();
             cursor += source.substring(cursor, cursor + source.substring(cursor).indexOf("\n") + 1).length();
 
-            CobolPreprocessor.CompilerOptions co = compilersOptionsMap.get(uuid);
+            CobolPreprocessor.CompilerOptions co = (CobolPreprocessor.CompilerOptions) preprocessorMap.get(uuid);
             if (co != null) {
                 compilerOptions.add(co);
             }
@@ -6670,14 +6525,14 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         return compilerOptions.isEmpty() ? emptyList() : compilerOptions;
     }
 
-    private CobolPreprocessor.EjectStatement getEjectStatement() {
-        parseFully(ejectStartComment);
+    private CobolPreprocessor getPreprocessorStatement() {
+        parseFully(preprocessorStartComment);
 
         parseComment(uuidComment);
 
         String uuid = getUuid();
 
-        parseComment(ejectStopComment);
+        parseComment(preprocessorStopComment);
 
         sequenceArea();
         indicatorArea();
@@ -6687,67 +6542,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         cursor += numberOfSpaces.length();
         nextIndex = Integer.valueOf(numberOfSpaces.trim());
 
-        return ejectMap.get(uuid.trim());
-    }
-
-    private CobolPreprocessor.ExecStatement getExecStatement() {
-        parseFully(execStartComment);
-
-        parseComment(uuidComment);
-
-        String uuid = getUuid();
-
-        parseComment(execStopComment);
-
-        sequenceArea();
-        indicatorArea();
-
-        // Unknown; this might contend with other methods that set nextIndex.
-        String numberOfSpaces = source.substring(cursor, cursor + source.substring(cursor).indexOf("\n") + 1);
-        cursor += numberOfSpaces.length();
-        nextIndex = Integer.valueOf(numberOfSpaces.trim());
-
-        return execMap.get(uuid.trim());
-    }
-
-    private CobolPreprocessor.SkipStatement getSkipStatement() {
-        parseFully(skipStartComment);
-
-        parseComment(uuidComment);
-
-        String uuid = getUuid();
-
-        parseComment(skipStopComment);
-
-        sequenceArea();
-        indicatorArea();
-
-        // Unknown; this might contend with other methods that set nextIndex.
-        String numberOfSpaces = source.substring(cursor, cursor + source.substring(cursor).indexOf("\n") + 1);
-        cursor += numberOfSpaces.length();
-        nextIndex = Integer.valueOf(numberOfSpaces.trim());
-
-        return skipMap.get(uuid.trim());
-    }
-
-    private CobolPreprocessor.TitleStatement getTitleStatement() {
-        parseFully(titleStartComment);
-
-        parseComment(uuidComment);
-
-        String uuid = getUuid();
-
-        parseComment(titleStopComment);
-
-        sequenceArea();
-        indicatorArea();
-
-        // Unknown; this might contend with other methods that set nextIndex.
-        String numberOfSpaces = source.substring(cursor, cursor + source.substring(cursor).indexOf("\n") + 1);
-        cursor += numberOfSpaces.length();
-        nextIndex = Integer.valueOf(numberOfSpaces.trim());
-
-        return titleMap.get(uuid.trim());
+        return preprocessorMap.get(uuid.trim());
     }
 
     private void parseComment(String comment) {

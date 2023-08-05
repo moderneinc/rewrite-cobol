@@ -16,6 +16,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public interface CobolPreprocessor extends Tree {
@@ -82,6 +83,8 @@ public interface CobolPreprocessor extends Tree {
             return withCharsetName(charset.name());
         }
 
+        Map<String, CobolPreprocessor> preprocessorStatements;
+        Map<String, Replacement> replacements;
         List<CobolPreprocessor> cobols;
 
         Word eof;

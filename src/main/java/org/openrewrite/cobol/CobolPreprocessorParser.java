@@ -42,17 +42,10 @@ public class CobolPreprocessorParser implements Parser {
     private List<SourceFile> copybooks;
 
     // Lazily loaded sets of the original source objects.
-    private Set<CobolPreprocessor.CopyStatement> copyStatements = null;
-    private Set<CobolPreprocessor.ReplaceByStatement> replaceRules = null;
-    private Set<CobolPreprocessor.ReplaceOffStatement> replaceOffs = null;
+    private Map<String, CobolPreprocessor> preprocessorMap = null;
     private Set<Replacement> replaces = null;
     private Set<Replacement> replaceAdditiveTypes = null;
     private Set<Replacement> replaceReductiveTypes = null;
-    private Set<CobolPreprocessor.CompilerOptions> compilerOptions = null;
-    private Set<CobolPreprocessor.EjectStatement> ejectStatements = null;
-    private Set<CobolPreprocessor.ExecStatement> execStatements = null;
-    private Set<CobolPreprocessor.SkipStatement> skipStatements = null;
-    private Set<CobolPreprocessor.TitleStatement> titleStatements = null;
 
     public CobolPreprocessorParser(CobolDialect cobolDialect,
                                    List<SourceFile> copybooks,
@@ -96,20 +89,16 @@ public class CobolPreprocessorParser implements Parser {
 
                         CobolPreprocessor.CompilationUnit preprocessedCU = parserVisitor.visitCompilationUnit(parser.compilationUnit());
 
-                        if (enableCopy) {
-                            PreprocessCopyVisitor<ExecutionContext> copyPhase = new PreprocessCopyVisitor<>(copybooks);
+                        PreprocessCopyVisitor<ExecutionContext> copyPhase = new PreprocessCopyVisitor<>(copybooks);
 
-                            // CU after copy includes the copied source.
-                            preprocessedCU = (CobolPreprocessor.CompilationUnit) copyPhase.visit(preprocessedCU, new InMemoryExecutionContext());
-                        }
+                        // CU after copy includes the copied source.
+                        preprocessedCU = (CobolPreprocessor.CompilationUnit) copyPhase.visit(preprocessedCU, new InMemoryExecutionContext());
+                        assert preprocessedCU != null;
 
-                        if (enableReplace) {
-                            PreprocessReplaceVisitor<ExecutionContext> replacePhase = new PreprocessReplaceVisitor<>();
+                        PreprocessReplaceVisitor<ExecutionContext> replacePhase = new PreprocessReplaceVisitor<>(preprocessedCU.getPreprocessorStatements(), preprocessedCU.getReplacements());
 
-                            // CU after replace has replaced words in each ReplaceArea based on the ReplaceClause.
-                            preprocessedCU = (CobolPreprocessor.CompilationUnit) replacePhase.visit(preprocessedCU, new InMemoryExecutionContext());
-                        }
-
+                        // CU after replace has replaced words in each ReplaceArea based on the ReplaceClause.
+                        preprocessedCU = (CobolPreprocessor.CompilationUnit) replacePhase.visit(preprocessedCU, new InMemoryExecutionContext());
                         assert preprocessedCU != null;
 
                         sample.stop(MetricsHelper.successTags(timer).register(Metrics.globalRegistry));
@@ -136,22 +125,6 @@ public class CobolPreprocessorParser implements Parser {
             }
         }
         return false;
-    }
-
-    @Override
-    public Parser reset() {
-        this.copyStatements = null;
-        this.compilerOptions = null;
-        this.ejectStatements = null;
-        this.execStatements = null;
-        this.replaceRules = null;
-        this.replaceOffs = null;
-        this.replaces = null;
-        this.replaceAdditiveTypes = null;
-        this.replaceReductiveTypes = null;
-        this.skipStatements = null;
-        this.titleStatements = null;
-        return this;
     }
 
     @Override
@@ -228,176 +201,5 @@ public class CobolPreprocessorParser implements Parser {
         public String getDslName() {
             return "preprocessCobol";
         }
-    }
-
-    public Set<CobolPreprocessor.CopyStatement> getCopyStatements(@Nullable CobolPreprocessor.CompilationUnit cu) {
-        if (copyStatements == null) {
-            getOriginalSources(cu);
-        }
-        return copyStatements;
-    }
-
-    public Set<CobolPreprocessor.ReplaceByStatement> getReplaceByStatements(@Nullable CobolPreprocessor.CompilationUnit cu) {
-        if (replaceRules == null) {
-            getOriginalSources(cu);
-        }
-        return replaceRules;
-    }
-
-    public Set<CobolPreprocessor.ReplaceOffStatement> getReplaceOffStatements(@Nullable CobolPreprocessor.CompilationUnit cu) {
-        if (replaceOffs == null) {
-            getOriginalSources(cu);
-        }
-        return replaceOffs;
-    }
-
-    public Set<Replacement> getReplaces(@Nullable CobolPreprocessor.CompilationUnit cu) {
-        if (replaces == null) {
-            getOriginalSources(cu);
-        }
-        return replaces;
-    }
-
-    public Set<Replacement> getReplaceAdditiveTypes(@Nullable CobolPreprocessor.CompilationUnit cu) {
-        if (replaceAdditiveTypes == null) {
-            getOriginalSources(cu);
-        }
-        return replaceAdditiveTypes;
-    }
-
-    public Set<Replacement> getReplaceReductiveTypes(@Nullable CobolPreprocessor.CompilationUnit cu) {
-        if (replaceReductiveTypes == null) {
-            getOriginalSources(cu);
-        }
-        return replaceReductiveTypes;
-    }
-
-    public Set<CobolPreprocessor.CompilerOptions> getCompilerOptions(@Nullable CobolPreprocessor.CompilationUnit cu) {
-        if (compilerOptions == null) {
-            getOriginalSources(cu);
-        }
-        return compilerOptions;
-    }
-
-    public Set<CobolPreprocessor.EjectStatement> getEjectStatements(@Nullable CobolPreprocessor.CompilationUnit cu) {
-        if (ejectStatements == null) {
-            getOriginalSources(cu);
-        }
-        return ejectStatements;
-    }
-
-    public Set<CobolPreprocessor.ExecStatement> getExecStatements(@Nullable CobolPreprocessor.CompilationUnit cu) {
-        if (execStatements == null) {
-            getOriginalSources(cu);
-        }
-        return execStatements;
-    }
-
-    public Set<CobolPreprocessor.SkipStatement> getSkipStatements(@Nullable CobolPreprocessor.CompilationUnit cu) {
-        if (skipStatements == null) {
-            getOriginalSources(cu);
-        }
-        return skipStatements;
-    }
-
-    public Set<CobolPreprocessor.TitleStatement> getTitleStatements(@Nullable CobolPreprocessor.CompilationUnit cu) {
-        if (titleStatements == null) {
-            getOriginalSources(cu);
-        }
-        return titleStatements;
-    }
-
-    public void getOriginalSources(@Nullable CobolPreprocessor.CompilationUnit cu) {
-        this.copyStatements = Collections.newSetFromMap(new IdentityHashMap<>());
-        this.replaceRules = Collections.newSetFromMap(new IdentityHashMap<>());
-        this.replaceOffs = Collections.newSetFromMap(new IdentityHashMap<>());
-        this.replaces = Collections.newSetFromMap(new IdentityHashMap<>());
-        this.replaceAdditiveTypes = Collections.newSetFromMap(new IdentityHashMap<>());
-        this.replaceReductiveTypes = Collections.newSetFromMap(new IdentityHashMap<>());
-        this.compilerOptions = Collections.newSetFromMap(new IdentityHashMap<>());
-        this.ejectStatements = Collections.newSetFromMap(new IdentityHashMap<>());
-        this.execStatements = Collections.newSetFromMap(new IdentityHashMap<>());
-        this.skipStatements = Collections.newSetFromMap(new IdentityHashMap<>());
-        this.titleStatements = Collections.newSetFromMap(new IdentityHashMap<>());
-
-        CobolPreprocessorIsoVisitor<ExecutionContext> visitor = new CobolPreprocessorIsoVisitor<ExecutionContext>() {
-
-            @Override
-            public CobolPreprocessor.CompilerOptions visitCompilerOptions(CobolPreprocessor.CompilerOptions cOptions,
-                                                                          ExecutionContext executionContext) {
-                compilerOptions.add(cOptions);
-                return super.visitCompilerOptions(cOptions, executionContext);
-            }
-
-            @Override
-            public CobolPreprocessor.CopyStatement visitCopyStatement(CobolPreprocessor.CopyStatement copyStatement,
-                                                                      ExecutionContext executionContext) {
-                copyStatements.add(copyStatement);
-                return super.visitCopyStatement(copyStatement, executionContext);
-            }
-
-            @Override
-            public CobolPreprocessor.EjectStatement visitEjectStatement(CobolPreprocessor.EjectStatement ejectStatement,
-                                                                        ExecutionContext executionContext) {
-                ejectStatements.add(ejectStatement);
-                return super.visitEjectStatement(ejectStatement, executionContext);
-            }
-
-            @Override
-            public CobolPreprocessor.ExecStatement visitExecStatement(CobolPreprocessor.ExecStatement execStatement,
-                                                                      ExecutionContext executionContext) {
-                execStatements.add(execStatement);
-                return super.visitExecStatement(execStatement, executionContext);
-            }
-
-            @Override
-            public CobolPreprocessor.ReplaceByStatement visitReplaceByStatement(CobolPreprocessor.ReplaceByStatement replaceByStatement,
-                                                                                ExecutionContext executionContext) {
-                replaceRules.add(replaceByStatement);
-                return super.visitReplaceByStatement(replaceByStatement, executionContext);
-            }
-
-            @Override
-            public CobolPreprocessor.ReplaceOffStatement visitReplaceOffStatement(CobolPreprocessor.ReplaceOffStatement replaceOffStatement,
-                                                                                  ExecutionContext executionContext) {
-                replaceOffs.add(replaceOffStatement);
-                return super.visitReplaceOffStatement(replaceOffStatement, executionContext);
-            }
-
-            @Override
-            public CobolPreprocessor.SkipStatement visitSkipStatement(CobolPreprocessor.SkipStatement skipStatement, ExecutionContext executionContext) {
-                skipStatements.add(skipStatement);
-                return super.visitSkipStatement(skipStatement, executionContext);
-            }
-
-            @Override
-            public CobolPreprocessor.TitleStatement visitTitleStatement(CobolPreprocessor.TitleStatement titleStatement, ExecutionContext executionContext) {
-                titleStatements.add(titleStatement);
-                return super.visitTitleStatement(titleStatement, executionContext);
-            }
-
-            @Override
-            public CobolPreprocessor.Word visitWord(CobolPreprocessor.Word word, ExecutionContext executionContext) {
-                Replacement replacement = word.getCobolWord().getReplacement();
-                if (replacement != null) {
-                    switch (replacement.getType()) {
-                        case EQUAL:
-                            replaces.add(replacement);
-                            break;
-                        case ADDITIVE:
-                            replaceAdditiveTypes.add(replacement);
-                            break;
-                        case REDUCTIVE:
-                            replaceReductiveTypes.add(replacement);
-                            break;
-                    }
-                }
-
-                return super.visitWord(word, executionContext);
-            }
-        };
-
-        visitor.visit(cu, new InMemoryExecutionContext());
-
     }
 }
