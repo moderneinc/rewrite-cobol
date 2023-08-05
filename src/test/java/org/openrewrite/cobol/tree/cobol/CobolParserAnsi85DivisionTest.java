@@ -371,7 +371,14 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
       """
         000000               SET NAME01,
                                  NAME02,
-                                 NAME03 TO TRUE.
+                                 NAME03, TO TRUE.
+        """,
+      // StringStatement
+      """
+        000000          STRING NAME01,
+                               NAME02,
+                               NAME03,
+                               DELIMITED BY SIZE INTO NEWNAME.
         """
     })
     void commaDelimitedStatements(String statement) {
