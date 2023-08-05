@@ -4321,14 +4321,15 @@ public class CobolSourcePrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
         CobolPreprocessor.CopyStatement copyStatement = null;
         for (CobolPreprocessor preprocessorStatement : word.getPreprocessorStatements()) {
             if (preprocessorStatement instanceof CobolPreprocessor.CopyStatement) {
-                copyStatement = (CobolPreprocessor.CopyStatement) preprocessorStatement;
+                if (!preprocessorStatement.getMarkers().findFirst(CopiedStatement.class).isPresent()) {
+                    copyStatement = (CobolPreprocessor.CopyStatement) preprocessorStatement;
+                }
             } else {
                 getCobolPreprocessorVisitor().visit(preprocessorStatement, p);
             }
         }
 
-        if (copyStatement == null && copiedWord.isPresent() ||
-                copyStatement!= null && copyStatement.getMarkers().findFirst(CopiedStatement.class).isPresent()) {
+        if (copyStatement == null && copiedWord.isPresent()) {
             return word;
         }
 

@@ -170,7 +170,6 @@ class CobolParserCopyTest extends CobolTest {
                      DATA DIVISION.                                                   *
                      LINKAGE SECTION.                                                 *
                          01  GRP-01.                                                  *
-              
                              COPY INCEPTION.                                          *
               
                     *******************************************************************
@@ -186,7 +185,6 @@ class CobolParserCopyTest extends CobolTest {
               DATA DIVISION.
               LINKAGE SECTION.
                   01  GRP-01.
-             
                       02  SUB-CALLED.
                           03  DN1  PICTURE X(6).
                           03  DN2  PICTURE X(6).
