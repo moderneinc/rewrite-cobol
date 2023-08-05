@@ -5067,7 +5067,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         return new Cobol.SetTo(
                 EMPTY,
                 Markers.EMPTY,
-                convertAll(ctx.setTo()),
+                convertAllList(ctx.COMMACHAR(), ctx.setTo()),
                 (Cobol.Word) visit(ctx.TO()),
                 convertAll(ctx.setToValue())
         );
@@ -5078,7 +5078,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         return new Cobol.SetUpDown(
                 EMPTY,
                 Markers.EMPTY,
-                convertAll(ctx.setTo()),
+                convertAllList(ctx.COMMACHAR(), ctx.setTo()),
                 wordsList(ctx.DOWN(), ctx.UP(), ctx.BY()),
                 (Name) visit(ctx.setByValue())
         );

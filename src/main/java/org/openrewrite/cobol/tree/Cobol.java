@@ -7107,7 +7107,7 @@ public interface Cobol extends Tree {
 
         Space prefix;
         Markers markers;
-        List<Identifier> identifiers;
+        List<Cobol> identifiers;
         Word to;
         List<Cobol> values;
 
@@ -7124,7 +7124,7 @@ public interface Cobol extends Tree {
 
         Space prefix;
         Markers markers;
-        List<Identifier> to;
+        List<Cobol> to;
         List<Word> operation;
         Name value;
 
