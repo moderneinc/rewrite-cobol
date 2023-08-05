@@ -263,7 +263,7 @@ fileControlParagraph
    ;
 
 fileControlEntry
-   : selectClause fileControlClause? (COMMACHAR? fileControlClause)*
+   : selectClause (fileControlClause COMMACHAR?)*
    ;
 
 selectClause
@@ -819,7 +819,7 @@ reportGroupSourceClause
    ;
 
 reportGroupSumClause
-   : SUM identifier (COMMACHAR? identifier)* (UPON dataName (COMMACHAR? dataName)*)?
+   : SUM (identifier COMMACHAR?)+ (UPON (dataName COMMACHAR?)+)?
    ;
 
 reportGroupTypeClause
@@ -1079,7 +1079,7 @@ dataUsingClause
    ;
 
 dataValueClause
-   : ((VALUE | VALUES) (IS | ARE)?)? dataValueInterval (COMMACHAR? dataValueInterval)*
+   : ((VALUE | VALUES) (IS | ARE)?)? (dataValueInterval COMMACHAR?)+
    ;
 
 dataValueInterval
@@ -1105,7 +1105,7 @@ procedureDivision
    ;
 
 procedureDivisionUsingClause
-   : (USING | CHAINING) procedureDivisionUsingParameter (COMMACHAR? procedureDivisionUsingParameter)*
+   : (USING | CHAINING) (procedureDivisionUsingParameter COMMACHAR?)+
    ;
 
 procedureDivisionGivingClause
@@ -1253,7 +1253,7 @@ callStatement
    ;
 
 callUsingPhrase
-   : USING callUsingParameter (COMMACHAR? callUsingParameter)*
+   : USING (callUsingParameter COMMACHAR?)+
    ;
 
 callUsingParameter
@@ -1300,7 +1300,7 @@ cancelCall
 
 // close statement
 closeStatement
-   : CLOSE closeFile (COMMACHAR? closeFile)*
+   : CLOSE (closeFile COMMACHAR?)+
    ;
 
 closeFile
@@ -1366,7 +1366,7 @@ disableStatement
 // display statement
 
 displayStatement
-   : DISPLAY displayOperand (COMMACHAR? displayOperand)* displayAt? displayUpon? displayWith? onExceptionClause? notOnExceptionClause? END_DISPLAY?
+   : DISPLAY (displayOperand COMMACHAR?)+ displayAt? displayUpon? displayWith? onExceptionClause? notOnExceptionClause? END_DISPLAY?
    ;
 
 displayOperand
@@ -1550,7 +1550,7 @@ ifElse
 // initialize statement
 
 initializeStatement
-   : INITIALIZE identifier (COMMACHAR? identifier)* initializeReplacingPhrase?
+   : INITIALIZE (identifier COMMACHAR?)+ initializeReplacingPhrase?
    ;
 
 initializeReplacingPhrase
@@ -1678,7 +1678,7 @@ moveStatement
    ;
 
 moveToStatement
-   : moveToSendingArea TO identifier (COMMACHAR? identifier)*
+   : moveToSendingArea TO (identifier COMMACHAR?)+
    ;
 
 moveToSendingArea
@@ -1732,7 +1732,7 @@ openStatement
    ;
 
 openInputStatement
-   : INPUT openInput (COMMACHAR? openInput)*
+   : INPUT (openInput COMMACHAR?)+
    ;
 
 openInput
@@ -1740,7 +1740,7 @@ openInput
    ;
 
 openOutputStatement
-   : OUTPUT openOutput (COMMACHAR? openOutput)*
+   : OUTPUT (openOutput COMMACHAR?)+
    ;
 
 openOutput
@@ -1748,11 +1748,11 @@ openOutput
    ;
 
 openIOStatement
-   : I_O fileName (COMMACHAR? fileName)*
+   : I_O (fileName COMMACHAR?)+
    ;
 
 openExtendStatement
-   : EXTEND fileName (COMMACHAR? fileName)*
+   : EXTEND (fileName COMMACHAR?)+
    ;
 
 // perform statement
@@ -1968,11 +1968,11 @@ setStatement
    ;
 
 setToStatement
-   : setTo (COMMACHAR? setTo)* TO setToValue+
+   : (setTo COMMACHAR?)+ TO setToValue+
    ;
 
 setUpDownByStatement
-   : setTo (COMMACHAR? setTo)* (UP BY | DOWN BY) setByValue
+   : (setTo COMMACHAR?)+ (UP BY | DOWN BY) setByValue
    ;
 
 setTo
@@ -2068,7 +2068,7 @@ stringStatement
    ;
 
 stringSendingPhrase
-   : stringSending (COMMACHAR? stringSending)* (stringDelimitedByPhrase | stringForPhrase)
+   : (stringSending COMMACHAR?)+ (stringDelimitedByPhrase | stringForPhrase)
    ;
 
 stringSending
@@ -2334,7 +2334,7 @@ conditionNameReference
    ;
 
 conditionNameSubscriptReference
-   : LPARENCHAR subscript (COMMACHAR? subscript)* RPARENCHAR
+   : LPARENCHAR (subscript COMMACHAR?)+ RPARENCHAR
    ;
 
 // relation ----------------------------------
@@ -2378,7 +2378,7 @@ tableCall
    ;
 
 tableCallSubscripts
-    : LPARENCHAR subscript (COMMACHAR? subscript)* RPARENCHAR
+    : LPARENCHAR (subscript COMMACHAR?)+ RPARENCHAR
     ;
 
 functionCall
@@ -2386,7 +2386,7 @@ functionCall
    ;
 
 functionCallArguments
-    : LPARENCHAR argument (COMMACHAR? argument)* RPARENCHAR
+    : LPARENCHAR (argument COMMACHAR?)+ RPARENCHAR
     ;
 
 referenceModifier
