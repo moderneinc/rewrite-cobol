@@ -6002,7 +6002,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         for (T tree : trees) {
             converted.add(convert.apply(tree));
         }
-        return converted;
+        return converted.isEmpty() ? emptyList() : converted;
     }
 
     @SafeVarargs
@@ -6039,7 +6039,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         for (ParseTree pt : parseTrees) {
             parsed.add((Cobol) visit(pt));
         }
-        return parsed;
+        return parsed.isEmpty() ? emptyList() : parsed;
     }
 
     /**

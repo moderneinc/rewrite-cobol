@@ -14,7 +14,6 @@ import org.openrewrite.internal.ListUtils;
 import org.openrewrite.marker.Markers;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.openrewrite.Tree.randomId;
 import static org.openrewrite.cobol.tree.Space.EMPTY;
@@ -28,10 +27,13 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
         CobolPreprocessor.CopyStatement c = super.visitCopyStatement(copyStatement, p);
 
         if (c.getCopybook() != null) {
-            List<CobolPreprocessor.ReplacingPhrase> phrases = c.getCobols().stream()
-                    .filter(is -> is instanceof CobolPreprocessor.ReplacingPhrase)
-                    .map(it -> (CobolPreprocessor.ReplacingPhrase) it)
-                    .collect(Collectors.toList());
+            List<CobolPreprocessor.ReplacingPhrase> phrases = new ArrayList<>();
+            for (CobolPreprocessor is : c.getCobols()) {
+                if (is instanceof CobolPreprocessor.ReplacingPhrase) {
+                    CobolPreprocessor.ReplacingPhrase replacingPhrase = (CobolPreprocessor.ReplacingPhrase) is;
+                    phrases.add(replacingPhrase);
+                }
+            }
 
             if (!phrases.isEmpty()) {
                 Map<List<CobolPreprocessor.Word>, List<CobolPreprocessor.Word>> replacements = new LinkedHashMap<>();
