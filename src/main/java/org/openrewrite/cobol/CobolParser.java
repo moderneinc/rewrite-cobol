@@ -92,7 +92,11 @@ public class CobolParser implements Parser {
                     try {
                         EncodingDetectingInputStream is = sourceFile.getSource(ctx);
                         cobolPreprocessorParser.reset();
-                        CobolPreprocessor.CompilationUnit preprocessedCU = (CobolPreprocessor.CompilationUnit) cobolPreprocessorParser.parseInputs(singletonList(sourceFile), relativeTo, ctx).findFirst().orElse(null);
+                        SourceFile preprocessedCU = cobolPreprocessorParser.parseInputs(singletonList(sourceFile), relativeTo, ctx).collect(toList()).get(0);
+                        assert preprocessedCU != null;
+                        if (preprocessedCU instanceof ParseError) {
+                            return preprocessedCU;
+                        }
 
                         // Print processed code to parse COBOL.
                         PrintOutputCapture<ExecutionContext> cobolParserOutput = new PrintOutputCapture<>(new InMemoryExecutionContext());
@@ -118,17 +122,8 @@ public class CobolParser implements Parser {
                                 is.getCharset(),
                                 is.isCharsetBomMarked(),
                                 cobolDialect,
-                                cobolPreprocessorParser.getCopyStatements(preprocessedCU),
-                                cobolPreprocessorParser.getReplaceByStatements(preprocessedCU),
-                                cobolPreprocessorParser.getReplaceOffStatements(preprocessedCU),
-                                cobolPreprocessorParser.getReplaces(preprocessedCU),
-                                cobolPreprocessorParser.getReplaceAdditiveTypes(preprocessedCU),
-                                cobolPreprocessorParser.getReplaceReductiveTypes(preprocessedCU),
-                                cobolPreprocessorParser.getCompilerOptions(preprocessedCU),
-                                cobolPreprocessorParser.getEjectStatements(preprocessedCU),
-                                cobolPreprocessorParser.getExecStatements(preprocessedCU),
-                                cobolPreprocessorParser.getSkipStatements(preprocessedCU),
-                                cobolPreprocessorParser.getTitleStatements(preprocessedCU)
+                                ((CobolPreprocessor.CompilationUnit) preprocessedCU).getPreprocessorStatements(),
+                                ((CobolPreprocessor.CompilationUnit) preprocessedCU).getReplacements()
                         ).visitCompilationUnit(parser.compilationUnit());
 
                         sample.stop(MetricsHelper.successTags(timer).register(Metrics.globalRegistry));

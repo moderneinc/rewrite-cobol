@@ -41,14 +41,6 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
     public static final String REPLACE_STOP_KEY = "__REPLACE_STOP__";
     public static final String REPLACE_UUID_KEY = "__REPLACE_UUID__";
 
-    public static final String UUID_KEY = "__UUID__";
-
-    public static final String REPLACE_BY_START_KEY = "__REPLACE_BY_START__";
-    public static final String REPLACE_BY_STOP_KEY = "__REPLACE_BY_STOP__";
-
-    public static final String REPLACE_OFF_START_KEY = "__REPLACE_OFF_START__";
-    public static final String REPLACE_OFF_STOP_KEY = "__REPLACE_OFF_STOP__";
-
     public static final String REPLACE_TYPE_ADDITIVE_START_KEY = "__REPLACE_TYPE_ADDITIVE_START__";
     public static final String REPLACE_TYPE_ADDITIVE_STOP_KEY = "__REPLACE_TYPE_ADDITIVE_STOP__";
     public static final String REPLACE_ADD_WORD_START_KEY = "__REPLACE_ADD_WORD_START__";
@@ -62,17 +54,10 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
     public static final String COMPILER_OPTIONS_START_KEY = "__COMPILER_OPTIONS_START__";
     public static final String COMPILER_OPTIONS_STOP_KEY = "__COMPILER_OPTIONS_STOP__";
 
-    public static final String EJECT_START_KEY = "__EJECT_START__";
-    public static final String EJECT_STOP_KEY = "__EJECT_STOP__";
+    public static final String PREPROCESSOR_START_KEY = "__PREPROCESSOR_START__";
+    public static final String PREPROCESSOR_STOP_KEY = "__PREPROCESSOR_STOP__";
 
-    public static final String EXEC_START__KEY = "__EXEC_START__";
-    public static final String EXEC_STOP_KEY = "__EXEC_STOP__";
-
-    public static final String SKIP_START_KEY = "__SKIP_START__";
-    public static final String SKIP_STOP_KEY = "__SKIP_STOP__";
-
-    public static final String TITLE_START_KEY = "__TITLE_START__";
-    public static final String TITLE_STOP_KEY = "__TITLE_STOP__";
+    public static final String UUID_KEY = "__UUID__";
 
     private final CobolSourcePrinter<P> cobolSourcePrinter;
     private final CobolDialect cobolDialect;
@@ -93,12 +78,6 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
 
     private String uuidComment = null;
 
-    private String replaceByStartComment = null;
-    private String replaceByStopComment = null;
-
-    private String replaceOffStartComment = null;
-    private String replaceOffStopComment = null;
-
     private String replaceTypeAdditiveStartComment = null;
     private String replaceTypeAdditiveStopComment = null;
     private String replaceAddWordStartComment = null;
@@ -113,17 +92,8 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
     private String compilerOptionsStartComment = null;
     private String compilerOptionsStopComment = null;
 
-    private String ejectStartComment = null;
-    private String ejectStopComment = null;
-
-    private String execStartComment = null;
-    private String execStopComment = null;
-
-    private String skipStartComment = null;
-    private String skipStopComment = null;
-
-    private String titleStartComment = null;
-    private String titleStopComment = null;
+    private String preprocessorStartComment = null;
+    private String preprocessorStopComment = null;
 
     private final CobolPreprocessorSourcePrinter<ExecutionContext> statementPrinter = new CobolPreprocessorSourcePrinter<>(false);
     private final CobolSourcePrinter<ExecutionContext> cobolStatementPrinter = new CobolSourcePrinter<>(false);
@@ -255,93 +225,62 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
 
     @Override
     public CobolPreprocessor visitEjectStatement(CobolPreprocessor.EjectStatement ejectStatement, PrintOutputCapture<P> p) {
-        if (printColumns) {
-            int curIndex = getCurrentIndex(p.getOut());
-            curIndex = curIndex == -1 ? 0 : curIndex;
-            addStartKey(getEjectStartComment(), curIndex, p);
-            addUuidKey(getUuidComment(), ejectStatement.getId(), p);
-            addStopComment(getEjectStopComment(), null, curIndex, p);
-        }
+        addPreprocessorStatementTemplate(ejectStatement, p);
         return ejectStatement;
     }
 
     @Override
     public CobolPreprocessor visitExecStatement(CobolPreprocessor.ExecStatement execStatement, PrintOutputCapture<P> p) {
-        if (printColumns) {
-            int curIndex = getCurrentIndex(p.getOut());
-            curIndex = curIndex == -1 ? 0 : curIndex;
-            addStartKey(getExecStartComment(), curIndex, p);
-            addUuidKey(getUuidComment(), execStatement.getId(), p);
-            addStopComment(getExecStopComment(), null, curIndex, p);
-        }
+        addPreprocessorStatementTemplate(execStatement, p);
         return execStatement;
     }
 
     @Override
     public CobolPreprocessor visitReplaceArea(CobolPreprocessor.ReplaceArea replaceArea, PrintOutputCapture<P> p) {
-        if (printColumns) {
-            replaceByTemplate(replaceArea, p);
-        }
+        visit(replaceArea.getReplaceByStatement(), p);
 
         if (replaceArea.getCobols() != null) {
             for (CobolPreprocessor cobol : replaceArea.getCobols()) {
                 visit(cobol, p);
             }
         }
+
         visit(replaceArea.getReplaceOffStatement(), p);
         return replaceArea;
     }
 
-    private void replaceByTemplate(CobolPreprocessor.ReplaceArea replaceArea, PrintOutputCapture<P> p) {
-        CobolPreprocessor.ReplaceByStatement replaceByStatement = replaceArea.getReplaceByStatement();
-
-        // Save the current index to ensure the text that follows the ReplaceByStatement will be aligned correctly.
-        int curIndex = getCurrentIndex(p.getOut());
-
-        addStartKey(getReplaceByStartComment(), curIndex, p);
-        addUuidKey(getUuidComment(), replaceByStatement.getId(), p);
-        addStopComment(getReplaceByStopComment(), replaceArea.getReplaceByStatement(), curIndex, p);
+    @Override
+    public CobolPreprocessor visitReplaceByStatement(CobolPreprocessor.ReplaceByStatement replaceByStatement, PrintOutputCapture<P> p) {
+        addPreprocessorStatementTemplate(replaceByStatement, p);
+        return replaceByStatement;
     }
 
     @Override
     public CobolPreprocessor visitReplaceOffStatement(CobolPreprocessor.ReplaceOffStatement replaceOffStatement, PrintOutputCapture<P> p) {
-        if (printColumns) {
-            replaceOffTemplate(replaceOffStatement, p);
-        }
+        addPreprocessorStatementTemplate(replaceOffStatement, p);
         return replaceOffStatement;
-    }
-
-    private void replaceOffTemplate(CobolPreprocessor.ReplaceOffStatement replaceOffStatement, PrintOutputCapture<P> p) {
-        // Save the current index to ensure the text that follows the ReplaceOffStatement will be aligned correctly.
-        int curIndex = getCurrentIndex(p.getOut());
-
-        addStartKey(getReplaceOffStartComment(), curIndex, p);
-        addUuidKey(getUuidComment(), replaceOffStatement.getId(), p);
-        addStopComment(getReplaceOffStopComment(), replaceOffStatement, curIndex, p);
     }
 
     @Override
     public CobolPreprocessor visitSkipStatement(CobolPreprocessor.SkipStatement skipStatement, PrintOutputCapture<P> p) {
-        if (printColumns) {
-            int curIndex = getCurrentIndex(p.getOut());
-            curIndex = curIndex == -1 ? 0 : curIndex;
-            addStartKey(getSkipStartComment(), curIndex, p);
-            addUuidKey(getUuidComment(), skipStatement.getId(), p);
-            addStopComment(getSkipStopComment(), null, curIndex, p);
-        }
+        addPreprocessorStatementTemplate(skipStatement, p);
         return skipStatement;
     }
 
     @Override
     public CobolPreprocessor visitTitleStatement(CobolPreprocessor.TitleStatement titleStatement, PrintOutputCapture<P> p) {
+        addPreprocessorStatementTemplate(titleStatement, p);
+        return titleStatement;
+    }
+
+    private void addPreprocessorStatementTemplate(CobolPreprocessor cobolPreprocessor, PrintOutputCapture<P> p) {
         if (printColumns) {
             int curIndex = getCurrentIndex(p.getOut());
             curIndex = curIndex == -1 ? 0 : curIndex;
-            addStartKey(getTitleStartComment(), curIndex, p);
-            addUuidKey(getUuidComment(), titleStatement.getId(), p);
-            addStopComment(getTitleStopComment(), null, curIndex, p);
+            addStartKey(getPreprocessorStartComment(), curIndex, p);
+            addUuidKey(getUuidComment(), cobolPreprocessor.getId(), p);
+            addStopComment(getPreprocessorStopComment(), null, curIndex, p);
         }
-        return titleStatement;
     }
 
     @Override
@@ -807,39 +746,11 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
         return replaceUuidComment;
     }
 
-    public String getReplaceByStartComment() {
-        if (replaceByStartComment == null) {
-            replaceByStartComment = getTemplateComment(REPLACE_BY_START_KEY);
-        }
-        return replaceByStartComment;
-    }
-
-    public String getReplaceByStopComment() {
-        if (replaceByStopComment == null) {
-            replaceByStopComment = getTemplateComment(REPLACE_BY_STOP_KEY);
-        }
-        return replaceByStopComment;
-    }
-
     public String getReplaceAddedWhitespaceComment() {
         if (replaceAddedWhitespaceComment == null) {
             replaceAddedWhitespaceComment = getTemplateComment(REPLACE_ADDED_WHITESPACE_KEY);
         }
         return replaceAddedWhitespaceComment;
-    }
-
-    public String getReplaceOffStartComment() {
-        if (replaceOffStartComment == null) {
-            replaceOffStartComment = getTemplateComment(REPLACE_OFF_START_KEY);
-        }
-        return replaceOffStartComment;
-    }
-
-    public String getReplaceOffStopComment() {
-        if (replaceOffStopComment == null) {
-            replaceOffStopComment = getTemplateComment(REPLACE_OFF_STOP_KEY);
-        }
-        return replaceOffStopComment;
     }
 
     public String getReplaceAddWordStartComment() {
@@ -898,60 +809,18 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
         return compilerOptionsStopComment;
     }
 
-    public String getEjectStartComment() {
-        if (ejectStartComment == null) {
-            ejectStartComment = getTemplateComment(EJECT_START_KEY);
+    public String getPreprocessorStartComment() {
+        if (preprocessorStartComment == null) {
+            preprocessorStartComment = getTemplateComment(PREPROCESSOR_START_KEY);
         }
-        return ejectStartComment;
+        return preprocessorStartComment;
     }
 
-    public String getEjectStopComment() {
-        if (ejectStopComment == null) {
-            ejectStopComment = getTemplateComment(EJECT_STOP_KEY);
+    public String getPreprocessorStopComment() {
+        if (preprocessorStopComment == null) {
+            preprocessorStopComment = getTemplateComment(PREPROCESSOR_STOP_KEY);
         }
-        return ejectStopComment;
-    }
-
-    public String getExecStartComment() {
-        if (execStartComment == null) {
-            execStartComment = getTemplateComment(EXEC_START__KEY);
-        }
-        return execStartComment;
-    }
-
-    public String getExecStopComment() {
-        if (execStopComment == null) {
-            execStopComment = getTemplateComment(EXEC_STOP_KEY);
-        }
-        return execStopComment;
-    }
-
-    public String getSkipStartComment() {
-        if (skipStartComment == null) {
-            skipStartComment = getTemplateComment(SKIP_START_KEY);
-        }
-        return skipStartComment;
-    }
-
-    public String getSkipStopComment() {
-        if (skipStopComment == null) {
-            skipStopComment = getTemplateComment(SKIP_STOP_KEY);
-        }
-        return skipStopComment;
-    }
-
-    public String getTitleStartComment() {
-        if (titleStartComment == null) {
-            titleStartComment = getTemplateComment(TITLE_START_KEY);
-        }
-        return titleStartComment;
-    }
-
-    public String getTitleStopComment() {
-        if (titleStopComment == null) {
-            titleStopComment = getTemplateComment(TITLE_STOP_KEY);
-        }
-        return titleStopComment;
+        return preprocessorStopComment;
     }
 
     public String getUuidComment() {

@@ -29,7 +29,6 @@ public class PreprocessCopyVisitor<P> extends CobolPreprocessorIsoVisitor<P> {
 
     public PreprocessCopyVisitor(List<SourceFile> copybooks) {
         copybooks.forEach(it -> {
-            // Note: this implementation ASSUMES copybooks are resolved by FileName and will require changes.
             String fileName = it.getSourcePath().getFileName().toString();
             this.copybooks.putIfAbsent(fileName.substring(0, fileName.indexOf(".")), it);
         });
@@ -51,6 +50,7 @@ public class PreprocessCopyVisitor<P> extends CobolPreprocessorIsoVisitor<P> {
         if (copyStack.size() > 1) {
             c = c.withMarkers(c.getMarkers().addIfAbsent(new CopiedStatement(randomId())));
         }
+
         copyStack.pop();
         return c;
     }

@@ -22,6 +22,15 @@ import static org.openrewrite.cobol.tree.Space.EMPTY;
 @Value
 public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> {
 
+    Map<String, CobolPreprocessor> preprocessorMap;
+    Map<String, Replacement> replaceMap;
+
+    public PreprocessReplaceVisitor(Map<String, CobolPreprocessor> preprocessorMap,
+                                    Map<String, Replacement> replaceMap) {
+        this.preprocessorMap = preprocessorMap;
+        this.replaceMap = replaceMap;
+    }
+
     @Override
     public CobolPreprocessor.CopyStatement visitCopyStatement(CobolPreprocessor.CopyStatement copyStatement, P p) {
         CobolPreprocessor.CopyStatement c = super.visitCopyStatement(copyStatement, p);
@@ -47,7 +56,7 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
                     c = c.withCopybook(c.getCopybook().withLst(ListUtils.map(c.getCopybook().getLst(), preprocessor -> {
                         findReplaceableAreasVisitor.visit(preprocessor, replaceWords);
                         if (!replaceWords.isEmpty()) {
-                            ReplaceVisitor replaceVisitor = new ReplaceVisitor(replaceWords, entry.getValue());
+                            ReplaceVisitor replaceVisitor = new ReplaceVisitor(replaceWords, entry.getValue(), replaceMap);
                             replaceWords.clear();
                             return replaceVisitor.visit(preprocessor, new InMemoryExecutionContext(), getCursor());
                         }
@@ -56,6 +65,8 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
                 }
             }
         }
+
+        preprocessorMap.put(c.getId().toString(), c);
         return c;
     }
 
@@ -74,7 +85,7 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
             ListUtils.map(r.getCobols(), it -> findReplaceableAreasVisitor.visit(it, replaceWords, getCursor()));
 
             if (!replaceWords.isEmpty()) {
-                ReplaceVisitor replaceVisitor = new ReplaceVisitor(replaceWords, entry.getValue());
+                ReplaceVisitor replaceVisitor = new ReplaceVisitor(replaceWords, entry.getValue(), replaceMap);
                 r = r.withCobols(ListUtils.map(r.getCobols(), it -> replaceVisitor.visit(it, new InMemoryExecutionContext(), getCursor())));
             }
         }
@@ -132,6 +143,7 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
     }
 
     private static class ReplaceVisitor extends CobolPreprocessorIsoVisitor<ExecutionContext> {
+        private final Map<String, Replacement> replaceMap;
         // A replacement rule may match multiple sets of words, but will be changed to 1 output.
         private final Map<CobolPreprocessor.Word, List<CobolPreprocessor.Word>> from;
         private final List<CobolPreprocessor.Word> to;
@@ -144,12 +156,15 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
         boolean inMatch = false;
 
         public ReplaceVisitor(List<List<CobolPreprocessor.Word>> from,
-                              List<CobolPreprocessor.Word> to) {
+                              List<CobolPreprocessor.Word> to,
+                              Map<String, Replacement> replaceMap) {
             this.from = new IdentityHashMap<>(from.size());
             from.forEach(it -> this.from.put(it.get(0), it));
 
             this.to = to;
             this.replacementType = init();
+
+            this.replaceMap = replaceMap;
         }
 
         @Override
@@ -179,6 +194,7 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
                             Markers.EMPTY,
                             Collections.singletonList(new Replacement.OriginalWord(word.getCobolWord(), isEmpty)),
                             Replacement.Type.EQUAL, isCopiedSource);
+                    replaceMap.put(replacement.getId().toString(), replacement);
                     word = word.withCobolWord(word.getCobolWord().withReplacement(replacement));
                     word = word.withCobolWord(word.getCobolWord().withWord(toWord.getCobolWord().getWord()));
                 }
@@ -201,6 +217,7 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
                                     Markers.EMPTY,
                                     Collections.singletonList(new Replacement.OriginalWord(word.getCobolWord(), isEmpty)),
                                     Replacement.Type.EQUAL, isCopiedSource);
+                            replaceMap.put(replacement.getId().toString(), replacement);
                             word = word.withCobolWord(word.getCobolWord().withReplacement(replacement));
                             word = word.withCobolWord(word.getCobolWord().withWord(toWord.getCobolWord().getWord()));
                         }
@@ -221,6 +238,7 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
                                     Markers.EMPTY,
                                     Collections.singletonList(new Replacement.OriginalWord(word.getCobolWord(), isEmpty)),
                                     Replacement.Type.EQUAL, isCopiedSource);
+                            replaceMap.put(replacement.getId().toString(), replacement);
                             word = word.withCobolWord(word.getCobolWord().withReplacement(replacement));
                             word = word.withCobolWord(word.getCobolWord().withWord(toWord.getCobolWord().getWord()));
                         }
@@ -243,6 +261,7 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
                     boolean isCopiedSource = getCursor().dropParentUntil(is -> is instanceof CobolPreprocessor.CopyStatement ||
                             is instanceof CobolPreprocessor.ReplaceArea).getValue() instanceof CobolPreprocessor.CopyStatement;
                     replaceReductiveType = new Replacement(randomId(), Markers.EMPTY, new ArrayList<>(), Replacement.Type.REDUCTIVE, isCopiedSource);
+                    replaceMap.put(replaceReductiveType.getId().toString(), replaceReductiveType);
                     if (from.containsKey(word)) {
                         inMatch = true;
                         current = from.get(word);
@@ -265,6 +284,7 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
                                         Collections.singletonList(originalWord),
                                         Replacement.Type.EQUAL,
                                         isCopiedSource);
+                                replaceMap.put(replacement.getId().toString(), replacement);
                                 word = word.withCobolWord(word.getCobolWord().withReplacement(replacement));
                                 word = word.withCobolWord(word.getCobolWord().withWord(toWord.getCobolWord().getWord()));
                             }
@@ -337,7 +357,7 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
                                     Markers.EMPTY,
                                     Collections.singletonList(new Replacement.OriginalWord(word.getCobolWord(), isEmpty)),
                                     Replacement.Type.EQUAL, isCopiedSource);
-
+                            replaceMap.put(replacement.getId().toString(), replacement);
                             word = word.withCobolWord(word.getCobolWord().withReplacement(replacement));
                             word = word.withCobolWord(word.getCobolWord().withWord(toWord.getCobolWord().getWord()));
                         }
@@ -359,6 +379,7 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
                                         Markers.EMPTY,
                                         Collections.singletonList(new Replacement.OriginalWord(word.getCobolWord(), isEmpty)),
                                         Replacement.Type.EQUAL, isCopiedSource);
+                                replaceMap.put(replacement.getId().toString(), replacement);
                                 if (word.getPrefix().isEmpty() && !toWord.getPrefix().isEmpty()) {
                                     // Add the prefix of toWord so that words are separated correctly.
                                     word = word.withPrefix(toWord.getPrefix());
@@ -396,6 +417,7 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
                             additiveReplaces.add(originalWord);
                         }
                         Replacement replaceAdditiveType = new Replacement(randomId(), Markers.EMPTY, additiveReplaces, Replacement.Type.ADDITIVE, isCopiedSource);
+                        replaceMap.put(replaceAdditiveType.getId().toString(), replaceAdditiveType);
                         word = word.withCobolWord(word.getCobolWord().withReplacement(replaceAdditiveType));
 
                         inMatch = false;
