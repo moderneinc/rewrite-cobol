@@ -1,3 +1,2 @@
-000000         02  SUB-CALLED.
-                   COPY INCEPTION_2.
-                   03  DN3  PICTURE X(6).
+000000         COPY INCEPTION_2.
+                   COPY INCEPTION_3.
