@@ -46,7 +46,7 @@ public class FindRelationshipsTest extends CobolTest {
               """,
             (spec) -> spec.path("LINKEDIT1")),
           text("""
-            BIND PACKAGE(PROD0) OWNER(MJJ100S) -                        \s
+            BIND PACKAGE(PROD0) OWNER(SBS100S) -                        \s
                QUALIFIER(SBS100S) MEMBER(IC201A) -                      \s
                SQLERROR(NOPACKAGE) VALIDATE(BIND) FLAG(I) ISOLATION(CS) -
                RELEASE(COMMIT) EXPLAIN(YES) CURRENTDATA(YES) -          \s
@@ -55,16 +55,16 @@ public class FindRelationshipsTest extends CobolTest {
             """,
             (spec) -> spec.path("BINDCARDPACKAGE")),
           text("""
-                BIND PLAN(LINKEDIT1) OWNER(SBS100S) -            \s
-                   QUALIFIER(SBS100S) -                         \s
-                   PKLIST(PROD0.*)  -                           \s
-                   VALIDATE(BIND)        -                      \s
-                   FLAG(I) ISOLATION(CS) -                      \s
-                   CACHESIZE(0) -                               \s
-                   ACQUIRE(USE) -                               \s
-                   RELEASE(COMMIT) EXPLAIN(YES) CURRENTDATA(YES) -
-                   ACTION(REPLACE) RETAIN -                     \s
-                   ENABLE(*)    \s
+              BIND PLAN(LINKEDIT1) OWNER(SBS100S) -            \s
+                 QUALIFIER(SBS100S) -                         \s
+                 PKLIST(PROD0.*)  -                           \s
+                 VALIDATE(BIND)        -                      \s
+                 FLAG(I) ISOLATION(CS) -                      \s
+                 CACHESIZE(0) -                               \s
+                 ACQUIRE(USE) -                               \s
+                 RELEASE(COMMIT) EXPLAIN(YES) CURRENTDATA(YES) -
+                 ACTION(REPLACE) RETAIN -                     \s
+                 ENABLE(*)    \s
               """,
             (spec) -> spec.path("BINDCARDPLAN"))
         );
