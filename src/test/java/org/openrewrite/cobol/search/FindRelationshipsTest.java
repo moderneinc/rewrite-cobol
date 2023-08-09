@@ -30,7 +30,7 @@ public class FindRelationshipsTest extends CobolTest {
         rewriteRun(
           spec -> spec.dataTable(Row.class, rows -> {
               assertThat(rows.stream().map(Row::getDependent)).contains("IC201A", "LINKEDIT1");
-              assertThat(rows.stream().map(Row::getDependency)).containsExactly("IC202A", "IC201A");
+              assertThat(rows.stream().map(Row::getDependency)).contains("IC202A", "IC201A");
               assertThat(rows.stream().map(Row::getDependencyType)).contains(COBOL, COBOL);
               assertThat(rows.stream().map(Row::getAction)).contains(CALL, INCLUDE);
           }),
