@@ -46,7 +46,8 @@ public class CobolRelationships extends DataTable<CobolRelationships.Row> {
 
     public enum ResourceType {
         COBOL,
-        COPYBOOK
+        COPYBOOK,
+        LINKEDIT
     }
 
     public enum ResourceAction {
@@ -58,5 +59,9 @@ public class CobolRelationships extends DataTable<CobolRelationships.Row> {
          * Program call
          */
         CALL,
+        /**
+         * Link-Edit card includes COBOL program
+         */
+        INCLUDE,
     }
 }

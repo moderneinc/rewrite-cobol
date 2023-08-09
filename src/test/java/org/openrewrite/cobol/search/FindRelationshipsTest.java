@@ -14,10 +14,9 @@ import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openrewrite.cobol.Assertions.cobol;
-import static org.openrewrite.cobol.table.CobolRelationships.ResourceAction.CALL;
-import static org.openrewrite.cobol.table.CobolRelationships.ResourceAction.COPY;
-import static org.openrewrite.cobol.table.CobolRelationships.ResourceType.COBOL;
-import static org.openrewrite.cobol.table.CobolRelationships.ResourceType.COPYBOOK;
+import static org.openrewrite.cobol.table.CobolRelationships.ResourceAction.*;
+import static org.openrewrite.cobol.table.CobolRelationships.ResourceType.*;
+import static org.openrewrite.test.SourceSpecs.text;
 
 public class FindRelationshipsTest extends CobolTest {
 
@@ -30,16 +29,22 @@ public class FindRelationshipsTest extends CobolTest {
     void IC201A() {
         rewriteRun(
           spec -> spec.dataTable(Row.class, rows -> {
-              assertThat(rows.stream().map(Row::getDependent)).containsOnly("IC201A.CBL");
-              assertThat(rows.stream().map(Row::getDependency)).containsOnly("IC202A");
-              assertThat(rows.stream().map(Row::getDependencyType)).containsOnly(COBOL);
-              assertThat(rows.stream().map(Row::getAction)).containsOnly(CALL);
+              assertThat(rows.stream().map(Row::getDependent)).contains("IC201A", "LINKEDIT1");
+              assertThat(rows.stream().map(Row::getDependency)).containsExactly("IC202A", "IC201A");
+              assertThat(rows.stream().map(Row::getDependencyType)).contains(COBOL, COBOL);
+              assertThat(rows.stream().map(Row::getAction)).contains(CALL, INCLUDE);
           }),
           cobol(
             getNistResource("IC201A.CBL"),
             "",
             spec -> spec.after(s -> s).path("IC201A.CBL")
-          )
+          ),
+          text("""
+              *
+              INCLUDE OBJLIB(IC201A)    MODULE FOO
+              *INCLUDE OBJLIB(ABCD02)
+              """,
+            (spec) -> spec.path("LINKEDIT1"))
         );
     }
 
@@ -47,7 +52,7 @@ public class FindRelationshipsTest extends CobolTest {
     void SM206A() {
         rewriteRun(
           spec -> spec.dataTable(Row.class, rows -> {
-              assertThat(rows.stream().map(Row::getDependent)).containsOnly("SM206A.CBL");
+              assertThat(rows.stream().map(Row::getDependent)).containsOnly("SM206A");
               assertThat(rows.stream().map(Row::getDependency))
                 .containsExactly(IntStream.range(1, 10).mapToObj(n -> "KP00" + n).toArray(String[]::new));
               assertThat(rows.stream().map(Row::isDependencyMissing)).containsOnly(false);
