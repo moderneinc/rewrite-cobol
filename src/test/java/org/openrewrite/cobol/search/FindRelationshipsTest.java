@@ -29,10 +29,10 @@ public class FindRelationshipsTest extends CobolTest {
     void IC201A() {
         rewriteRun(
           spec -> spec.dataTable(Row.class, rows -> {
-              assertThat(rows.stream().map(Row::getDependent)).contains("IC201A", "LINKEDIT1");
-              assertThat(rows.stream().map(Row::getDependency)).contains("IC202A", "IC201A");
-              assertThat(rows.stream().map(Row::getDependencyType)).contains(COBOL, COBOL);
-              assertThat(rows.stream().map(Row::getAction)).contains(CALL, INCLUDE);
+              assertThat(rows.stream().map(Row::getDependent)).contains("IC201A", "LINKEDIT1", "BINDCARDPACKAGE", "BINDCARDPLAN");
+              assertThat(rows.stream().map(Row::getDependency)).contains("IC202A", "IC201A", "LINKEDIT1");
+              assertThat(rows.stream().map(Row::getDependencyType)).contains(COBOL, COBOL, LINKEDIT);
+              assertThat(rows.stream().map(Row::getAction)).contains(CALL, INCLUDE, PLAN, MEMBER);
           }),
           cobol(
             getNistResource("IC201A.CBL"),
@@ -44,7 +44,29 @@ public class FindRelationshipsTest extends CobolTest {
               INCLUDE OBJLIB(IC201A)    MODULE FOO
               *INCLUDE OBJLIB(ABCD02)
               """,
-            (spec) -> spec.path("LINKEDIT1"))
+            (spec) -> spec.path("LINKEDIT1")),
+          text("""
+            BIND PACKAGE(PROD0) OWNER(MJJ100S) -                        \s
+               QUALIFIER(SBS100S) MEMBER(IC201A) -                      \s
+               SQLERROR(NOPACKAGE) VALIDATE(BIND) FLAG(I) ISOLATION(CS) -
+               RELEASE(COMMIT) EXPLAIN(YES) CURRENTDATA(YES) -          \s
+               ACTION(ADD)     -                                        \s
+               ENABLE(*)                                                \s
+            """,
+            (spec) -> spec.path("BINDCARDPACKAGE")),
+          text("""
+                BIND PLAN(LINKEDIT1) OWNER(SBS100S) -            \s
+                   QUALIFIER(SBS100S) -                         \s
+                   PKLIST(PROD0.*)  -                           \s
+                   VALIDATE(BIND)        -                      \s
+                   FLAG(I) ISOLATION(CS) -                      \s
+                   CACHESIZE(0) -                               \s
+                   ACQUIRE(USE) -                               \s
+                   RELEASE(COMMIT) EXPLAIN(YES) CURRENTDATA(YES) -
+                   ACTION(REPLACE) RETAIN -                     \s
+                   ENABLE(*)    \s
+              """,
+            (spec) -> spec.path("BINDCARDPLAN"))
         );
     }
 

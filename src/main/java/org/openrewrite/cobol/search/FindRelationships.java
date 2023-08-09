@@ -112,13 +112,13 @@ public class FindRelationships extends Recipe {
         };
 
         PlainTextVisitor<ExecutionContext> linkEditVisitor = new PlainTextVisitor<ExecutionContext>() {
-            final Pattern includeMatcher = Pattern.compile("^INCLUDE\\s+(?:SYS|OBJ)LIB\\(([A-Z0-9]+)\\)", MULTILINE);
+            final Pattern includePattern = Pattern.compile("^INCLUDE\\s+(SYS|OBJ)LIB\\((?<include>[A-Z0-9]+)\\)", MULTILINE);
             @Override
             public PlainText visitText(PlainText pt, ExecutionContext ctx) {
                 String text = pt.getText();
-                Matcher m = includeMatcher.matcher(text);
+                Matcher m = includePattern.matcher(text);
                 while(m.find()) {
-                    String programName = m.group(1);
+                    String programName = m.group("include");
                     cobolRelationships.insertRow(ctx,
                             new CobolRelationships.Row(
                                     pt.getSourcePath().toString(),
@@ -132,16 +132,56 @@ public class FindRelationships extends Recipe {
             }
         };
 
+        PlainTextVisitor<ExecutionContext> bindCardVisitor = new PlainTextVisitor<ExecutionContext>() {
+            final Pattern bindPattern = Pattern.compile("^BIND\\s+(?<keyword>PACKAGE|PLAN)\\((?<linkedit>[A-Z0-9]+)\\)\\s+OWNER\\(([A-Z0-9]+)\\)", MULTILINE);
+            final Pattern memberPattern = Pattern.compile("\\s+MEMBER\\((?<member>[A-Z0-9]+)\\)", MULTILINE);
+            @Override
+            public PlainText visitText(PlainText pt, ExecutionContext ctx) {
+                String text = pt.getText();
+                Matcher m = bindPattern.matcher(text);
+                if(m.find()) {
+                    String packageOrPlan = m.group("keyword");
+                    if("PLAN".equals(packageOrPlan)) {
+                        String linkedit = m.group("linkedit");
+                        cobolRelationships.insertRow(ctx,
+                                new CobolRelationships.Row(
+                                        pt.getSourcePath().toString(),
+                                        BINDPLAN,
+                                        PLAN,
+                                        linkedit,
+                                        LINKEDIT,
+                                        false));
+                    } else {
+                        Matcher memberMatcher = memberPattern.matcher(text);
+                        while(memberMatcher.find()) {
+                            String member = memberMatcher.group("member");
+                            cobolRelationships.insertRow(ctx,
+                                    new CobolRelationships.Row(
+                                            pt.getSourcePath().toString(),
+                                            BINDPACKAGE,
+                                            MEMBER,
+                                            member,
+                                            COBOL,
+                                            false));
+                        }
+                    }
+                }
+                return pt;
+            }
+        };
+
         return new TreeVisitor<Tree, ExecutionContext>() {
             @Override
             public @Nullable Tree preVisit(Tree tree, ExecutionContext ctx) {
                 stopAfterPreVisit();
+                Tree t = tree;
                 if(tree instanceof Cobol) {
-                    tree = cobolVisitor.visit(tree, ctx);
+                    t = cobolVisitor.visit(tree, ctx);
                 } else if(tree instanceof PlainText) {
-                    tree = linkEditVisitor.visit(tree, ctx);
+                    t = linkEditVisitor.visit(tree, ctx);
+                    t = bindCardVisitor.visit(t, ctx);
                 }
-                return tree;
+                return t;
             }
         };
     }

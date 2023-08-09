@@ -47,7 +47,9 @@ public class CobolRelationships extends DataTable<CobolRelationships.Row> {
     public enum ResourceType {
         COBOL,
         COPYBOOK,
-        LINKEDIT
+        LINKEDIT,
+        BINDPLAN,
+        BINDPACKAGE,
     }
 
     public enum ResourceAction {
@@ -63,5 +65,13 @@ public class CobolRelationships extends DataTable<CobolRelationships.Row> {
          * Link-Edit card includes COBOL program
          */
         INCLUDE,
+        /**
+         * A Bind Card (plan) specifies the name of a Link Edit Card in its PLAN field
+         */
+        PLAN,
+        /**
+         * A Bind Card (package) specifies the name of a COBOL program in its MEMBER field
+         */
+        MEMBER
     }
 }
