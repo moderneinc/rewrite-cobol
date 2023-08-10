@@ -44,4 +44,6 @@ gradleEnterprise {
     }
 }
 
-include("cobol-cli")
+if (System.getenv("GITHUB_ACTION") == null) {
+    include("cobol-cli")
+}
