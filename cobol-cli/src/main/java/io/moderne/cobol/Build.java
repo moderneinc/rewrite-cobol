@@ -239,6 +239,10 @@ public class Build implements Callable<Integer> {
             @Override
             public void startedParsing(Parser.Input input) {
                 progressBar.setExtraMessage(input.getPath().toString());
+            }
+
+            @Override
+            public void parsed(Parser.Input input, SourceFile sourceFile) {
                 progressBar.step();
             }
         });

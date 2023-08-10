@@ -27,7 +27,6 @@ import org.openrewrite.tree.ParsingExecutionContextView;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
