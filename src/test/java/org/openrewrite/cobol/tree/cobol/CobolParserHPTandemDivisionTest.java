@@ -19,7 +19,7 @@ class CobolParserHPTandemDivisionTest extends CobolTest {
 
     @Override
     public void defaults(RecipeSpec spec) {
-        spec.parser(CobolParser.builder().setCobolDialect(CobolDialect.hpTandem()));
+        spec.parser(CobolParser.builder().cobolDialect(CobolDialect.hpTandem()));
     }
 
     @Test

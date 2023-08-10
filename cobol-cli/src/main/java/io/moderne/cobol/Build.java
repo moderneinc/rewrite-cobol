@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.openrewrite.*;
 import org.openrewrite.cobol.CobolIsoVisitor;
 import org.openrewrite.cobol.CobolParser;
+import org.openrewrite.cobol.CobolParsingTimeoutException;
 import org.openrewrite.cobol.CopybookParser;
 import org.openrewrite.cobol.markers.MissingCopybook;
 import org.openrewrite.cobol.tree.Cobol;
@@ -22,8 +23,10 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.Callable;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static java.nio.file.Files.exists;
@@ -91,7 +94,9 @@ public class Build implements Callable<Integer> {
             Set<SourceFile> referencedCopybooks = new TreeSet<>(Comparator.comparing(SourceFile::getSourcePath));
 
             try (ProgressBar progressBar = DefaultProgressBar.builder(spec).build()) {
-                CobolParser cobolParser = CobolParser.builder().copybooks(copybooks).build();
+                CobolParser cobolParser = CobolParser.builder().copybooks(copybooks)
+                        .timeout(Duration.ofSeconds(3))
+                        .build();
                 List<Path> cobolSources = OmniParser.builder().parsers(cobolParser)
                         .exclusions(copybooks.stream().map(SourceFile::getSourcePath).toList())
                         .build()
@@ -214,7 +219,17 @@ public class Build implements Callable<Integer> {
     }
 
     private ExecutionContext progressReportingExecutionContext(ProgressBar progressBar) {
-        ExecutionContext ctx = new InMemoryExecutionContext();
+        ExecutionContext ctx = new InMemoryExecutionContext() {
+            @Override
+            public Consumer<Throwable> getOnError() {
+                return t -> {
+                    if (t instanceof CobolParsingTimeoutException timeout) {
+                        progressBar.intermediateResult("⚠️ Timed out parsing " + timeout.getSourcePath());
+                    }
+                };
+            }
+        };
+
         return ParsingExecutionContextView.view(ctx).setParsingListener(new ParsingEventListener() {
             @Override
             public void intermediateMessage(String stateMessage) {

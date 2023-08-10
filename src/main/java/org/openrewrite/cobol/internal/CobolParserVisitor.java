@@ -5,11 +5,13 @@
  */
 package org.openrewrite.cobol.internal;
 
+import lombok.RequiredArgsConstructor;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.FileAttributes;
+import org.openrewrite.cobol.CobolParsingTimeoutException;
 import org.openrewrite.cobol.internal.grammar.CobolBaseVisitor;
 import org.openrewrite.cobol.internal.grammar.CobolParser;
 import org.openrewrite.cobol.markers.CopiedWord;
@@ -21,7 +23,9 @@ import org.openrewrite.marker.Markers;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 
 import static java.util.Collections.emptyList;
@@ -31,6 +35,7 @@ import static org.openrewrite.cobol.internal.CobolGrammarToken.COMMENT_ENTRY;
 import static org.openrewrite.cobol.internal.CobolGrammarToken.END_OF_FILE;
 import static org.openrewrite.cobol.tree.Space.EMPTY;
 
+@RequiredArgsConstructor
 public class CobolParserVisitor extends CobolBaseVisitor<Object> {
 
     private final Path path;
@@ -45,6 +50,10 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
 
     private final Map<String, CobolPreprocessor> preprocessorMap;
     private final Map<String, Replacement> replaceMap;
+    private final Duration timeout;
+
+    private final long start = System.nanoTime();
+
     private final Set<String> templateKeys = new HashSet<>();
 
     private final Map<Integer, String> sequenceAreas = new HashMap<>();
@@ -94,25 +103,10 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     private String uuidComment = null;
     private Integer nextIndex = null;
 
-    public CobolParserVisitor(Path path,
-                              @Nullable FileAttributes fileAttributes,
-                              String source,
-                              Charset charset,
-                              boolean charsetBomMarked,
-                              CobolDialect cobolDialect,
-                              Map<String, CobolPreprocessor> preprocessorMap,
-                              Map<String, Replacement> replaceMap) {
-        this.path = path;
-        this.fileAttributes = fileAttributes;
-        this.source = source;
-        this.charset = charset;
-        this.charsetBomMarked = charsetBomMarked;
-        this.cobolDialect = cobolDialect;
-        this.preprocessorMap = preprocessorMap;
-        this.replaceMap = replaceMap;
-    }
-
     public <T> T visit(@Nullable ParseTree... trees) {
+        if (Duration.ofNanos(System.nanoTime() - start).compareTo(timeout) > 0) {
+            throw new CobolParsingTimeoutException(path);
+        }
         for (ParseTree tree : trees) {
             if (tree != null) {
                 //noinspection unchecked

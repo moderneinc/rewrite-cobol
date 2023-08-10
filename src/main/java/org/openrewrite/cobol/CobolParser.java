@@ -5,6 +5,7 @@
  */
 package org.openrewrite.cobol;
 
+import lombok.RequiredArgsConstructor;
 import org.antlr.v4.runtime.*;
 import org.openrewrite.Parser;
 import org.openrewrite.*;
@@ -20,11 +21,8 @@ import org.openrewrite.tree.ParseError;
 import org.openrewrite.tree.ParsingEventListener;
 import org.openrewrite.tree.ParsingExecutionContextView;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
@@ -33,18 +31,14 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 
+@RequiredArgsConstructor
 public class CobolParser implements Parser {
     public static final List<String> COPYBOOK_FILE_EXTENSIONS = Collections.singletonList(".cpy");
     public static final List<String> COBOL_FILE_EXTENSIONS = singletonList(".cbl");
 
     private final CobolDialect cobolDialect;
     private final List<SourceFile> copybooks;
-
-    public CobolParser(CobolDialect cobolDialect,
-                       List<SourceFile> copybooks) {
-        this.cobolDialect = cobolDialect;
-        this.copybooks = copybooks;
-    }
+    private final Duration timeout;
 
     @Override
     public Stream<SourceFile> parseInputs(Iterable<Input> sourceFiles, @Nullable Path relativeTo, ExecutionContext ctx) {
@@ -94,7 +88,8 @@ public class CobolParser implements Parser {
                     is.isCharsetBomMarked(),
                     cobolDialect,
                     ((CobolPreprocessor.CompilationUnit) preprocessedCU).getPreprocessorStatements(),
-                    ((CobolPreprocessor.CompilationUnit) preprocessedCU).getReplacements()
+                    ((CobolPreprocessor.CompilationUnit) preprocessedCU).getReplacements(),
+                    timeout
             ).visitCompilationUnit(parser.compilationUnit());
 
             parserListener.parsed(input, compilationUnit);
@@ -148,22 +143,20 @@ public class CobolParser implements Parser {
     }
 
     public static class Builder extends org.openrewrite.Parser.Builder {
-
         private CobolDialect cobolDialect = CobolDialect.ibmAnsi85();
         private List<SourceFile> copybooks = emptyList();
+        private Duration timeout = Duration.ofSeconds(10);
 
         public Builder() {
             super(Cobol.CompilationUnit.class);
         }
 
-        @Override
-        public CobolParser build() {
-            return new CobolParser(
-                    cobolDialect,
-                    copybooks);
+        public Builder timeout(Duration timeout) {
+            this.timeout = timeout;
+            return this;
         }
 
-        public Builder setCobolDialect(CobolDialect cobolDialect) {
+        public Builder cobolDialect(CobolDialect cobolDialect) {
             this.cobolDialect = cobolDialect;
             return this;
         }
@@ -171,6 +164,11 @@ public class CobolParser implements Parser {
         public Builder copybooks(List<SourceFile> copybooks) {
             this.copybooks = copybooks;
             return this;
+        }
+
+        @Override
+        public CobolParser build() {
+            return new CobolParser(cobolDialect, copybooks, timeout);
         }
 
         @Override
