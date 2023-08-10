@@ -22,13 +22,8 @@ import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.marker.Markers;
 import org.openrewrite.text.PlainText;
 import org.openrewrite.tree.ParseError;
-import org.openrewrite.tree.ParsingEventListener;
 import org.openrewrite.tree.ParsingExecutionContextView;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
@@ -47,16 +42,6 @@ public class CopybookParser implements Parser {
 
     public CopybookParser(CobolDialect cobolDialect) {
         this.cobolDialect = cobolDialect;
-    }
-
-    public Stream<SourceFile> parse(Stream<Path> sourceFiles, @Nullable Path relativeTo, ExecutionContext ctx) {
-        return sourceFiles.filter(this::accept).map(s -> parseInput(new Input(s, () -> {
-            try {
-                return new BufferedInputStream(Files.newInputStream(s));
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }), relativeTo, ctx));
     }
 
     @Override

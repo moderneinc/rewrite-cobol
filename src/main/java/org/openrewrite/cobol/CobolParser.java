@@ -17,6 +17,7 @@ import org.openrewrite.cobol.tree.CobolPreprocessor;
 import org.openrewrite.internal.EncodingDetectingInputStream;
 import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.tree.ParseError;
+import org.openrewrite.tree.ParsingEventListener;
 import org.openrewrite.tree.ParsingExecutionContextView;
 
 import java.io.BufferedInputStream;
@@ -45,20 +46,6 @@ public class CobolParser implements Parser {
         this.copybooks = copybooks;
     }
 
-    public Stream<SourceFile> parse(Stream<Path> sourceFiles, @Nullable Path relativeTo, ExecutionContext ctx) {
-        CobolPreprocessorParser cobolPreprocessorParser = CobolPreprocessorParser.builder()
-                .cobolDialect(cobolDialect)
-                .copybooks(copybooks)
-                .build();
-        return sourceFiles.filter(this::accept).map(s -> parseInput(new Input(s, () -> {
-            try {
-                return new BufferedInputStream(Files.newInputStream(s));
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }), relativeTo, ctx, cobolPreprocessorParser));
-    }
-
     @Override
     public Stream<SourceFile> parseInputs(Iterable<Input> sourceFiles, @Nullable Path relativeTo, ExecutionContext ctx) {
         CobolPreprocessorParser cobolPreprocessorParser = CobolPreprocessorParser.builder()
@@ -71,7 +58,9 @@ public class CobolParser implements Parser {
 
     private SourceFile parseInput(Input input, @Nullable Path relativeTo, ExecutionContext ctx,
                                   CobolPreprocessorParser cobolPreprocessorParser) {
+        ParsingEventListener parserListener = ParsingExecutionContextView.view(ctx).getParsingListener();
         try {
+            parserListener.startedParsing(input);
             EncodingDetectingInputStream is = input.getSource(ctx);
             cobolPreprocessorParser.reset();
             SourceFile preprocessedCU = cobolPreprocessorParser.parseInputs(singletonList(input), relativeTo, ctx).collect(toList()).get(0);
@@ -108,7 +97,7 @@ public class CobolParser implements Parser {
                     ((CobolPreprocessor.CompilationUnit) preprocessedCU).getReplacements()
             ).visitCompilationUnit(parser.compilationUnit());
 
-            ParsingExecutionContextView.view(ctx).getParsingListener().parsed(input, compilationUnit);
+            parserListener.parsed(input, compilationUnit);
             return compilationUnit;
         } catch (Throwable t) {
             ctx.getOnError().accept(t);

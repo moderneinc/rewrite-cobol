@@ -13,14 +13,18 @@ import org.openrewrite.cobol.markers.MissingCopybook;
 import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
 import org.openrewrite.text.PlainTextParser;
+import org.openrewrite.tree.ParsingEventListener;
+import org.openrewrite.tree.ParsingExecutionContextView;
 import picocli.CommandLine;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.Callable;
+import java.util.stream.Stream;
 
 import static java.nio.file.Files.exists;
 import static org.fusesource.jansi.Ansi.ansi;
@@ -57,10 +61,8 @@ public class Build implements Callable<Integer> {
             progressBar.intermediateResult(ansi().fgRgb(ModerneColors.Yellow.rgb()).a(">").reset()
                     .a(" Parsing " + copybookSources.size() + " copybook files to use on all repositories.")
                     .toString());
-            copybooks = copybookParser.parse(copybookSources.stream().peek(s -> {
-                progressBar.setExtraMessage(s.toString());
-                progressBar.step();
-            }), listRepositoryOptions.getPath(), new InMemoryExecutionContext()).toList();
+            copybooks = copybookParser.parse(copybookSources, listRepositoryOptions.getPath(),
+                    progressReportingExecutionContext(progressBar)).toList();
         }
 
         for (LocalRepository repository : repositories) {
@@ -85,7 +87,6 @@ public class Build implements Callable<Integer> {
         private final Path outputDir;
 
         public LstJarFile build() {
-            ExecutionContext ctx = new InMemoryExecutionContext();
             List<Path> alreadyParsed = new ArrayList<>();
             Set<SourceFile> referencedCopybooks = new TreeSet<>(Comparator.comparing(SourceFile::getSourcePath));
 
@@ -100,11 +101,7 @@ public class Build implements Callable<Integer> {
                         .toString());
                 progressBar.setMax(cobolSources.size());
                 serializer.write(
-                        cobolParser.parse(cobolSources.stream().peek(s -> {
-                                            progressBar.setExtraMessage(s.toString());
-                                            progressBar.step();
-                                        }),
-                                        repository.getRootDir(), ctx)
+                        cobolParser.parse(cobolSources, repository.getRootDir(), progressReportingExecutionContext(progressBar))
                                 .peek(sourceFile -> referencedCopybooks(referencedCopybooks))
                                 .peek(sourceFile -> alreadyParsed.add(sourceFile.getSourcePath())),
                         outputDir
@@ -117,12 +114,11 @@ public class Build implements Callable<Integer> {
                         .toString());
                 progressBar.setMax(referencedCopybooks.size());
                 serializer.write(
-                        referencedCopybooks.stream()
-                                .map(sourceFile -> {
-                                    progressBar.setExtraMessage(sourceFile.getSourcePath().toString());
-                                    alreadyParsed.add(sourceFile.getSourcePath());
-                                    return sourceFile.withSourcePath(repository.getRootDir().relativize(sourceFile.getSourcePath()));
-                                }),
+                        referencedCopybooks.stream().map(sourceFile -> {
+                            progressBar.setExtraMessage(sourceFile.getSourcePath().toString());
+                            alreadyParsed.add(sourceFile.getSourcePath());
+                            return sourceFile.withSourcePath(repository.getRootDir().relativize(sourceFile.getSourcePath()));
+                        }),
                         outputDir
                 );
             }
@@ -132,14 +128,15 @@ public class Build implements Callable<Integer> {
                         .a(" Parsing files related to other mainframe technologies.")
                         .toString());
 
+                OmniParser parser = OmniParser.builder()
+                        .parsers(PlainTextParser.builder().build())
+                        .exclusions(alreadyParsed)
+                        .onParse(progressBar::setMax)
+                        .build();
+
                 serializer.write(
-                        OmniParser.builder()
-                                .parsers(PlainTextParser.builder().build())
-                                .exclusions(alreadyParsed)
-                                .onParse(progressBar::setMax)
-                                .onParseStart(path -> progressBar.setExtraMessage(path.toString()))
-                                .build()
-                                .parseAll(repository.getRootDir()),
+                        parser.parse(parser.acceptedPaths(repository.getRootDir()), repository.getRootDir(),
+                                progressReportingExecutionContext(progressBar)),
                         outputDir
                 );
             }
@@ -203,7 +200,10 @@ public class Build implements Callable<Integer> {
         Path target = dotModerne(repository).resolve("build");
         try {
             // clean the existing build directory
-            Files.deleteIfExists(target);
+            try (Stream<Path> walk = Files.walk(target)) {
+                //noinspection ResultOfMethodCallIgnored
+                walk.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
+            }
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -211,5 +211,21 @@ public class Build implements Callable<Integer> {
             spec.commandLine().getOut().println("⚠️ Unable to create .moderne/build directory for repository " + repository.toAnsi() + ".");
         }
         return target;
+    }
+
+    private ExecutionContext progressReportingExecutionContext(ProgressBar progressBar) {
+        ExecutionContext ctx = new InMemoryExecutionContext();
+        return ParsingExecutionContextView.view(ctx).setParsingListener(new ParsingEventListener() {
+            @Override
+            public void intermediateMessage(String stateMessage) {
+                progressBar.intermediateResult(stateMessage);
+            }
+
+            @Override
+            public void startedParsing(Parser.Input input) {
+                progressBar.setExtraMessage(input.getPath().toString());
+                progressBar.step();
+            }
+        });
     }
 }
