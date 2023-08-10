@@ -16,11 +16,13 @@ import org.openrewrite.text.PlainTextParser;
 import picocli.CommandLine;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.Callable;
 
+import static java.nio.file.Files.exists;
 import static org.fusesource.jansi.Ansi.ansi;
 
 @CommandLine.Command(name = "build")
@@ -64,9 +66,9 @@ public class Build implements Callable<Integer> {
         for (LocalRepository repository : repositories) {
             spec.commandLine().getOut().println("Building " + repository.toAnsi());
 
-            repository.dotModerne(spec);
             // ensure .moderne/ exists
-            Path outputDir = repository.outputDir(spec);
+            dotModerne(repository);
+            Path outputDir = outputDir(repository);
             ignoreDotModerne(repository);
 
             lstJars.add(new RepositoryBuildAction(repository, serializer, copybooks, outputDir).build());
@@ -142,7 +144,7 @@ public class Build implements Callable<Integer> {
                 );
             }
 
-            return LstJarFile.assemble(repository, spec);
+            return LstJarFile.assemble(repository, outputDir);
         }
 
         private void referencedCopybooks(Set<SourceFile> referencedCopybooks) {
@@ -171,7 +173,7 @@ public class Build implements Callable<Integer> {
             Path gitExclude = dotGit.resolve("info").resolve("exclude");
             try {
                 if (Files.exists(gitExclude) && Files.readAllLines(gitExclude).stream()
-                        .anyMatch(line -> line.equals(repository.dotModerne(spec).toString()))) {
+                        .anyMatch(line -> line.equals(dotModerne(repository).toString()))) {
                     return;
                 }
             } catch (IOException ignored) {
@@ -182,10 +184,32 @@ public class Build implements Callable<Integer> {
                 }
             }
             try {
-                Files.writeString(gitExclude, repository.dotModerne(spec).toString());
+                Files.writeString(gitExclude, dotModerne(repository).toString());
             } catch (IOException e) {
                 spec.commandLine().getOut().println("⚠️ Unable to add .moderne folder to .git/info/exclude in repository " + repository.toAnsi() + ".");
             }
         }
+    }
+
+    private Path dotModerne(LocalRepository repository) {
+        Path dotModerne = repository.getRootDir().relativize(repository.getRootDir().resolve(".moderne"));
+        if (!exists(dotModerne) && !dotModerne.toFile().mkdirs()) {
+            spec.commandLine().getOut().println("⚠️ Unable to create .moderne directory for repository " + repository.toAnsi() + ".");
+        }
+        return dotModerne;
+    }
+
+    private Path outputDir(LocalRepository repository) {
+        Path target = dotModerne(repository).resolve("build");
+        try {
+            // clean the existing build directory
+            Files.deleteIfExists(target);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+        if (!target.toFile().mkdirs()) {
+            spec.commandLine().getOut().println("⚠️ Unable to create .moderne/build directory for repository " + repository.toAnsi() + ".");
+        }
+        return target;
     }
 }

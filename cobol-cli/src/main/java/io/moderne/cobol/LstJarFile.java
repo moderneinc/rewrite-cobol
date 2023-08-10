@@ -9,7 +9,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-import org.openrewrite.ProgressBar;
 import org.openrewrite.marker.GitProvenance;
 import picocli.CommandLine;
 
@@ -65,7 +64,7 @@ public class LstJarFile {
         }
     }
 
-    public static LstJarFile assemble(LocalRepository repository, CommandLine.Model.CommandSpec spec) {
+    public static LstJarFile assemble(LocalRepository repository, Path outputDir) {
         String version = DATE_FORMAT.format(new Date());
         GitProvenance gitProvenance = repository.getGitProvenance();
 
@@ -79,12 +78,11 @@ public class LstJarFile {
         String artifactAndVersion = artifactName + '-' + version;
 
         // Write the AST jar
-        Path lstJarFile = repository.outputDir(spec).resolve(artifactAndVersion + "-ast.jar");
+        Path lstJarFile = outputDir.resolve(artifactAndVersion + "-ast.jar");
         try (OutputStream os = Files.newOutputStream(lstJarFile);
              BufferedOutputStream bos = new BufferedOutputStream(os);
              JarOutputStream jar = new JarOutputStream(bos)) {
 
-            Path outputDir = repository.outputDir(spec);
             try (DirectoryStream<Path> lsts = Files.newDirectoryStream(outputDir, "*.lst")) {
                 boolean found = false;
                 for (Path lst : lsts) {
@@ -121,24 +119,22 @@ public class LstJarFile {
         Properties p = new Properties();
         p.setProperty("buildId", UUID.randomUUID().toString());
         p.setProperty("lstFormatVersion", "2");
-        if (gitProvenance != null) {
-            if (gitProvenance.getOrigin() == null) {
-                //the publish command will reject these jars
-                System.out.println("WARNING: The AST for " + groupId + ":" + artifactId + ":" + version
-                                   + " can't be published because does not contain Git metadata. ");
-                p.setProperty("cloneUrl", "");
-                p.setProperty("origin", "");
-            } else {
-                p.setProperty("cloneUrl", gitProvenance.getOrigin());
-                p.setProperty("origin", OriginHelper.stripOrigin(gitProvenance.getOrigin()));
-            }
-
-            p.setProperty("path", groupId + "/" + artifactId);
-            p.setProperty("branch", Optional.ofNullable(gitProvenance.getBranch()).orElse(""));
-            p.setProperty("change", Optional.of(gitProvenance.getChange()).orElse(""));
-            p.setProperty("path", gitProvenance.getOrganizationName() + "/" + gitProvenance.getRepositoryName());
-            p.setProperty("created", Long.toString(System.currentTimeMillis()));
+        if (gitProvenance.getOrigin() == null) {
+            //the publish command will reject these jars
+            System.out.println("WARNING: The AST for " + groupId + ":" + artifactId + ":" + version
+                               + " can't be published because does not contain Git metadata. ");
+            p.setProperty("cloneUrl", "");
+            p.setProperty("origin", "");
+        } else {
+            p.setProperty("cloneUrl", gitProvenance.getOrigin());
+            p.setProperty("origin", OriginHelper.stripOrigin(gitProvenance.getOrigin()));
         }
+
+        p.setProperty("path", groupId + "/" + artifactId);
+        p.setProperty("branch", Optional.ofNullable(gitProvenance.getBranch()).orElse(""));
+        p.setProperty("change", Optional.of(gitProvenance.getChange()).orElse(""));
+        p.setProperty("path", gitProvenance.getOrganizationName() + "/" + gitProvenance.getRepositoryName());
+        p.setProperty("created", Long.toString(System.currentTimeMillis()));
         p.setProperty("groupId", groupId);
         p.setProperty("artifactId", artifactId);
         p.setProperty("version", version);

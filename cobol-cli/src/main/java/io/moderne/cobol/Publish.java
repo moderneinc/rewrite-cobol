@@ -39,14 +39,6 @@ public class Publish implements Callable<Integer> {
                     """)
     protected boolean skipSSL;
 
-    @SuppressWarnings("unused")
-    @CommandLine.Option(names = "--verbose", defaultValue = "false",
-            description = "If enabled, additional debug statements will be printed throughout the project publication.\n" +
-                          "\n@|bold Default|@: ${DEFAULT-VALUE}\n",
-            hidden = true)
-    @Deprecated
-    private boolean verbose;
-
     @CommandLine.Spec
     CommandLine.Model.CommandSpec spec;
 

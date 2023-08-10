@@ -25,20 +25,4 @@ public class LocalRepository {
         return ansi().fgRgb(ModerneColors.Blue.rgb()).a(gitProvenance.getOrganizationName()).a('/').a(gitProvenance.getRepositoryName()).a('@')
                 .a(gitProvenance.getBranch() == null ? "detached" : gitProvenance.getBranch()).reset();
     }
-
-    public Path dotModerne(CommandLine.Model.CommandSpec spec) {
-        Path dotModerne = rootDir.relativize(rootDir.resolve(".moderne"));
-        if (!exists(dotModerne) && !dotModerne.toFile().mkdirs()) {
-            spec.commandLine().getOut().println("⚠️ Unable to create .moderne directory for repository " + toAnsi() + ".");
-        }
-        return dotModerne;
-    }
-
-    public Path outputDir(CommandLine.Model.CommandSpec spec) {
-        Path target = dotModerne(spec).resolve("build");
-        if (!exists(target) && !target.toFile().mkdirs()) {
-            spec.commandLine().getOut().println("⚠️ Unable to create .moderne/build directory for repository " + toAnsi() + ".");
-        }
-        return target;
-    }
 }
