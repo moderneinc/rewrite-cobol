@@ -42,6 +42,11 @@ public class Build implements Callable<Integer> {
     @CommandLine.Spec
     protected CommandLine.Model.CommandSpec spec;
 
+    @CommandLine.Option(names = "--timeoutSeconds",
+            defaultValue = "10",
+            description = "A per-file timeout in seconds for parsing.")
+    protected int timeoutSeconds;
+
     @Override
     public Integer call() {
         List<LocalRepository> repositories = new ListRepositories(listRepositoryOptions, spec).list();
@@ -95,7 +100,7 @@ public class Build implements Callable<Integer> {
 
             try (ProgressBar progressBar = DefaultProgressBar.builder(spec).build()) {
                 CobolParser cobolParser = CobolParser.builder().copybooks(copybooks)
-                        .timeout(Duration.ofSeconds(3))
+                        .timeout(Duration.ofSeconds(timeoutSeconds))
                         .build();
                 List<Path> cobolSources = OmniParser.builder().parsers(cobolParser)
                         .exclusions(copybooks.stream().map(SourceFile::getSourcePath).toList())
