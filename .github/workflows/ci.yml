@@ -19,8 +19,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  setup-gcloud:
-    uses: google-github-actions/setup-gcloud@v1.1.1
+  #  setup-gcloud:
+  #    uses: google-github-actions/setup-gcloud@v1.1.1
   build:
     uses: openrewrite/gh-automation/.github/workflows/ci-gradle.yml@main
     secrets:
