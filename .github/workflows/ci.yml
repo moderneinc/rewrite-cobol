@@ -10,7 +10,7 @@ on:
   pull_request:
     branches:
       - main
-  workflow_dispatch: { }
+  workflow_dispatch: {}
   schedule:
     - cron: 0 18 * * *
 
@@ -19,8 +19,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  #  setup-gcloud:
-  #    uses: google-github-actions/setup-gcloud@v1.1.1
+  gcloud-config-for-repositories:
+    uses: google-github-actions/setup-gcloud@v1.1.1
   build:
     uses: openrewrite/gh-automation/.github/workflows/ci-gradle.yml@main
     secrets:
