@@ -7,6 +7,9 @@ package org.openrewrite.cobol;
 
 import lombok.RequiredArgsConstructor;
 import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.atn.*;
+import org.antlr.v4.runtime.dfa.DFA;
+import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.openrewrite.Parser;
 import org.openrewrite.*;
 import org.openrewrite.cobol.internal.CobolDialect;
@@ -23,8 +26,11 @@ import org.openrewrite.tree.ParsingExecutionContextView;
 
 import java.nio.file.Path;
 import java.time.Duration;
+import java.time.Instant;
+import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
@@ -70,7 +76,9 @@ public class CobolParser implements Parser {
 
             org.openrewrite.cobol.internal.grammar.CobolParser parser =
                     new org.openrewrite.cobol.internal.grammar.CobolParser(
-                            new CommonTokenStream(new CobolLexer(CharStreams.fromString(cobolParserOutput.getOut()))));
+                            new CommonTokenStream(new CobolLexer(CharStreams.fromString(cobolParserOutput.getOut())))) {{
+                        _interp = new TimeLimitingParserATNSimulator(this, _ATN, _decisionToDFA, _sharedContextCache);
+                    }};
 
             parser.removeErrorListeners();
             parser.addErrorListener(new ForwardingErrorListener(input.getPath(), ctx));
@@ -80,20 +88,25 @@ public class CobolParser implements Parser {
             CobolPreprocessorOutputSourcePrinter<ExecutionContext> printWithColumns = new CobolPreprocessorOutputSourcePrinter<>(cobolDialect, true);
             printWithColumns.visit(preprocessedCU, sourceOutput);
 
-            Cobol.CompilationUnit compilationUnit = new CobolParserVisitor(
-                    input.getRelativePath(relativeTo),
-                    input.getFileAttributes(),
-                    sourceOutput.getOut(),
-                    is.getCharset(),
-                    is.isCharsetBomMarked(),
-                    cobolDialect,
-                    ((CobolPreprocessor.CompilationUnit) preprocessedCU).getPreprocessorStatements(),
-                    ((CobolPreprocessor.CompilationUnit) preprocessedCU).getReplacements(),
-                    timeout
-            ).visitCompilationUnit(parser.compilationUnit());
-
-            parserListener.parsed(input, compilationUnit);
-            return compilationUnit;
+            try {
+                org.openrewrite.cobol.internal.grammar.CobolParser.CompilationUnitContext tokenizedCU = parser.compilationUnit();
+                Cobol.CompilationUnit compilationUnit = new CobolParserVisitor(
+                        input.getRelativePath(relativeTo),
+                        input.getFileAttributes(),
+                        sourceOutput.getOut(),
+                        is.getCharset(),
+                        is.isCharsetBomMarked(),
+                        cobolDialect,
+                        ((CobolPreprocessor.CompilationUnit) preprocessedCU).getPreprocessorStatements(),
+                        ((CobolPreprocessor.CompilationUnit) preprocessedCU).getReplacements(),
+                        timeout
+                ).visitCompilationUnit(tokenizedCU);
+                parserListener.parsed(input, compilationUnit);
+                return compilationUnit;
+            } catch (ParseCancellationException e) {
+                throw new CobolParsingTimeoutException(relativeTo == null ? input.getPath() :
+                        relativeTo.relativize(input.getPath()));
+            }
         } catch (Throwable t) {
             ctx.getOnError().accept(t);
             return ParseError.build(this, input, relativeTo, ctx, t);
@@ -174,6 +187,29 @@ public class CobolParser implements Parser {
         @Override
         public String getDslName() {
             return "cobol";
+        }
+    }
+
+    private class TimeLimitingParserATNSimulator extends ParserATNSimulator {
+        private final Instant start = Instant.now();
+
+        public TimeLimitingParserATNSimulator(org.antlr.v4.runtime.Parser parser, ATN atn, DFA[] decisionToDFA,
+                                              PredictionContextCache sharedContextCache) {
+            super(parser, atn, decisionToDFA, sharedContextCache);
+        }
+
+        @Override
+        protected void closure(ATNConfig config,
+                               ATNConfigSet configs,
+                               Set<ATNConfig> closureBusy,
+                               boolean collectPredicates,
+                               boolean fullCtx,
+                               boolean treatEofAsEpsilon) {
+            Duration timeElapsed = Duration.between(start, Instant.now());
+            if (timeElapsed.compareTo(timeout) > 0) {
+                throw new ParseCancellationException();
+            }
+            super.closure(config, configs, closureBusy, collectPredicates, fullCtx, treatEofAsEpsilon);
         }
     }
 }
