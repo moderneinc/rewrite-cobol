@@ -120,7 +120,7 @@ public class FindRelationships extends Recipe {
                     String programName = m.group("include");
                     cobolRelationships.insertRow(ctx,
                             new CobolRelationships.Row(
-                                    pt.getSourcePath().toString(),
+                                    pt.getSourcePath().getFileName().toString(),
                                     LINKEDIT,
                                     INCLUDE,
                                     programName,
@@ -144,7 +144,7 @@ public class FindRelationships extends Recipe {
                         String linkedit = m.group("linkedit");
                         cobolRelationships.insertRow(ctx,
                                 new CobolRelationships.Row(
-                                        pt.getSourcePath().toString(),
+                                        pt.getSourcePath().getFileName().toString(),
                                         BINDPLAN,
                                         PLAN,
                                         linkedit,
@@ -156,7 +156,7 @@ public class FindRelationships extends Recipe {
                             String member = memberMatcher.group("member");
                             cobolRelationships.insertRow(ctx,
                                     new CobolRelationships.Row(
-                                            pt.getSourcePath().toString(),
+                                            pt.getSourcePath().getFileName().toString(),
                                             BINDPACKAGE,
                                             MEMBER,
                                             member,
