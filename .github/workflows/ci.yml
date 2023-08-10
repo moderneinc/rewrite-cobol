@@ -20,7 +20,8 @@ concurrency:
 
 jobs:
   gcloud-config-for-repositories:
-    uses: google-github-actions/setup-gcloud@v1.1.1
+    steps:
+      - uses: google-github-actions/setup-gcloud@v1.1.1
   build:
     uses: openrewrite/gh-automation/.github/workflows/ci-gradle.yml@main
     secrets:
