@@ -31,7 +31,7 @@ public class Mod {
         try {
             result = new CommandLine.RunLast().execute(parseResult);
             spec.commandLine().getOut().println(ansi().bold().fgRgb(ModerneColors.Green.rgb())
-                    .a("\nMOD SUCCEEDED").reset()
+                    .a("\nMOD-COBOL SUCCEEDED").reset()
                     .a(" in (" + DurationUtils.formatDuration(Duration.ofNanos(System.nanoTime() - start)) + ")"));
         } catch (Throwable e) {
             handleError(start, e);
@@ -69,7 +69,7 @@ public class Mod {
         }
 
         out.println(ansi().bold().fgRgb(ModerneColors.Red.rgb())
-                .a("\nMOD FAILED").reset()
+                .a("\nMOD-COBOL FAILED").reset()
                 .a(" in (" + DurationUtils.formatDuration(Duration.ofNanos(System.nanoTime() - start)) + ")"));
     }
 
