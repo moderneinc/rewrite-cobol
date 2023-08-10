@@ -12,8 +12,9 @@ plugins {
     id("com.gradle.common-custom-user-data-gradle-plugin") version "latest.release"
 }
 
+val isCiServer = System.getenv("CI")?.equals("true") ?: false
+
 gradleEnterprise {
-    val isCiServer = System.getenv("CI")?.equals("true") ?: false
     server = "https://ge.openrewrite.org/"
     val gradleCacheRemoteUsername: String? = System.getenv("GRADLE_ENTERPRISE_CACHE_USERNAME")
     val gradleCacheRemotePassword: String? = System.getenv("GRADLE_ENTERPRISE_CACHE_PASSWORD")
@@ -44,6 +45,6 @@ gradleEnterprise {
     }
 }
 
-if (System.getenv("CI") == null && System.getenv("GITHUB_ACTION") == null) {
+if (isCiServer) {
     include("cobol-cli")
 }
