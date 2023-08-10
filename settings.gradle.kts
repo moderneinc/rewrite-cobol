@@ -44,6 +44,6 @@ gradleEnterprise {
     }
 }
 
-if (System.getenv("GITHUB_ACTION") == null) {
+if (System.getenv("CI") == null && System.getenv("GITHUB_ACTION") == null) {
     include("cobol-cli")
 }
