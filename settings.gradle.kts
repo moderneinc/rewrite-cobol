@@ -43,3 +43,5 @@ gradleEnterprise {
         publishIfAuthenticated()
     }
 }
+
+include("cobol-cli")

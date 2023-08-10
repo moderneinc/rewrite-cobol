@@ -41,7 +41,7 @@ public class Assertions {
         List<SourceFile> copybooks = getCopybookSources();
         SourceSpec<CobolPreprocessor.CompilationUnit> cobol = new SourceSpec<>(
                 CobolPreprocessor.CompilationUnit.class, null,
-                CobolPreprocessorParser.builder().setCopybooks(copybooks),
+                CobolPreprocessorParser.builder().copybooks(copybooks),
                 before,
                 SourceSpec.EachResult.noop,
                 Assertions::customizeExecutionContext);
@@ -65,7 +65,7 @@ public class Assertions {
         if (enableCopyAndReplace) {
             List<SourceFile> copybooks = getCopybookSources();
             builder = CobolPreprocessorParser.builder()
-                    .setCopybooks(copybooks);
+                    .copybooks(copybooks);
         } else {
             builder = CobolPreprocessorParser.builder();
         }
@@ -107,7 +107,7 @@ public class Assertions {
         List<SourceFile> copybooks = getCopybookSources();
         SourceSpec<Cobol.CompilationUnit> cobol = new SourceSpec<>(
                 Cobol.CompilationUnit.class, null,
-                CobolParser.builder().setCopybooks(copybooks),
+                CobolParser.builder().copybooks(copybooks),
                 before,
                 SourceSpec.EachResult.noop,
                 Assertions::customizeExecutionContext);
@@ -126,7 +126,7 @@ public class Assertions {
         SourceSpec<Cobol.CompilationUnit> cobol =
                 new SourceSpec<>(Cobol.CompilationUnit.class,
                         null,
-                        CobolParser.builder().setCopybooks(copybooks),
+                        CobolParser.builder().copybooks(copybooks),
                         before,
                         SourceSpec.EachResult.noop,
                         Assertions::customizeExecutionContext).after(s -> after);
@@ -148,7 +148,7 @@ public class Assertions {
         List<SourceFile> copybooks = getCopybookSources();
         SourceSpec<Cobol.CompilationUnit> cobol = new SourceSpec<>(
                 Cobol.CompilationUnit.class, null,
-                CobolParser.builder().setCopybooks(copybooks),
+                CobolParser.builder().copybooks(copybooks),
                 before,
                 SourceSpec.EachResult.noop,
                 Assertions::customizeExecutionContext);

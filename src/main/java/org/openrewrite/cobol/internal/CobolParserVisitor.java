@@ -49,8 +49,8 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
 
     private final Map<Integer, String> sequenceAreas = new HashMap<>();
     // A LinkedHash map is used to collect information about the next line of code. I.E. continuation indicators.
-    private final Map<Integer, String> indicatorAreas = new LinkedHashMap<>();
-    private final Map<Integer, String> commentAreas = new LinkedHashMap<>();
+    private final NavigableMap<Integer, String> indicatorAreas = new TreeMap<>();
+    private final NavigableMap<Integer, String> commentAreas = new TreeMap<>();
 
     private final Set<String> separators = new HashSet<>();
     private static final Set<Character> commentIndicators = new HashSet<>();
@@ -5334,7 +5334,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 ctx.ALL() == null && ctx.qualifiedDataName() == null &&
-                        ctx.indexName() == null && ctx.arithmeticExpression() == null ? null :
+                ctx.indexName() == null && ctx.arithmeticExpression() == null ? null :
                         visit(ctx.ALL(), ctx.qualifiedDataName(), ctx.indexName(), ctx.arithmeticExpression()),
                 visitNullable(ctx.integerLiteral())
         );
@@ -5526,12 +5526,12 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
             } else if (object instanceof Replacement) {
                 replacement = (Replacement) object;
             } else if (object instanceof CobolPreprocessor.CopyStatement ||
-                    object instanceof CobolPreprocessor.ReplaceByStatement ||
-                    object instanceof CobolPreprocessor.ReplaceOffStatement ||
-                    object instanceof CobolPreprocessor.EjectStatement ||
-                    object instanceof CobolPreprocessor.ExecStatement ||
-                    object instanceof CobolPreprocessor.SkipStatement ||
-                    object instanceof CobolPreprocessor.TitleStatement) {
+                       object instanceof CobolPreprocessor.ReplaceByStatement ||
+                       object instanceof CobolPreprocessor.ReplaceOffStatement ||
+                       object instanceof CobolPreprocessor.EjectStatement ||
+                       object instanceof CobolPreprocessor.ExecStatement ||
+                       object instanceof CobolPreprocessor.SkipStatement ||
+                       object instanceof CobolPreprocessor.TitleStatement) {
                 if (object instanceof CobolPreprocessor.CopyStatement) {
                     if (!((CobolPreprocessor.CopyStatement) object).getMarkers().findFirst(MissingCopybook.class).isPresent()) {
                         copiedWordStack.add(new CopiedWord(randomId(), ((CobolPreprocessor.CopyStatement) object).getId().toString()));
@@ -5974,14 +5974,8 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         sequenceArea();
         indicatorArea();
 
-        Integer nextIndicator = null;
-        for (Integer it : indicatorAreas.keySet()) {
-            if (it > cursor) {
-                nextIndicator = it;
-                break;
-            }
-        }
-        boolean isContinued = nextIndicator != null && indicatorAreas.get(nextIndicator).equals("-");
+        Map.Entry<Integer, String> nextIndicator = indicatorAreas.higherEntry(cursor);
+        boolean isContinued = nextIndicator != null && nextIndicator.getValue().equals("-");
         cursor = saveCursor;
 
         Character delimiter = null;

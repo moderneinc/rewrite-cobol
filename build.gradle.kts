@@ -62,6 +62,10 @@ dependencies {
     implementation("io.micrometer:micrometer-core:1.9.+")
     implementation("io.github.classgraph:classgraph:latest.release")
 
+    compileOnly("io.moderne:moderne-ast-write:latest.release")
+    testCompileOnly("io.moderne:moderne-ast-write:latest.release")
+    runtimeOnly("io.moderne:moderne-ast-write:latest.release:obfuscated")
+
     runtimeOnly("org.openrewrite.tools:java-object-diff:latest.release")
 
     modelImplementation("org.openrewrite:rewrite-java-17")

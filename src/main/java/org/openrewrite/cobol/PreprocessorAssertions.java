@@ -72,7 +72,7 @@ public class PreprocessorAssertions {
 
         SourceSpec<CobolPreprocessor.CompilationUnit> cobol = new SourceSpec<>(CobolPreprocessor.CompilationUnit.class, null,
                 CobolPreprocessorParser.builder()
-                        .setCopybooks(copybooks),
+                        .copybooks(copybooks),
                 before,
                 SourceSpec.EachResult.noop,
                 PreprocessorAssertions::customizeExecutionContext);
@@ -91,7 +91,7 @@ public class PreprocessorAssertions {
 
         SourceSpec<CobolPreprocessor.CompilationUnit> cobol = new SourceSpec<>(CobolPreprocessor.CompilationUnit.class, null,
                 CobolPreprocessorParser.builder()
-                        .setCopybooks(copybooks),
+                        .copybooks(copybooks),
                 before,
                 SourceSpec.EachResult.noop,
                 PreprocessorAssertions::customizeExecutionContext).after(s -> after);

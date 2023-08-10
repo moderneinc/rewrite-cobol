@@ -5,11 +5,9 @@
  */
 package org.openrewrite.cobol;
 
-import io.micrometer.core.instrument.Metrics;
-import io.micrometer.core.instrument.Timer;
 import org.antlr.v4.runtime.*;
-import org.openrewrite.*;
 import org.openrewrite.Parser;
+import org.openrewrite.*;
 import org.openrewrite.cobol.internal.CobolDialect;
 import org.openrewrite.cobol.internal.CobolParserVisitor;
 import org.openrewrite.cobol.internal.CobolPreprocessorOutputSourcePrinter;
@@ -17,14 +15,17 @@ import org.openrewrite.cobol.internal.grammar.CobolLexer;
 import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
 import org.openrewrite.internal.EncodingDetectingInputStream;
-import org.openrewrite.internal.MetricsHelper;
 import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.tree.ParseError;
-import org.openrewrite.tree.ParsingEventListener;
 import org.openrewrite.tree.ParsingExecutionContextView;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
@@ -44,91 +45,75 @@ public class CobolParser implements Parser {
         this.copybooks = copybooks;
     }
 
+    public Stream<SourceFile> parse(Stream<Path> sourceFiles, @Nullable Path relativeTo, ExecutionContext ctx) {
+        CobolPreprocessorParser cobolPreprocessorParser = CobolPreprocessorParser.builder()
+                .cobolDialect(cobolDialect)
+                .copybooks(copybooks)
+                .build();
+        return sourceFiles.filter(this::accept).map(s -> parseInput(new Input(s, () -> {
+            try {
+                return new BufferedInputStream(Files.newInputStream(s));
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }), relativeTo, ctx, cobolPreprocessorParser));
+    }
+
     @Override
     public Stream<SourceFile> parseInputs(Iterable<Input> sourceFiles, @Nullable Path relativeTo, ExecutionContext ctx) {
-        ParsingExecutionContextView pctx = ParsingExecutionContextView.view(ctx);
-        ParsingEventListener parsingListener = pctx.getParsingListener();
-        List<Input> accepted = acceptedInputs(sourceFiles).collect(toList());
-        List<Input> copybookInputs = new ArrayList<>();
-        List<Input> cobolInputs = new ArrayList<>();
-
-        for (Input input : accepted) {
-            for (String cobolFileExtension : COBOL_FILE_EXTENSIONS) {
-                if (input.getPath().getFileName().toString().toLowerCase().endsWith(cobolFileExtension)) {
-                    cobolInputs.add(input);
-                }
-            }
-
-            for (String copybookFileExtension : COPYBOOK_FILE_EXTENSIONS) {
-                if (input.getPath().getFileName().toString().toLowerCase().endsWith(copybookFileExtension)) {
-                    copybookInputs.add(input);
-                }
-            }
-        }
-
-        CopybookParser copybookParser = new CopybookParser(cobolDialect);
-        List<SourceFile> copybooks = copybookParser.parseInputs(copybookInputs, relativeTo, ctx).collect(toList());
-
         CobolPreprocessorParser cobolPreprocessorParser = CobolPreprocessorParser.builder()
-                .setCobolDialect(cobolDialect)
+                .cobolDialect(cobolDialect)
+                .copybooks(copybooks)
                 .build();
-        cobolPreprocessorParser.setCopybooks(!this.copybooks.isEmpty() ? this.copybooks : copybooks);
 
-        Stream<SourceFile> sources;
-        sources = cobolInputs.stream()
-                .map(sourceFile -> {
-                    Timer.Builder timer = Timer.builder("rewrite.parse")
-                            .description("The time spent parsing a COBOL file")
-                            .tag("file.type", "COBOL");
-                    Timer.Sample sample = Timer.start();
-                    try {
-                        EncodingDetectingInputStream is = sourceFile.getSource(ctx);
-                        cobolPreprocessorParser.reset();
-                        SourceFile preprocessedCU = cobolPreprocessorParser.parseInputs(singletonList(sourceFile), relativeTo, ctx).collect(toList()).get(0);
-                        assert preprocessedCU != null;
-                        if (preprocessedCU instanceof ParseError) {
-                            return preprocessedCU;
-                        }
+        return acceptedInputs(sourceFiles).map(s -> parseInput(s, relativeTo, ctx, cobolPreprocessorParser));
+    }
 
-                        // Print processed code to parse COBOL.
-                        PrintOutputCapture<ExecutionContext> cobolParserOutput = new PrintOutputCapture<>(new InMemoryExecutionContext());
-                        CobolPreprocessorOutputSourcePrinter<ExecutionContext> printWithoutColumns = new CobolPreprocessorOutputSourcePrinter<>(cobolDialect, false);
-                        printWithoutColumns.visit(preprocessedCU, cobolParserOutput);
+    private SourceFile parseInput(Input input, @Nullable Path relativeTo, ExecutionContext ctx,
+                                  CobolPreprocessorParser cobolPreprocessorParser) {
+        try {
+            EncodingDetectingInputStream is = input.getSource(ctx);
+            cobolPreprocessorParser.reset();
+            SourceFile preprocessedCU = cobolPreprocessorParser.parseInputs(singletonList(input), relativeTo, ctx).collect(toList()).get(0);
+            assert preprocessedCU != null;
+            if (preprocessedCU instanceof ParseError) {
+                return preprocessedCU;
+            }
 
-                        org.openrewrite.cobol.internal.grammar.CobolParser parser =
-                                new org.openrewrite.cobol.internal.grammar.CobolParser(
-                                        new CommonTokenStream(new CobolLexer(CharStreams.fromString(cobolParserOutput.getOut()))));
+            // Print processed code to parse COBOL.
+            PrintOutputCapture<ExecutionContext> cobolParserOutput = new PrintOutputCapture<>(new InMemoryExecutionContext());
+            CobolPreprocessorOutputSourcePrinter<ExecutionContext> printWithoutColumns = new CobolPreprocessorOutputSourcePrinter<>(cobolDialect, false);
+            printWithoutColumns.visit(preprocessedCU, cobolParserOutput);
 
-                        parser.removeErrorListeners();
-                        parser.addErrorListener(new ForwardingErrorListener(sourceFile.getPath(), ctx));
+            org.openrewrite.cobol.internal.grammar.CobolParser parser =
+                    new org.openrewrite.cobol.internal.grammar.CobolParser(
+                            new CommonTokenStream(new CobolLexer(CharStreams.fromString(cobolParserOutput.getOut()))));
 
-                        // Print the pre-processed code to parse COBOL.
-                        PrintOutputCapture<ExecutionContext> sourceOutput = new PrintOutputCapture<>(new InMemoryExecutionContext());
-                        CobolPreprocessorOutputSourcePrinter<ExecutionContext> printWithColumns = new CobolPreprocessorOutputSourcePrinter<>(cobolDialect, true);
-                        printWithColumns.visit(preprocessedCU, sourceOutput);
+            parser.removeErrorListeners();
+            parser.addErrorListener(new ForwardingErrorListener(input.getPath(), ctx));
 
-                        Cobol.CompilationUnit compilationUnit = new CobolParserVisitor(
-                                sourceFile.getRelativePath(relativeTo),
-                                sourceFile.getFileAttributes(),
-                                sourceOutput.getOut(),
-                                is.getCharset(),
-                                is.isCharsetBomMarked(),
-                                cobolDialect,
-                                ((CobolPreprocessor.CompilationUnit) preprocessedCU).getPreprocessorStatements(),
-                                ((CobolPreprocessor.CompilationUnit) preprocessedCU).getReplacements()
-                        ).visitCompilationUnit(parser.compilationUnit());
+            // Print the pre-processed code to parse COBOL.
+            PrintOutputCapture<ExecutionContext> sourceOutput = new PrintOutputCapture<>(new InMemoryExecutionContext());
+            CobolPreprocessorOutputSourcePrinter<ExecutionContext> printWithColumns = new CobolPreprocessorOutputSourcePrinter<>(cobolDialect, true);
+            printWithColumns.visit(preprocessedCU, sourceOutput);
 
-                        sample.stop(MetricsHelper.successTags(timer).register(Metrics.globalRegistry));
-                        parsingListener.parsed(sourceFile, compilationUnit);
-                        return compilationUnit;
-                    } catch (Throwable t) {
-                        sample.stop(MetricsHelper.errorTags(timer, t).register(Metrics.globalRegistry));
-                        pctx.getOnError().accept(t);
-                        return ParseError.build(this, sourceFile, relativeTo, ctx, t);
-                    }
-                });
+            Cobol.CompilationUnit compilationUnit = new CobolParserVisitor(
+                    input.getRelativePath(relativeTo),
+                    input.getFileAttributes(),
+                    sourceOutput.getOut(),
+                    is.getCharset(),
+                    is.isCharsetBomMarked(),
+                    cobolDialect,
+                    ((CobolPreprocessor.CompilationUnit) preprocessedCU).getPreprocessorStatements(),
+                    ((CobolPreprocessor.CompilationUnit) preprocessedCU).getReplacements()
+            ).visitCompilationUnit(parser.compilationUnit());
 
-        return Stream.concat(sources, copybooks.stream());
+            ParsingExecutionContextView.view(ctx).getParsingListener().parsed(input, compilationUnit);
+            return compilationUnit;
+        } catch (Throwable t) {
+            ctx.getOnError().accept(t);
+            return ParseError.build(this, input, relativeTo, ctx, t);
+        }
     }
 
     @Override
@@ -194,8 +179,7 @@ public class CobolParser implements Parser {
             return this;
         }
 
-        @Deprecated
-        public Builder setCopybooks(List<SourceFile> copybooks) {
+        public Builder copybooks(List<SourceFile> copybooks) {
             this.copybooks = copybooks;
             return this;
         }

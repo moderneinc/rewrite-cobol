@@ -140,7 +140,6 @@ public class CobolPreprocessorParser implements Parser {
     }
 
     public static class Builder extends org.openrewrite.Parser.Builder {
-
         private CobolDialect cobolDialect = CobolDialect.ibmAnsi85();
         private List<SourceFile> copybooks = emptyList();
 
@@ -156,13 +155,12 @@ public class CobolPreprocessorParser implements Parser {
             );
         }
 
-        public Builder setCobolDialect(CobolDialect cobolDialect) {
+        public Builder cobolDialect(CobolDialect cobolDialect) {
             this.cobolDialect = cobolDialect;
             return this;
         }
 
-        @Deprecated
-        public Builder setCopybooks(List<SourceFile> copybooks) {
+        public Builder copybooks(List<SourceFile> copybooks) {
             this.copybooks = copybooks;
             return this;
         }

@@ -16,7 +16,6 @@ import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
 import org.openrewrite.cobol.tree.Name;
 import org.openrewrite.internal.ListUtils;
-import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.marker.SearchResult;
 import org.openrewrite.text.PlainText;
 import org.openrewrite.text.PlainTextVisitor;
@@ -172,13 +171,13 @@ public class FindRelationships extends Recipe {
 
         return new TreeVisitor<Tree, ExecutionContext>() {
             @Override
-            public @Nullable Tree preVisit(Tree tree, ExecutionContext ctx) {
+            public Tree preVisit(Tree tree, ExecutionContext ctx) {
                 stopAfterPreVisit();
                 Tree t = tree;
                 if(tree instanceof Cobol) {
-                    t = cobolVisitor.visit(tree, ctx);
+                    t = cobolVisitor.visit(t, ctx);
                 } else if(tree instanceof PlainText) {
-                    t = linkEditVisitor.visit(tree, ctx);
+                    t = linkEditVisitor.visit(t, ctx);
                     t = bindCardVisitor.visit(t, ctx);
                 }
                 return t;
