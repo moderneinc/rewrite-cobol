@@ -12,6 +12,8 @@ plugins {
     id("com.gradle.common-custom-user-data-gradle-plugin") version "latest.release"
 }
 
+include("cobol-cli")
+
 val isCiServer = System.getenv("CI")?.equals("true") ?: false
 
 gradleEnterprise {
@@ -43,8 +45,4 @@ gradleEnterprise {
         this as com.gradle.enterprise.gradleplugin.internal.extension.BuildScanExtensionWithHiddenFeatures
         publishIfAuthenticated()
     }
-}
-
-if (isCiServer) {
-    include("cobol-cli")
 }

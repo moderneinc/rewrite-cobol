@@ -30,6 +30,11 @@ public class Publish implements Callable<Integer> {
                           "Will default to the environment variable @|bold MODERNE_PUBLISH_PWD|@ if one exists.\n")
     private String publishPwd;
 
+    @CommandLine.Option(names = "--timeoutSeconds",
+            defaultValue = "10",
+            description = "A per-file timeout in seconds for parsing.")
+    protected int timeoutSeconds;
+
     @CommandLine.Option(names = "--skipSSL",
             defaultValue = "false",
             description = """
@@ -48,7 +53,7 @@ public class Publish implements Callable<Integer> {
 
         validateOptions();
 
-        List<LstJarFile> lstJars = new Build(listRepositoryOptions, spec).build(repositories);
+        List<LstJarFile> lstJars = new Build(listRepositoryOptions, spec, timeoutSeconds).build(repositories);
 
         spec.commandLine().getOut().println(ansi().bold().a("\n> Publishing LST(s)\n").boldOff());
         try (ProgressBar progressBar = DefaultProgressBar.builder(spec).build().setMax(lstJars.size())) {

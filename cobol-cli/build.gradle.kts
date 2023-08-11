@@ -23,13 +23,13 @@ configurations {
     }
 }
 
-
 dependencies {
     compileOnly("org.projectlombok:lombok:latest.release")
     annotationProcessor("org.projectlombok:lombok:latest.release")
 
     implementation("info.picocli:picocli:latest.release")
-    implementation("io.moderne:moderne-ast-write:latest.release:obfuscated")
+    compileOnly("io.moderne:moderne-ast-write:latest.release")
+    runtimeOnly("io.moderne:moderne-ast-write:latest.release:obfuscated")
     annotationProcessor("info.picocli:picocli-codegen:latest.release")
 
     implementation("org.slf4j:slf4j-nop:latest.release")
