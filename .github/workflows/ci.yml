@@ -19,7 +19,12 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  gcloud-config-for-repositories:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: google-github-actions/setup-gcloud@v1.1.1
   build:
+    needs: gcloud-config-for-repositories
     uses: openrewrite/gh-automation/.github/workflows/ci-gradle.yml@main
     secrets:
       gradle_enterprise_access_key: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
