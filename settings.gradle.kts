@@ -45,6 +45,6 @@ gradleEnterprise {
     }
 }
 
-if (!isCiServer) {
+if (isCiServer) {
     include("cobol-cli")
 }
