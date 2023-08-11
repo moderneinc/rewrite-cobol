@@ -17,7 +17,8 @@ jobs:
     steps:
       - uses: google-github-actions/auth@v1
         with:
-          credentials_json: ${{ secrets.ARTIFACT_REGISTRY_KEY }}
+          credentials_json: ${{ secrets.GCR_KEY }}
+      - uses: google-github-actions/setup-gcloud@v1.1.1
   release:
     needs: gcloud-auth
     uses: openrewrite/gh-automation/.github/workflows/publish-gradle.yml@main
