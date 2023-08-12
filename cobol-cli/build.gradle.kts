@@ -4,6 +4,9 @@ plugins {
     id("com.google.cloud.artifactregistry.gradle-plugin") version "latest.release"
 }
 
+group = "org.openrewrite"
+description = "A version of the Moderne CLI specialized for parsing COBOL LSTs."
+
 repositories {
     mavenLocal()
     maven {
