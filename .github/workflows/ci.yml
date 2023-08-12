@@ -19,21 +19,19 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  gcloud-auth:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: google-github-actions/auth@v1
         with:
           credentials_json: ${{ secrets.GCR_KEY }}
       - uses: google-github-actions/setup-gcloud@v1.1.1
-  build:
-    needs: gcloud-auth
-    uses: openrewrite/gh-automation/.github/workflows/ci-gradle.yml@main
-    secrets:
-      gradle_enterprise_access_key: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
-      gradle_enterprise_cache_username: ${{ secrets.GRADLE_ENTERPRISE_CACHE_USERNAME }}
-      gradle_enterprise_cache_password: ${{ secrets.GRADLE_ENTERPRISE_CACHE_PASSWORD }}
-      ossrh_username: ${{ secrets.OSSRH_USERNAME }}
-      ossrh_token: ${{ secrets.OSSRH_TOKEN }}
-      ossrh_signing_key: ${{ secrets.OSSRH_SIGNING_KEY }}
-      ossrh_signing_password: ${{ secrets.OSSRH_SIGNING_PASSWORD }}
+      - uses: openrewrite/gh-automation/.github/workflows/ci-gradle.yml@main
+        with:
+          gradle_enterprise_access_key: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
+          gradle_enterprise_cache_username: ${{ secrets.GRADLE_ENTERPRISE_CACHE_USERNAME }}
+          gradle_enterprise_cache_password: ${{ secrets.GRADLE_ENTERPRISE_CACHE_PASSWORD }}
+          ossrh_username: ${{ secrets.OSSRH_USERNAME }}
+          ossrh_token: ${{ secrets.OSSRH_TOKEN }}
+          ossrh_signing_key: ${{ secrets.OSSRH_SIGNING_KEY }}
+          ossrh_signing_password: ${{ secrets.OSSRH_SIGNING_PASSWORD }}
