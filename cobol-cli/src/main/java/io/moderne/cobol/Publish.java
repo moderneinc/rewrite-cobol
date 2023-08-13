@@ -44,6 +44,11 @@ public class Publish implements Callable<Integer> {
                     """)
     protected boolean skipSSL;
 
+    @CommandLine.Option(names = "--timeoutSeconds",
+            defaultValue = "10",
+            description = "A per-file timeout in seconds for parsing.")
+    protected int timeoutSeconds;
+
     @CommandLine.Spec
     CommandLine.Model.CommandSpec spec;
 
