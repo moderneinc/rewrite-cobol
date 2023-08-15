@@ -34,7 +34,6 @@ dependencies {
 
     implementation("info.picocli:picocli:latest.release")
     compileOnly("io.moderne:moderne-ast-write:latest.release")
-    runtimeOnly("io.moderne:moderne-ast-write:latest.release:obfuscated")
     annotationProcessor("info.picocli:picocli-codegen:latest.release")
 
     implementation("org.slf4j:slf4j-nop:latest.release")
@@ -44,6 +43,8 @@ dependencies {
     implementation("org.openrewrite:rewrite-core:latest.integration")
     implementation("org.openrewrite.recipe:rewrite-all:latest.integration")
     implementation(rootProject)
+
+    testRuntimeOnly("io.moderne:moderne-ast-write:latest.release:obfuscated")
 }
 
 application {
