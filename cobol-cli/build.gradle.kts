@@ -2,6 +2,8 @@ plugins {
     java
     application
     id("com.google.cloud.artifactregistry.gradle-plugin") version "latest.release"
+    id("org.openrewrite.build.publish")
+    id("org.openrewrite.build.shadow")
 }
 
 group = "org.openrewrite"
@@ -45,5 +47,16 @@ dependencies {
 }
 
 application {
-    mainClass.set("io.moderne.cli.commands.Mod")
+    mainClass.set("io.moderne.cobol.Mod")
+}
+
+tasks.withType<Javadoc> {
+    (options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet")
+    exclude("**/Build.java", "**/DefaultProgressBar.java")
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
 }
