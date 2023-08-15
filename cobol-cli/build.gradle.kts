@@ -2,7 +2,6 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
     java
-    application
     id("com.google.cloud.artifactregistry.gradle-plugin") version "latest.release"
     id("org.openrewrite.build.publish")
     id("org.openrewrite.build.shadow")
@@ -51,10 +50,6 @@ dependencies {
     testRuntimeOnly("io.moderne:moderne-ast-write:latest.release:obfuscated")
 }
 
-application {
-    mainClass.set("io.moderne.cobol.Mod")
-}
-
 tasks.withType<Javadoc> {
     (options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet")
     exclude("**/Build.java", "**/DefaultProgressBar.java")
@@ -71,6 +66,9 @@ tasks.withType<JavaCompile> {
 }
 
 tasks.withType<ShadowJar> {
+    manifest {
+        attributes("Main-Class" to "io.moderne.cobol.Mod")
+    }
     configurations = listOf(project.configurations.getByName("runtimeClasspath"), project.configurations.getByName("astWrite"))
     isZip64 = true
 }
