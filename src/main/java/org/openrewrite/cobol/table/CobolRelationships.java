@@ -50,6 +50,7 @@ public class CobolRelationships extends DataTable<CobolRelationships.Row> {
         LINKEDIT,
         BINDPLAN,
         BINDPACKAGE,
+        SQL_CURSOR,
         SQL_TABLE
     }
 

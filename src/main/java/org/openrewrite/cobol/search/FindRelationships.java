@@ -72,18 +72,28 @@ public class FindRelationships extends Recipe {
                                 line.getWords().get(0) instanceof CobolPreprocessor.Word &&
                                 "declare".equalsIgnoreCase(((CobolPreprocessor.Word) line.getWords().get(0)).getCobolWord().getWord())) {
                             return line.withWords(ListUtils.map(line.getWords(), (j, w) -> {
-                                if (j == 1 && w instanceof CobolPreprocessor.Word &&
-                                        !(line.getWords().get(2) instanceof CobolPreprocessor.Word &&
-                                                "cursor".equalsIgnoreCase(((CobolPreprocessor.Word) line.getWords().get(2)).getCobolWord().getWord()))) {
+                                if (j == 1 && w instanceof CobolPreprocessor.Word) {
                                     String tableName = ((CobolPreprocessor.Word) w).getCobolWord().getWord();
-                                    cobolRelationships.insertRow(ctx,
-                                            new CobolRelationships.Row(
-                                                    sourceName,
-                                                    dependentType,
-                                                    DECLARE,
-                                                    tableName,
-                                                    SQL_TABLE,
-                                                    false));
+                                    if (line.getWords().get(2) instanceof CobolPreprocessor.Word &&
+                                            "cursor".equalsIgnoreCase(((CobolPreprocessor.Word) line.getWords().get(2)).getCobolWord().getWord())) {
+                                        cobolRelationships.insertRow(ctx,
+                                                new CobolRelationships.Row(
+                                                        sourceName,
+                                                        dependentType,
+                                                        DECLARE,
+                                                        tableName,
+                                                        SQL_CURSOR,
+                                                        false));
+                                    } else {
+                                        cobolRelationships.insertRow(ctx,
+                                                new CobolRelationships.Row(
+                                                        sourceName,
+                                                        dependentType,
+                                                        DECLARE,
+                                                        tableName,
+                                                        SQL_TABLE,
+                                                        false));
+                                    }
                                     return SearchResult.found(w);
                                 }
                                 return w;
