@@ -1,6 +1,8 @@
 package io.moderne.cobol;
 
 import io.moderne.cobol.internal.FatalException;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.openrewrite.ProgressBar;
 import org.openrewrite.internal.StringUtils;
 import picocli.CommandLine;
@@ -10,6 +12,8 @@ import java.util.concurrent.Callable;
 
 import static org.fusesource.jansi.Ansi.ansi;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @CommandLine.Command(name = "publish")
 public class Publish implements Callable<Integer> {
     @CommandLine.Mixin
@@ -53,7 +57,7 @@ public class Publish implements Callable<Integer> {
 
         validateOptions();
 
-        List<LstJarFile> lstJars = new Build(listRepositoryOptions, spec, timeoutSeconds).build(repositories);
+        List<LstJarFile> lstJars = new Build(listRepositoryOptions, spec, timeoutSeconds, false).build(repositories);
 
         spec.commandLine().getOut().println(ansi().bold().a("\n> Publishing LST(s)\n").boldOff());
         try (ProgressBar progressBar = DefaultProgressBar.builder(spec).build().setMax(lstJars.size())) {

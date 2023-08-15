@@ -20,6 +20,7 @@ import picocli.CommandLine;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -46,6 +47,11 @@ public class Build implements Callable<Integer> {
             defaultValue = "10",
             description = "A per-file timeout in seconds for parsing.")
     protected int timeoutSeconds;
+
+    @CommandLine.Option(names = "--validate",
+            defaultValue = "false",
+            description = "When enabled take extra time to validate that the contents of the jar can be successfully deserialized.")
+    protected boolean validate;
 
     @Override
     public Integer call() {
@@ -144,11 +150,22 @@ public class Build implements Callable<Integer> {
                         .onParse(progressBar::setMax)
                         .build();
 
-                serializer.write(
+                List<File> written = serializer.write(
                         parser.parse(parser.acceptedPaths(repository.getRootDir()), repository.getRootDir(),
                                 progressReportingExecutionContext(progressBar)),
                         outputDir
                 );
+                if(validate) {
+                    spec.commandLine().getOut().println("Validating that LST files can be deserialized.");
+                    for (File astFile : written) {
+                        try(InputStream is = Files.newInputStream(astFile.toPath())) {
+                            serializer.read(is);
+                        } catch (Exception e) {
+                            throw new RuntimeException("Unable to validate newly written ast file " + astFile.getPath(), e);
+                        }
+                    }
+                    spec.commandLine().getOut().println("✅ All LST files validated to deserialize.");
+                }
             }
 
             return LstJarFile.assemble(repository, outputDir);
