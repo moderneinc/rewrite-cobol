@@ -1,3 +1,5 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
     java
     application
@@ -60,4 +62,9 @@ java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(17))
     }
+}
+
+tasks.withType<ShadowJar> {
+    configurations = listOf(project.configurations.getByName("runtimeClasspath"))
+    isZip64 = true
 }
