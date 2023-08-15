@@ -28,6 +28,7 @@ configurations {
             exclude("ch.qos.logback")
         }
     }
+    create("astWrite")
 }
 
 dependencies {
@@ -36,6 +37,7 @@ dependencies {
 
     implementation("info.picocli:picocli:latest.release")
     compileOnly("io.moderne:moderne-ast-write:latest.release")
+    "astWrite"("io.moderne:moderne-ast-write:latest.release:obfuscated")
     annotationProcessor("info.picocli:picocli-codegen:latest.release")
 
     implementation("org.slf4j:slf4j-nop:latest.release")
@@ -65,6 +67,6 @@ java {
 }
 
 tasks.withType<ShadowJar> {
-    configurations = listOf(project.configurations.getByName("runtimeClasspath"))
+    configurations = listOf(project.configurations.getByName("runtimeClasspath"), project.configurations.getByName("astWrite"))
     isZip64 = true
 }
