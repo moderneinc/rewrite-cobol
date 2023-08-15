@@ -34,9 +34,14 @@ dependencies {
     compileOnly("org.projectlombok:lombok:latest.release")
     annotationProcessor("org.projectlombok:lombok:latest.release")
 
+    if (System.getProperty("idea.active") != null || System.getProperty("idea.sync.active") != null) {
+        implementation("io.moderne:moderne-ast-write:latest.release")
+    } else {
+        compileOnly("io.moderne:moderne-ast-write:latest.release")
+        "astWrite"("io.moderne:moderne-ast-write:latest.release:obfuscated")
+    }
+
     implementation("info.picocli:picocli:latest.release")
-    compileOnly("io.moderne:moderne-ast-write:latest.release")
-    "astWrite"("io.moderne:moderne-ast-write:latest.release:obfuscated")
     annotationProcessor("info.picocli:picocli-codegen:latest.release")
 
     implementation("org.slf4j:slf4j-nop:latest.release")
