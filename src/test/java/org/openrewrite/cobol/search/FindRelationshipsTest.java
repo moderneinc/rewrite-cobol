@@ -75,29 +75,29 @@ public class FindRelationshipsTest extends CobolTest {
     void execSql() {
         rewriteRun(
           spec -> spec.dataTable(Row.class, rows -> {
-              assertThat(rows.stream().map(Row::getDependent)).contains("DECLARE_TABLE_2", "DECLARE_TABLE_3", "EXEC_SQL_PROD_2");
+              assertThat(rows.stream().map(Row::getDependent)).contains("DECLARE_TABLE_2", "DECLARE_TABLE_3", "EXEC_SQL");
               assertThat(rows.stream().map(Row::getDependency)).contains("PROD_TBL_01", "PROD_TBL_02", "PROD_TBL_03");
               assertThat(rows.stream().map(Row::getDependentType)).contains(COPYBOOK, COBOL);
               assertThat(rows.stream().map(Row::getDependencyType)).contains(SQL_TABLE);
-              assertThat(rows.stream().map(Row::getAction)).contains(DECLARE);
+              assertThat(rows.stream().map(Row::getAction)).contains(DECLARE, INCLUDE);
           }),
           cobol(
             """
               000000 IDENTIFICATION DIVISION.
                      PROGRAM-ID.
-                         EXEC_SQL_PROD_2.
+                         EXEC_SQL.
                      DATA DIVISION.
                      WORKING-STORAGE SECTION.
                      01 FILLER PIC X(10) VALUE 'PGM WORKING-STORAGE: EXEC_SQL_PROD_2'.
               
                     * Create SQL table in the COBOL source.
-              000000*    EXEC SQL statement to declare a table
+                    *    EXEC SQL statement to declare a table
                          EXEC SQL DECLARE PROD_TBL_01 TABLE
                          ( NUM_1                  CHAR(3) NOT NULL,
                            NUM_2                  CHAR(5) NOT NULL,
                            CREATED_DATE           DATE NOT NULL
                          ) END-EXEC.
-
+              
                     * Include SQL table from another COBOL source.
                     * These SQL tables are created through copybooks.
                      EXEC SQL INCLUDE DECLARE_TABLE_2 END-EXEC.

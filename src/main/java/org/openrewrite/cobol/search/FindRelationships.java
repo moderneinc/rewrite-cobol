@@ -88,6 +88,24 @@ public class FindRelationships extends Recipe {
                                 }
                                 return w;
                             }));
+                        } else if (line.getWords().size() >= 2 &&
+                                line.getWords().get(0) instanceof CobolPreprocessor.Word &&
+                                "include".equalsIgnoreCase(((CobolPreprocessor.Word) line.getWords().get(0)).getCobolWord().getWord())) {
+                            return line.withWords(ListUtils.map(line.getWords(), (j, w) -> {
+                                if (j == 1 && w instanceof CobolPreprocessor.Word) {
+                                    String tableName = ((CobolPreprocessor.Word) w).getCobolWord().getWord();
+                                    cobolRelationships.insertRow(ctx,
+                                            new CobolRelationships.Row(
+                                                    sourceName,
+                                                    dependentType,
+                                                    INCLUDE,
+                                                    tableName,
+                                                    SQL_TABLE,
+                                                    false));
+                                    return SearchResult.found(w);
+                                }
+                                return w;
+                            }));
                         }
                     }
                     return c;
