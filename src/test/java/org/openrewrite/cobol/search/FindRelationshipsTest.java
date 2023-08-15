@@ -76,9 +76,9 @@ public class FindRelationshipsTest extends CobolTest {
         rewriteRun(
           spec -> spec.dataTable(Row.class, rows -> {
               assertThat(rows.stream().map(Row::getDependent)).contains("DECLARE_TABLE_2", "DECLARE_TABLE_3", "EXEC_SQL");
-              assertThat(rows.stream().map(Row::getDependency)).contains("PROD_TBL_01", "PROD_TBL_02", "PROD_TBL_03");
+              assertThat(rows.stream().map(Row::getDependency)).contains("PROD_TBL_01", "PROD_TBL_02", "PROD_TBL_03", "CURSOR_IN_COPY", "CURSOR_1", "CURSOR_2", "CURSOR_3");
               assertThat(rows.stream().map(Row::getDependentType)).contains(COPYBOOK, COBOL);
-              assertThat(rows.stream().map(Row::getDependencyType)).contains(SQL_TABLE);
+              assertThat(rows.stream().map(Row::getDependencyType)).contains(SQL_TABLE, SQL_CURSOR);
               assertThat(rows.stream().map(Row::getAction)).contains(DECLARE, INCLUDE);
           }),
           cobol(
