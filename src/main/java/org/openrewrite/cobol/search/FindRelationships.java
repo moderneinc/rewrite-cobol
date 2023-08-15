@@ -5,11 +5,9 @@
  */
 package org.openrewrite.cobol.search;
 
-import org.openrewrite.ExecutionContext;
-import org.openrewrite.Recipe;
-import org.openrewrite.Tree;
-import org.openrewrite.TreeVisitor;
+import org.openrewrite.*;
 import org.openrewrite.cobol.CobolIsoVisitor;
+import org.openrewrite.cobol.CobolPreprocessorIsoVisitor;
 import org.openrewrite.cobol.markers.MissingCopybook;
 import org.openrewrite.cobol.table.CobolRelationships;
 import org.openrewrite.cobol.tree.Cobol;
@@ -44,8 +42,62 @@ public class FindRelationships extends Recipe {
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {
-        CobolIsoVisitor<ExecutionContext> cobolVisitor = new CobolIsoVisitor<ExecutionContext>() {
 
+        /*
+         * Find relationships from CopyBooks.
+         */
+        class PreprocessorRelationshipVisitor extends CobolPreprocessorIsoVisitor<ExecutionContext> {
+            String sourceName = "UNKNOWN";
+
+            @Override
+            public CobolPreprocessor.CompilationUnit visitCompilationUnit(CobolPreprocessor.CompilationUnit compilationUnit, ExecutionContext ctx) {
+                sourceName = compilationUnit.getSourcePath().getFileName().toString();
+                sourceName = sourceName.contains(".") ? sourceName.substring(0, sourceName.indexOf(".")) : sourceName;
+                return super.visitCompilationUnit(compilationUnit, ctx);
+            }
+
+            @Override
+            public CobolPreprocessor.CharDataSql visitCharDataSql(CobolPreprocessor.CharDataSql charDataSql, ExecutionContext ctx) {
+                CobolPreprocessor.CharDataSql sql = super.visitCharDataSql(charDataSql, ctx);
+                sql = getSqlRelationships(sql, sourceName, COPYBOOK, ctx);
+
+                return sql;
+            }
+
+            public CobolPreprocessor.CharDataSql getSqlRelationships(CobolPreprocessor.CharDataSql sql, String sourceName, CobolRelationships.ResourceType dependentType, ExecutionContext ctx) {
+                return sql.withCobols(ListUtils.map(sql.getCobols(), (i, c) -> {
+                    if (c instanceof CobolPreprocessor.CharDataLine) {
+                        CobolPreprocessor.CharDataLine line = (CobolPreprocessor.CharDataLine) c;
+                        if (line.getWords().size() >= 4 &&
+                                line.getWords().get(0) instanceof CobolPreprocessor.Word &&
+                                "declare".equalsIgnoreCase(((CobolPreprocessor.Word) line.getWords().get(0)).getCobolWord().getWord())) {
+                            return line.withWords(ListUtils.map(line.getWords(), (j, w) -> {
+                                if (j == 1 && w instanceof CobolPreprocessor.Word &&
+                                        !(line.getWords().get(2) instanceof CobolPreprocessor.Word &&
+                                                "cursor".equalsIgnoreCase(((CobolPreprocessor.Word) line.getWords().get(2)).getCobolWord().getWord()))) {
+                                    String tableName = ((CobolPreprocessor.Word) w).getCobolWord().getWord();
+                                    cobolRelationships.insertRow(ctx,
+                                            new CobolRelationships.Row(
+                                                    sourceName,
+                                                    dependentType,
+                                                    DECLARE,
+                                                    tableName,
+                                                    SQL_TABLE,
+                                                    false));
+                                    return SearchResult.found(w);
+                                }
+                                return w;
+                            }));
+                        }
+                    }
+                    return c;
+                }));
+            }
+        }
+
+        PreprocessorRelationshipVisitor preprocessorVisitor = new PreprocessorRelationshipVisitor();
+
+        CobolIsoVisitor<ExecutionContext> cobolVisitor = new CobolIsoVisitor<ExecutionContext>() {
             final Set<String> seenCalls = new HashSet<>();
             final Set<String> seenCopies = new HashSet<>();
 
@@ -79,6 +131,14 @@ public class FindRelationships extends Recipe {
                         }
                         return copyStatement.withCopySource(copyStatement.getCopySource().withName(
                                 SearchResult.found(copyStatement.getCopySource().getName())));
+                    } else if (ps instanceof CobolPreprocessor.ExecStatement) {
+                        CobolPreprocessor.ExecStatement execStatement = (CobolPreprocessor.ExecStatement) ps;
+                        if (execStatement.getCobol() instanceof CobolPreprocessor.CharDataSql &&
+                                !((CobolPreprocessor.CharDataSql) execStatement.getCobol()).getCobols().isEmpty()) {
+                            CobolPreprocessor.CharDataSql sql = (CobolPreprocessor.CharDataSql) execStatement.getCobol();
+                            execStatement = execStatement.withCobol(preprocessorVisitor.getSqlRelationships(sql, programName, COBOL, ctx));
+                            return execStatement;
+                        }
                     }
                     return ps;
                 }));
@@ -179,6 +239,8 @@ public class FindRelationships extends Recipe {
                 } else if(tree instanceof PlainText) {
                     t = linkEditVisitor.visit(t, ctx);
                     t = bindCardVisitor.visit(t, ctx);
+                } else if (tree instanceof CobolPreprocessor) {
+                    t = preprocessorVisitor.visit(t, ctx);
                 }
                 return t;
             }

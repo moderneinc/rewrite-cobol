@@ -50,6 +50,7 @@ public class CobolRelationships extends DataTable<CobolRelationships.Row> {
         LINKEDIT,
         BINDPLAN,
         BINDPACKAGE,
+        SQL_TABLE
     }
 
     public enum ResourceAction {
@@ -62,7 +63,13 @@ public class CobolRelationships extends DataTable<CobolRelationships.Row> {
          */
         CALL,
         /**
-         * Link-Edit card includes COBOL program
+         * A EXEC SQL DECLARE statement creates a SQL table.
+         */
+        DECLARE,
+        /**
+         * Link-Edit card includes COBOL program.
+         * <p>
+         * A COBOL program includes a SQL table.
          */
         INCLUDE,
         /**
