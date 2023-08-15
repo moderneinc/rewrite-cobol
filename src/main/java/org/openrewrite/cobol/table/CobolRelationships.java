@@ -42,6 +42,10 @@ public class CobolRelationships extends DataTable<CobolRelationships.Row> {
         @Column(displayName = "Dependency missing",
                 description = "Indicates whether the dependency is a known resource.")
         boolean dependencyMissing;
+
+        @Column(displayName = "Metadata",
+                description = "Additional data about the action.")
+        String metadata;
     }
 
     public enum ResourceType {
@@ -56,6 +60,10 @@ public class CobolRelationships extends DataTable<CobolRelationships.Row> {
 
     public enum ResourceAction {
         /**
+         * A COBOL program accesses a DB2 table.
+         */
+        ACCESS,
+        /**
          * Copybook call
          */
         COPY,
@@ -64,13 +72,13 @@ public class CobolRelationships extends DataTable<CobolRelationships.Row> {
          */
         CALL,
         /**
-         * A EXEC SQL DECLARE statement creates a SQL table.
+         * An exec sql declare statement defines a DB2 table.
          */
-        DECLARE,
+        CREATE,
         /**
          * Link-Edit card includes COBOL program.
          * <p>
-         * A COBOL program includes a SQL table.
+         * A COBOL program includes a copybook through EXEC SQL INCLUDE.
          */
         INCLUDE,
         /**
