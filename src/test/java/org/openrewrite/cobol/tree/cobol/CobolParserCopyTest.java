@@ -32,6 +32,19 @@ class CobolParserCopyTest extends CobolTest {
         );
     }
 
+    @Test
+    void injectTrailingWhitespace() {
+        rewriteRun(
+          cobolPostProcess(
+            """
+              000000 IDENTIFICATION DIVISION.
+                     PROGRAM-ID. Name.
+                     COPY TRAILING_WHITESPACE.
+              """
+          )
+        );
+    }
+
     @Issue("https://github.com/openrewrite/rewrite-cobol/issues/47")
     @Test
     void mixedOrderPreprocessorDirectives() {
