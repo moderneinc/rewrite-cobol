@@ -54,7 +54,6 @@ public class CobolRelationships extends DataTable<CobolRelationships.Row> {
         LINKEDIT,
         BINDPLAN,
         BINDPACKAGE,
-        SQL_CURSOR,
         SQL_TABLE
     }
 
@@ -71,10 +70,6 @@ public class CobolRelationships extends DataTable<CobolRelationships.Row> {
          * Program call
          */
         CALL,
-        /**
-         * An exec sql declare statement defines a DB2 table.
-         */
-        CREATE,
         /**
          * Link-Edit card includes COBOL program.
          * <p>

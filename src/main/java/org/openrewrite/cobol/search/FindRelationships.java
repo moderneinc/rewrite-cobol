@@ -44,7 +44,9 @@ public class FindRelationships extends Recipe {
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {
         final Set<String> seenCopies = new HashSet<>();
-        final Set<String> seenTables = new HashSet<>();
+        final Set<String> seenIncludes = new HashSet<>();
+        final Set<String> seenTableAccess = new HashSet<>();
+        final Set<String> seenTableCreate = new HashSet<>();
 
         /*
          * Find relationships from CopyBooks.
@@ -72,68 +74,62 @@ public class FindRelationships extends Recipe {
                 return sql.withCobols(ListUtils.map(sql.getCobols(), (i, c) -> {
                     if (c instanceof CobolPreprocessor.CharDataLine) {
                         CobolPreprocessor.CharDataLine line = (CobolPreprocessor.CharDataLine) c;
-                        if (line.getWords().size() >= 4 &&
-                                line.getWords().get(0) instanceof CobolPreprocessor.Word &&
-                                "declare".equalsIgnoreCase(((CobolPreprocessor.Word) line.getWords().get(0)).getCobolWord().getWord()) &&
-                                line.getWords().get(2) instanceof CobolPreprocessor.Word) {
-                            if ("table".equalsIgnoreCase(((CobolPreprocessor.Word) line.getWords().get(2)).getCobolWord().getWord())) {
-                                return line.withWords(ListUtils.map(line.getWords(), (j, w) -> {
-                                    if (j == 1 && w instanceof CobolPreprocessor.Word) {
+                        AtomicBoolean tableNameNext = new AtomicBoolean(false);
+                        return line.withWords(ListUtils.map(line.getWords(), (j, w) -> {
+                            if (w instanceof CobolPreprocessor.Word) {
+                                CobolPreprocessor.Word word = (CobolPreprocessor.Word) w;
+                                if (j == 1 && line.getWords().get(0) instanceof CobolPreprocessor.Word &&
+                                        "include".equalsIgnoreCase(((CobolPreprocessor.Word) line.getWords().get(0)).getCobolWord().getWord())) {
+                                    String copybookName = word.getCobolWord().getWord();
+                                    if (seenIncludes.add(copybookName)) {
                                         cobolRelationships.insertRow(ctx,
                                                 new CobolRelationships.Row(
                                                         sourceName,
                                                         dependentType,
-                                                        CREATE,
-                                                        ((CobolPreprocessor.Word) w).getCobolWord().getWord(),
-                                                        SQL_TABLE,
+                                                        INCLUDE,
+                                                        copybookName,
+                                                        COPYBOOK,
                                                         false,
                                                         ""));
-                                        return SearchResult.found(w);
+                                        return SearchResult.found(word);
                                     }
-                                    return w;
-                                }));
-                            } else if ("cursor".equalsIgnoreCase(((CobolPreprocessor.Word) line.getWords().get(2)).getCobolWord().getWord())) {
-                                AtomicBoolean from = new AtomicBoolean(false);
-                                return line.withWords(ListUtils.map(line.getWords(), (j, w) -> {
-                                    if (w instanceof CobolPreprocessor.Word) {
-                                        if ("from".equalsIgnoreCase(((CobolPreprocessor.Word) w).getCobolWord().getWord())) {
-                                            from.set(true);
-                                        } else if (from.get()) {
-                                            cobolRelationships.insertRow(ctx,
-                                                    new CobolRelationships.Row(
-                                                            sourceName,
-                                                            dependentType,
-                                                            CREATE,
-                                                            ((CobolPreprocessor.Word) line.getWords().get(1)).getCobolWord().getWord(),
-                                                            SQL_CURSOR,
-                                                            false,
-                                                            ((CobolPreprocessor.Word) w).getCobolWord().getWord()));
-                                            from.set(false);
-                                            return SearchResult.found(w);
-                                        }
+                                } else if ("from".equalsIgnoreCase(word.getCobolWord().getWord()) || "join".equalsIgnoreCase(word.getCobolWord().getWord())) {
+                                    tableNameNext.set(true);
+                                } else if (tableNameNext.get()) {
+                                    tableNameNext.set(false);
+                                    String tableName = word.getCobolWord().getWord();
+                                    if (seenTableAccess.add(tableName +  "_READ")) {
+                                        cobolRelationships.insertRow(ctx,
+                                                new CobolRelationships.Row(
+                                                        sourceName,
+                                                        dependentType,
+                                                        ACCESS,
+                                                        tableName,
+                                                        SQL_TABLE,
+                                                        false,
+                                                        "READ"));
+                                        return SearchResult.found(word);
                                     }
-                                    return w;
-                                }));
-                            }
-                        } else if (line.getWords().size() >= 2 &&
-                                line.getWords().get(0) instanceof CobolPreprocessor.Word &&
-                                "include".equalsIgnoreCase(((CobolPreprocessor.Word) line.getWords().get(0)).getCobolWord().getWord())) {
-                            return line.withWords(ListUtils.map(line.getWords(), (j, w) -> {
-                                if (j == 1 && w instanceof CobolPreprocessor.Word) {
-                                    cobolRelationships.insertRow(ctx,
-                                            new CobolRelationships.Row(
-                                                    sourceName,
-                                                    dependentType,
-                                                    INCLUDE,
-                                                    ((CobolPreprocessor.Word) w).getCobolWord().getWord(),
-                                                    COPYBOOK,
-                                                    false,
-                                                    ""));
-                                    return SearchResult.found(w);
+                                } else if ("table".equalsIgnoreCase(word.getCobolWord().getWord()) && j - 2 >= 0 &&
+                                        line.getWords().get(j - 2) instanceof CobolPreprocessor.Word &&
+                                        "declare".equalsIgnoreCase(((CobolPreprocessor.Word) line.getWords().get(j - 2)).getCobolWord().getWord())) {
+                                    CobolPreprocessor.Word tableName = (CobolPreprocessor.Word) line.getWords().get(j - 1);
+                                    if (seenTableCreate.add(tableName.getCobolWord().getWord() + "_CREATE")) {
+                                        cobolRelationships.insertRow(ctx,
+                                                new CobolRelationships.Row(
+                                                        sourceName,
+                                                        dependentType,
+                                                        ACCESS,
+                                                        tableName.getCobolWord().getWord(),
+                                                        SQL_TABLE,
+                                                        false,
+                                                        "CREATE"));
+                                        return SearchResult.found(word);
+                                    }
                                 }
-                                return w;
-                            }));
-                        }
+                            }
+                            return w;
+                        }));
                     }
                     return c;
                 }));
