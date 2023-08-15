@@ -209,10 +209,14 @@ public class Build implements Callable<Integer> {
     private Path outputDir(LocalRepository repository) {
         Path target = dotModerne(repository).resolve("build");
         try {
-            // clean the existing build directory
-            try (Stream<Path> walk = Files.walk(target)) {
-                //noinspection ResultOfMethodCallIgnored
-                walk.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
+            if(Files.exists(target)) {
+                // clean the existing build directory
+                try (Stream<Path> walk = Files.walk(target)) {
+                    //noinspection ResultOfMethodCallIgnored
+                    walk.sorted(Comparator.reverseOrder())
+                            .map(Path::toFile)
+                            .forEach(File::delete);
+                }
             }
         } catch (IOException e) {
             throw new UncheckedIOException(e);
