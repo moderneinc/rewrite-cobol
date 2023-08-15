@@ -27,6 +27,7 @@ import java.util.*;
 import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
+import static org.openrewrite.cobol.CobolParser.COPYBOOK_FILE_EXTENSIONS;
 
 /**
  * Read preprocessed COBOL and execute preprocessor commands.
@@ -107,6 +108,11 @@ public class CobolPreprocessorParser implements Parser {
         String s = path.toString().toLowerCase();
         for (String COBOL_FILE_EXTENSION : COBOL_FILE_EXTENSIONS) {
             if (s.endsWith(COBOL_FILE_EXTENSION)) {
+                return true;
+            }
+        }
+        for (String COPYBOOK_FILE_EXTENSION : COPYBOOK_FILE_EXTENSIONS) {
+            if (s.endsWith(COPYBOOK_FILE_EXTENSION)) {
                 return true;
             }
         }
