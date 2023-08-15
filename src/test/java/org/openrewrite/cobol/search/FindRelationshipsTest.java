@@ -80,7 +80,7 @@ public class FindRelationshipsTest extends CobolTest {
               assertThat(rows.stream().map(Row::getAction)).contains(INCLUDE, ACCESS);
               assertThat(rows.stream().map(Row::getDependency)).contains("DECLARE_TABLE_2", "PROD_TBL_01", "PROD_TBL_02");
               assertThat(rows.stream().map(Row::getDependencyType)).contains(SQL_TABLE, COPYBOOK);
-              assertThat(rows.stream().map(Row::getMetadata)).contains("CREATE", "READ");
+              assertThat(rows.stream().map(Row::getActionMetadata)).contains("CREATE", "READ");
           }),
           cobol(
             """
@@ -144,7 +144,7 @@ public class FindRelationshipsTest extends CobolTest {
               assertThat(rows.stream().map(Row::getAction)).contains(INCLUDE, ACCESS);
               assertThat(rows.stream().map(Row::getDependency)).contains("DECLARE_TABLE_2", "DECLARE_TABLE_3", "PROD_TBL_02", "PROD_TBL_03");
               assertThat(rows.stream().map(Row::getDependencyType)).contains(SQL_TABLE, COPYBOOK);
-              assertThat(rows.stream().map(Row::getMetadata)).contains("CREATE", "READ");
+              assertThat(rows.stream().map(Row::getActionMetadata)).contains("CREATE", "READ");
           }),
           cobol(
             """
@@ -178,8 +178,7 @@ public class FindRelationshipsTest extends CobolTest {
               000000*    EXEC SQL statement to declare a table
                          EXEC SQL DECLARE PROD_TBL_02 TABLE
                          ( NUM_1                  CHAR(3) NOT NULL,
-                           NUM_2                  CHAR(5) NOT NULL,
-                           CREATED_DATE           DATE NOT NULL
+                           NUM_2                  CHAR(5) NOT NULL
                          ) END-EXEC.
               """,
             spec -> spec.after(s -> s).path("DECLARE_TABLE_2.CPY")
@@ -189,8 +188,7 @@ public class FindRelationshipsTest extends CobolTest {
               000000*    EXEC SQL statement to declare a table
                          EXEC SQL DECLARE PROD_TBL_03 TABLE
                          ( NUM_1                  CHAR(3) NOT NULL,
-                           NUM_2                  CHAR(5) NOT NULL,
-                           CREATED_DATE           DATE NOT NULL
+                           NUM_2                  CHAR(5) NOT NULL
                          ) END-EXEC.
                      01 DCL_PROD_TBL_03_NUM_2 PIC X(3).
                      EXEC SQL
@@ -213,7 +211,7 @@ public class FindRelationshipsTest extends CobolTest {
               assertThat(rows.stream().map(Row::getAction)).contains(INCLUDE, ACCESS);
               assertThat(rows.stream().map(Row::getDependency)).contains("DECLARE_TABLE_2", "PROD_TBL_02");
               assertThat(rows.stream().map(Row::getDependencyType)).contains(SQL_TABLE, COPYBOOK);
-              assertThat(rows.stream().map(Row::getMetadata)).contains("CREATE", "UPDATE");
+              assertThat(rows.stream().map(Row::getActionMetadata)).contains("CREATE", "INSERT", "UPDATE");
           }),
           cobol(
             """
@@ -224,6 +222,7 @@ public class FindRelationshipsTest extends CobolTest {
                      WORKING-STORAGE SECTION.
                      01 FILLER PIC X(10) VALUE 'PGM WORKING-STORAGE: EXEC_SQL_PROD_2'.
                      01 DCL_PROD_TBL_02_NUM_1 PIC X(3).
+                     01 DCL_PROD_TBL_02_NUM_2 PIC X(5).
               
                     * Include SQL table from another COBOL source.
                     * These SQL tables are created through copybooks.
@@ -233,6 +232,14 @@ public class FindRelationshipsTest extends CobolTest {
                          UPDATE PROD_TBL_02
                          SET NUM_1 = :DCL_PROD_TBL_02_NUM_1
                      END-EXEC.
+
+                     EXEC SQL
+                         INSERT INTO PROD_TBL_02
+                                (NUM_1,
+                                 NUM_2)
+                         VALUES (:DCL_PROD_TBL_02_NUM_1
+                                 :DCL_PROD_TBL_02_NUM_2)
+                     END-EXEC.
               """,
             spec -> spec.after(s -> s).path("EXEC_SQL_UPDATE.CBL")
           ),
@@ -241,8 +248,7 @@ public class FindRelationshipsTest extends CobolTest {
               000000*    EXEC SQL statement to declare a table
                          EXEC SQL DECLARE PROD_TBL_02 TABLE
                          ( NUM_1                  CHAR(3) NOT NULL,
-                           NUM_2                  CHAR(5) NOT NULL,
-                           CREATED_DATE           DATE NOT NULL
+                           NUM_2                  CHAR(5) NOT NULL
                          ) END-EXEC.
                          
                          01 DCL_PROD_TBL_02_NUM_1_CPY PIC X(3).
@@ -265,7 +271,7 @@ public class FindRelationshipsTest extends CobolTest {
               assertThat(rows.stream().map(Row::getAction)).contains(INCLUDE, ACCESS);
               assertThat(rows.stream().map(Row::getDependency)).contains("DECLARE_TABLE_2", "PROD_TBL_02");
               assertThat(rows.stream().map(Row::getDependencyType)).contains(SQL_TABLE, COPYBOOK);
-              assertThat(rows.stream().map(Row::getMetadata)).contains("CREATE", "DELETE");
+              assertThat(rows.stream().map(Row::getActionMetadata)).contains("CREATE", "DELETE");
           }),
           cobol(
             """
@@ -293,8 +299,7 @@ public class FindRelationshipsTest extends CobolTest {
               000000*    EXEC SQL statement to declare a table
                          EXEC SQL DECLARE PROD_TBL_02 TABLE
                          ( NUM_1                  CHAR(3) NOT NULL,
-                           NUM_2                  CHAR(5) NOT NULL,
-                           CREATED_DATE           DATE NOT NULL
+                           NUM_2                  CHAR(5) NOT NULL
                          ) END-EXEC.
                          
                          01 DCL_PROD_TBL_02_NUM_1_CPY PIC X(3).

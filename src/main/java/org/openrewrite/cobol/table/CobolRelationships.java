@@ -43,9 +43,9 @@ public class CobolRelationships extends DataTable<CobolRelationships.Row> {
                 description = "Indicates whether the dependency is a known resource.")
         boolean dependencyMissing;
 
-        @Column(displayName = "Metadata",
+        @Column(displayName = "Action metadata",
                 description = "Additional data about the action.")
-        String metadata;
+        String actionMetadata;
     }
 
     public enum ResourceType {

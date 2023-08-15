@@ -48,7 +48,7 @@ public class FindRelationships extends Recipe {
         final Set<String> seenTableAccess = new HashSet<>();
 
         /*
-         * Find relationships from CopyBooks.
+         * Find relationships from CobolPreprocessor tree.
          */
         class PreprocessorRelationshipVisitor extends CobolPreprocessorIsoVisitor<ExecutionContext> {
             String sourceName = "UNKNOWN";
@@ -77,9 +77,9 @@ public class FindRelationships extends Recipe {
                         return line.withWords(ListUtils.map(line.getWords(), (j, w) -> {
                             if (w instanceof CobolPreprocessor.Word) {
                                 CobolPreprocessor.Word word = (CobolPreprocessor.Word) w;
-                                if (j == 1 && line.getWords().get(0) instanceof CobolPreprocessor.Word &&
-                                        "include".equalsIgnoreCase(((CobolPreprocessor.Word) line.getWords().get(0)).getCobolWord().getWord())) {
-                                    String copybookName = word.getCobolWord().getWord();
+                                if ("include".equalsIgnoreCase(word.getCobolWord().getWord()) &&
+                                        j == 0 && 2 <= line.getWords().size() && line.getWords().get(1) instanceof CobolPreprocessor.Word) {
+                                    String copybookName = ((CobolPreprocessor.Word) line.getWords().get(1)).getCobolWord().getWord();
                                     if (seenIncludes.add(copybookName)) {
                                         cobolRelationships.insertRow(ctx,
                                                 new CobolRelationships.Row(
@@ -92,9 +92,9 @@ public class FindRelationships extends Recipe {
                                                         ""));
                                         return SearchResult.found(word);
                                     }
-                                } else if (j == 1 && line.getWords().get(0) instanceof CobolPreprocessor.Word &&
-                                        "update".equalsIgnoreCase(((CobolPreprocessor.Word) line.getWords().get(0)).getCobolWord().getWord())) {
-                                    String tableName = word.getCobolWord().getWord();
+                                } else if ("update".equalsIgnoreCase(word.getCobolWord().getWord()) &&
+                                        j == 0 && 2 < line.getWords().size() && line.getWords().get(1) instanceof CobolPreprocessor.Word) {
+                                    String tableName = ((CobolPreprocessor.Word) line.getWords().get(1)).getCobolWord().getWord();
                                     if (seenTableAccess.add(tableName + "_UPDATE")) {
                                         cobolRelationships.insertRow(ctx,
                                                 new CobolRelationships.Row(
@@ -105,6 +105,21 @@ public class FindRelationships extends Recipe {
                                                         SQL_TABLE,
                                                         false,
                                                         "UPDATE"));
+                                        return SearchResult.found(word);
+                                    }
+                                }  else if ("insert".equalsIgnoreCase(word.getCobolWord().getWord()) &&
+                                        j == 0 && 3 < line.getWords().size() && line.getWords().get(2) instanceof CobolPreprocessor.Word) {
+                                    String tableName = ((CobolPreprocessor.Word) line.getWords().get(2)).getCobolWord().getWord();
+                                    if (seenTableAccess.add(tableName + "_INSERT")) {
+                                        cobolRelationships.insertRow(ctx,
+                                                new CobolRelationships.Row(
+                                                        sourceName,
+                                                        dependentType,
+                                                        ACCESS,
+                                                        tableName,
+                                                        SQL_TABLE,
+                                                        false,
+                                                        "INSERT"));
                                         return SearchResult.found(word);
                                     }
                                 } else if ("from".equalsIgnoreCase(word.getCobolWord().getWord()) || "join".equalsIgnoreCase(word.getCobolWord().getWord())) {
@@ -127,17 +142,18 @@ public class FindRelationships extends Recipe {
                                                         metadata));
                                         return SearchResult.found(word);
                                     }
-                                } else if ("table".equalsIgnoreCase(word.getCobolWord().getWord()) && j - 2 >= 0 &&
-                                        line.getWords().get(j - 2) instanceof CobolPreprocessor.Word &&
-                                        "declare".equalsIgnoreCase(((CobolPreprocessor.Word) line.getWords().get(j - 2)).getCobolWord().getWord())) {
-                                    CobolPreprocessor.Word tableName = (CobolPreprocessor.Word) line.getWords().get(j - 1);
-                                    if (seenTableAccess.add(tableName.getCobolWord().getWord() + "_CREATE")) {
+                                } else if ("declare".equalsIgnoreCase(word.getCobolWord().getWord()) &&
+                                        j + 2 < line.getWords().size() &&
+                                        line.getWords().get(j + 1) instanceof CobolPreprocessor.Word &&
+                                        line.getWords().get(j + 2) instanceof CobolPreprocessor.Word) {
+                                    String tableName = ((CobolPreprocessor.Word) line.getWords().get(j + 1)).getCobolWord().getWord();
+                                    if (seenTableAccess.add(tableName + "_CREATE")) {
                                         cobolRelationships.insertRow(ctx,
                                                 new CobolRelationships.Row(
                                                         sourceName,
                                                         dependentType,
                                                         ACCESS,
-                                                        tableName.getCobolWord().getWord(),
+                                                        tableName,
                                                         SQL_TABLE,
                                                         false,
                                                         "CREATE"));
