@@ -81,20 +81,6 @@ dependencies {
     testImplementation("org.openrewrite:rewrite-xml")
 }
 
-val testConf = configurations.create("test").apply {
-    extendsFrom(configurations.getByName("testRuntimeClasspath"))
-}
-
-val testOutputFile = file("build/libs/${project.name}-${project.version}-test.jar")
-val testJar = tasks.register<Jar>("testJar") {
-    from(sourceSets.test.get().output)
-    archiveClassifier.set("test")
-}
-
-artifacts {
-    add(testConf.name, testJar)
-}
-
 configure<nl.javadude.gradle.plugins.license.LicenseExtension> {
     excludePatterns.add("**/*.CBL")
     excludePatterns.add("**/*.CPY")

@@ -77,3 +77,6 @@ tasks.withType<ShadowJar> {
     configurations = listOf(project.configurations.getByName("runtimeClasspath"), project.configurations.getByName("astWrite"))
     isZip64 = true
 }
+artifacts {
+    add("runtimeClasspath", tasks.named<ShadowJar>("shadowJar"))
+}
