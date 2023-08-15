@@ -8,14 +8,14 @@ package org.openrewrite.cobol.tree.cobol;
 import org.junit.jupiter.api.Test;
 import org.openrewrite.cobol.CobolTest;
 
-import static org.openrewrite.cobol.Assertions.preprocessor;
+import static org.openrewrite.cobol.Assertions.cobol;
 
 public class CobolParserSourceMarkersTest extends CobolTest {
 
     @Test
     void lineNumbers() {
         rewriteRun(
-          preprocessor(
+          cobol(
             """
               000001 IDENTIFICATION DIVISION.                                         C_AREA.1
               000002 PROGRAM-ID. communicationSection.                                C_AREA.2
@@ -27,7 +27,7 @@ public class CobolParserSourceMarkersTest extends CobolTest {
     @Test
     void dotSeparators() {
         rewriteRun(
-          preprocessor(
+          cobol(
             """
               000001 IDENTIFICATION DIVISION                                          C_AREA.1
               000002    .                                                             C_AREA.2
@@ -41,7 +41,7 @@ public class CobolParserSourceMarkersTest extends CobolTest {
     @Test
     void singleLineStringLiteral() {
         rewriteRun(
-          preprocessor(
+          cobol(
             """
               000001 IDENTIFICATION DIVISION.                                        \s
               000002 PROGRAM-ID. communicationSection.                               \s
@@ -58,7 +58,7 @@ public class CobolParserSourceMarkersTest extends CobolTest {
     @Test
     void continuationLiteral() {
         rewriteRun(
-          preprocessor(
+          cobol(
             """
               000001  IDENTIFICATION DIVISION.                                       \s
               000002 PROGRAM-ID. communicationSection.                               \s
@@ -74,7 +74,7 @@ public class CobolParserSourceMarkersTest extends CobolTest {
     @Test
     void multipleContinuationLiteral() {
         rewriteRun(
-          preprocessor(
+          cobol(
             """
               000001 IDENTIFICATION DIVISION.                                         C_AREA.1
               000002 PROGRAM-ID. communicationSection.                                C_AREA.2
@@ -93,7 +93,7 @@ public class CobolParserSourceMarkersTest extends CobolTest {
     @Test
     void multipleContinuationLiteralNoCommentArea() {
         rewriteRun(
-          preprocessor(
+          cobol(
             """
               000001 IDENTIFICATION DIVISION.                                        \s
               000002 PROGRAM-ID. communicationSection.                               \s
@@ -112,7 +112,7 @@ public class CobolParserSourceMarkersTest extends CobolTest {
     @Test
     void continuationWithoutNewLine() {
         rewriteRun(
-          preprocessor(
+          cobol(
             """
               000001 IDENTIFICATION DIVISION.                                        \s
               000002 PROGRAM-ID. communicationSection.                               \s
@@ -127,7 +127,7 @@ public class CobolParserSourceMarkersTest extends CobolTest {
     @Test
     void emptyContinuation() {
         rewriteRun(
-          preprocessor(
+          cobol(
             """
               000001 IDENTIFICATION DIVISION.                                        \s
               000002 PROGRAM-ID. communicationSection.                               \s
@@ -142,7 +142,7 @@ public class CobolParserSourceMarkersTest extends CobolTest {
     @Test
     void literalStartsOnNewLine() {
         rewriteRun(
-          preprocessor(
+          cobol(
             """
               000001  IDENTIFICATION DIVISION.                                       \s
               000002 PROGRAM-ID. communicationSection.                               \s
@@ -159,7 +159,7 @@ public class CobolParserSourceMarkersTest extends CobolTest {
     @Test
     void commaDelimiter() {
         rewriteRun(
-          preprocessor(
+          cobol(
             """
               000001 IDENTIFICATION DIVISION.                                         C_AREA.01
               000002 PROGRAM-ID. acceptStatement.                                     C_AREA.02
@@ -178,7 +178,7 @@ public class CobolParserSourceMarkersTest extends CobolTest {
     @Test
     void continuationWithCRLF() {
         rewriteRun(
-          preprocessor("" +
+          cobol("" +
             "000001 IDENTIFICATION DIVISION.                                         \r\n" +
             "000002 PROGRAM-ID. communicationSection.                                \r\n" +
             "000003 PROCEDURE DIVISION.                                              \r\n" +
@@ -191,7 +191,7 @@ public class CobolParserSourceMarkersTest extends CobolTest {
     @Test
     void commentAreaWithCRLF() {
         rewriteRun(
-          preprocessor("" +
+          cobol("" +
             "000001 IDENTIFICATION DIVISION.                                         C_AREA.1\r\n" +
             "000002 PROGRAM-ID. communicationSection.                                C_AREA.2\r\n"
           )
@@ -201,7 +201,7 @@ public class CobolParserSourceMarkersTest extends CobolTest {
     @Test
     void trailingComment() {
         rewriteRun(
-          preprocessor(
+          cobol(
             """
               000001 IDENTIFICATION DIVISION.                                         C_AREA.01
               000002 PROGRAM-ID. communicationSection.                                C_AREA.02
@@ -214,7 +214,7 @@ public class CobolParserSourceMarkersTest extends CobolTest {
     @Test
     void trailingWhitespace() {
         rewriteRun(
-          preprocessor(
+          cobol(
             """
               000001 IDENTIFICATION DIVISION.                                         C_AREA.01
               000002 PROGRAM-ID. communicationSection.                                C_AREA.02
