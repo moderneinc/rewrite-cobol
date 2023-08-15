@@ -68,9 +68,6 @@ dependencies {
     modelCompileOnly("org.projectlombok:lombok:latest.release")
     modelImplementation("ch.qos.logback:logback-classic:latest.release")
 
-    testImplementation(platform(kotlin("bom", "1.6.21")))
-    testImplementation(kotlin("reflect"))
-    testImplementation(kotlin("stdlib"))
     testImplementation("org.junit.jupiter:junit-jupiter-api:latest.release")
     testImplementation("org.junit.jupiter:junit-jupiter-params:latest.release")
     testImplementation("org.junit-pioneer:junit-pioneer:2.0.0")

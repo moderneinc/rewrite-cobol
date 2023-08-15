@@ -66,6 +66,10 @@ java {
     }
 }
 
+tasks.withType<JavaCompile> {
+    options.encoding = "utf8"
+}
+
 tasks.withType<ShadowJar> {
     configurations = listOf(project.configurations.getByName("runtimeClasspath"), project.configurations.getByName("astWrite"))
     isZip64 = true
