@@ -47,10 +47,7 @@ public class FindRelationships extends Recipe {
         final Set<String> seenIncludes = new HashSet<>();
         final Set<String> seenTableAccess = new HashSet<>();
 
-        /*
-         * Find relationships from CobolPreprocessor tree.
-         */
-        class PreprocessorRelationshipVisitor extends CobolPreprocessorIsoVisitor<ExecutionContext> {
+        CobolPreprocessorIsoVisitor<ExecutionContext> preprocessorVisitor = new CobolPreprocessorIsoVisitor<ExecutionContext>() {
             String sourceName = "UNKNOWN";
 
             @Override
@@ -63,113 +60,9 @@ public class FindRelationships extends Recipe {
             @Override
             public CobolPreprocessor.CharDataSql visitCharDataSql(CobolPreprocessor.CharDataSql charDataSql, ExecutionContext ctx) {
                 CobolPreprocessor.CharDataSql sql = super.visitCharDataSql(charDataSql, ctx);
-                return getSqlRelationships(sql, sourceName, COPYBOOK, ctx);
+                return getSqlRelationships(sql, sourceName, COPYBOOK, seenIncludes, seenTableAccess, ctx);
             }
-
-            public CobolPreprocessor.CharDataSql getSqlRelationships(CobolPreprocessor.CharDataSql sql,
-                                                                     String sourceName,
-                                                                     CobolRelationships.ResourceType dependentType,
-                                                                     ExecutionContext ctx) {
-                return sql.withCobols(ListUtils.map(sql.getCobols(), (i, c) -> {
-                    if (c instanceof CobolPreprocessor.CharDataLine) {
-                        CobolPreprocessor.CharDataLine line = (CobolPreprocessor.CharDataLine) c;
-                        AtomicBoolean tableNameNext = new AtomicBoolean(false);
-                        return line.withWords(ListUtils.map(line.getWords(), (j, w) -> {
-                            if (w instanceof CobolPreprocessor.Word) {
-                                CobolPreprocessor.Word word = (CobolPreprocessor.Word) w;
-                                if ("include".equalsIgnoreCase(word.getCobolWord().getWord()) &&
-                                        j == 0 && 2 <= line.getWords().size() && line.getWords().get(1) instanceof CobolPreprocessor.Word) {
-                                    String copybookName = ((CobolPreprocessor.Word) line.getWords().get(1)).getCobolWord().getWord();
-                                    if (seenIncludes.add(copybookName)) {
-                                        cobolRelationships.insertRow(ctx,
-                                                new CobolRelationships.Row(
-                                                        sourceName,
-                                                        dependentType,
-                                                        INCLUDE,
-                                                        copybookName,
-                                                        COPYBOOK,
-                                                        false,
-                                                        ""));
-                                        return SearchResult.found(word);
-                                    }
-                                } else if ("update".equalsIgnoreCase(word.getCobolWord().getWord()) &&
-                                        j == 0 && 2 < line.getWords().size() && line.getWords().get(1) instanceof CobolPreprocessor.Word) {
-                                    String tableName = ((CobolPreprocessor.Word) line.getWords().get(1)).getCobolWord().getWord();
-                                    if (seenTableAccess.add(tableName + "_UPDATE")) {
-                                        cobolRelationships.insertRow(ctx,
-                                                new CobolRelationships.Row(
-                                                        sourceName,
-                                                        dependentType,
-                                                        ACCESS,
-                                                        tableName,
-                                                        SQL_TABLE,
-                                                        false,
-                                                        "UPDATE"));
-                                        return SearchResult.found(word);
-                                    }
-                                }  else if ("insert".equalsIgnoreCase(word.getCobolWord().getWord()) &&
-                                        j == 0 && 3 < line.getWords().size() && line.getWords().get(2) instanceof CobolPreprocessor.Word) {
-                                    String tableName = ((CobolPreprocessor.Word) line.getWords().get(2)).getCobolWord().getWord();
-                                    if (seenTableAccess.add(tableName + "_INSERT")) {
-                                        cobolRelationships.insertRow(ctx,
-                                                new CobolRelationships.Row(
-                                                        sourceName,
-                                                        dependentType,
-                                                        ACCESS,
-                                                        tableName,
-                                                        SQL_TABLE,
-                                                        false,
-                                                        "INSERT"));
-                                        return SearchResult.found(word);
-                                    }
-                                } else if ("from".equalsIgnoreCase(word.getCobolWord().getWord()) || "join".equalsIgnoreCase(word.getCobolWord().getWord())) {
-                                    tableNameNext.set(true);
-                                } else if (tableNameNext.get()) {
-                                    tableNameNext.set(false);
-                                    String metadata = j - 2 >= 0 && line.getWords().get(j - 2) instanceof CobolPreprocessor.Word &&
-                                            "delete".equalsIgnoreCase(((CobolPreprocessor.Word) line.getWords().get(j - 2)).getCobolWord().getWord()) ?
-                                            "DELETE" : "READ";
-                                    String tableName = word.getCobolWord().getWord();
-                                    if (seenTableAccess.add(tableName + "_" + metadata)) {
-                                        cobolRelationships.insertRow(ctx,
-                                                new CobolRelationships.Row(
-                                                        sourceName,
-                                                        dependentType,
-                                                        ACCESS,
-                                                        tableName,
-                                                        SQL_TABLE,
-                                                        false,
-                                                        metadata));
-                                        return SearchResult.found(word);
-                                    }
-                                } else if ("declare".equalsIgnoreCase(word.getCobolWord().getWord()) &&
-                                        j + 2 < line.getWords().size() &&
-                                        line.getWords().get(j + 1) instanceof CobolPreprocessor.Word &&
-                                        line.getWords().get(j + 2) instanceof CobolPreprocessor.Word) {
-                                    String tableName = ((CobolPreprocessor.Word) line.getWords().get(j + 1)).getCobolWord().getWord();
-                                    if (seenTableAccess.add(tableName + "_CREATE")) {
-                                        cobolRelationships.insertRow(ctx,
-                                                new CobolRelationships.Row(
-                                                        sourceName,
-                                                        dependentType,
-                                                        ACCESS,
-                                                        tableName,
-                                                        SQL_TABLE,
-                                                        false,
-                                                        "CREATE"));
-                                        return SearchResult.found(word);
-                                    }
-                                }
-                            }
-                            return w;
-                        }));
-                    }
-                    return c;
-                }));
-            }
-        }
-
-        PreprocessorRelationshipVisitor preprocessorVisitor = new PreprocessorRelationshipVisitor();
+        };
 
         CobolIsoVisitor<ExecutionContext> cobolVisitor = new CobolIsoVisitor<ExecutionContext>() {
             final Set<String> seenCalls = new HashSet<>();
@@ -210,7 +103,7 @@ public class FindRelationships extends Recipe {
                         if (execStatement.getCobol() instanceof CobolPreprocessor.CharDataSql &&
                                 !((CobolPreprocessor.CharDataSql) execStatement.getCobol()).getCobols().isEmpty()) {
                             CobolPreprocessor.CharDataSql sql = (CobolPreprocessor.CharDataSql) execStatement.getCobol();
-                            execStatement = execStatement.withCobol(preprocessorVisitor.getSqlRelationships(sql, programName, COBOL, ctx));
+                            execStatement = execStatement.withCobol(getSqlRelationships(sql, programName, COBOL, seenIncludes, seenTableAccess, ctx));
                             return execStatement;
                         }
                     }
@@ -327,4 +220,108 @@ public class FindRelationships extends Recipe {
         };
     }
 
+    public CobolPreprocessor.CharDataSql getSqlRelationships(
+            CobolPreprocessor.CharDataSql sql,
+            String sourceName,
+            CobolRelationships.ResourceType dependentType,
+            Set<String> seenIncludes,
+            Set<String> seenTableAccess,
+            ExecutionContext ctx) {
+        return sql.withCobols(ListUtils.map(sql.getCobols(), (i, c) -> {
+            if (c instanceof CobolPreprocessor.CharDataLine) {
+                CobolPreprocessor.CharDataLine line = (CobolPreprocessor.CharDataLine) c;
+                AtomicBoolean tableNameNext = new AtomicBoolean(false);
+                return line.withWords(ListUtils.map(line.getWords(), (j, w) -> {
+                    if (w instanceof CobolPreprocessor.Word) {
+                        CobolPreprocessor.Word word = (CobolPreprocessor.Word) w;
+                        if ("include".equalsIgnoreCase(word.getCobolWord().getWord()) &&
+                            j == 0 && 2 <= line.getWords().size() && line.getWords().get(1) instanceof CobolPreprocessor.Word) {
+                            String copybookName = ((CobolPreprocessor.Word) line.getWords().get(1)).getCobolWord().getWord();
+                            if (seenIncludes.add(copybookName)) {
+                                cobolRelationships.insertRow(ctx,
+                                        new CobolRelationships.Row(
+                                                sourceName,
+                                                dependentType,
+                                                INCLUDE,
+                                                copybookName,
+                                                COPYBOOK,
+                                                false,
+                                                ""));
+                                return SearchResult.found(word);
+                            }
+                        } else if ("update".equalsIgnoreCase(word.getCobolWord().getWord()) &&
+                                   j == 0 && 2 < line.getWords().size() && line.getWords().get(1) instanceof CobolPreprocessor.Word) {
+                            String tableName = ((CobolPreprocessor.Word) line.getWords().get(1)).getCobolWord().getWord();
+                            if (seenTableAccess.add(tableName + "_UPDATE")) {
+                                cobolRelationships.insertRow(ctx,
+                                        new CobolRelationships.Row(
+                                                sourceName,
+                                                dependentType,
+                                                ACCESS,
+                                                tableName,
+                                                SQL_TABLE,
+                                                false,
+                                                "UPDATE"));
+                                return SearchResult.found(word);
+                            }
+                        }  else if ("insert".equalsIgnoreCase(word.getCobolWord().getWord()) &&
+                                    j == 0 && 3 < line.getWords().size() && line.getWords().get(2) instanceof CobolPreprocessor.Word) {
+                            String tableName = ((CobolPreprocessor.Word) line.getWords().get(2)).getCobolWord().getWord();
+                            if (seenTableAccess.add(tableName + "_INSERT")) {
+                                cobolRelationships.insertRow(ctx,
+                                        new CobolRelationships.Row(
+                                                sourceName,
+                                                dependentType,
+                                                ACCESS,
+                                                tableName,
+                                                SQL_TABLE,
+                                                false,
+                                                "INSERT"));
+                                return SearchResult.found(word);
+                            }
+                        } else if ("from".equalsIgnoreCase(word.getCobolWord().getWord()) || "join".equalsIgnoreCase(word.getCobolWord().getWord())) {
+                            tableNameNext.set(true);
+                        } else if (tableNameNext.get()) {
+                            tableNameNext.set(false);
+                            String metadata = j - 2 >= 0 && line.getWords().get(j - 2) instanceof CobolPreprocessor.Word &&
+                                              "delete".equalsIgnoreCase(((CobolPreprocessor.Word) line.getWords().get(j - 2)).getCobolWord().getWord()) ?
+                                    "DELETE" : "READ";
+                            String tableName = word.getCobolWord().getWord();
+                            if (seenTableAccess.add(tableName + "_" + metadata)) {
+                                cobolRelationships.insertRow(ctx,
+                                        new CobolRelationships.Row(
+                                                sourceName,
+                                                dependentType,
+                                                ACCESS,
+                                                tableName,
+                                                SQL_TABLE,
+                                                false,
+                                                metadata));
+                                return SearchResult.found(word);
+                            }
+                        } else if ("declare".equalsIgnoreCase(word.getCobolWord().getWord()) &&
+                                   j + 2 < line.getWords().size() &&
+                                   line.getWords().get(j + 1) instanceof CobolPreprocessor.Word &&
+                                   line.getWords().get(j + 2) instanceof CobolPreprocessor.Word) {
+                            String tableName = ((CobolPreprocessor.Word) line.getWords().get(j + 1)).getCobolWord().getWord();
+                            if (seenTableAccess.add(tableName + "_CREATE")) {
+                                cobolRelationships.insertRow(ctx,
+                                        new CobolRelationships.Row(
+                                                sourceName,
+                                                dependentType,
+                                                ACCESS,
+                                                tableName,
+                                                SQL_TABLE,
+                                                false,
+                                                "CREATE"));
+                                return SearchResult.found(word);
+                            }
+                        }
+                    }
+                    return w;
+                }));
+            }
+            return c;
+        }));
+    }
 }
