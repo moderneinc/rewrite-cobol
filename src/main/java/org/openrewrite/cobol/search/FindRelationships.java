@@ -8,6 +8,7 @@ package org.openrewrite.cobol.search;
 import org.openrewrite.*;
 import org.openrewrite.cobol.CobolIsoVisitor;
 import org.openrewrite.cobol.CobolPreprocessorIsoVisitor;
+import org.openrewrite.cobol.markers.CopiedStatement;
 import org.openrewrite.cobol.markers.MissingCopybook;
 import org.openrewrite.cobol.table.CobolRelationships;
 import org.openrewrite.cobol.tree.Cobol;
@@ -19,6 +20,7 @@ import org.openrewrite.text.PlainText;
 import org.openrewrite.text.PlainTextVisitor;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
@@ -43,11 +45,10 @@ public class FindRelationships extends Recipe {
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {
-        final Set<String> seenCopies = new HashSet<>();
-        final Set<String> seenIncludes = new HashSet<>();
-        final Set<String> seenTableAccess = new HashSet<>();
 
         CobolPreprocessorIsoVisitor<ExecutionContext> preprocessorVisitor = new CobolPreprocessorIsoVisitor<ExecutionContext>() {
+            final Set<String> seenIncludes = new HashSet<>();
+            final Set<String> seenTableAccess = new HashSet<>();
             String sourceName = "UNKNOWN";
 
             @Override
@@ -65,8 +66,10 @@ public class FindRelationships extends Recipe {
         };
 
         CobolIsoVisitor<ExecutionContext> cobolVisitor = new CobolIsoVisitor<ExecutionContext>() {
+            final Set<String> seenCopies = new HashSet<>();
             final Set<String> seenCalls = new HashSet<>();
-
+            final Set<String> seenIncludes = new HashSet<>();
+            final Set<String> seenTableAccess = new HashSet<>();
             String programName = "UNKNOWN";
 
             @Override
@@ -86,6 +89,7 @@ public class FindRelationships extends Recipe {
                         CobolPreprocessor.CopyStatement copyStatement = (CobolPreprocessor.CopyStatement) ps;
                         String copyName = copyStatement.getCopySource().getName().getCobolWord().getWord();
                         if (seenCopies.add(copyName)) {
+                            Optional<CopiedStatement> cs = copyStatement.getMarkers().findFirst(CopiedStatement.class);
                             cobolRelationships.insertRow(ctx,
                                     new CobolRelationships.Row(
                                             programName,
@@ -94,7 +98,7 @@ public class FindRelationships extends Recipe {
                                             copyStatement.getCopySource().getName().getCobolWord().getWord(),
                                             COPYBOOK,
                                             copyStatement.getMarkers().findFirst(MissingCopybook.class).isPresent(),
-                                            ""));
+                                            cs.isPresent() ? cs.get().getSourceCopybook() : ""));
                         }
                         return copyStatement.withCopySource(copyStatement.getCopySource().withName(
                                 SearchResult.found(copyStatement.getCopySource().getName())));
