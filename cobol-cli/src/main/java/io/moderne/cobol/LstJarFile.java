@@ -9,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
+import org.openrewrite.internal.StringUtils;
 import org.openrewrite.marker.GitProvenance;
 import picocli.CommandLine;
 
@@ -71,7 +72,7 @@ public class LstJarFile {
         String orgName = repository.getRootDir().toFile().getName();
         String artifactName = orgName;
         if (gitProvenance != null) {
-            orgName = gitProvenance.getOrigin();
+            orgName = gitProvenance.getOrganizationName("https://github.com/");
             artifactName = gitProvenance.getRepositoryName();
         }
 
