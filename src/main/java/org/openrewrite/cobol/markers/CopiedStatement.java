@@ -7,6 +7,7 @@ package org.openrewrite.cobol.markers;
 
 import lombok.Value;
 import lombok.With;
+import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.marker.Marker;
 
 import java.util.UUID;
@@ -15,4 +16,11 @@ import java.util.UUID;
 @Value
 public class CopiedStatement implements Marker {
     UUID id;
+
+    @Nullable
+    String sourceCopybook;
+
+    public String getSourceCopybook() {
+        return sourceCopybook == null ? "" : sourceCopybook;
+    }
 }

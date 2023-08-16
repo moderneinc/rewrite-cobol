@@ -55,10 +55,12 @@ public class PreprocessCopyVisitor<P> extends CobolPreprocessorIsoVisitor<P> {
         }
 
         if (copyStack.size() > 1) {
-            c = c.withMarkers(c.getMarkers().addIfAbsent(new CopiedStatement(randomId())));
+            copyStack.pop();
+            c = c.withMarkers(c.getMarkers().addIfAbsent(new CopiedStatement(randomId(), copyStack.peek().getCopySource().getName().getCobolWord().getWord())));
+        } else {
+            copyStack.pop();
         }
 
-        copyStack.pop();
         return c;
     }
 }

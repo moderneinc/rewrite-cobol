@@ -13,8 +13,7 @@ import org.openrewrite.test.RecipeSpec;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.openrewrite.cobol.Assertions.cobol;
-import static org.openrewrite.cobol.Assertions.preprocessor;
+import static org.openrewrite.cobol.Assertions.*;
 import static org.openrewrite.cobol.table.CobolRelationships.ResourceAction.*;
 import static org.openrewrite.cobol.table.CobolRelationships.ResourceType.*;
 import static org.openrewrite.test.SourceSpecs.text;
@@ -309,6 +308,30 @@ public class FindRelationshipsTest extends CobolTest {
                          END-EXEC.
               """,
             spec -> spec.after(s -> s).path("DECLARE_TABLE_2.CPY")
+          )
+        );
+    }
+
+    @Test
+    void aCopyInACopy() {
+        rewriteRun(
+          spec -> spec.dataTable(Row.class, rows -> {
+              assertThat(rows.stream().map(Row::getDependent)).contains("IC109A");
+              assertThat(rows.stream().map(Row::getDependentType)).contains(COBOL);
+              assertThat(rows.stream().map(Row::getAction)).contains(COPY);
+              assertThat(rows.stream().map(Row::getDependency)).contains("INCEPTION", "INCEPTION_2", "INCEPTION_3");
+              assertThat(rows.stream().map(Row::getDependencyType)).contains(COPYBOOK);
+              assertThat(rows.stream().map(Row::getActionMetadata)).contains("INCEPTION", "INCEPTION_2");
+          }),
+          cobol(
+            """
+              000000 IDENTIFICATION DIVISION.                                         *
+                     PROGRAM-ID. IC109A.                                              *
+                     DATA DIVISION.                                                   *
+                     LINKAGE SECTION.                                                 *
+                         01  GRP-01.                                                  *
+                             COPY INCEPTION.                                          *
+              """, "", spec -> spec.after(s -> s).path("COPY_IN_COPY.CBL")
           )
         );
     }
