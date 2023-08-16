@@ -4,6 +4,7 @@ plugins {
     java
     id("org.openrewrite.build.publish")
     id("org.openrewrite.build.shadow")
+    id("org.openrewrite.build.metadata")
 }
 
 group = "org.openrewrite"
