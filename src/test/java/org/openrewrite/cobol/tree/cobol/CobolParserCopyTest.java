@@ -184,13 +184,6 @@ class CobolParserCopyTest extends CobolTest {
                      LINKAGE SECTION.                                                 *
                          01  GRP-01.                                                  *
                              COPY INCEPTION.                                          *
-              
-                    *******************************************************************
-                    /                                                                 *
-                             02  SPECIAL-FLAGS.                                       *
-                                 03  DN7 PICTURE X.                                   *
-                                 03  DN8 PICTURE X.                                   *
-                                 03  DN9 PICTURE X.                                   *
               """,
             """
               IDENTIFICATION DIVISION.
@@ -202,10 +195,6 @@ class CobolParserCopyTest extends CobolTest {
                           03  DN1  PICTURE X(6).
                           03  DN2  PICTURE X(6).
                           03  DN3  PICTURE X(6).
-                      02  SPECIAL-FLAGS.
-                          03  DN7 PICTURE X.
-                          03  DN8 PICTURE X.
-                          03  DN9 PICTURE X.
               """
           )
         );

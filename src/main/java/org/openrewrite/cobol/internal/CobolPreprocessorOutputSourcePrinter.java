@@ -666,7 +666,9 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
 
         String afterStop = getColumnAlignmentAfterStop(numberOfSpaces);
         p.append(afterStop);
-        p.append(StringUtils.repeat(" ", numberOfSpaces));
+        if (numberOfSpaces != cobolDialect.getColumns().getOtherArea()) {
+            p.append(StringUtils.repeat(" ", numberOfSpaces));
+        }
     }
 
     /**
