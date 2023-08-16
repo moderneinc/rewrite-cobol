@@ -118,10 +118,10 @@ public class Build implements Callable<Integer> {
                 progressBar.setMax(cobolSources.size());
                 serializer.write(
                         cobolParser.parse(cobolSources, repository.getRootDir(), progressReportingExecutionContext(progressBar))
-                                .peek(sourceFile -> referencedCopybooks(sourceFile, referencedCopybooks))
-                                .peek(sourceFile -> alreadyParsed.add(sourceFile.getSourcePath())),
+                                .peek(sourceFile -> referencedCopybooks(sourceFile, referencedCopybooks)),
                         outputDir
                 );
+                alreadyParsed.addAll(cobolSources);
             }
 
             try (ProgressBar progressBar = DefaultProgressBar.builder(spec).build()) {
