@@ -72,20 +72,21 @@ public class FindRelationshipsTest extends CobolTest {
     }
 
     @Test
-    void execSql() {
+    void execSqlCreate() {
         rewriteRun(
           spec -> spec.dataTable(Row.class, rows -> {
-              assertThat(rows.stream().map(Row::getDependent)).contains("DECLARE_TABLE_2", "DECLARE_TABLE_3", "EXEC_SQL");
-              assertThat(rows.stream().map(Row::getDependency)).contains("PROD_TBL_01", "PROD_TBL_02", "PROD_TBL_03", "CURSOR_IN_COPY", "CURSOR_1", "CURSOR_2", "CURSOR_3");
+              assertThat(rows.stream().map(Row::getDependent)).contains("DECLARE_TABLE_2", "EXEC_SQL_CREATE");
               assertThat(rows.stream().map(Row::getDependentType)).contains(COPYBOOK, COBOL);
-              assertThat(rows.stream().map(Row::getDependencyType)).contains(SQL_TABLE, SQL_CURSOR);
-              assertThat(rows.stream().map(Row::getAction)).contains(DECLARE, INCLUDE);
+              assertThat(rows.stream().map(Row::getAction)).contains(INCLUDE, ACCESS);
+              assertThat(rows.stream().map(Row::getDependency)).contains("DECLARE_TABLE_2", "PROD_TBL_01", "PROD_TBL_02");
+              assertThat(rows.stream().map(Row::getDependencyType)).contains(SQL_TABLE, COPYBOOK);
+              assertThat(rows.stream().map(Row::getActionMetadata)).contains("CREATE", "READ");
           }),
           cobol(
             """
               000000 IDENTIFICATION DIVISION.
                      PROGRAM-ID.
-                         EXEC_SQL.
+                         EXEC_SQL_CREATE.
                      DATA DIVISION.
                      WORKING-STORAGE SECTION.
                      01 FILLER PIC X(10) VALUE 'PGM WORKING-STORAGE: EXEC_SQL_PROD_2'.
@@ -94,14 +95,8 @@ public class FindRelationshipsTest extends CobolTest {
                     *    EXEC SQL statement to declare a table
                          EXEC SQL DECLARE PROD_TBL_01 TABLE
                          ( NUM_1                  CHAR(3) NOT NULL,
-                           NUM_2                  CHAR(5) NOT NULL,
-                           CREATED_DATE           DATE NOT NULL
+                           NUM_2                  CHAR(5) NOT NULL
                          ) END-EXEC.
-              
-                    * Include SQL table from another COBOL source.
-                    * These SQL tables are created through copybooks.
-                     EXEC SQL INCLUDE DECLARE_TABLE_2 END-EXEC.
-                     EXEC SQL INCLUDE DECLARE_TABLE_3 END-EXEC.
               
                     * Create cursors for tables
                     * Cursor for table 1
@@ -112,34 +107,78 @@ public class FindRelationshipsTest extends CobolTest {
                          FROM PROD_TBL_01
                          FOR FETCH ONLY
                      END-EXEC.
-              
-                    * Cursor for table 2
-                     EXEC SQL
-                         DECLARE CURSOR_2 CURSOR FOR
-                         SELECT NUM_1,
-                                NUM_2
-                         FROM PROD_TBL_02
-                         FOR FETCH ONLY
-                     END-EXEC.
-              
-                    * Cursor for table 3
-                     EXEC SQL
-                         DECLARE CURSOR_3 CURSOR FOR
-                         SELECT NUM_1,
-                                NUM_2
-                         FROM PROD_TBL_03
-                         FOR FETCH ONLY
-                     END-EXEC.
+
+                    * Include SQL table from another COBOL source.
+                    * These SQL tables are created through copybooks.
+                     EXEC SQL INCLUDE DECLARE_TABLE_2 END-EXEC.
               """,
-            spec -> spec.after(s -> s).path("EXEC_SQL.CBL")
+            spec -> spec.after(s -> s).path("EXEC_SQL_CREATE.CBL")
           ),
           preprocessor(
             """
               000000*    EXEC SQL statement to declare a table
                          EXEC SQL DECLARE PROD_TBL_02 TABLE
                          ( NUM_1                  CHAR(3) NOT NULL,
-                           NUM_2                  CHAR(5) NOT NULL,
-                           CREATED_DATE           DATE NOT NULL
+                           NUM_2                  CHAR(5) NOT NULL
+                         ) END-EXEC.
+                    * Create cursor for table 2
+                         EXEC SQL
+                             DECLARE CURSOR_IN_COPY CURSOR FOR
+                             SELECT NUM_1,
+                                    NUM_2
+                             FROM PROD_TBL_02
+                             FOR FETCH ONLY
+                         END-EXEC.
+              """,
+            spec -> spec.after(s -> s).path("DECLARE_TABLE_2.CPY")
+          )
+        );
+    }
+
+    @Test
+    void execSqlRead() {
+        rewriteRun(
+          spec -> spec.dataTable(Row.class, rows -> {
+              assertThat(rows.stream().map(Row::getDependent)).contains("DECLARE_TABLE_2", "DECLARE_TABLE_3", "EXEC_SQL_READ");
+              assertThat(rows.stream().map(Row::getDependentType)).contains(COPYBOOK, COBOL);
+              assertThat(rows.stream().map(Row::getAction)).contains(INCLUDE, ACCESS);
+              assertThat(rows.stream().map(Row::getDependency)).contains("DECLARE_TABLE_2", "DECLARE_TABLE_3", "PROD_TBL_02", "PROD_TBL_03");
+              assertThat(rows.stream().map(Row::getDependencyType)).contains(SQL_TABLE, COPYBOOK);
+              assertThat(rows.stream().map(Row::getActionMetadata)).contains("CREATE", "READ");
+          }),
+          cobol(
+            """
+              000000 IDENTIFICATION DIVISION.
+                     PROGRAM-ID.
+                         EXEC_SQL_READ.
+                     DATA DIVISION.
+                     WORKING-STORAGE SECTION.
+                     01 FILLER PIC X(10) VALUE 'PGM WORKING-STORAGE: EXEC_SQL_PROD_2'.
+                     01 DCL_PROD_TBL_02_NUM_1 PIC X(3).
+
+                    * Include SQL table from another COBOL source.
+                    * These SQL tables are created through copybooks.
+                     EXEC SQL INCLUDE DECLARE_TABLE_2 END-EXEC.
+                     EXEC SQL INCLUDE DECLARE_TABLE_3 END-EXEC.
+
+                     EXEC SQL
+                         SELECT COUNT(*)
+                         INTO :DCL_PROD_TBL_02_NUM_1
+                         FROM PROD_TBL_02
+                         WHERE EXISTS (
+                             SELECT *
+                             FROM PROD_TBL_03
+                         )
+                     END-EXEC.
+              """,
+            spec -> spec.after(s -> s).path("EXEC_SQL_READ.CBL")
+          ),
+          preprocessor(
+            """
+              000000*    EXEC SQL statement to declare a table
+                         EXEC SQL DECLARE PROD_TBL_02 TABLE
+                         ( NUM_1                  CHAR(3) NOT NULL,
+                           NUM_2                  CHAR(5) NOT NULL
                          ) END-EXEC.
               """,
             spec -> spec.after(s -> s).path("DECLARE_TABLE_2.CPY")
@@ -149,19 +188,127 @@ public class FindRelationshipsTest extends CobolTest {
               000000*    EXEC SQL statement to declare a table
                          EXEC SQL DECLARE PROD_TBL_03 TABLE
                          ( NUM_1                  CHAR(3) NOT NULL,
-                           NUM_2                  CHAR(5) NOT NULL,
-                           CREATED_DATE           DATE NOT NULL
+                           NUM_2                  CHAR(5) NOT NULL
                          ) END-EXEC.
-                    * Create cursor for table 3
-                         EXEC SQL
-                             DECLARE CURSOR_IN_COPY CURSOR FOR
-                             SELECT NUM_1,
-                                    NUM_2
-                             FROM PROD_TBL_03
-                             FOR FETCH ONLY
-                         END-EXEC.
+                     01 DCL_PROD_TBL_03_NUM_2 PIC X(3).
+                     EXEC SQL
+                         SELECT COUNT(*)
+                         INTO :DCL_PROD_TBL_03_NUM_2
+                         FROM PROD_TBL_03
+                     END-EXEC.
               """,
             spec -> spec.after(s -> s).path("DECLARE_TABLE_3.CPY")
+          )
+        );
+    }
+
+    @Test
+    void execSqlUpdate() {
+        rewriteRun(
+          spec -> spec.dataTable(Row.class, rows -> {
+              assertThat(rows.stream().map(Row::getDependent)).contains("DECLARE_TABLE_2", "EXEC_SQL_UPDATE");
+              assertThat(rows.stream().map(Row::getDependentType)).contains(COPYBOOK, COBOL);
+              assertThat(rows.stream().map(Row::getAction)).contains(INCLUDE, ACCESS);
+              assertThat(rows.stream().map(Row::getDependency)).contains("DECLARE_TABLE_2", "PROD_TBL_02");
+              assertThat(rows.stream().map(Row::getDependencyType)).contains(SQL_TABLE, COPYBOOK);
+              assertThat(rows.stream().map(Row::getActionMetadata)).contains("CREATE", "INSERT", "UPDATE");
+          }),
+          cobol(
+            """
+              000000 IDENTIFICATION DIVISION.
+                     PROGRAM-ID.
+                         EXEC_SQL_UPDATE.
+                     DATA DIVISION.
+                     WORKING-STORAGE SECTION.
+                     01 FILLER PIC X(10) VALUE 'PGM WORKING-STORAGE: EXEC_SQL_PROD_2'.
+                     01 DCL_PROD_TBL_02_NUM_1 PIC X(3).
+                     01 DCL_PROD_TBL_02_NUM_2 PIC X(5).
+              
+                    * Include SQL table from another COBOL source.
+                    * These SQL tables are created through copybooks.
+                     EXEC SQL INCLUDE DECLARE_TABLE_2 END-EXEC.
+
+                     EXEC SQL
+                         UPDATE PROD_TBL_02
+                         SET NUM_1 = :DCL_PROD_TBL_02_NUM_1
+                     END-EXEC.
+
+                     EXEC SQL
+                         INSERT INTO PROD_TBL_02
+                                (NUM_1,
+                                 NUM_2)
+                         VALUES (:DCL_PROD_TBL_02_NUM_1
+                                 :DCL_PROD_TBL_02_NUM_2)
+                     END-EXEC.
+              """,
+            spec -> spec.after(s -> s).path("EXEC_SQL_UPDATE.CBL")
+          ),
+          preprocessor(
+            """
+              000000*    EXEC SQL statement to declare a table
+                         EXEC SQL DECLARE PROD_TBL_02 TABLE
+                         ( NUM_1                  CHAR(3) NOT NULL,
+                           NUM_2                  CHAR(5) NOT NULL
+                         ) END-EXEC.
+                         
+                         01 DCL_PROD_TBL_02_NUM_1_CPY PIC X(3).
+                         EXEC SQL
+                            UPDATE PROD_TBL_02
+                            SET NUM_1 = :DCL_PROD_TBL_02_NUM_1_CPY
+                         END-EXEC.
+              """,
+            spec -> spec.after(s -> s).path("DECLARE_TABLE_2.CPY")
+          )
+        );
+    }
+
+    @Test
+    void execSqlDelete() {
+        rewriteRun(
+          spec -> spec.dataTable(Row.class, rows -> {
+              assertThat(rows.stream().map(Row::getDependent)).contains("DECLARE_TABLE_2", "EXEC_SQL_DELETE");
+              assertThat(rows.stream().map(Row::getDependentType)).contains(COPYBOOK, COBOL);
+              assertThat(rows.stream().map(Row::getAction)).contains(INCLUDE, ACCESS);
+              assertThat(rows.stream().map(Row::getDependency)).contains("DECLARE_TABLE_2", "PROD_TBL_02");
+              assertThat(rows.stream().map(Row::getDependencyType)).contains(SQL_TABLE, COPYBOOK);
+              assertThat(rows.stream().map(Row::getActionMetadata)).contains("CREATE", "DELETE");
+          }),
+          cobol(
+            """
+              000000 IDENTIFICATION DIVISION.
+                     PROGRAM-ID.
+                         EXEC_SQL_DELETE.
+                     DATA DIVISION.
+                     WORKING-STORAGE SECTION.
+                     01 FILLER PIC X(10) VALUE 'PGM WORKING-STORAGE: EXEC_SQL_PROD_2'.
+                     01 DCL_PROD_TBL_02_NUM_1 PIC X(3).
+              
+                    * Include SQL table from another COBOL source.
+                    * These SQL tables are created through copybooks.
+                     EXEC SQL INCLUDE DECLARE_TABLE_2 END-EXEC.
+
+                     EXEC SQL
+                         DELETE FROM PROD_TBL_02
+                         WHERE NUM_1 = :DCL_PROD_TBL_02_NUM_1
+                     END-EXEC.
+              """,
+            spec -> spec.after(s -> s).path("EXEC_SQL_DELETE.CBL")
+          ),
+          preprocessor(
+            """
+              000000*    EXEC SQL statement to declare a table
+                         EXEC SQL DECLARE PROD_TBL_02 TABLE
+                         ( NUM_1                  CHAR(3) NOT NULL,
+                           NUM_2                  CHAR(5) NOT NULL
+                         ) END-EXEC.
+                         
+                         01 DCL_PROD_TBL_02_NUM_1_CPY PIC X(3).
+                         EXEC SQL
+                            DELETE FROM PROD_TBL_02
+                            WHERE NUM_1 = :DCL_PROD_TBL_02_NUM_1_CPY
+                         END-EXEC.
+              """,
+            spec -> spec.after(s -> s).path("DECLARE_TABLE_2.CPY")
           )
         );
     }

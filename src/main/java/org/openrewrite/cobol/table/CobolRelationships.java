@@ -42,6 +42,10 @@ public class CobolRelationships extends DataTable<CobolRelationships.Row> {
         @Column(displayName = "Dependency missing",
                 description = "Indicates whether the dependency is a known resource.")
         boolean dependencyMissing;
+
+        @Column(displayName = "Action metadata",
+                description = "Additional data about the action.")
+        String actionMetadata;
     }
 
     public enum ResourceType {
@@ -50,11 +54,14 @@ public class CobolRelationships extends DataTable<CobolRelationships.Row> {
         LINKEDIT,
         BINDPLAN,
         BINDPACKAGE,
-        SQL_CURSOR,
         SQL_TABLE
     }
 
     public enum ResourceAction {
+        /**
+         * A COBOL program accesses a DB2 table.
+         */
+        ACCESS,
         /**
          * Copybook call
          */
@@ -64,13 +71,9 @@ public class CobolRelationships extends DataTable<CobolRelationships.Row> {
          */
         CALL,
         /**
-         * A EXEC SQL DECLARE statement creates a SQL table.
-         */
-        DECLARE,
-        /**
          * Link-Edit card includes COBOL program.
          * <p>
-         * A COBOL program includes a SQL table.
+         * A COBOL program includes a copybook through EXEC SQL INCLUDE.
          */
         INCLUDE,
         /**
