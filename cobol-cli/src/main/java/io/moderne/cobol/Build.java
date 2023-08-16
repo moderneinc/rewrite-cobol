@@ -118,7 +118,7 @@ public class Build implements Callable<Integer> {
                 progressBar.setMax(cobolSources.size());
                 serializer.write(
                         cobolParser.parse(cobolSources, repository.getRootDir(), progressReportingExecutionContext(progressBar))
-                                .peek(sourceFile -> referencedCopybooks(referencedCopybooks))
+                                .peek(sourceFile -> referencedCopybooks(sourceFile, referencedCopybooks))
                                 .peek(sourceFile -> alreadyParsed.add(sourceFile.getSourcePath())),
                         outputDir
                 );
@@ -171,7 +171,7 @@ public class Build implements Callable<Integer> {
             return LstJarFile.assemble(repository, outputDir);
         }
 
-        private void referencedCopybooks(Set<SourceFile> referencedCopybooks) {
+        private void referencedCopybooks(SourceFile sf, Set<SourceFile> referencedCopybooks) {
             new CobolIsoVisitor<ExecutionContext>() {
                 @Override
                 public Cobol.Word visitWord(Cobol.Word word, ExecutionContext ctx) {
@@ -183,10 +183,9 @@ public class Build implements Callable<Integer> {
                             }
                         }
                     }
-
                     return w;
                 }
-            };
+            }.visit(sf, new InMemoryExecutionContext());
         }
     }
 
