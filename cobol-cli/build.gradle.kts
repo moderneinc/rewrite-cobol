@@ -2,7 +2,6 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
     java
-    id("com.google.cloud.artifactregistry.gradle-plugin") version "latest.release"
     id("org.openrewrite.build.publish")
     id("org.openrewrite.build.shadow")
 }
@@ -16,8 +15,17 @@ repositories {
         url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
     }
     mavenCentral()
-    maven {
-        url = uri("artifactregistry://us-west1-maven.pkg.dev/moderne-dev/moderne-releases")
+    val astPublishUsername = project.properties["ast.publish.username"] as String? ?: System.getenv("AST_PUBLISH_USERNAME")
+    val astPublishPassword = project.properties["ast.publish.password"] as String? ?: System.getenv("AST_PUBLISH_PASSWORD")
+    if (astPublishUsername != null && astPublishPassword != null) {
+        maven {
+            name = "ModerneArtifactory"
+            url = uri("https://artifactory.moderne.ninja/artifactory/moderne-private")
+            credentials {
+                username = astPublishUsername
+                password = astPublishPassword
+            }
+        }
     }
 }
 
