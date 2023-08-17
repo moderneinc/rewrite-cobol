@@ -15,6 +15,7 @@ import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
 import org.openrewrite.cobol.tree.Name;
 import org.openrewrite.internal.ListUtils;
+import org.openrewrite.internal.StringUtils;
 import org.openrewrite.marker.SearchResult;
 import org.openrewrite.text.PlainText;
 import org.openrewrite.text.PlainTextVisitor;
@@ -103,8 +104,8 @@ public class FindRelationships extends Recipe {
                             Optional<CopiedStatement> cs = copyStatement.getMarkers().findFirst(CopiedStatement.class);
                             cobolRelationships.insertRow(ctx,
                                     new CobolRelationships.Row(
-                                            cs.map(CopiedStatement::getSourceCopybook).orElse(programName),
-                                            cs.isPresent() ? COPYBOOK : COBOL,
+                                            cs.isPresent() && StringUtils.isNotEmpty(cs.get().getSourceCopybook()) ? cs.get().getSourceCopybook() : programName,
+                                            cs.isPresent() && StringUtils.isNotEmpty(cs.get().getSourceCopybook()) ? COPYBOOK : COBOL,
                                             COPY,
                                             copyStatement.getCopySource().getName().getCobolWord().getWord(),
                                             COPYBOOK,
