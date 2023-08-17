@@ -103,13 +103,13 @@ public class FindRelationships extends Recipe {
                             Optional<CopiedStatement> cs = copyStatement.getMarkers().findFirst(CopiedStatement.class);
                             cobolRelationships.insertRow(ctx,
                                     new CobolRelationships.Row(
-                                            programName,
-                                            COBOL,
+                                            cs.map(CopiedStatement::getSourceCopybook).orElse(programName),
+                                            cs.isPresent() ? COPYBOOK : COBOL,
                                             COPY,
                                             copyStatement.getCopySource().getName().getCobolWord().getWord(),
                                             COPYBOOK,
                                             copyStatement.getMarkers().findFirst(MissingCopybook.class).isPresent(),
-                                            cs.isPresent() ? cs.get().getSourceCopybook() : ""));
+                                            ""));
                         }
                         return copyStatement.withCopySource(copyStatement.getCopySource().withName(
                                 SearchResult.found(copyStatement.getCopySource().getName())));

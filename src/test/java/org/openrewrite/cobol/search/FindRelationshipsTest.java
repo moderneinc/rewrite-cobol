@@ -316,12 +316,11 @@ public class FindRelationshipsTest extends CobolTest {
     void aCopyInACopy() {
         rewriteRun(
           spec -> spec.dataTable(Row.class, rows -> {
-              assertThat(rows.stream().map(Row::getDependent)).contains("IC109A");
-              assertThat(rows.stream().map(Row::getDependentType)).contains(COBOL);
+              assertThat(rows.stream().map(Row::getDependent)).contains("IC109A", "INCEPTION", "INCEPTION_2");
+              assertThat(rows.stream().map(Row::getDependentType)).contains(COBOL, COPYBOOK);
               assertThat(rows.stream().map(Row::getAction)).contains(COPY);
               assertThat(rows.stream().map(Row::getDependency)).contains("INCEPTION", "INCEPTION_2", "INCEPTION_3");
               assertThat(rows.stream().map(Row::getDependencyType)).contains(COPYBOOK);
-              assertThat(rows.stream().map(Row::getActionMetadata)).contains("INCEPTION", "INCEPTION_2");
           }),
           cobol(
             """
