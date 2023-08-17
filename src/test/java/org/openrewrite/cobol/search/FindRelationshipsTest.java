@@ -113,7 +113,7 @@ public class FindRelationshipsTest extends CobolTest {
               """,
             spec -> spec.after(s -> s).path("EXEC_SQL_CREATE.CBL")
           ),
-          preprocessor(
+          copybook(
             """
               000000*    EXEC SQL statement to declare a table
                          EXEC SQL DECLARE PROD_TBL_02 TABLE
@@ -172,7 +172,7 @@ public class FindRelationshipsTest extends CobolTest {
               """,
             spec -> spec.after(s -> s).path("EXEC_SQL_READ.CBL")
           ),
-          preprocessor(
+          copybook(
             """
               000000*    EXEC SQL statement to declare a table
                          EXEC SQL DECLARE PROD_TBL_02 TABLE
@@ -182,7 +182,7 @@ public class FindRelationshipsTest extends CobolTest {
               """,
             spec -> spec.after(s -> s).path("DECLARE_TABLE_2.CPY")
           ),
-          preprocessor(
+          copybook(
             """
               000000*    EXEC SQL statement to declare a table
                          EXEC SQL DECLARE PROD_TBL_03 TABLE
@@ -242,7 +242,7 @@ public class FindRelationshipsTest extends CobolTest {
               """,
             spec -> spec.after(s -> s).path("EXEC_SQL_UPDATE.CBL")
           ),
-          preprocessor(
+          copybook(
             """
               000000*    EXEC SQL statement to declare a table
                          EXEC SQL DECLARE PROD_TBL_02 TABLE
@@ -293,7 +293,7 @@ public class FindRelationshipsTest extends CobolTest {
               """,
             spec -> spec.after(s -> s).path("EXEC_SQL_DELETE.CBL")
           ),
-          preprocessor(
+          copybook(
             """
               000000*    EXEC SQL statement to declare a table
                          EXEC SQL DECLARE PROD_TBL_02 TABLE

@@ -38,10 +38,9 @@ public class Assertions {
     }
 
     public static SourceSpecs preprocessor(@Nullable String before, Consumer<SourceSpec<CobolPreprocessor.CompilationUnit>> spec) {
-        List<SourceFile> copybooks = getCopybookSources();
         SourceSpec<CobolPreprocessor.CompilationUnit> cobol = new SourceSpec<>(
                 CobolPreprocessor.CompilationUnit.class, null,
-                CobolPreprocessorParser.builder().copybooks(copybooks),
+                CobolPreprocessorParser.builder().copybooks(getCopybookSources()),
                 before,
                 SourceSpec.EachResult.noop,
                 Assertions::customizeExecutionContext);
@@ -56,22 +55,8 @@ public class Assertions {
 
     public static SourceSpecs preprocessor(@Nullable String before, @Nullable String after,
                                            Consumer<SourceSpec<CobolPreprocessor.CompilationUnit>> spec) {
-        return preprocessor(before, after, spec, false);
-    }
-
-    public static SourceSpecs preprocessor(@Nullable String before, @Nullable String after,
-                                           Consumer<SourceSpec<CobolPreprocessor.CompilationUnit>> spec, boolean enableCopyAndReplace) {
-        CobolPreprocessorParser.Builder builder;
-        if (enableCopyAndReplace) {
-            List<SourceFile> copybooks = getCopybookSources();
-            builder = CobolPreprocessorParser.builder()
-                    .copybooks(copybooks);
-        } else {
-            builder = CobolPreprocessorParser.builder();
-        }
-
         SourceSpec<CobolPreprocessor.CompilationUnit> cobol = new SourceSpec<>(CobolPreprocessor.CompilationUnit.class, null,
-                builder,
+                CobolPreprocessorParser.builder(),
                 before,
                 SourceSpec.EachResult.noop,
                 Assertions::customizeExecutionContext).after(s -> after);
@@ -86,6 +71,57 @@ public class Assertions {
     }
 
     public static Consumer<SourceSpec<CobolPreprocessor.CompilationUnit>> isPreprocessorFullyParsed() {
+        return spec -> spec.afterRecipe(cu -> new CobolPreprocessorIsoVisitor<Integer>() {
+            @Override
+            public Space visitSpace(Space space, Space.Location loc, Integer integer) {
+                String whitespace = space.getWhitespace().trim();
+                if (!(IbmAnsi85.getInstance().getSeparators().contains(whitespace + " ") || whitespace.isEmpty())) {
+                    return space.withWhitespace("(~~>" + whitespace + "<~~)");
+                }
+                return super.visitSpace(space, loc, integer);
+            }
+        }.visit(cu, 0));
+    }
+
+    public static SourceSpecs copybook(@Nullable String before) {
+        return copybook(before, s -> {
+        });
+    }
+
+    public static SourceSpecs copybook(@Nullable String before, Consumer<SourceSpec<CobolPreprocessor.Copybook>> spec) {
+        SourceSpec<CobolPreprocessor.Copybook> cobol = new SourceSpec<>(
+                CobolPreprocessor.Copybook.class, null,
+                CopybookParser.builder(),
+                before,
+                SourceSpec.EachResult.noop,
+                Assertions::customizeExecutionContext);
+        acceptCopybookSpec(spec, cobol);
+        return cobol;
+    }
+
+    public static SourceSpecs copybook(@Nullable String before, @Nullable String after) {
+        return copybook(before, after, s -> {
+        });
+    }
+
+    public static SourceSpecs copybook(@Nullable String before, @Nullable String after,
+                                           Consumer<SourceSpec<CobolPreprocessor.Copybook>> spec) {
+        SourceSpec<CobolPreprocessor.Copybook> cobol = new SourceSpec<>(CobolPreprocessor.Copybook.class, null,
+                CopybookParser.builder(),
+                before,
+                SourceSpec.EachResult.noop,
+                Assertions::customizeExecutionContext).after(s -> after);
+        acceptCopybookSpec(spec, cobol);
+        return cobol;
+    }
+
+    private static void acceptCopybookSpec(Consumer<SourceSpec<CobolPreprocessor.Copybook>> spec, SourceSpec<CobolPreprocessor.Copybook> cobol) {
+        Consumer<CobolPreprocessor.Copybook> userSuppliedAfterRecipe = cobol.getAfterRecipe();
+        cobol.afterRecipe(userSuppliedAfterRecipe::accept);
+        isCopybookFullyParsed().andThen(spec).accept(cobol);
+    }
+
+    public static Consumer<SourceSpec<CobolPreprocessor.Copybook>> isCopybookFullyParsed() {
         return spec -> spec.afterRecipe(cu -> new CobolPreprocessorIsoVisitor<Integer>() {
             @Override
             public Space visitSpace(Space space, Space.Location loc, Integer integer) {

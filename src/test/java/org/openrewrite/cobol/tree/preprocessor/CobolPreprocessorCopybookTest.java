@@ -11,7 +11,7 @@ import org.openrewrite.Issue;
 import org.openrewrite.cobol.CobolTest;
 import org.openrewrite.cobol.internal.CobolPreprocessorPrinter;
 
-import static org.openrewrite.cobol.Assertions.preprocessor;
+import static org.openrewrite.cobol.Assertions.copybook;
 
 public class CobolPreprocessorCopybookTest extends CobolTest {
     private final CobolPreprocessorPrinter<ExecutionContext> printer = new CobolPreprocessorPrinter<>(false, true);
@@ -19,7 +19,7 @@ public class CobolPreprocessorCopybookTest extends CobolTest {
     @Test
     void newLineInContentArea() {
         rewriteRun(
-          preprocessor(
+          copybook(
             """
               000001 IDENTIFICATION  DIVISION  .
               000002 PROGRAM-ID    . HELLO     .
@@ -35,7 +35,7 @@ public class CobolPreprocessorCopybookTest extends CobolTest {
     @Test
     void emptyIndicatorArea() {
         rewriteRun(
-          preprocessor(
+          copybook(
             """
               000100*******************************************************************
               000200
@@ -51,336 +51,336 @@ public class CobolPreprocessorCopybookTest extends CobolTest {
     @Test
     void newLineInContentAreaBeforeCopybook() {
         rewriteRun(
-          preprocessor(getNistResource("ISSUE_27.CBL"))
+          copybook(getNistResource("ISSUE_27.CBL"))
         );
     }
 
     @Test
     void altl1() {
         rewriteRun(
-          preprocessor(getNistResource("ALTL1.CPY"))
+          copybook(getNistResource("ALTL1.CPY"))
         );
     }
 
     @Test
     void altlb() {
         rewriteRun(
-          preprocessor(getNistResource("ALTLB.CPY"))
+          copybook(getNistResource("ALTLB.CPY"))
         );
     }
 
     @Test
     void k1daa() {
         rewriteRun(
-          preprocessor(getNistResource("K1DAA.CPY"))
+          copybook(getNistResource("K1DAA.CPY"))
         );
     }
 
     @Test
     void k1fda() {
         rewriteRun(
-          preprocessor(getNistResource("K1FDA.CPY"))
+          copybook(getNistResource("K1FDA.CPY"))
         );
     }
 
     @Test
     void k1p01() {
         rewriteRun(
-          preprocessor(getNistResource("K1P01.CPY"))
+          copybook(getNistResource("K1P01.CPY"))
         );
     }
 
     @Test
     void k1pra() {
         rewriteRun(
-          preprocessor(getNistResource("K1PRA.CPY"))
+          copybook(getNistResource("K1PRA.CPY"))
         );
     }
 
     @Test
     void k1prb() {
         rewriteRun(
-          preprocessor(getNistResource("K1PRB.CPY"))
+          copybook(getNistResource("K1PRB.CPY"))
         );
     }
 
     @Test
     void k1prc() {
         rewriteRun(
-          preprocessor(getNistResource("K1PRC.CPY"))
+          copybook(getNistResource("K1PRC.CPY"))
         );
     }
 
     @Test
     void k1sea() {
         rewriteRun(
-          preprocessor(getNistResource("K1SEA.CPY"))
+          copybook(getNistResource("K1SEA.CPY"))
         );
     }
 
     @Test
     void k1w01() {
         rewriteRun(
-          preprocessor(getNistResource("K1W01.CPY"))
+          copybook(getNistResource("K1W01.CPY"))
         );
     }
 
     @Test
     void k1w02() {
         rewriteRun(
-          preprocessor(getNistResource("K1W02.CPY"))
+          copybook(getNistResource("K1W02.CPY"))
         );
     }
 
     @Test
     void k1w03() {
         rewriteRun(
-          preprocessor(getNistResource("K1W03.CPY"))
+          copybook(getNistResource("K1W03.CPY"))
         );
     }
 
     @Test
     void k1w04() {
         rewriteRun(
-          preprocessor(getNistResource("K1W04.CPY"))
+          copybook(getNistResource("K1W04.CPY"))
         );
     }
 
     @Test
     void k1wka() {
         rewriteRun(
-          preprocessor(getNistResource("K1WKA.CPY"))
+          copybook(getNistResource("K1WKA.CPY"))
         );
     }
 
     @Test
     void k1wkb() {
         rewriteRun(
-          preprocessor(getNistResource("K1WKB.CPY"))
+          copybook(getNistResource("K1WKB.CPY"))
         );
     }
 
     @Test
     void k1wkc() {
         rewriteRun(
-          preprocessor(getNistResource("K1WKC.CPY"))
+          copybook(getNistResource("K1WKC.CPY"))
         );
     }
 
     @Test
     void k1wky() {
         rewriteRun(
-          preprocessor(getNistResource("K1WKY.CPY"))
+          copybook(getNistResource("K1WKY.CPY"))
         );
     }
 
     @Test
     void k1wkz() {
         rewriteRun(
-          preprocessor(getNistResource("K1WKZ.CPY"))
+          copybook(getNistResource("K1WKZ.CPY"))
         );
     }
 
     @Test
     void k2pra() {
         rewriteRun(
-          preprocessor(getNistResource("K2PRA.CPY"))
+          copybook(getNistResource("K2PRA.CPY"))
         );
     }
 
     @Test
     void k3fca() {
         rewriteRun(
-          preprocessor(getNistResource("K3FCA.CPY"))
+          copybook(getNistResource("K3FCA.CPY"))
         );
     }
 
     @Test
     void k3fcb() {
         rewriteRun(
-          preprocessor(getNistResource("K3FCB.CPY"))
+          copybook(getNistResource("K3FCB.CPY"))
         );
     }
 
     @Test
     void k3ioa() {
         rewriteRun(
-          preprocessor(getNistResource("K3IOA.CPY"))
+          copybook(getNistResource("K3IOA.CPY"))
         );
     }
 
     @Test
     void k3iob() {
         rewriteRun(
-          preprocessor(getNistResource("K3IOB.CPY"))
+          copybook(getNistResource("K3IOB.CPY"))
         );
     }
 
     @Test
     void k3lge() {
         rewriteRun(
-          preprocessor(getNistResource("K3LGE.CPY"))
+          copybook(getNistResource("K3LGE.CPY"))
         );
     }
 
     @Test
     void k3oca() {
         rewriteRun(
-          preprocessor(getNistResource("K3OCA.CPY"))
+          copybook(getNistResource("K3OCA.CPY"))
         );
     }
 
     @Test
     void k3sml() {
         rewriteRun(
-          preprocessor(getNistResource("K3SML.CPY"))
+          copybook(getNistResource("K3SML.CPY"))
         );
     }
 
     @Test
     void k3sna() {
         rewriteRun(
-          preprocessor(getNistResource("K3SNA.CPY"))
+          copybook(getNistResource("K3SNA.CPY"))
         );
     }
 
     @Test
     void k3snb() {
         rewriteRun(
-          preprocessor(getNistResource("K3SNB.CPY"))
+          copybook(getNistResource("K3SNB.CPY"))
         );
     }
 
     @Test
     void k5sda() {
         rewriteRun(
-          preprocessor(getNistResource("K5SDA.CPY"))
+          copybook(getNistResource("K5SDA.CPY"))
         );
     }
 
     @Test
     void k6sca() {
         rewriteRun(
-          preprocessor(getNistResource("K6SCA.CPY"))
+          copybook(getNistResource("K6SCA.CPY"))
         );
     }
 
     @Test
     void k7sea() {
         rewriteRun(
-          preprocessor(getNistResource("K7SEA.CPY"))
+          copybook(getNistResource("K7SEA.CPY"))
         );
     }
 
     @Test
     void k501A() {
         rewriteRun(
-          preprocessor(getNistResource("K501A.CPY"))
+          copybook(getNistResource("K501A.CPY"))
         );
     }
 
     @Test
     void k501B() {
         rewriteRun(
-          preprocessor(getNistResource("K501B.CPY"))
+          copybook(getNistResource("K501B.CPY"))
         );
     }
 
     @Test
     void kk208A() {
         rewriteRun(
-          preprocessor(getNistResource("KK208A.CPY"))
+          copybook(getNistResource("KK208A.CPY"))
         );
     }
 
     @Test
     void kp001() {
         rewriteRun(
-          preprocessor(getNistResource("KP001.CPY"))
+          copybook(getNistResource("KP001.CPY"))
         );
     }
 
     @Test
     void kp002() {
         rewriteRun(
-          preprocessor(getNistResource("KP002.CPY"))
+          copybook(getNistResource("KP002.CPY"))
         );
     }
 
     @Test
     void kp003() {
         rewriteRun(
-          preprocessor(getNistResource("KP003.CPY"))
+          copybook(getNistResource("KP003.CPY"))
         );
     }
 
     @Test
     void kp004() {
         rewriteRun(
-          preprocessor(getNistResource("KP004.CPY"))
+          copybook(getNistResource("KP004.CPY"))
         );
     }
 
     @Test
     void kp005() {
         rewriteRun(
-          preprocessor(getNistResource("KP005.CPY"))
+          copybook(getNistResource("KP005.CPY"))
         );
     }
 
     @Test
     void kp006() {
         rewriteRun(
-          preprocessor(getNistResource("KP006.CPY"))
+          copybook(getNistResource("KP006.CPY"))
         );
     }
 
     @Test
     void kp007() {
         rewriteRun(
-          preprocessor(getNistResource("KP007.CPY"))
+          copybook(getNistResource("KP007.CPY"))
         );
     }
 
     @Test
     void kp008() {
         rewriteRun(
-          preprocessor(getNistResource("KP008.CPY"))
+          copybook(getNistResource("KP008.CPY"))
         );
     }
 
     @Test
     void kp009() {
         rewriteRun(
-          preprocessor(getNistResource("KP009.CPY"))
+          copybook(getNistResource("KP009.CPY"))
         );
     }
 
     @Test
     void kp010() {
         rewriteRun(
-          preprocessor(getNistResource("KP010.CPY"))
+          copybook(getNistResource("KP010.CPY"))
         );
     }
 
     @Test
     void ksm31() {
         rewriteRun(
-          preprocessor(getNistResource("KSM31.CPY"))
+          copybook(getNistResource("KSM31.CPY"))
         );
     }
 
     @Test
     void ksm41() {
         rewriteRun(
-          preprocessor(getNistResource("KSM41.CPY"))
+          copybook(getNistResource("KSM41.CPY"))
         );
     }
 
     @Test
     void trailingSub() {
         rewriteRun(
-          preprocessor(getNistResource("K1WKA_TRAILING_SUB.CPY"))
+          copybook(getNistResource("K1WKA_TRAILING_SUB.CPY"))
         );
     }
 }
