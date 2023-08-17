@@ -52,10 +52,10 @@ public class FindRelationships extends Recipe {
             String sourceName = "UNKNOWN";
 
             @Override
-            public CobolPreprocessor.CompilationUnit visitCompilationUnit(CobolPreprocessor.CompilationUnit compilationUnit, ExecutionContext ctx) {
-                sourceName = compilationUnit.getSourcePath().getFileName().toString();
+            public CobolPreprocessor.Copybook visitCopybook(CobolPreprocessor.Copybook copybook, ExecutionContext executionContext) {
+                sourceName = copybook.getSourcePath().getFileName().toString();
                 sourceName = sourceName.contains(".") ? sourceName.substring(0, sourceName.indexOf(".")) : sourceName;
-                return super.visitCompilationUnit(compilationUnit, ctx);
+                return super.visitCopybook(copybook, executionContext);
             }
 
             @Override
