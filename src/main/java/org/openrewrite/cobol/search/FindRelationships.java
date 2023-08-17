@@ -50,11 +50,22 @@ public class FindRelationships extends Recipe {
             final Set<String> seenIncludes = new HashSet<>();
             final Set<String> seenTableAccess = new HashSet<>();
             String sourceName = "UNKNOWN";
+            boolean isSourceName = false;
+
+            @Override
+            public CobolPreprocessor.CompilationUnit visitCompilationUnit(CobolPreprocessor.CompilationUnit compilationUnit, ExecutionContext executionContext) {
+                sourceName = compilationUnit.getSourcePath().getFileName().toString();
+                sourceName = sourceName.contains(".") ? sourceName.substring(0, sourceName.indexOf(".")) : sourceName;
+                isSourceName = true;
+                return super.visitCompilationUnit(compilationUnit, executionContext);
+            }
 
             @Override
             public CobolPreprocessor.Copybook visitCopybook(CobolPreprocessor.Copybook copybook, ExecutionContext executionContext) {
-                sourceName = copybook.getSourcePath().getFileName().toString();
-                sourceName = sourceName.contains(".") ? sourceName.substring(0, sourceName.indexOf(".")) : sourceName;
+                if (!isSourceName) {
+                    sourceName = copybook.getSourcePath().getFileName().toString();
+                    sourceName = sourceName.contains(".") ? sourceName.substring(0, sourceName.indexOf(".")) : sourceName;
+                }
                 return super.visitCopybook(copybook, executionContext);
             }
 
