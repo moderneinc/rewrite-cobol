@@ -328,22 +328,12 @@ public class FindRelationships extends Recipe {
                                                     SQL_CURSOR,
                                                     ACCESS,
                                                     tableName,
-                                                    SQL_TABLE,
+                                                    seenIncludes.contains(tableName) ? COPYBOOK : SQL_TABLE,
                                                     false,
                                                     metadata
                                             )
                                     );
-                                    cobolRelationships.insertRow(ctx,
-                                            new CobolRelationships.Row(
-                                                    cursorTo.get().getDependent(),
-                                                    cursorTo.get().getDependentType(),
-                                                    cursorTo.get().getAction(),
-                                                    cursorTo.get().getDependency(),
-                                                    cursorTo.get().getDependencyType(),
-                                                    cursorTo.get().isDependencyMissing(),
-                                                    cursorTo.get().getActionMetadata()
-                                            )
-                                    );
+                                    cobolRelationships.insertRow(ctx, cursorTo.get());
                                     return SearchResult.found(word);
                                 }
                                 cursorTo.set(null);
@@ -354,7 +344,7 @@ public class FindRelationships extends Recipe {
                                                 dependentType,
                                                 ACCESS,
                                                 tableName,
-                                                SQL_TABLE,
+                                                cursorNames.contains(tableName) ? SQL_CURSOR : SQL_TABLE,
                                                 false,
                                                 metadata
                                         )
@@ -381,17 +371,6 @@ public class FindRelationships extends Recipe {
                                     );
                                 } else {
                                     cursorNames.add(tableName);
-                                    cobolRelationships.insertRow(ctx,
-                                            new CobolRelationships.Row(
-                                                    sourceName,
-                                                    dependentType,
-                                                    ACCESS,
-                                                    tableName,
-                                                    SQL_CURSOR,
-                                                    false,
-                                                    "CREATE"
-                                            )
-                                    );
                                     // Group the cursor with the table after we parse FROM, and associate the FROM relationship to the cursor.
                                     cursorTo.set(
                                             new CobolRelationships.Row(
