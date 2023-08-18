@@ -321,7 +321,7 @@ public class FindRelationships extends Recipe {
                                     "DELETE" : "READ";
                             String tableName = word.getCobolWord().getWord();
                             if (cursorTo.get() != null) {
-                                if (seenTableAccess.add(cursorTo.get().getDependent() + metadata)) {
+                                if (seenTableAccess.add(cursorTo.get().getDependency() + metadata)) {
                                     cobolRelationships.insertRow(ctx,
                                             new CobolRelationships.Row(
                                                     cursorTo.get().getDependency(),
