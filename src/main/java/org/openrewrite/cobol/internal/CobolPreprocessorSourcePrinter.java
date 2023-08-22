@@ -8,7 +8,7 @@ package org.openrewrite.cobol.internal;
 import org.openrewrite.Cursor;
 import org.openrewrite.PrintOutputCapture;
 import org.openrewrite.cobol.CobolPreprocessorVisitor;
-import org.openrewrite.cobol.markers.CopiedWord;
+import org.openrewrite.cobol.marker.CopiedWord;
 import org.openrewrite.cobol.tree.*;
 import org.openrewrite.internal.StringUtils;
 import org.openrewrite.internal.lang.Nullable;

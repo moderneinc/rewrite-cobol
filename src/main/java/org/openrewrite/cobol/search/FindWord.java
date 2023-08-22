@@ -13,7 +13,7 @@ import org.openrewrite.Recipe;
 import org.openrewrite.TreeVisitor;
 import org.openrewrite.cobol.CobolPreprocessorIsoVisitor;
 import org.openrewrite.cobol.NameVisitor;
-import org.openrewrite.cobol.markers.CopiedWord;
+import org.openrewrite.cobol.marker.CopiedWord;
 import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
 import org.openrewrite.cobol.tree.Replacement;

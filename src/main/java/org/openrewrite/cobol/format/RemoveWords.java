@@ -11,7 +11,7 @@ import org.openrewrite.ExecutionContext;
 import org.openrewrite.Incubating;
 import org.openrewrite.cobol.CobolIsoVisitor;
 import org.openrewrite.cobol.CobolPrinterUtils;
-import org.openrewrite.cobol.markers.CopiedWord;
+import org.openrewrite.cobol.marker.CopiedWord;
 import org.openrewrite.cobol.search.FindWords;
 import org.openrewrite.cobol.tree.*;
 import org.openrewrite.internal.ListUtils;

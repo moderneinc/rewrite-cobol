@@ -3,7 +3,7 @@
  * For everyone else, this is licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International.
  * See: https://creativecommons.org/licenses/by-nc-sa/4.0/
  */
-package org.openrewrite.cobol.markers;
+package org.openrewrite.cobol.marker;
 
 import lombok.Value;
 import lombok.With;
@@ -13,7 +13,12 @@ import java.util.UUID;
 
 @With
 @Value
-public class CopiedWord implements Marker {
+public class MissingCopybook implements Marker {
     UUID id;
-    String statementId;
+    Status status;
+
+    public enum Status {
+        MISSING,
+        PARSE_ERROR
+    }
 }

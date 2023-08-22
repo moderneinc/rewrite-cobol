@@ -10,7 +10,7 @@ import org.openrewrite.cobol.CobolIsoVisitor;
 import org.openrewrite.cobol.CobolParser;
 import org.openrewrite.cobol.CobolParsingTimeoutException;
 import org.openrewrite.cobol.CopybookParser;
-import org.openrewrite.cobol.markers.MissingCopybook;
+import org.openrewrite.cobol.marker.MissingCopybook;
 import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
 import org.openrewrite.text.PlainTextParser;

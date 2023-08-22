@@ -11,7 +11,7 @@ import org.openrewrite.*;
 import org.openrewrite.cobol.CobolIsoVisitor;
 import org.openrewrite.cobol.format.RemoveWords;
 import org.openrewrite.cobol.format.ShiftSequenceAreas;
-import org.openrewrite.cobol.markers.CopiedWord;
+import org.openrewrite.cobol.marker.CopiedWord;
 import org.openrewrite.cobol.tree.*;
 import org.openrewrite.internal.lang.Nullable;
 

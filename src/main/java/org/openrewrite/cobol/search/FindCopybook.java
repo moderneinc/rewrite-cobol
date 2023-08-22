@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.openrewrite.*;
 import org.openrewrite.cobol.CobolIsoVisitor;
-import org.openrewrite.cobol.markers.MissingCopybook;
+import org.openrewrite.cobol.marker.MissingCopybook;
 import org.openrewrite.cobol.table.CopybookSource;
 import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
