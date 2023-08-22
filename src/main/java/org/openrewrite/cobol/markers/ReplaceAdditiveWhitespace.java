@@ -1,0 +1,39 @@
+/*
+ * For commercial customers of Moderne Inc., this repository is licensed per the terms of our contract.
+ * For everyone else, this is licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International.
+ * See: https://creativecommons.org/licenses/by-nc-sa/4.0/
+ */
+package org.openrewrite.cobol.markers;
+
+import lombok.Value;
+import lombok.With;
+import org.openrewrite.cobol.tree.CommentArea;
+import org.openrewrite.cobol.tree.Space;
+import org.openrewrite.marker.Marker;
+
+import java.util.UUID;
+
+/**
+ * COBOL word transformations that increase the length of the current line may cause misalignment in the content area.
+ * Whitespace is added in two places to simplify column alignment.
+ *  1. The {@link CommentArea} contains whitespace until the end of the line.
+ *  2. TemplateWhitespace marker contains whitespace until the next word starts in its current position.
+ * <p>
+ * I.E. PIC replaced by PICTURE
+ * Before:
+ *  |000001| | firstWord PIC [some words]         |
+ * <p>
+ * After:
+ *  |000001| | firstWord PICTURE                  |
+ *  |      | |               [some words]         |
+ * <p>
+ * The markers enable the ability to print the original word in place of the transformed word to print either the
+ * original word or the transformed word.
+ */
+@Deprecated
+@With
+@Value
+public class ReplaceAdditiveWhitespace implements Marker {
+    UUID id;
+    Space prefix;
+}
