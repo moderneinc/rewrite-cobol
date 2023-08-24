@@ -2,6 +2,7 @@ build/
 .gradle/
 .idea/
 out/
-
+cobol-cli/src/main/resources/cli-version.txt
+cobol-cli/src/main/resources/ast-write-version.txt
 # Ignore generated credentials from google-github-actions/auth
 gha-creds-*.json
