@@ -46,8 +46,8 @@ public class FindRelationshipsTest extends CobolTest {
               """,
             (spec) -> spec.path("linkeditcards/LINKEDIT1")),
           text("""
-            BIND PACKAGE(PROD0) OWNER(SBS100S) -                        \s
-               QUALIFIER(SBS100S) MEMBER(IC201A) -                      \s
+            BIND PACKAGE(&PROD0.EXT) OWNER(&SBS100S) -                        \s
+               QUALIFIER(&SBS100S.EXT) MEMBER(IC201A) -                      \s
                SQLERROR(NOPACKAGE) VALIDATE(BIND) FLAG(I) ISOLATION(CS) -
                RELEASE(COMMIT) EXPLAIN(YES) CURRENTDATA(YES) -          \s
                ACTION(ADD)     -                                        \s
