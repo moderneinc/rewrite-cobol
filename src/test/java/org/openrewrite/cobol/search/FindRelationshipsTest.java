@@ -319,13 +319,14 @@ public class FindRelationshipsTest extends CobolTest {
 
     @Test
     void execSqlCreateCursor() {
+        // Ensure cursors are not detected as SQL tables.
         rewriteRun(
           spec -> spec.dataTable(Row.class, rows -> {
-              assertThat(rows.stream().map(Row::getDependent)).contains("DECLARE_TABLE_2", "EXEC_SQL_CREATE", "CURSOR_IN_COPY", "CURSOR_1");
-              assertThat(rows.stream().map(Row::getDependentType)).contains(COPYBOOK, COBOL, SQL_CURSOR);
+              assertThat(rows.stream().map(Row::getDependent)).contains("DECLARE_TABLE_2", "EXEC_SQL_CREATE");
+              assertThat(rows.stream().map(Row::getDependentType)).contains(COPYBOOK, COBOL);
               assertThat(rows.stream().map(Row::getAction)).contains(INCLUDE, ACCESS);
-              assertThat(rows.stream().map(Row::getDependency)).contains("DECLARE_TABLE_2", "PROD_TBL_01", "PROD_TBL_02", "CURSOR_IN_COPY", "CURSOR_1");
-              assertThat(rows.stream().map(Row::getDependencyType)).contains(SQL_TABLE, SQL_CURSOR, COPYBOOK);
+              assertThat(rows.stream().map(Row::getDependency)).contains("DECLARE_TABLE_2", "PROD_TBL_01", "PROD_TBL_02");
+              assertThat(rows.stream().map(Row::getDependencyType)).contains(SQL_TABLE, COPYBOOK);
               assertThat(rows.stream().map(Row::getActionMetadata)).contains("CREATE", "READ");
           }),
           cobol(
@@ -383,13 +384,14 @@ public class FindRelationshipsTest extends CobolTest {
 
     @Test
     void execSqlReadCursor() {
+        // Ensure cursors are not detected as SQL tables.
         rewriteRun(
           spec -> spec.dataTable(Row.class, rows -> {
-              assertThat(rows.stream().map(Row::getDependent)).contains("DECLARE_TABLE_2", "EXEC_SQL_READ", "CURSOR_IN_COPY", "CURSOR_1");
-              assertThat(rows.stream().map(Row::getDependentType)).contains(COPYBOOK, COBOL, SQL_CURSOR);
+              assertThat(rows.stream().map(Row::getDependent)).contains("DECLARE_TABLE_2", "EXEC_SQL_READ");
+              assertThat(rows.stream().map(Row::getDependentType)).contains(COPYBOOK, COBOL);
               assertThat(rows.stream().map(Row::getAction)).contains(INCLUDE, ACCESS);
-              assertThat(rows.stream().map(Row::getDependency)).contains("DECLARE_TABLE_2", "PROD_TBL_02", "CURSOR_IN_COPY", "CURSOR_1");
-              assertThat(rows.stream().map(Row::getDependencyType)).contains(SQL_TABLE, SQL_CURSOR, COPYBOOK);
+              assertThat(rows.stream().map(Row::getDependency)).contains("DECLARE_TABLE_2", "PROD_TBL_02");
+              assertThat(rows.stream().map(Row::getDependencyType)).contains(SQL_TABLE, COPYBOOK);
               assertThat(rows.stream().map(Row::getActionMetadata)).contains("CREATE", "READ");
           }),
           cobol(

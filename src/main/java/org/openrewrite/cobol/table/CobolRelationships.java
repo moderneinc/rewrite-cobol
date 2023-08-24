@@ -54,6 +54,7 @@ public class CobolRelationships extends DataTable<CobolRelationships.Row> {
         LINKEDIT,
         BINDPLAN,
         BINDPACKAGE,
+        @Deprecated // This may be removed after the next ingest.
         SQL_CURSOR,
         SQL_TABLE
     }

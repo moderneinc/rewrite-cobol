@@ -283,7 +283,7 @@ public class FindRelationships extends Recipe {
                         } else if ("update".equalsIgnoreCase(word.getCobolWord().getWord()) &&
                                 j == 0 && 2 < line.getWords().size() && line.getWords().get(1) instanceof CobolPreprocessor.Word) {
                             String tableName = ((CobolPreprocessor.Word) line.getWords().get(1)).getCobolWord().getWord();
-                            if (seenTableAccess.add(tableName + "_UPDATE")) {
+                            if (seenTableAccess.add(tableName + "_UPDATE") && !cursorNames.contains(tableName)) {
                                 cobolRelationships.insertRow(ctx,
                                         new CobolRelationships.Row(
                                                 sourceName,
@@ -298,7 +298,7 @@ public class FindRelationships extends Recipe {
                         } else if ("insert".equalsIgnoreCase(word.getCobolWord().getWord()) &&
                                 j == 0 && 3 < line.getWords().size() && line.getWords().get(2) instanceof CobolPreprocessor.Word) {
                             String tableName = ((CobolPreprocessor.Word) line.getWords().get(2)).getCobolWord().getWord();
-                            if (seenTableAccess.add(tableName + "_INSERT")) {
+                            if (seenTableAccess.add(tableName + "_INSERT") && !cursorNames.contains(tableName)) {
                                 cobolRelationships.insertRow(ctx,
                                         new CobolRelationships.Row(
                                                 sourceName,
@@ -321,30 +321,15 @@ public class FindRelationships extends Recipe {
                                     "DELETE" : "READ";
                             String tableName = word.getCobolWord().getWord();
                             if (cursorTo.get() != null) {
-                                if (seenTableAccess.add(cursorTo.get().getDependency() + metadata)) {
-                                    cobolRelationships.insertRow(ctx,
-                                            new CobolRelationships.Row(
-                                                    cursorTo.get().getDependency(),
-                                                    SQL_CURSOR,
-                                                    ACCESS,
-                                                    tableName,
-                                                    seenIncludes.contains(tableName) ? COPYBOOK : SQL_TABLE,
-                                                    false,
-                                                    metadata
-                                            )
-                                    );
-                                    cobolRelationships.insertRow(ctx, cursorTo.get());
-                                    return SearchResult.found(word);
-                                }
                                 cursorTo.set(null);
-                            } else if (seenTableAccess.add(tableName + "_" + metadata)) {
+                            } else if (seenTableAccess.add(tableName + "_" + metadata) && !cursorNames.contains(tableName)) {
                                 cobolRelationships.insertRow(ctx,
                                         new CobolRelationships.Row(
                                                 sourceName,
                                                 dependentType,
                                                 ACCESS,
                                                 tableName,
-                                                cursorNames.contains(tableName) ? SQL_CURSOR : SQL_TABLE,
+                                                SQL_TABLE,
                                                 false,
                                                 metadata
                                         )
@@ -371,18 +356,6 @@ public class FindRelationships extends Recipe {
                                     );
                                 } else {
                                     cursorNames.add(tableName);
-                                    // Group the cursor with the table after we parse FROM, and associate the FROM relationship to the cursor.
-                                    cursorTo.set(
-                                            new CobolRelationships.Row(
-                                                    sourceName,
-                                                    dependentType,
-                                                    ACCESS,
-                                                    tableName,
-                                                    SQL_CURSOR,
-                                                    false,
-                                                    "CREATE"
-                                            )
-                                    );
                                 }
                                 return SearchResult.found(word);
                             }
