@@ -13,24 +13,24 @@ import org.openrewrite.cobol.CopybookParser;
 import org.openrewrite.cobol.marker.MissingCopybook;
 import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
+import org.openrewrite.marker.LstProvenance;
 import org.openrewrite.text.PlainTextParser;
 import org.openrewrite.tree.ParsingEventListener;
 import org.openrewrite.tree.ParsingExecutionContextView;
 import picocli.CommandLine;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UncheckedIOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static java.nio.file.Files.exists;
+import static java.util.Objects.requireNonNull;
 import static org.fusesource.jansi.Ansi.ansi;
 
 @CommandLine.Command(name = "build")
@@ -105,6 +105,8 @@ public class Build implements Callable<Integer> {
             Set<SourceFile> referencedCopybooks = new TreeSet<>(Comparator.comparing(SourceFile::getSourcePath));
 
             try (ProgressBar progressBar = DefaultProgressBar.builder(spec).build()) {
+                LstProvenance lstProvenance = new LstProvenance(Tree.randomId(), LstProvenance.Type.CobolCli,
+                        getCliVersion(), getAstWriteVersion(), Instant.now());
                 CobolParser cobolParser = CobolParser.builder().copybooks(copybooks)
                         .timeout(Duration.ofSeconds(timeoutSeconds))
                         .build();
@@ -118,6 +120,7 @@ public class Build implements Callable<Integer> {
                 progressBar.setMax(cobolSources.size());
                 serializer.write(
                         cobolParser.parse(cobolSources, repository.getRootDir(), progressReportingExecutionContext(progressBar))
+                                .map(sourceFile -> (SourceFile) sourceFile.withMarkers(sourceFile.getMarkers().addIfAbsent(lstProvenance)))
                                 .peek(sourceFile -> referencedCopybooks(sourceFile, referencedCopybooks)),
                         outputDir
                 );
@@ -271,5 +274,25 @@ public class Build implements Callable<Integer> {
                 progressBar.step();
             }
         });
+    }
+
+    public static String getCliVersion() {
+        try {
+            try(BufferedReader reader = new BufferedReader(new InputStreamReader(requireNonNull(Build.class.getResourceAsStream("/cli-version.txt")))))  {
+                return reader.readLine().trim();
+            }
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public static String getAstWriteVersion() {
+        try {
+            try(BufferedReader reader = new BufferedReader(new InputStreamReader(requireNonNull(Build.class.getResourceAsStream("/ast-write-version.txt")))))  {
+                return reader.readLine().trim();
+            }
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 }

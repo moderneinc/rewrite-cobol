@@ -30,25 +30,21 @@ repositories {
     }
 }
 
+var astWrite = configurations.create("astWrite")
 configurations {
     all {
         resolutionStrategy {
             exclude("ch.qos.logback")
         }
     }
-    create("astWrite")
 }
 
 dependencies {
     compileOnly("org.projectlombok:lombok:latest.release")
     annotationProcessor("org.projectlombok:lombok:latest.release")
 
-    if (System.getProperty("idea.active") != null || System.getProperty("idea.sync.active") != null) {
-        implementation("io.moderne:moderne-ast-write:latest.release")
-    } else {
-        compileOnly("io.moderne:moderne-ast-write:latest.release")
-        "astWrite"("io.moderne:moderne-ast-write:latest.release:obfuscated")
-    }
+    compileOnly("io.moderne:moderne-ast-write:latest.release")
+    "astWrite"("io.moderne:moderne-ast-write:latest.release:obfuscated")
 
     implementation("info.picocli:picocli:latest.release")
     annotationProcessor("info.picocli:picocli-codegen:latest.release")
@@ -61,7 +57,7 @@ dependencies {
     implementation("org.openrewrite.recipe:rewrite-all:latest.integration")
     implementation(rootProject)
 
-    testRuntimeOnly("io.moderne:moderne-ast-write:latest.release:obfuscated")
+    testRuntimeOnly("io.moderne:moderne-ast-write:latest.release")
 }
 
 tasks.withType<Javadoc> {
@@ -88,4 +84,40 @@ tasks.withType<ShadowJar> {
 }
 artifacts {
     add("runtimeClasspath", tasks.named<ShadowJar>("shadowJar"))
+}
+
+val generateVersionFile = tasks.register("generateVersionFile") {
+    val outputFile = file("src/main/resources/cli-version.txt")
+    val version = project.version.toString()
+    description = "Creates $outputFile"
+    group = "Build"
+    inputs.property("version", version)
+    outputs.file(outputFile)
+
+    doLast {
+        outputFile.parentFile.mkdirs()
+        outputFile.writeText(version)
+    }
+}
+
+val generateAstWriteVersionFile = tasks.register("generateAstWriteVersionFile") {
+    val outputFile = file("src/main/resources/ast-write-version.txt")
+    val version = astWrite.resolvedConfiguration.firstLevelModuleDependencies.iterator().next().moduleVersion
+
+    description = "Creates $outputFile"
+    group = "Build"
+    inputs.property("version", version)
+    outputs.file(outputFile)
+
+    doLast {
+        outputFile.parentFile.mkdirs()
+        outputFile.writeText(version)
+    }
+}
+
+tasks.named<Copy>("processResources") {
+    dependsOn(generateVersionFile, generateAstWriteVersionFile)
+}
+tasks.named<Jar>("sourcesJar") {
+    dependsOn(generateVersionFile, generateAstWriteVersionFile)
 }
