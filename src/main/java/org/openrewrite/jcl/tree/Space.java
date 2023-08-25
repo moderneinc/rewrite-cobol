@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.EqualsAndHashCode;
 import org.openrewrite.internal.lang.Nullable;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -33,7 +34,7 @@ public class Space {
      * e.g.: a single space between keywords, or the common indentation of every line in a block.
      * So use flyweights to avoid storing many instances of functionally identical spaces
      */
-    private static final Map<String, Space> flyweights = new WeakHashMap<>();
+    private static final Map<String, Space> flyweights = Collections.synchronizedMap(new WeakHashMap<>());
 
     private Space(@Nullable String whitespace, @Nullable Boolean isContinued) {
         this.whitespace = whitespace == null || whitespace.isEmpty() ? null : whitespace;
@@ -44,9 +45,11 @@ public class Space {
     public static Space build(@Nullable String whitespace, @Nullable Boolean isContinued) {
         if (!Boolean.TRUE.equals(isContinued) && (whitespace == null || whitespace.isEmpty())) {
             return Space.EMPTY;
+        } else if (whitespace == null || whitespace.length() <= 100) {
+            String key = (whitespace == null ? "" : whitespace) + (isContinued != null && isContinued);
+            return flyweights.computeIfAbsent(key, k -> new Space(whitespace, isContinued));
         }
-        String key = (whitespace == null ? "" : whitespace) + (isContinued == null ? "" : isContinued);
-        return flyweights.computeIfAbsent(key, k -> new Space(whitespace, isContinued));
+        return new Space(whitespace, isContinued);
     }
 
     public String getIndent() {
