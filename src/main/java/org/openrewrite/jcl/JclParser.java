@@ -22,8 +22,6 @@ import org.openrewrite.tree.ParsingEventListener;
 import org.openrewrite.tree.ParsingExecutionContextView;
 
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 public class JclParser implements Parser {
@@ -71,7 +69,8 @@ public class JclParser implements Parser {
 
     @Override
     public boolean accept(Path path) {
-        return path.toString().toLowerCase().endsWith(".jcl");
+        return path.toString().toLowerCase().endsWith(".jcl") ||
+                path.toString().toLowerCase().endsWith(".prc");
     }
 
     @Override
