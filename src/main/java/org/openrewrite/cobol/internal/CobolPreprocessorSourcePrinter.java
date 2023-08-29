@@ -159,6 +159,17 @@ public class CobolPreprocessorSourcePrinter<P> extends CobolPreprocessorVisitor<
     }
 
     @Override
+    public CobolPreprocessor visitExecSqlIncludeStatement(CobolPreprocessor.ExecSqlIncludeStatement execSqlIncludeStatement, PrintOutputCapture<P> p) {
+        beforeSyntax(execSqlIncludeStatement, Space.Location.EXEC_SQL_INCLUDE_STATEMENT_PREFIX, p);
+        visit(execSqlIncludeStatement.getWords(), p);
+        visit(execSqlIncludeStatement.getCopySource(), p);
+        visit(execSqlIncludeStatement.getEndExec(), p);
+        visit(execSqlIncludeStatement.getDot(), p);
+        afterSyntax(execSqlIncludeStatement, p);
+        return execSqlIncludeStatement;
+    }
+
+    @Override
     public CobolPreprocessor visitFamilyPhrase(CobolPreprocessor.FamilyPhrase familyPhrase, PrintOutputCapture<P> p) {
         beforeSyntax(familyPhrase, Space.Location.FAMILY_PHRASE_PREFIX, p);
         visit(familyPhrase.getWord(), p);

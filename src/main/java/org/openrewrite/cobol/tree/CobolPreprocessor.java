@@ -292,7 +292,7 @@ public interface CobolPreprocessor extends Tree {
     @Value
     @EqualsAndHashCode(callSuper = false)
     @With
-    class CopyStatement implements CobolPreprocessor {
+    class CopyStatement implements CobolPreprocessor, CopybookSource {
 
         UUID id;
 
@@ -377,6 +377,30 @@ public interface CobolPreprocessor extends Tree {
         @Override
         public <P> CobolPreprocessor acceptCobolPreprocessor(CobolPreprocessorVisitor<P> v, P p) {
             return v.visitExecStatement(this, p);
+        }
+    }
+
+    @Value
+    @EqualsAndHashCode(callSuper = false)
+    @With
+    class ExecSqlIncludeStatement implements CobolPreprocessor, CopybookSource {
+
+        UUID id;
+        Space prefix;
+        Markers markers;
+        List<Word> words;
+        Word copySource;
+        Word endExec;
+
+        @Nullable
+        Word dot;
+
+        @Nullable
+        Copybook copybook;
+
+        @Override
+        public <P> CobolPreprocessor acceptCobolPreprocessor(CobolPreprocessorVisitor<P> v, P p) {
+            return v.visitExecSqlIncludeStatement(this, p);
         }
     }
 

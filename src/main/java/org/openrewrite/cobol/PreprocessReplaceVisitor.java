@@ -22,12 +22,9 @@ import static org.openrewrite.cobol.tree.Space.EMPTY;
 @Value
 public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> {
 
-    Map<String, CobolPreprocessor> preprocessorMap;
     Map<String, Replacement> replaceMap;
 
-    public PreprocessReplaceVisitor(Map<String, CobolPreprocessor> preprocessorMap,
-                                    Map<String, Replacement> replaceMap) {
-        this.preprocessorMap = preprocessorMap;
+    public PreprocessReplaceVisitor(Map<String, Replacement> replaceMap) {
         this.replaceMap = replaceMap;
     }
 
@@ -66,7 +63,6 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
             }
         }
 
-        preprocessorMap.put(c.getId().toString(), c);
         return c;
     }
 

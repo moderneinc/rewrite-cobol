@@ -6,6 +6,8 @@
 package org.openrewrite.cobol.tree.cobol;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.openrewrite.Issue;
 import org.openrewrite.cobol.CobolTest;
 
@@ -14,8 +16,12 @@ import static org.openrewrite.cobol.Assertions.cobolPostProcess;
 class CobolParserCopyTest extends CobolTest {
 
     @Issue("https://github.com/openrewrite/rewrite-cobol/issues/15")
-    @Test
-    void missingCopybook() {
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "COPY MISSING-COPYBOOK.",
+        "EXEC SQL INCLUDE MISSING-COPYBOOK END-EXEC.",
+    })
+    void missingCopybook(String input) {
         rewriteRun(
           cobolPostProcess(
             """
@@ -25,29 +31,37 @@ class CobolParserCopyTest extends CobolTest {
                      DATA DIVISION.
                      FILE SECTION.
                      FD  PRINT-FILE.
-                     COPY MISSING-COPYBOOK.
+                     %s
                      01  DUMMY-RECORD PICTURE X(120).
-              """
+              """.formatted(input)
           )
         );
     }
 
-    @Test
-    void injectTrailingWhitespace() {
+    @ParameterizedTest
+    @ValueSource(strings = {
+      "COPY TRAILING_WHITESPACE.",
+      "EXEC SQL INCLUDE TRAILING_WHITESPACE END-EXEC.",
+    })
+    void injectTrailingWhitespace(String input) {
         rewriteRun(
           cobolPostProcess(
             """
               000000 IDENTIFICATION DIVISION.
                      PROGRAM-ID. Name.
-                     COPY TRAILING_WHITESPACE.
-              """
+                     %s
+              """.formatted(input)
           )
         );
     }
 
     @Issue("https://github.com/openrewrite/rewrite-cobol/issues/47")
-    @Test
-    void mixedOrderPreprocessorDirectives() {
+    @ParameterizedTest
+    @ValueSource(strings = {
+      "COPY PREPROCESSOR_DIRECTIVE.",
+      "EXEC SQL INCLUDE PREPROCESSOR_DIRECTIVE END-EXEC.",
+    })
+    void mixedOrderPreprocessorDirectives(String input) {
         rewriteRun(
           cobolPostProcess(
             """
@@ -58,16 +72,16 @@ class CobolParserCopyTest extends CobolTest {
                          LINKAGE SECTION.                                             *
                          01  GRP-01.                                                  *
                              SKIP2                                                    *
-                             COPY PREPROCESSOR_DIRECTIVE.                             *
+                             %s
                     /                                                                 *
                              EJECT
-                             COPY PREPROCESSOR_DIRECTIVE.                             *
+                             %s
                              SKIP3
                              02  SPECIAL-FLAGS.                                       *
                                  03  DN7 PICTURE X.                                   *
                                  03  DN8 PICTURE X.                                   *
                                  03  DN9 PICTURE X.                                   *
-              """,
+              """.formatted(input, input),
             """
               IDENTIFICATION DIVISION.
                   PROGRAM-ID.
@@ -93,8 +107,12 @@ class CobolParserCopyTest extends CobolTest {
     }
 
     @Issue("https://github.com/openrewrite/rewrite-cobol/issues/47")
-    @Test
-    void preprocessorDirectiveInCopiedSource() {
+    @ParameterizedTest
+    @ValueSource(strings = {
+      "COPY PREPROCESSOR_DIRECTIVE.",
+      "EXEC SQL INCLUDE PREPROCESSOR_DIRECTIVE END-EXEC.",
+    })
+    void preprocessorDirectiveInCopiedSource(String input) {
         rewriteRun(
           cobolPostProcess(
             """
@@ -104,22 +122,22 @@ class CobolParserCopyTest extends CobolTest {
                          DATA DIVISION.                                               *
                          LINKAGE SECTION.                                             *
                          01  GRP-01.                                                  *
-                             COPY PREPROCESSOR_DIRECTIVE.                             *
+                             %s
                     /                                                                 *
-                             COPY PREPROCESSOR_DIRECTIVE.                             *
+                             %s
                     /                                                                 *
                              02  SUB-CALLED.                                          *
                                  03  DN1  PICTURE X(6).                               *
                                  03  DN2  PICTURE X(6).                               *
                                  03  DN3  PICTURE X(6).                               *
                                                                                       *
-                             COPY PREPROCESSOR_DIRECTIVE.                             *
+                             %s
                     /                                                                 *
                              02  SPECIAL-FLAGS.                                       *
                                  03  DN7 PICTURE X.                                   *
                                  03  DN8 PICTURE X.                                   *
                                  03  DN9 PICTURE X.                                   *
-              """,
+              """.formatted(input, input, input),
             """
               IDENTIFICATION DIVISION.
                   PROGRAM-ID.
@@ -153,8 +171,12 @@ class CobolParserCopyTest extends CobolTest {
     }
 
     @Issue("https://github.com/openrewrite/rewrite-cobol/issues/15")
-    @Test
-    void commentAfterMissingCopybook() {
+    @ParameterizedTest
+    @ValueSource(strings = {
+      "COPY MISSING-COPYBOOK.",
+      "EXEC SQL INCLUDE MISSING-COPYBOOK END-EXEC.",
+    })
+    void commentAfterMissingCopybook(String input) {
         rewriteRun(
           cobolPostProcess(
             """
@@ -165,16 +187,21 @@ class CobolParserCopyTest extends CobolTest {
                      FILE SECTION.
                      FD  PRINT-FILE.
                     * C1.
-                     COPY MISSING-COPYBOOK.
+                     %s
                     * C2.
                      01  DUMMY-RECORD PICTURE X(120).
-              """)
+              """.formatted(input)
+          )
         );
     }
 
     @Issue("https://github.com/openrewrite/rewrite-cobol/issues/53")
-    @Test
-    void aCopyInACopy() {
+    @ParameterizedTest
+    @ValueSource(strings = {
+      "COPY INCEPTION.                                          *",
+      "EXEC SQL INCLUDE INCEPTION END-EXEC.                     *",
+    })
+    void aCopyInACopy(String input) {
         rewriteRun(
           cobolPostProcess(
             """
@@ -183,8 +210,8 @@ class CobolParserCopyTest extends CobolTest {
                      DATA DIVISION.                                                   *
                      LINKAGE SECTION.                                                 *
                          01  GRP-01.                                                  *
-                             COPY INCEPTION.                                          *
-              """,
+                             %s
+              """.formatted(input),
             """
               IDENTIFICATION DIVISION.
               PROGRAM-ID. IC109A.
@@ -199,8 +226,13 @@ class CobolParserCopyTest extends CobolTest {
           )
         );
     }
+
     @Issue("https://github.com/openrewrite/rewrite-cobol/issues/53")
-    @Test
+    @ParameterizedTest
+    @ValueSource(strings = {
+      "COPY MISSING_BOOK.",
+      "EXEC SQL INCLUDE MISSING_BOOK END-EXEC.",
+    })
     void missingCopybookInACopy() {
         rewriteRun(
           cobolPostProcess(
@@ -239,10 +271,27 @@ class CobolParserCopyTest extends CobolTest {
     }
 
     @Issue("https://github.com/openrewrite/rewrite-cobol/issues/27")
-    @Test
-    void newLineInContentAreaBeforeCopybook() {
+    @ParameterizedTest
+    @ValueSource(strings = {
+      "COPY ISSUE_27.",
+      "EXEC SQL INCLUDE ISSUE_27 END-EXEC.",
+    })
+    void newLineInContentAreaBeforeCopybook(String input) {
         rewriteRun(
-          cobolPostProcess(getNistResource("ISSUE_27.CBL"),
+          cobolPostProcess(
+            """
+              000000* Prevent trim
+                     IDENTIFICATION DIVISION.
+                     PROGRAM-ID . HELLO-WORLD.
+                     DATA DIVISION.
+                     %s
+                     PROCEDURE DIVISION.
+                         SET X TO 10.
+                         SET Y TO 25.
+                         ADD X Y GIVING Z.
+                         DISPLAY "X + Y = "Z.
+                     STOP RUN.
+              """.formatted(input),
             """
               IDENTIFICATION DIVISION.
               PROGRAM-ID . HELLO-WORLD.

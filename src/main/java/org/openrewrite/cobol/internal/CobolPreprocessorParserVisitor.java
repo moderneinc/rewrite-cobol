@@ -40,7 +40,6 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
     private final boolean charsetBomMarked;
     private final CobolDialect cobolDialect;
 
-    private final Map<String, CobolPreprocessor> preprocessorMap = new HashMap<>();
     private final Map<Integer, String> sequenceAreas = new HashMap<>();
     // A LinkedHash map is used to collect information about the next line of code. I.E. continuation indicators.
     private final Map<Integer, String> indicatorAreas = new LinkedHashMap<>();
@@ -489,15 +488,13 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
 
     @Override
     public Object visitCompilerOptions(CobolPreprocessorParser.CompilerOptionsContext ctx) {
-        CobolPreprocessor c = new CobolPreprocessor.CompilerOptions(
+        return new CobolPreprocessor.CompilerOptions(
                 randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.PROCESS(), ctx.CBL()),
                 convertAllList(ctx.COMMACHAR(), ctx.compilerOption(), ctx.compilerXOpts())
         );
-        preprocessorMap.put(c.getId().toString(), c);
-        return c;
     }
 
     @Override
@@ -524,13 +521,14 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
                 charset.name(),
                 charsetBomMarked,
                 null,
-                preprocessorMap,
+                new HashMap<>(),
                 new HashMap<>(),
                 convertAll(ctx.charDataLine(),
                         ctx.compilerOptions(),
                         ctx.copyStatement(),
                         ctx.execCicsStatement(),
                         ctx.execSqlStatement(),
+                        ctx.execSqlIncludeStatement(),
                         ctx.execSqlImsStatement(),
                         ctx.ejectStatement(),
                         ctx.replaceArea(),
@@ -560,7 +558,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
 
     @Override
     public Object visitCopyStatement(CobolPreprocessorParser.CopyStatementContext ctx) {
-        CobolPreprocessor c = new CobolPreprocessor.CopyStatement(
+        return new CobolPreprocessor.CopyStatement(
                 randomId(),
                 EMPTY,
                 Markers.EMPTY,
@@ -570,8 +568,6 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
                 (CobolPreprocessor.Word) visit(ctx.DOT()),
                 null
         );
-        preprocessorMap.put(c.getId().toString(), c);
-        return c;
     }
 
     @Override
@@ -587,20 +583,18 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
 
     @Override
     public Object visitEjectStatement(CobolPreprocessorParser.EjectStatementContext ctx) {
-        CobolPreprocessor c = new CobolPreprocessor.EjectStatement(
+        return new CobolPreprocessor.EjectStatement(
                 randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (CobolPreprocessor.Word) visit(ctx.EJECT()),
                 visitNullable(ctx.DOT())
         );
-        preprocessorMap.put(c.getId().toString(), c);
-        return c;
     }
 
     @Override
     public Object visitExecCicsStatement(CobolPreprocessorParser.ExecCicsStatementContext ctx) {
-        CobolPreprocessor c = new CobolPreprocessor.ExecStatement(
+        return new CobolPreprocessor.ExecStatement(
                 randomId(),
                 EMPTY,
                 Markers.EMPTY,
@@ -609,13 +603,11 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
                 (CobolPreprocessor.Word) visit(ctx.END_EXEC()),
                 visitNullable(ctx.DOT())
         );
-        preprocessorMap.put(c.getId().toString(), c);
-        return c;
     }
 
     @Override
     public Object visitExecSqlStatement(CobolPreprocessorParser.ExecSqlStatementContext ctx) {
-        CobolPreprocessor c = new CobolPreprocessor.ExecStatement(
+        return new CobolPreprocessor.ExecStatement(
                 randomId(),
                 EMPTY,
                 Markers.EMPTY,
@@ -624,13 +616,25 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
                 (CobolPreprocessor.Word) visit(ctx.END_EXEC()),
                 visitNullable(ctx.DOT())
         );
-        preprocessorMap.put(c.getId().toString(), c);
-        return c;
+    }
+
+    @Override
+    public Object visitExecSqlIncludeStatement(CobolPreprocessorParser.ExecSqlIncludeStatementContext ctx) {
+        return new CobolPreprocessor.ExecSqlIncludeStatement(
+                randomId(),
+                EMPTY,
+                Markers.EMPTY,
+                wordsList(ctx.EXEC(), ctx.SQL(), ctx.INCLUDE()),
+                (CobolPreprocessor.Word) (ctx.literal() != null ? visit(ctx.literal()) : ctx.cobolWord() != null ? visit(ctx.cobolWord()) : visit(ctx.filename())),
+                (CobolPreprocessor.Word) visit(ctx.END_EXEC()),
+                visitNullable(ctx.DOT()),
+                null
+        );
     }
 
     @Override
     public Object visitExecSqlImsStatement(CobolPreprocessorParser.ExecSqlImsStatementContext ctx) {
-        CobolPreprocessor c = new CobolPreprocessor.ExecStatement(
+        return new CobolPreprocessor.ExecStatement(
                 randomId(),
                 EMPTY,
                 Markers.EMPTY,
@@ -639,8 +643,6 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
                 (CobolPreprocessor.Word) visit(ctx.END_EXEC()),
                 visitNullable(ctx.DOT())
         );
-        preprocessorMap.put(c.getId().toString(), c);
-        return c;
     }
 
     @Override
@@ -697,7 +699,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
 
     @Override
     public Object visitReplaceByStatement(CobolPreprocessorParser.ReplaceByStatementContext ctx) {
-        CobolPreprocessor c = new CobolPreprocessor.ReplaceByStatement(
+        return new CobolPreprocessor.ReplaceByStatement(
                 randomId(),
                 EMPTY,
                 Markers.EMPTY,
@@ -705,8 +707,6 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
                 convertAll(ctx.replaceClause()),
                 (CobolPreprocessor.Word) visit(ctx.DOT())
         );
-        preprocessorMap.put(c.getId().toString(), c);
-        return c;
     }
 
     @Override
@@ -732,15 +732,13 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
 
     @Override
     public Object visitReplaceOffStatement(CobolPreprocessorParser.ReplaceOffStatementContext ctx) {
-        CobolPreprocessor c = new CobolPreprocessor.ReplaceOffStatement(
+        return new CobolPreprocessor.ReplaceOffStatement(
                 randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.REPLACE(), ctx.OFF()),
                 (CobolPreprocessor.Word) visit(ctx.DOT())
         );
-        preprocessorMap.put(c.getId().toString(), c);
-        return c;
     }
 
     @Override
@@ -756,15 +754,13 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
 
     @Override
     public Object visitSkipStatement(CobolPreprocessorParser.SkipStatementContext ctx) {
-        CobolPreprocessor c = new CobolPreprocessor.SkipStatement(
+        return new CobolPreprocessor.SkipStatement(
                 randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.SKIP1(), ctx.SKIP2(), ctx.SKIP3()),
                 visitNullable(ctx.DOT())
         );
-        preprocessorMap.put(c.getId().toString(), c);
-        return c;
     }
 
     @Override
@@ -823,7 +819,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
 
     @Override
     public Object visitTitleStatement(CobolPreprocessorParser.TitleStatementContext ctx) {
-        CobolPreprocessor c = new CobolPreprocessor.TitleStatement(
+        return new CobolPreprocessor.TitleStatement(
                 randomId(),
                 EMPTY,
                 Markers.EMPTY,
@@ -831,8 +827,6 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
                 (CobolPreprocessor.Word) visit(ctx.literal()),
                 visitNullable(ctx.DOT())
         );
-        preprocessorMap.put(c.getId().toString(), c);
-        return c;
     }
 
     private Space whitespace() {

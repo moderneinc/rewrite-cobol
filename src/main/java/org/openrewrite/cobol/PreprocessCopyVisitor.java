@@ -26,9 +26,12 @@ import static org.openrewrite.Tree.randomId;
 public class PreprocessCopyVisitor<P> extends CobolPreprocessorIsoVisitor<P> {
 
     Map<String, SourceFile> copybooks = new HashMap<>();
-    Stack<CobolPreprocessor.CopyStatement> copyStack = new Stack<>();
+    Map<String, CobolPreprocessor> preprocessorMap;
+    Stack<String> copyStack = new Stack<>();
 
-    public PreprocessCopyVisitor(List<SourceFile> copybooks) {
+    public PreprocessCopyVisitor(Map<String, CobolPreprocessor> preprocessorMap,
+                                 List<SourceFile> copybooks) {
+        this.preprocessorMap = preprocessorMap;
         copybooks.forEach(it -> {
             String fileName = it.getSourcePath().getFileName().toString();
             this.copybooks.putIfAbsent(fileName.substring(0, fileName.indexOf(".")), it);
@@ -37,11 +40,37 @@ public class PreprocessCopyVisitor<P> extends CobolPreprocessorIsoVisitor<P> {
 
     @Override
     public CobolPreprocessor.CopyStatement visitCopyStatement(CobolPreprocessor.CopyStatement copyStatement, P p) {
-        CobolPreprocessor.CopyStatement c = super.visitCopyStatement(copyStatement, p);
-        copyStack.push(c);
+        CobolPreprocessor.CopyStatement c = (CobolPreprocessor.CopyStatement) resolve(copyStatement, copyStatement.getCopySource().getName().getCobolWord().getWord(), p);
+        copyStack.push(c.getCopySource().getName().getCobolWord().getWord());
+        c = super.visitCopyStatement(c, p);
+        c = (CobolPreprocessor.CopyStatement) inCopiedStatement(c);
+        preprocessorMap.put(c.getId().toString(), c);
+        return c;
+    }
 
-        if (copybooks.containsKey(copyStatement.getCopySource().getName().getCobolWord().getWord())) {
-            SourceFile sf = copybooks.get(copyStatement.getCopySource().getName().getCobolWord().getWord());
+    @Override
+    public CobolPreprocessor.ExecSqlIncludeStatement visitExecSqlIncludeStatement(CobolPreprocessor.ExecSqlIncludeStatement execSqlIncludeStatement, P p) {
+        CobolPreprocessor.ExecSqlIncludeStatement e = (CobolPreprocessor.ExecSqlIncludeStatement) resolve(execSqlIncludeStatement, execSqlIncludeStatement.getCopySource().getCobolWord().getWord(), p);
+        copyStack.push(execSqlIncludeStatement.getCopySource().getCobolWord().getWord());
+        e = super.visitExecSqlIncludeStatement(e, p);
+        e = (CobolPreprocessor.ExecSqlIncludeStatement) inCopiedStatement(e);
+        preprocessorMap.put(e.getId().toString(), e);
+        return e;
+    }
+
+    private CobolPreprocessor inCopiedStatement(CobolPreprocessor c) {
+        if (copyStack.size() > 1) {
+            copyStack.pop();
+            c = c.withMarkers(c.getMarkers().addIfAbsent(new CopiedStatement(randomId(), copyStack.peek())));
+        } else {
+            copyStack.pop();
+        }
+        return c;
+    }
+
+    private CobolPreprocessor resolve(CobolPreprocessor c, String copybookName, P p) {
+        if (copybooks.containsKey(copybookName)) {
+            SourceFile sf = copybooks.get(copybookName);
             if (sf instanceof ParseError) {
                 c = c.withMarkers(c.getMarkers().addIfAbsent(new MissingCopybook(randomId(), MissingCopybook.Status.PARSE_ERROR)));
                 return c;
@@ -49,18 +78,64 @@ public class PreprocessCopyVisitor<P> extends CobolPreprocessorIsoVisitor<P> {
 
             CobolPreprocessor.Copybook cb = (CobolPreprocessor.Copybook) sf;
             cb = cb.withLst(ListUtils.map(cb.getLst(), l -> visit(l, p)));
-            c = c.withCopybook(cb);
+            if (c instanceof CobolPreprocessor.CopyStatement) {
+                c = ((CobolPreprocessor.CopyStatement) c).withCopybook(cb);
+            } else {
+                c = ((CobolPreprocessor.ExecSqlIncludeStatement) c).withCopybook(cb);
+            }
         } else {
             c = c.withMarkers(c.getMarkers().addIfAbsent(new MissingCopybook(randomId(), MissingCopybook.Status.MISSING)));
         }
 
-        if (copyStack.size() > 1) {
-            copyStack.pop();
-            c = c.withMarkers(c.getMarkers().addIfAbsent(new CopiedStatement(randomId(), copyStack.peek().getCopySource().getName().getCobolWord().getWord())));
-        } else {
-            copyStack.pop();
-        }
-
         return c;
+    }
+
+    // Add preprocessor elements to the map. This happens in the CopyVisitor since statements may occur in copybooks.
+    @Override
+    public CobolPreprocessor.CompilerOption visitCompilerOption(CobolPreprocessor.CompilerOption compilerOption, P p) {
+        preprocessorMap.put(compilerOption.getId().toString(), compilerOption);
+        return compilerOption;
+    }
+
+    @Override
+    public CobolPreprocessor.CompilerOptions visitCompilerOptions(CobolPreprocessor.CompilerOptions compilerOptions, P p) {
+        preprocessorMap.put(compilerOptions.getId().toString(), compilerOptions);
+        return compilerOptions;
+    }
+
+    @Override
+    public CobolPreprocessor.EjectStatement visitEjectStatement(CobolPreprocessor.EjectStatement ejectStatement, P p) {
+        preprocessorMap.put(ejectStatement.getId().toString(), ejectStatement);
+        return ejectStatement;
+    }
+
+    @Override
+    public CobolPreprocessor.ExecStatement visitExecStatement(CobolPreprocessor.ExecStatement execStatement, P p) {
+        preprocessorMap.put(execStatement.getId().toString(), execStatement);
+        return execStatement;
+    }
+
+    @Override
+    public CobolPreprocessor.ReplaceByStatement visitReplaceByStatement(CobolPreprocessor.ReplaceByStatement replaceByStatement, P p) {
+        preprocessorMap.put(replaceByStatement.getId().toString(), replaceByStatement);
+        return replaceByStatement;
+    }
+
+    @Override
+    public CobolPreprocessor.ReplaceOffStatement visitReplaceOffStatement(CobolPreprocessor.ReplaceOffStatement replaceOffStatement, P p) {
+        preprocessorMap.put(replaceOffStatement.getId().toString(), replaceOffStatement);
+        return replaceOffStatement;
+    }
+
+    @Override
+    public CobolPreprocessor.SkipStatement visitSkipStatement(CobolPreprocessor.SkipStatement skipStatement, P p) {
+        preprocessorMap.put(skipStatement.getId().toString(), skipStatement);
+        return skipStatement;
+    }
+
+    @Override
+    public CobolPreprocessor.TitleStatement visitTitleStatement(CobolPreprocessor.TitleStatement titleStatement, P p) {
+        preprocessorMap.put(titleStatement.getId().toString(), titleStatement);
+        return titleStatement;
     }
 }

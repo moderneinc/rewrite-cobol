@@ -5518,16 +5518,10 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 commentArea = (CommentArea) object;
             } else if (object instanceof Replacement) {
                 replacement = (Replacement) object;
-            } else if (object instanceof CobolPreprocessor.CopyStatement ||
-                       object instanceof CobolPreprocessor.ReplaceByStatement ||
-                       object instanceof CobolPreprocessor.ReplaceOffStatement ||
-                       object instanceof CobolPreprocessor.EjectStatement ||
-                       object instanceof CobolPreprocessor.ExecStatement ||
-                       object instanceof CobolPreprocessor.SkipStatement ||
-                       object instanceof CobolPreprocessor.TitleStatement) {
-                if (object instanceof CobolPreprocessor.CopyStatement) {
-                    if (!((CobolPreprocessor.CopyStatement) object).getMarkers().findFirst(MissingCopybook.class).isPresent()) {
-                        copiedWordStack.add(new CopiedWord(randomId(), ((CobolPreprocessor.CopyStatement) object).getId().toString()));
+            } else if (object instanceof CobolPreprocessor) {
+                if (object instanceof CopybookSource) {
+                    if (!((CobolPreprocessor) object).getMarkers().findFirst(MissingCopybook.class).isPresent()) {
+                        copiedWordStack.add(new CopiedWord(randomId(), ((CobolPreprocessor) object).getId().toString()));
                     }
                 }
                 preprocessorStatements.add((CobolPreprocessor) object);
@@ -6037,7 +6031,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                     } else if (copyStartComment.equals(contentArea)) {
                         copyStartComment();
                     } else if (copyUuidComment.equals(contentArea)) {
-                        CobolPreprocessor.CopyStatement copyStatement = copyUuidComment();
+                        CobolPreprocessor copybookSource = copyUuidComment();
                         int savedCursor = cursor;
                         sequenceArea();
                         indicatorArea();
@@ -6045,13 +6039,13 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                         endOfContentArea = cursor - cobolDialect.getColumns().getIndicatorArea() - 1 + cobolDialect.getColumns().getOtherArea();
                         contentArea = source.substring(cursor, Math.min(newLinePos, endOfContentArea));
                         if (copybookNotFoundComment.equals(contentArea)) {
-                            copyStatement = copybookNotFoundComment(copyStatement, lines);
-                            copiedWordStack.add(new CopiedWord(randomId(), copyStatement.getId().toString()));
+                            copybookSource = copybookNotFoundComment((CopybookSource) copybookSource, lines);
+                            copiedWordStack.add(new CopiedWord(randomId(), copybookSource.getId().toString()));
                             lines.clear();
                         } else {
                             cursor = savedCursor;
                         }
-                        objects.add(copyStatement);
+                        objects.add(copybookSource);
                     } else if (copyStopComment.equals(contentArea)) {
                         copyStopComment();
                     } else if (preprocessorStartComment.equals(contentArea)) {
@@ -6323,21 +6317,20 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         nextIndex = Integer.valueOf(numberOfSpaces.trim());
     }
 
-    private CobolPreprocessor.CopyStatement copyUuidComment() {
+    private CobolPreprocessor copyUuidComment() {
         parseComment(copyUuidComment);
 
         removeTemplateCommentArea = false;
 
         String uuid = getUuid();
-        return (CobolPreprocessor.CopyStatement) preprocessorMap.get(uuid.trim());
+        return preprocessorMap.get(uuid.trim());
     }
 
-    private CobolPreprocessor.CopyStatement copybookNotFoundComment(CobolPreprocessor.CopyStatement copyStatement, List<CobolLine> lines) {
+    private CobolPreprocessor copybookNotFoundComment(CopybookSource copybookSource, List<CobolLine> lines) {
         parseComment(copybookNotFoundComment);
         // Rather than heavily modify the COBOL grammar, we inject a Copybook into the CopyStatement.
         // The injected Copybook is used to preserve the original source code.
-        return copyStatement
-                .withCopybook(new CobolPreprocessor.Copybook(
+        return copybookSource.withCopybook(new CobolPreprocessor.Copybook(
                         randomId(),
                         EMPTY,
                         Markers.EMPTY,

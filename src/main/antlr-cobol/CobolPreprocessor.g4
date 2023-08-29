@@ -19,7 +19,7 @@ grammar CobolPreprocessor;
 options { caseInsensitive = true; }
 
 compilationUnit
-   : (compilerOptions | copyStatement | execCicsStatement | execSqlStatement | execSqlImsStatement | replaceOffStatement | replaceArea | ejectStatement | skipStatement | titleStatement | charDataLine)* EOF
+   : (compilerOptions | copyStatement | execCicsStatement | execSqlStatement | execSqlIncludeStatement | execSqlImsStatement | replaceOffStatement | replaceArea | ejectStatement | skipStatement | titleStatement | charDataLine)* EOF
    ;
 
 // compiler options
@@ -164,6 +164,10 @@ execCicsStatement
 
 execSqlStatement
    : EXEC SQL charDataSql END_EXEC DOT?
+   ;
+
+execSqlIncludeStatement
+   : EXEC SQL INCLUDE (literal | cobolWord | filename) END_EXEC DOT?
    ;
 
 // exec sql ims statement
@@ -356,6 +360,7 @@ GDS : 'GDS';
 GRAPHIC : 'GRAPHIC';
 HOOK : 'HOOK';
 IN : 'IN';
+INCLUDE : 'INCLUDE';
 INTDATE : 'INTDATE';
 JA : 'JA';
 JP : 'JP';
