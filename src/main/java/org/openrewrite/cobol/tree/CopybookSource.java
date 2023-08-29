@@ -8,5 +8,7 @@ package org.openrewrite.cobol.tree;
 import org.openrewrite.internal.lang.Nullable;
 
 public interface CopybookSource {
+     @Nullable
+     CobolPreprocessor.Copybook getCopybook();
      <C extends CobolPreprocessor> C withCopybook(@Nullable CobolPreprocessor.Copybook copybook);
 }
