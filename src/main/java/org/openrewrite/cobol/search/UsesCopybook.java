@@ -14,8 +14,7 @@ import org.openrewrite.cobol.tree.CobolPreprocessor;
 import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.marker.SearchResult;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @EqualsAndHashCode(callSuper = true)
 @Value
@@ -31,7 +30,7 @@ public class UsesCopybook extends CobolIsoVisitor<ExecutionContext> {
     @Override
     public Cobol.CompilationUnit visitCompilationUnit(Cobol.CompilationUnit compilationUnit, ExecutionContext ctx) {
         Cobol.CompilationUnit cu = compilationUnit;
-        if (FindCopySource.find(cu, copybookName) != null) {
+        if (FindCopySource.find(cu, copybookName)) {
             cu = SearchResult.found(cu);
         }
         return cu;
@@ -39,18 +38,22 @@ public class UsesCopybook extends CobolIsoVisitor<ExecutionContext> {
 
     private static class FindCopySource extends CobolIsoVisitor<ExecutionContext> {
 
-        @Nullable
-        public static CobolPreprocessor.CopySource find(Cobol cobol, @Nullable String bookName) {
-            CobolIsoVisitor<List<CobolPreprocessor.CopySource>> visitor = new CobolIsoVisitor<List<CobolPreprocessor.CopySource>>() {
+        public static boolean find(Cobol cobol, @Nullable String bookName) {
+            CobolIsoVisitor<AtomicBoolean> visitor = new CobolIsoVisitor<AtomicBoolean>() {
                 @Override
-                public Cobol.Word visitWord(Cobol.Word word, List<CobolPreprocessor.CopySource> copySources) {
-                    Cobol.Word w = super.visitWord(word, copySources);
-                    if (copySources.isEmpty()) {
+                public Cobol.Word visitWord(Cobol.Word word, AtomicBoolean found) {
+                    Cobol.Word w = super.visitWord(word, found);
+                    if (!found.get()) {
                         for (CobolPreprocessor preprocessorStatement : w.getPreprocessorStatements()) {
                             if (preprocessorStatement instanceof CobolPreprocessor.CopyStatement) {
                                 CobolPreprocessor.CopyStatement copyStatement = (CobolPreprocessor.CopyStatement) preprocessorStatement;
                                 if (bookName == null || bookName.isEmpty() || bookName.equals(copyStatement.getCopySource().getName().getCobolWord().getWord())) {
-                                    copySources.add(copyStatement.getCopySource());
+                                    found.set(true);
+                                }
+                            } else if (preprocessorStatement instanceof CobolPreprocessor.ExecSqlIncludeStatement) {
+                                CobolPreprocessor.ExecSqlIncludeStatement execSqlIncludeStatement = (CobolPreprocessor.ExecSqlIncludeStatement) preprocessorStatement;
+                                if (bookName == null || bookName.isEmpty() || bookName.equals(execSqlIncludeStatement.getCopySource().getCobolWord().getWord())) {
+                                    found.set(true);
                                 }
                             }
                         }
@@ -59,9 +62,9 @@ public class UsesCopybook extends CobolIsoVisitor<ExecutionContext> {
                 }
             };
 
-            List<CobolPreprocessor.CopySource> result = new ArrayList<>(1);
-            visitor.visit(cobol, result);
-            return result.isEmpty() ? null : result.get(0);
+            AtomicBoolean found = new AtomicBoolean(false);
+            visitor.visit(cobol, found);
+            return found.get();
         }
     }
 }
