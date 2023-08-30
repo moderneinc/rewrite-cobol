@@ -114,7 +114,7 @@ public class FindRelationshipsTest extends CobolTest {
               assertThat(rows.stream().map(Row::getDependent)).contains("DECLARE_TABLE_2", "EXEC_SQL_CREATE");
               assertThat(rows.stream().map(Row::getDependentType)).contains(COPYBOOK, COBOL);
               assertThat(rows.stream().map(Row::getAction)).contains(INCLUDE, ACCESS);
-              assertThat(rows.stream().map(Row::getDependency)).contains("DECLARE_TABLE_2", "PROD_TBL_01", "PROD_TBL_02");
+              assertThat(rows.stream().map(Row::getDependency)).contains("DECLARE_PROD_TBL_02", "PROD_TBL_01", "PROD_TBL_02");
               assertThat(rows.stream().map(Row::getDependencyType)).contains(SQL_TABLE, COPYBOOK);
               assertThat(rows.stream().map(Row::getActionMetadata)).contains("CREATE");
           }),
@@ -136,7 +136,7 @@ public class FindRelationshipsTest extends CobolTest {
 
                     * Include SQL table from another COBOL source.
                     * These SQL tables are created through copybooks.
-                     EXEC SQL INCLUDE DECLARE_TABLE_2 END-EXEC.
+                     EXEC SQL INCLUDE DECLARE_PROD_TBL_02 END-EXEC.
               """,
             spec -> spec.after(s -> s).path("EXEC_SQL_CREATE_TABLE.CBL")
           ),
@@ -362,7 +362,7 @@ public class FindRelationshipsTest extends CobolTest {
               assertThat(rows.stream().map(Row::getDependent)).contains("DECLARE_TABLE_2", "EXEC_SQL_CREATE");
               assertThat(rows.stream().map(Row::getDependentType)).contains(COPYBOOK, COBOL);
               assertThat(rows.stream().map(Row::getAction)).contains(INCLUDE, ACCESS);
-              assertThat(rows.stream().map(Row::getDependency)).contains("DECLARE_TABLE_2", "PROD_TBL_01", "PROD_TBL_02");
+              assertThat(rows.stream().map(Row::getDependency)).contains("DECLARE_PROD_TBL_02", "PROD_TBL_01", "PROD_TBL_02");
               assertThat(rows.stream().map(Row::getDependencyType)).contains(SQL_TABLE, COPYBOOK);
               assertThat(rows.stream().map(Row::getActionMetadata)).contains("CREATE", "READ");
           }),
@@ -394,7 +394,7 @@ public class FindRelationshipsTest extends CobolTest {
 
                     * Include SQL table from another COBOL source.
                     * These SQL tables are created through copybooks.
-                     EXEC SQL INCLUDE DECLARE_TABLE_2 END-EXEC.
+                     EXEC SQL INCLUDE DECLARE_PROD_TBL_02 END-EXEC.
               """,
             spec -> spec.after(s -> s).path("EXEC_SQL_CREATE.CBL")
           ),
