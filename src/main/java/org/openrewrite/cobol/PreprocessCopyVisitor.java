@@ -40,9 +40,8 @@ public class PreprocessCopyVisitor<P> extends CobolPreprocessorIsoVisitor<P> {
 
     @Override
     public CobolPreprocessor.CopyStatement visitCopyStatement(CobolPreprocessor.CopyStatement copyStatement, P p) {
+        copyStack.push(copyStatement.getCopySource().getName().getCobolWord().getWord());
         CobolPreprocessor.CopyStatement c = (CobolPreprocessor.CopyStatement) resolve(copyStatement, copyStatement.getCopySource().getName().getCobolWord().getWord(), p);
-        copyStack.push(c.getCopySource().getName().getCobolWord().getWord());
-        c = super.visitCopyStatement(c, p);
         c = (CobolPreprocessor.CopyStatement) inCopiedStatement(c);
         preprocessorMap.put(c.getId().toString(), c);
         return c;
@@ -50,9 +49,8 @@ public class PreprocessCopyVisitor<P> extends CobolPreprocessorIsoVisitor<P> {
 
     @Override
     public CobolPreprocessor.ExecSqlIncludeStatement visitExecSqlIncludeStatement(CobolPreprocessor.ExecSqlIncludeStatement execSqlIncludeStatement, P p) {
-        CobolPreprocessor.ExecSqlIncludeStatement e = (CobolPreprocessor.ExecSqlIncludeStatement) resolve(execSqlIncludeStatement, execSqlIncludeStatement.getCopySource().getCobolWord().getWord(), p);
         copyStack.push(execSqlIncludeStatement.getCopySource().getCobolWord().getWord());
-        e = super.visitExecSqlIncludeStatement(e, p);
+        CobolPreprocessor.ExecSqlIncludeStatement e = (CobolPreprocessor.ExecSqlIncludeStatement) resolve(execSqlIncludeStatement, execSqlIncludeStatement.getCopySource().getCobolWord().getWord(), p);
         e = (CobolPreprocessor.ExecSqlIncludeStatement) inCopiedStatement(e);
         preprocessorMap.put(e.getId().toString(), e);
         return e;
