@@ -71,6 +71,43 @@ public class FindRelationshipsTest extends CobolTest {
     }
 
     @Test
+    void includeCopybookWithCopyAndInclude() {
+        rewriteRun(
+          spec -> spec.dataTable(Row.class, rows -> {
+              assertThat(rows.stream().map(Row::getDependent)).contains("USE_COPY_AND_INCLUDE", "EXEC_SQL_INCLUDE");
+              assertThat(rows.stream().map(Row::getDependentType)).contains(COPYBOOK, COBOL);
+              assertThat(rows.stream().map(Row::getAction)).contains(INCLUDE, COPY);
+              assertThat(rows.stream().map(Row::getDependency)).contains("USE_COPY_AND_INCLUDE", "EMPTY_COPY", "EMPTY_INCLUDE");
+              assertThat(rows.stream().map(Row::getDependencyType)).contains(COPYBOOK);
+          }),
+          cobol(
+            """
+              000000 IDENTIFICATION DIVISION.
+                     PROGRAM-ID.
+                         EXEC_SQL_INCLUDE.
+                     DATA DIVISION.
+                     WORKING-STORAGE SECTION.
+                     01 FILLER PIC X(10) VALUE 'PGM WORKING-STORAGE: EXEC_SQL_INCLUDE'
+                     .
+                         EXEC SQL DECLARE PROD_TBL_01 TABLE
+                         ( NUM_1                  CHAR(3) NOT NULL,
+                           NUM_2                  CHAR(3) NOT NULL
+                         ) END-EXEC.
+                     EXEC SQL INCLUDE USE_COPY_AND_INCLUDE END-EXEC.
+              """,
+            spec -> spec.after(s -> s).path("EXEC_SQL_INCLUDE.CBL")
+          ),
+          copybook(
+            """
+              000000 COPY EMPTY_COPY.
+              000000 EXEC SQL INCLUDE EMPTY_INCLUDE END-EXEC.
+              """,
+            spec -> spec.after(s -> s).path("USE_COPY_AND_INCLUDE.CPY")
+          )
+        );
+    }
+
+    @Test
     void execSqlCreateTable() {
         rewriteRun(
           spec -> spec.dataTable(Row.class, rows -> {

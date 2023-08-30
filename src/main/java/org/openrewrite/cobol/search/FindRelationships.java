@@ -73,6 +73,26 @@ public class FindRelationships extends Recipe {
             }
 
             @Override
+            public CobolPreprocessor.ExecSqlIncludeStatement visitExecSqlIncludeStatement(CobolPreprocessor.ExecSqlIncludeStatement execSqlIncludeStatement, ExecutionContext ctx) {
+                String copybookName = execSqlIncludeStatement.getCopySource().getCobolWord().getWord();
+                if (seenIncludes.add(copybookName)) {
+                    cobolRelationships.insertRow(ctx,
+                            new CobolRelationships.Row(
+                                    sourceName,
+                                    COPYBOOK,
+                                    INCLUDE,
+                                    copybookName,
+                                    COPYBOOK,
+                                    false,
+                                    ""
+                            )
+                    );
+                    return execSqlIncludeStatement.withCopySource(SearchResult.found(execSqlIncludeStatement.getCopySource()));
+                }
+                return super.visitExecSqlIncludeStatement(execSqlIncludeStatement, ctx);
+            }
+
+            @Override
             public CobolPreprocessor.CharDataSql visitCharDataSql(CobolPreprocessor.CharDataSql charDataSql, ExecutionContext ctx) {
                 CobolPreprocessor.CharDataSql sql = super.visitCharDataSql(charDataSql, ctx);
                 return getSqlRelationships(sql, sourceName, COPYBOOK, seenIncludes, seenCursorAccess, seenTableAccess, ctx);
@@ -119,6 +139,26 @@ public class FindRelationships extends Recipe {
                         }
                         return copyStatement.withCopySource(copyStatement.getCopySource().withName(
                                 SearchResult.found(copyStatement.getCopySource().getName())));
+                    } else if (ps instanceof CobolPreprocessor.ExecSqlIncludeStatement) {
+                        CobolPreprocessor.ExecSqlIncludeStatement includeStatement = (CobolPreprocessor.ExecSqlIncludeStatement) ps;
+                        if (includeStatement.getCopybook() != null) {
+                            String copyName = includeStatement.getCopySource().getCobolWord().getWord();
+                            if (seenCopies.add(copyName)) {
+                                Optional<CopiedStatement> cs = includeStatement.getMarkers().findFirst(CopiedStatement.class);
+                                cobolRelationships.insertRow(ctx,
+                                        new CobolRelationships.Row(
+                                                cs.isPresent() && StringUtils.isNotEmpty(cs.get().getSourceCopybook()) ? cs.get().getSourceCopybook() : programName,
+                                                cs.isPresent() && StringUtils.isNotEmpty(cs.get().getSourceCopybook()) ? COPYBOOK : COBOL,
+                                                INCLUDE,
+                                                includeStatement.getCopySource().getCobolWord().getWord(),
+                                                COPYBOOK,
+                                                includeStatement.getMarkers().findFirst(MissingCopybook.class).isPresent(),
+                                                ""
+                                        )
+                                );
+                            }
+                            return includeStatement.withCopySource(SearchResult.found(includeStatement.getCopySource()));
+                        }
                     } else if (ps instanceof CobolPreprocessor.ExecStatement) {
                         CobolPreprocessor.ExecStatement execStatement = (CobolPreprocessor.ExecStatement) ps;
                         if (execStatement.getCobol() instanceof CobolPreprocessor.CharDataSql &&
@@ -263,6 +303,7 @@ public class FindRelationships extends Recipe {
                 return line.withWords(ListUtils.map(line.getWords(), (j, w) -> {
                     if (w instanceof CobolPreprocessor.Word) {
                         CobolPreprocessor.Word word = (CobolPreprocessor.Word) w;
+                        // TODO: include condition is for backwards compatibility and may be removed after new LSTs are generated.
                         if ("include".equalsIgnoreCase(word.getCobolWord().getWord()) &&
                                 j == 0 && 2 <= line.getWords().size() && line.getWords().get(1) instanceof CobolPreprocessor.Word) {
                             String copybookName = ((CobolPreprocessor.Word) line.getWords().get(1)).getCobolWord().getWord();

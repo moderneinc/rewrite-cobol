@@ -4324,10 +4324,19 @@ public class CobolSourcePrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
             if (preprocessorStatement instanceof CopybookSource) {
                 if (!preprocessorStatement.getMarkers().findFirst(CopiedStatement.class).isPresent()) {
                     copybookSource = (CopybookSource) preprocessorStatement;
+                    // The COBOL word is a product of a copy or exec sql include statement.
+                    getCobolPreprocessorVisitor().visit((CobolPreprocessor) copybookSource, p);
+                    if (!((CobolPreprocessor) copybookSource).getMarkers().findFirst(MissingCopybook.class).isPresent()) {
+                        return word;
+                    }
                 }
             } else if (preprocessorStatement instanceof CobolPreprocessor.CopyStatement) {
                 if (!preprocessorStatement.getMarkers().findFirst(CopiedStatement.class).isPresent()) {
                     copyStatement = (CobolPreprocessor.CopyStatement) preprocessorStatement;
+                    getCobolPreprocessorVisitor().visit(copyStatement, p);
+                    if (!copyStatement.getMarkers().findFirst(MissingCopybook.class).isPresent()) {
+                        return word;
+                    }
                 }
             } else {
                 getCobolPreprocessorVisitor().visit(preprocessorStatement, p);
@@ -4364,19 +4373,6 @@ public class CobolSourcePrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
                 }
                 beforeSyntax(word, Space.Location.WORD_PREFIX, p);
                 p.append(word.getWord());
-                return word;
-            }
-        }
-
-        // The COBOL word is a product of a copy statement.
-        if (copybookSource != null) {
-            getCobolPreprocessorVisitor().visit((CobolPreprocessor) copybookSource, p);
-            if (!((CobolPreprocessor) copybookSource).getMarkers().findFirst(MissingCopybook.class).isPresent()) {
-                return word;
-            }
-        } else if (copyStatement != null) {
-            getCobolPreprocessorVisitor().visit(copyStatement, p);
-            if (!copyStatement.getMarkers().findFirst(MissingCopybook.class).isPresent()) {
                 return word;
             }
         }
