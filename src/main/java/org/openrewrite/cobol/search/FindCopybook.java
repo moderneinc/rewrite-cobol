@@ -31,7 +31,7 @@ public class FindCopybook extends Recipe {
 
     @Option(displayName = "Only missing copybooks",
             description = "Only find copy statements and exec sql include statements that are missing copybooks.",
-            example = "KP008",
+            example = "True",
             required = false)
     @Nullable
     Boolean onlyMissingCopybooks;
