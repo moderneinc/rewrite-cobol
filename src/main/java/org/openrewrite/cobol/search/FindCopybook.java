@@ -29,6 +29,13 @@ public class FindCopybook extends Recipe {
     @Nullable
     String copybookName;
 
+    @Option(displayName = "Only missing copybooks",
+            description = "Only find copy statements and exec sql include statements that are missing copybooks.",
+            example = "KP008",
+            required = false)
+    @Nullable
+    Boolean onlyMissingCopybooks;
+
     @Override
     public String getDisplayName() {
         return "Find copybook usage";
@@ -59,7 +66,7 @@ public class FindCopybook extends Recipe {
                             return copyStatement.withCopySource(
                                     copyStatement.getCopySource().withName(
                                             SearchResult.found(copyStatement.getCopySource().getName())));
-                        } else {
+                        } else if (!Boolean.TRUE.equals(onlyMissingCopybooks)) {
                             if (copybookName == null || copybookName.isEmpty() || copybookName.equals(copyStatement.getCopySource().getName().getCobolWord().getWord())) {
                                 CobolPreprocessor.CopyStatement updated = copyStatement.withCopySource(copyStatement.getCopySource().withName(
                                         SearchResult.found(copyStatement.getCopySource().getName(), null)));
@@ -85,7 +92,7 @@ public class FindCopybook extends Recipe {
                                             CopybookSource.ResolutionStatus.MISSING_SOURCE,
                                             ""));
                             return includeStatement.withCopySource(SearchResult.found(includeStatement.getCopySource()));
-                        } else {
+                        } else if (!Boolean.TRUE.equals(onlyMissingCopybooks)) {
                             if (copybookName == null || copybookName.isEmpty() || copybookName.equals(includeStatement.getCopySource().getCobolWord().getWord())) {
                                 CobolPreprocessor.ExecSqlIncludeStatement updated = includeStatement.withCopySource(SearchResult.found(includeStatement.getCopySource(), null));
                                 boolean copySourceResolved = includeStatement.getCopybook() != null;

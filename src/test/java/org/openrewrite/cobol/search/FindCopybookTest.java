@@ -17,16 +17,14 @@ import org.openrewrite.test.RecipeSpec;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.openrewrite.PathUtils.separatorsToUnix;
 import static org.openrewrite.cobol.Assertions.cobol;
-import static org.openrewrite.cobol.Assertions.cobolPostProcess;
 import static org.openrewrite.cobol.table.CopybookSource.ResolutionStatus.RESOLVED;
 
 public class FindCopybookTest extends CobolTest {
 
     @Override
     public void defaults(RecipeSpec spec) {
-        spec.recipe(new FindCopybook(null));
+        spec.recipe(new FindCopybook(null, false));
     }
 
     @ParameterizedTest
@@ -36,7 +34,7 @@ public class FindCopybookTest extends CobolTest {
     })
     void bookIsNotUsed(String input) {
         rewriteRun(
-          spec -> spec.recipe(new FindCopybook("KP008")),
+          spec -> spec.recipe(new FindCopybook("KP008", false)),
           cobol(
             """
               000000 IDENTIFICATION DIVISION.                                         *
@@ -50,10 +48,44 @@ public class FindCopybookTest extends CobolTest {
         );
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {
+      "COPY INCEPTION.                                          *",
+      "EXEC SQL INCLUDE INCEPTION END-EXEC.                     *",
+    })
+    void onlyFindMissingCopybooks(String input) {
+        rewriteRun(
+          spec -> spec.recipe(new FindCopybook(null, true)),
+          cobol(
+            """
+              000000 IDENTIFICATION DIVISION.                                         *
+                     PROGRAM-ID. IC109A.                                              *
+                     DATA DIVISION.                                                   *
+                     LINKAGE SECTION.                                                 *
+                         01  GRP-01.                                                  *
+                             COPY MISSING.                                            *
+                             EXEC SQL INCLUDE MISSING END-EXEC.                       *
+                             %s
+              """.formatted(input),
+            """
+              000000 IDENTIFICATION DIVISION.                                         *
+                     PROGRAM-ID. IC109A.                                              *
+                     DATA DIVISION.                                                   *
+                     LINKAGE SECTION.                                                 *
+                         01  GRP-01.                                                  *
+                             COPY ~~>MISSING.                                            *
+                             EXEC SQL INCLUDE ~~>MISSING END-EXEC.                       *
+                             %s
+              """.formatted(input)
+          )
+        );
+    }
+
+
     @Test
     void isUsedInCopyStatement() {
         rewriteRun(
-          spec -> spec.recipe(new FindCopybook("INCEPTION")).dataTable(Row.class, rows -> {
+          spec -> spec.recipe(new FindCopybook("INCEPTION", false)).dataTable(Row.class, rows -> {
               assertThat(rows.stream().map(CopybookSource.Row::getCopybookName)).containsOnly("INCEPTION");
               assertThat(rows.stream().map(Row::getResolutionStatus)).containsOnly(RESOLVED);
           }),
@@ -81,7 +113,7 @@ public class FindCopybookTest extends CobolTest {
     @Test
     void isUsedInIncludeStatement() {
         rewriteRun(
-          spec -> spec.recipe(new FindCopybook("INCEPTION")).dataTable(Row.class, rows -> {
+          spec -> spec.recipe(new FindCopybook("INCEPTION", false)).dataTable(Row.class, rows -> {
               assertThat(rows.stream().map(CopybookSource.Row::getCopybookName)).containsOnly("INCEPTION");
               assertThat(rows.stream().map(Row::getResolutionStatus)).containsOnly(RESOLVED);
           }),
