@@ -149,6 +149,18 @@ public class CobolPreprocessorVisitor<P> extends TreeVisitor<CobolPreprocessor, 
         return e;
     }
 
+    public CobolPreprocessor visitExecSqlIncludeStatement(CobolPreprocessor.ExecSqlIncludeStatement execSqlIncludeStatement, P p) {
+        CobolPreprocessor.ExecSqlIncludeStatement e = execSqlIncludeStatement;
+        e = e.withPrefix(visitSpace(e.getPrefix(), Space.Location.EXEC_SQL_INCLUDE_STATEMENT_PREFIX, p));
+        e = e.withMarkers(visitMarkers(e.getMarkers(), p));
+        e = e.withWords(ListUtils.map(e.getWords(), it -> (CobolPreprocessor.Word) visit(it, p)));
+        e = e.withCopySource((CobolPreprocessor.Word) visit(e.getCopySource(), p));
+        e = e.withEndExec((CobolPreprocessor.Word) visit(e.getEndExec(), p));
+        e = e.withDot((CobolPreprocessor.Word) visit(e.getDot(), p));
+        e = e.withCopybook((CobolPreprocessor.Copybook) visit(e.getCopybook(), p));
+        return e;
+    }
+
     public CobolPreprocessor visitFamilyPhrase(CobolPreprocessor.FamilyPhrase familyPhrase, P p) {
         CobolPreprocessor.FamilyPhrase f = familyPhrase;
         f = f.withPrefix(visitSpace(f.getPrefix(), Space.Location.FAMILY_PHRASE_PREFIX, p));

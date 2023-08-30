@@ -71,13 +71,50 @@ public class FindRelationshipsTest extends CobolTest {
     }
 
     @Test
+    void includeCopybookWithCopyAndInclude() {
+        rewriteRun(
+          spec -> spec.dataTable(Row.class, rows -> {
+              assertThat(rows.stream().map(Row::getDependent)).contains("USE_COPY_AND_INCLUDE", "EXEC_SQL_INCLUDE");
+              assertThat(rows.stream().map(Row::getDependentType)).contains(COPYBOOK, COBOL);
+              assertThat(rows.stream().map(Row::getAction)).contains(INCLUDE, COPY);
+              assertThat(rows.stream().map(Row::getDependency)).contains("USE_COPY_AND_INCLUDE", "EMPTY_COPY", "EMPTY_INCLUDE");
+              assertThat(rows.stream().map(Row::getDependencyType)).contains(COPYBOOK);
+          }),
+          cobol(
+            """
+              000000 IDENTIFICATION DIVISION.
+                     PROGRAM-ID.
+                         EXEC_SQL_INCLUDE.
+                     DATA DIVISION.
+                     WORKING-STORAGE SECTION.
+                     01 FILLER PIC X(10) VALUE 'PGM WORKING-STORAGE: EXEC_SQL_INCLUDE'
+                     .
+                         EXEC SQL DECLARE PROD_TBL_01 TABLE
+                         ( NUM_1                  CHAR(3) NOT NULL,
+                           NUM_2                  CHAR(3) NOT NULL
+                         ) END-EXEC.
+                     EXEC SQL INCLUDE USE_COPY_AND_INCLUDE END-EXEC.
+              """,
+            spec -> spec.after(s -> s).path("EXEC_SQL_INCLUDE.CBL")
+          ),
+          copybook(
+            """
+              000000 COPY EMPTY_COPY.
+              000000 EXEC SQL INCLUDE EMPTY_INCLUDE END-EXEC.
+              """,
+            spec -> spec.after(s -> s).path("USE_COPY_AND_INCLUDE.CPY")
+          )
+        );
+    }
+
+    @Test
     void execSqlCreateTable() {
         rewriteRun(
           spec -> spec.dataTable(Row.class, rows -> {
               assertThat(rows.stream().map(Row::getDependent)).contains("DECLARE_TABLE_2", "EXEC_SQL_CREATE");
               assertThat(rows.stream().map(Row::getDependentType)).contains(COPYBOOK, COBOL);
               assertThat(rows.stream().map(Row::getAction)).contains(INCLUDE, ACCESS);
-              assertThat(rows.stream().map(Row::getDependency)).contains("DECLARE_TABLE_2", "PROD_TBL_01", "PROD_TBL_02");
+              assertThat(rows.stream().map(Row::getDependency)).contains("DECLARE_PROD_TBL_02", "PROD_TBL_01", "PROD_TBL_02");
               assertThat(rows.stream().map(Row::getDependencyType)).contains(SQL_TABLE, COPYBOOK);
               assertThat(rows.stream().map(Row::getActionMetadata)).contains("CREATE");
           }),
@@ -99,7 +136,7 @@ public class FindRelationshipsTest extends CobolTest {
 
                     * Include SQL table from another COBOL source.
                     * These SQL tables are created through copybooks.
-                     EXEC SQL INCLUDE DECLARE_TABLE_2 END-EXEC.
+                     EXEC SQL INCLUDE DECLARE_PROD_TBL_02 END-EXEC.
               """,
             spec -> spec.after(s -> s).path("EXEC_SQL_CREATE_TABLE.CBL")
           ),
@@ -325,7 +362,7 @@ public class FindRelationshipsTest extends CobolTest {
               assertThat(rows.stream().map(Row::getDependent)).contains("DECLARE_TABLE_2", "EXEC_SQL_CREATE");
               assertThat(rows.stream().map(Row::getDependentType)).contains(COPYBOOK, COBOL);
               assertThat(rows.stream().map(Row::getAction)).contains(INCLUDE, ACCESS);
-              assertThat(rows.stream().map(Row::getDependency)).contains("DECLARE_TABLE_2", "PROD_TBL_01", "PROD_TBL_02");
+              assertThat(rows.stream().map(Row::getDependency)).contains("DECLARE_PROD_TBL_02", "PROD_TBL_01", "PROD_TBL_02");
               assertThat(rows.stream().map(Row::getDependencyType)).contains(SQL_TABLE, COPYBOOK);
               assertThat(rows.stream().map(Row::getActionMetadata)).contains("CREATE", "READ");
           }),
@@ -357,7 +394,7 @@ public class FindRelationshipsTest extends CobolTest {
 
                     * Include SQL table from another COBOL source.
                     * These SQL tables are created through copybooks.
-                     EXEC SQL INCLUDE DECLARE_TABLE_2 END-EXEC.
+                     EXEC SQL INCLUDE DECLARE_PROD_TBL_02 END-EXEC.
               """,
             spec -> spec.after(s -> s).path("EXEC_SQL_CREATE.CBL")
           ),

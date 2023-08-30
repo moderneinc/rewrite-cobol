@@ -75,13 +75,13 @@ public class CobolPreprocessorParser implements Parser {
 
                         CobolPreprocessor.CompilationUnit preprocessedCU = parserVisitor.visitCompilationUnit(parser.compilationUnit());
 
-                        PreprocessCopyVisitor<ExecutionContext> copyPhase = new PreprocessCopyVisitor<>(copybooks);
+                        PreprocessCopyVisitor<ExecutionContext> copyPhase = new PreprocessCopyVisitor<>(preprocessedCU.getPreprocessorStatements(), copybooks);
 
                         // CU after copy includes the copied source.
                         preprocessedCU = (CobolPreprocessor.CompilationUnit) copyPhase.visit(preprocessedCU, new InMemoryExecutionContext());
                         assert preprocessedCU != null;
 
-                        PreprocessReplaceVisitor<ExecutionContext> replacePhase = new PreprocessReplaceVisitor<>(preprocessedCU.getPreprocessorStatements(), preprocessedCU.getReplacements());
+                        PreprocessReplaceVisitor<ExecutionContext> replacePhase = new PreprocessReplaceVisitor<>(preprocessedCU.getReplacements());
 
                         // CU after replace has replaced words in each ReplaceArea based on the ReplaceClause.
                         preprocessedCU = (CobolPreprocessor.CompilationUnit) replacePhase.visit(preprocessedCU, new InMemoryExecutionContext());

@@ -159,19 +159,20 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
         visitSpace(copyStatement.getPrefix(), Space.Location.COPY_STATEMENT_PREFIX, p);
         visitMarkers(copyStatement.getMarkers(), p);
 
-        if (printColumns) {
-            copyTemplate(copyStatement, p);
-        } else {
-            visit(copyStatement.getCopybook(), p);
-            if (!p.getOut().endsWith("\n")) {
-                p.append("\n");
-            }
-        }
+        printCopybookSource(copyStatement, p);
 
         return copyStatement;
     }
 
-    private void copyTemplate(CobolPreprocessor.CopyStatement copyStatement, PrintOutputCapture<P> p) {
+    private void printCopybookSource(CopybookSource copybookSource, PrintOutputCapture<P> p) {
+        if (!printColumns) {
+            visit(copybookSource.getCopybook(), p);
+            if (!p.getOut().endsWith("\n")) {
+                p.append("\n");
+            }
+            return;
+        }
+
         // Printing the COPY statement will add comments that work similar to JavaTemplate.
         // Comments are added before and after the template to provide context about which AST elements
         // are a product of a COPY statement.
@@ -196,31 +197,37 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
          */
 
         // Print markers like Lines, SequenceArea, and Indicator if the line starts with COPY.
-        visit(copyStatement.getWord(), p);
-
-        // Remove the prefix of and the word COPY, because the statement is replaced by the Copybook.
-        p.out.delete(p.getOut().length() - copyStatement.getWord().getCobolWord().getWord().length() -
-                copyStatement.getWord().getPrefix().getWhitespace().length(), p.getOut().length());
+        if (copybookSource instanceof CobolPreprocessor.CopyStatement) {
+            CobolPreprocessor.CopyStatement cs = (CobolPreprocessor.CopyStatement) copybookSource;
+            visit(cs.getWord(), p);
+            p.out.delete(p.getOut().length() - cs.getWord().getCobolWord().getWord().length() -
+                    cs.getWord().getPrefix().getWhitespace().length(), p.getOut().length());
+        } else {
+            CobolPreprocessor.ExecSqlIncludeStatement es = (CobolPreprocessor.ExecSqlIncludeStatement) copybookSource;
+            visit(es.getWords().get(0), p);
+            p.out.delete(p.getOut().length() - es.getWords().get(0).getCobolWord().getWord().length() -
+                    es.getWords().get(0).getPrefix().getWhitespace().length(), p.getOut().length());
+        }
 
         // Save the current index to ensure the text that follows the COPY will be aligned correctly.
         int curIndex = getCurrentIndex(p.getOut());
 
         addStartKey(getCopyStartComment(), curIndex, p);
-        addUuidKey(getCopyUuidKey(), copyStatement.getId(), p);
+        addUuidKey(getCopyUuidKey(), ((CobolPreprocessor) copybookSource).getId(), p);
 
         // Print copied source.
-        if (copyStatement.getCopybook() == null) {
+        if (copybookSource.getCopybook() == null) {
             // Assume the copy statement is not found, and the copybook is not sub grammatical.
             p.append(getCopybookNotFound());
         } else {
-            visit(copyStatement.getCopybook(), p);
+            visit(copybookSource.getCopybook(), p);
         }
         if (!p.getOut().endsWith("\n")) {
             // Add a new line character if the copied source does not end with one already.
             p.append("\n");
         }
 
-        addStopComment(getCopyStopComment(), copyStatement, curIndex, p);
+        addStopComment(getCopyStopComment(), ((CobolPreprocessor) copybookSource), curIndex, p);
     }
 
     @Override
@@ -233,6 +240,16 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
     public CobolPreprocessor visitExecStatement(CobolPreprocessor.ExecStatement execStatement, PrintOutputCapture<P> p) {
         addPreprocessorStatementTemplate(execStatement, p);
         return execStatement;
+    }
+
+    @Override
+    public CobolPreprocessor visitExecSqlIncludeStatement(CobolPreprocessor.ExecSqlIncludeStatement execSqlIncludeStatement, PrintOutputCapture<P> p) {
+        visitSpace(execSqlIncludeStatement.getPrefix(), Space.Location.EXEC_SQL_INCLUDE_STATEMENT_PREFIX, p);
+        visitMarkers(execSqlIncludeStatement.getMarkers(), p);
+
+        printCopybookSource(execSqlIncludeStatement, p);
+
+        return execSqlIncludeStatement;
     }
 
     @Override

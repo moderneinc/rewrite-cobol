@@ -49,6 +49,22 @@ public class CobolPreprocessorPrinter<P> extends CobolPreprocessorSourcePrinter<
     }
 
     @Override
+    public CobolPreprocessor visitExecSqlIncludeStatement(CobolPreprocessor.ExecSqlIncludeStatement execSqlIncludeStatement, PrintOutputCapture<P> p) {
+        if (printOriginalSource) {
+            return super.visitExecSqlIncludeStatement(execSqlIncludeStatement, p);
+        }
+        if (execSqlIncludeStatement.getCopybook() != null) {
+            beforeSyntax(execSqlIncludeStatement, Space.Location.EXEC_SQL_INCLUDE_STATEMENT_PREFIX, p);
+            visit(execSqlIncludeStatement.getCopybook(), p);
+            if (!p.getOut().endsWith("\n")) {
+                p.append("\n");
+            }
+            afterSyntax(execSqlIncludeStatement, p);
+        }
+        return execSqlIncludeStatement;
+    }
+
+    @Override
     public CobolPreprocessor visitWord(CobolPreprocessor.Word word, PrintOutputCapture<P> p) {
         if (printOriginalSource) {
             return super.visitWord(word, p);

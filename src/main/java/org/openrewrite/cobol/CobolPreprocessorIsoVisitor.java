@@ -84,6 +84,11 @@ public class CobolPreprocessorIsoVisitor<P> extends CobolPreprocessorVisitor<P> 
     }
 
     @Override
+    public CobolPreprocessor.ExecSqlIncludeStatement visitExecSqlIncludeStatement(CobolPreprocessor.ExecSqlIncludeStatement execSqlIncludeStatement, P p) {
+        return (CobolPreprocessor.ExecSqlIncludeStatement) super.visitExecSqlIncludeStatement(execSqlIncludeStatement, p);
+    }
+
+    @Override
     public CobolPreprocessor.FamilyPhrase visitFamilyPhrase(CobolPreprocessor.FamilyPhrase familyPhrase, P p) {
         return (CobolPreprocessor.FamilyPhrase) super.visitFamilyPhrase(familyPhrase, p);
     }

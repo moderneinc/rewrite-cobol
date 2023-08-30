@@ -52,6 +52,12 @@ public interface CobolPreprocessorVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExecSqlStatement(CobolPreprocessorParser.ExecSqlStatementContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link CobolPreprocessorParser#execSqlIncludeStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExecSqlIncludeStatement(CobolPreprocessorParser.ExecSqlIncludeStatementContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link CobolPreprocessorParser#execSqlImsStatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

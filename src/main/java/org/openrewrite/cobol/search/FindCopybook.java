@@ -74,6 +74,31 @@ public class FindCopybook extends Recipe {
                                 return updated;
                             }
                         }
+                    } else if (ps instanceof CobolPreprocessor.ExecSqlIncludeStatement) {
+                        CobolPreprocessor.ExecSqlIncludeStatement includeStatement = (CobolPreprocessor.ExecSqlIncludeStatement) ps;
+                        if (includeStatement.getMarkers().findFirst(MissingCopybook.class).isPresent()) {
+                            copybookSource.insertRow(ctx,
+                                    new CopybookSource.Row(
+                                            getCursor().firstEnclosingOrThrow(Cobol.CompilationUnit.class).getSourcePath().toString(),
+                                            includeStatement.getCopySource().getCobolWord().getWord(),
+                                            "",
+                                            CopybookSource.ResolutionStatus.MISSING_SOURCE,
+                                            ""));
+                            return includeStatement.withCopySource(SearchResult.found(includeStatement.getCopySource()));
+                        } else {
+                            if (copybookName == null || copybookName.isEmpty() || copybookName.equals(includeStatement.getCopySource().getCobolWord().getWord())) {
+                                CobolPreprocessor.ExecSqlIncludeStatement updated = includeStatement.withCopySource(SearchResult.found(includeStatement.getCopySource(), null));
+                                boolean copySourceResolved = includeStatement.getCopybook() != null;
+                                copybookSource.insertRow(ctx,
+                                        new CopybookSource.Row(
+                                                getCursor().firstEnclosingOrThrow(Cobol.CompilationUnit.class).getSourcePath().toString(),
+                                                includeStatement.getCopySource().getCobolWord().getWord(),
+                                                copySourceResolved ? includeStatement.getCopybook().getSourcePath().toString() : "",
+                                                copySourceResolved ? CopybookSource.ResolutionStatus.RESOLVED : CopybookSource.ResolutionStatus.NO_SOURCE_PATH,
+                                                word.getWord()));
+                                return updated;
+                            }
+                        }
                     }
                     return ps;
                 }));

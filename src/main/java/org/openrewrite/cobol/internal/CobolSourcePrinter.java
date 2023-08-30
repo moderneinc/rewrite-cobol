@@ -4317,23 +4317,37 @@ public class CobolSourcePrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
 
     @Override
     public Cobol visitWord(Cobol.Word word, PrintOutputCapture<P> p) {
-        Optional<CopiedWord> copiedWord = word.getMarkers().findFirst(CopiedWord.class);
+        CopybookSource copybookSource = null;
+        // TODO: copystatement is only used for old LSTs. This may be removed after new LSTs are available.
         CobolPreprocessor.CopyStatement copyStatement = null;
         for (CobolPreprocessor preprocessorStatement : word.getPreprocessorStatements()) {
-            if (preprocessorStatement instanceof CobolPreprocessor.CopyStatement) {
+            if (preprocessorStatement instanceof CopybookSource) {
+                if (!preprocessorStatement.getMarkers().findFirst(CopiedStatement.class).isPresent()) {
+                    copybookSource = (CopybookSource) preprocessorStatement;
+                    // The COBOL word is a product of a copy or exec sql include statement.
+                    getCobolPreprocessorVisitor().visit((CobolPreprocessor) copybookSource, p);
+                    if (!((CobolPreprocessor) copybookSource).getMarkers().findFirst(MissingCopybook.class).isPresent()) {
+                        return word;
+                    }
+                }
+            } else if (preprocessorStatement instanceof CobolPreprocessor.CopyStatement) {
                 if (!preprocessorStatement.getMarkers().findFirst(CopiedStatement.class).isPresent()) {
                     copyStatement = (CobolPreprocessor.CopyStatement) preprocessorStatement;
+                    getCobolPreprocessorVisitor().visit(copyStatement, p);
+                    if (!copyStatement.getMarkers().findFirst(MissingCopybook.class).isPresent()) {
+                        return word;
+                    }
                 }
             } else {
                 getCobolPreprocessorVisitor().visit(preprocessorStatement, p);
             }
         }
 
-        if (copyStatement == null && copiedWord.isPresent()) {
+        if (copyStatement == null && copybookSource == null && word.getMarkers().findFirst(CopiedWord.class).isPresent()) {
             return word;
         }
 
-        if (word.getReplacement() != null && copyStatement == null) {
+        if (word.getReplacement() != null && copybookSource == null && copyStatement == null) {
             if (word.getReplacement().getType() == Replacement.Type.EQUAL) {
                 int startLength = p.getOut().length();
                 Replacement.OriginalWord originalWord = word.getReplacement().getOriginalWords().get(0);
@@ -4359,14 +4373,6 @@ public class CobolSourcePrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
                 }
                 beforeSyntax(word, Space.Location.WORD_PREFIX, p);
                 p.append(word.getWord());
-                return word;
-            }
-        }
-
-        // The COBOL word is a product of a copy statement.
-        if (copyStatement != null) {
-            getCobolPreprocessorVisitor().visit(copyStatement, p);
-            if (!copyStatement.getMarkers().findFirst(MissingCopybook.class).isPresent()) {
                 return word;
             }
         }

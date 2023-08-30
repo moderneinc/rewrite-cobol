@@ -6,7 +6,11 @@
 package org.openrewrite.cobol.search;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.openrewrite.cobol.CobolTest;
+import org.openrewrite.cobol.table.CobolRelationships;
+import org.openrewrite.cobol.table.CopybookSource;
 import org.openrewrite.cobol.table.CopybookSource.Row;
 import org.openrewrite.test.RecipeSpec;
 
@@ -15,6 +19,7 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openrewrite.PathUtils.separatorsToUnix;
 import static org.openrewrite.cobol.Assertions.cobol;
+import static org.openrewrite.cobol.Assertions.cobolPostProcess;
 import static org.openrewrite.cobol.table.CopybookSource.ResolutionStatus.RESOLVED;
 
 public class FindCopybookTest extends CobolTest {
@@ -24,28 +29,79 @@ public class FindCopybookTest extends CobolTest {
         spec.recipe(new FindCopybook(null));
     }
 
-    @Test
-    void bookIsNotUsed() {
+    @ParameterizedTest
+    @ValueSource(strings = {
+      "COPY INCEPTION.                                          *",
+      "EXEC SQL INCLUDE INCEPTION END-EXEC.                     *",
+    })
+    void bookIsNotUsed(String input) {
         rewriteRun(
           spec -> spec.recipe(new FindCopybook("KP008")),
-          cobol(getNistResource("CM101M.CBL"))
+          cobol(
+            """
+              000000 IDENTIFICATION DIVISION.                                         *
+                     PROGRAM-ID. IC109A.                                              *
+                     DATA DIVISION.                                                   *
+                     LINKAGE SECTION.                                                 *
+                         01  GRP-01.                                                  *
+                             %s
+              """.formatted(input)
+          )
         );
     }
 
     @Test
-    void sm103A() {
+    void isUsedInCopyStatement() {
         rewriteRun(
-          spec -> spec.dataTable(Row.class, rows -> {
-              assertThat(rows).hasSize(7);
-              Row r0 = rows.get(0);
-              assertThat(r0.getCopybookName()).isEqualTo("K3SCA");
-              assertThat(r0.getResolutionStatus()).isEqualTo(RESOLVED);
-              assertThat(separatorsToUnix(r0.getCopybookSourcePath())).isEqualTo("gov/nist/copybooks/K3SCA.CPY");
+          spec -> spec.recipe(new FindCopybook("INCEPTION")).dataTable(Row.class, rows -> {
+              assertThat(rows.stream().map(CopybookSource.Row::getCopybookName)).containsOnly("INCEPTION");
+              assertThat(rows.stream().map(Row::getResolutionStatus)).containsOnly(RESOLVED);
           }),
           cobol(
-            getNistResource("SM103A.CBL"),
-            "",
-            spec -> spec.after(s -> s)
+            """
+              000000 IDENTIFICATION DIVISION.                                         *
+                     PROGRAM-ID. IC109A.                                              *
+                     DATA DIVISION.                                                   *
+                     LINKAGE SECTION.                                                 *
+                         01  GRP-01.                                                  *
+                             COPY INCEPTION.                                          *
+              """,
+            """
+              000000 IDENTIFICATION DIVISION.                                         *
+                     PROGRAM-ID. IC109A.                                              *
+                     DATA DIVISION.                                                   *
+                     LINKAGE SECTION.                                                 *
+                         01  GRP-01.                                                  *
+                             COPY ~~>INCEPTION.                                          *
+              """
+          )
+        );
+    }
+
+    @Test
+    void isUsedInIncludeStatement() {
+        rewriteRun(
+          spec -> spec.recipe(new FindCopybook("INCEPTION")).dataTable(Row.class, rows -> {
+              assertThat(rows.stream().map(CopybookSource.Row::getCopybookName)).containsOnly("INCEPTION");
+              assertThat(rows.stream().map(Row::getResolutionStatus)).containsOnly(RESOLVED);
+          }),
+          cobol(
+            """
+              000000 IDENTIFICATION DIVISION.                                         *
+                     PROGRAM-ID. IC109A.                                              *
+                     DATA DIVISION.                                                   *
+                     LINKAGE SECTION.                                                 *
+                         01  GRP-01.                                                  *
+                             EXEC SQL INCLUDE INCEPTION END-EXEC.                     *
+              """,
+            """
+              000000 IDENTIFICATION DIVISION.                                         *
+                     PROGRAM-ID. IC109A.                                              *
+                     DATA DIVISION.                                                   *
+                     LINKAGE SECTION.                                                 *
+                         01  GRP-01.                                                  *
+                             EXEC SQL INCLUDE ~~>INCEPTION END-EXEC.                     *
+              """
           )
         );
     }

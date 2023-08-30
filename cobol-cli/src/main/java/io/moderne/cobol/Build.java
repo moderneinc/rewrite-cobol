@@ -184,6 +184,10 @@ public class Build implements Callable<Integer> {
                             if (copyStatement.getMarkers().findFirst(MissingCopybook.class).isEmpty()) {
                                 referencedCopybooks.add(copyStatement.getCopybook());
                             }
+                        } else if (ps instanceof CobolPreprocessor.ExecSqlIncludeStatement includeStatement) {
+                            if (includeStatement.getMarkers().findFirst(MissingCopybook.class).isEmpty()) {
+                                referencedCopybooks.add(includeStatement.getCopybook());
+                            }
                         }
                     }
                     return w;
