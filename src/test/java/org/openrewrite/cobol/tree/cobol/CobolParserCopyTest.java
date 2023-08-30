@@ -66,13 +66,13 @@ class CobolParserCopyTest extends CobolTest {
           cobolPostProcess(
             """
               000000 IDENTIFICATION DIVISION.                                         *
-                         PROGRAM-ID.                                                  *
-                             IC109A.                                                  *
-                         DATA DIVISION.                                               *
-                         LINKAGE SECTION.                                             *
-                         01  GRP-01.                                                  *
-                             SKIP2                                                    *
-                             %s
+                     PROGRAM-ID.                                                      *
+                         IC109A.                                                      *
+                     DATA DIVISION.                                                   *
+                     LINKAGE SECTION.                                                 *
+                     01  GRP-01.                                                      *
+                         SKIP2                                                        *
+                         %s
                     /                                                                 *
                              EJECT
                              %s
@@ -233,7 +233,7 @@ class CobolParserCopyTest extends CobolTest {
       "COPY MISSING_BOOK.",
       "EXEC SQL INCLUDE MISSING_BOOK END-EXEC.",
     })
-    void missingCopybookInACopy() {
+    void missingCopybookInACopy(String input) {
         rewriteRun(
           cobolPostProcess(
             """
@@ -243,7 +243,7 @@ class CobolParserCopyTest extends CobolTest {
                          DATA DIVISION.                                               *
                          LINKAGE SECTION.                                             *
                          01  GRP-01.                                                  *
-                             COPY MISSING_BOOK.                                       *
+                             %s
               
                     *******************************************************************
                     /                                                                 *
@@ -251,7 +251,7 @@ class CobolParserCopyTest extends CobolTest {
                                  03  DN7 PICTURE X.                                   *
                                  03  DN8 PICTURE X.                                   *
                                  03  DN9 PICTURE X.                                   *
-              """,
+              """.formatted(input),
             """
               IDENTIFICATION DIVISION.
                   PROGRAM-ID.
