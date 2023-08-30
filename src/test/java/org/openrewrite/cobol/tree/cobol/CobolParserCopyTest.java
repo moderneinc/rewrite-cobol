@@ -67,40 +67,40 @@ class CobolParserCopyTest extends CobolTest {
             """
               000000 IDENTIFICATION DIVISION.                                         *
                      PROGRAM-ID.                                                      *
-                         IC109A.                                                      *
+                         PREPROCESSOR_DIRECTIVE.                                      *
                      DATA DIVISION.                                                   *
                      LINKAGE SECTION.                                                 *
                      01  GRP-01.                                                      *
                          SKIP2                                                        *
                          %s
                     /                                                                 *
-                             EJECT
-                             %s
-                             SKIP3
-                             02  SPECIAL-FLAGS.                                       *
-                                 03  DN7 PICTURE X.                                   *
-                                 03  DN8 PICTURE X.                                   *
-                                 03  DN9 PICTURE X.                                   *
+                         EJECT
+                         %s
+                         SKIP3
+                         02  SPECIAL-FLAGS.                                           *
+                             03  DN7 PICTURE X.                                       *
+                             03  DN8 PICTURE X.                                       *
+                             03  DN9 PICTURE X.                                       *
               """.formatted(input, input),
             """
               IDENTIFICATION DIVISION.
-                  PROGRAM-ID.
-                      IC109A.
-                  DATA DIVISION.
-                  LINKAGE SECTION.
-                  01  GRP-01.
-                      02  SUB-CALLED.
-                          03  DN1  PICTURE X(6).
-                          03  DN2  PICTURE X(6).
-                          03  DN3  PICTURE X(6).
-                      02  SUB-CALLED.
-                          03  DN1  PICTURE X(6).
-                          03  DN2  PICTURE X(6).
-                          03  DN3  PICTURE X(6).
-                      02  SPECIAL-FLAGS.
-                          03  DN7 PICTURE X.
-                          03  DN8 PICTURE X.
-                          03  DN9 PICTURE X.
+              PROGRAM-ID.
+                  PREPROCESSOR_DIRECTIVE.
+              DATA DIVISION.
+              LINKAGE SECTION.
+              01  GRP-01.
+                  02  SUB-CALLED.
+                      03  DN1  PICTURE X(6).
+                      03  DN2  PICTURE X(6).
+                      03  DN3  PICTURE X(6).
+                  02  SUB-CALLED.
+                      03  DN1  PICTURE X(6).
+                      03  DN2  PICTURE X(6).
+                      03  DN3  PICTURE X(6).
+                  02  SPECIAL-FLAGS.
+                      03  DN7 PICTURE X.
+                      03  DN8 PICTURE X.
+                      03  DN9 PICTURE X.
               """
           )
         );
@@ -117,54 +117,54 @@ class CobolParserCopyTest extends CobolTest {
           cobolPostProcess(
             """
               000000 IDENTIFICATION DIVISION.                                         *
-                         PROGRAM-ID.                                                  *
-                             IC109A.                                                  *
-                         DATA DIVISION.                                               *
-                         LINKAGE SECTION.                                             *
-                         01  GRP-01.                                                  *
-                             %s
+                     PROGRAM-ID.                                                      *
+                         PREPROCESSOR_DIRECTIVE.                                      *
+                     DATA DIVISION.                                                   *
+                     LINKAGE SECTION.                                                 *
+                     01  GRP-01.                                                      *
+                         %s
                     /                                                                 *
-                             %s
+                         %s
                     /                                                                 *
-                             02  SUB-CALLED.                                          *
-                                 03  DN1  PICTURE X(6).                               *
-                                 03  DN2  PICTURE X(6).                               *
-                                 03  DN3  PICTURE X(6).                               *
+                         02  SUB-CALLED.                                              *
+                             03  DN1  PICTURE X(6).                                   *
+                             03  DN2  PICTURE X(6).                                   *
+                             03  DN3  PICTURE X(6).                                   *
                                                                                       *
-                             %s
+                         %s
                     /                                                                 *
-                             02  SPECIAL-FLAGS.                                       *
-                                 03  DN7 PICTURE X.                                   *
-                                 03  DN8 PICTURE X.                                   *
-                                 03  DN9 PICTURE X.                                   *
+                         02  SPECIAL-FLAGS.                                           *
+                             03  DN7 PICTURE X.                                       *
+                             03  DN8 PICTURE X.                                       *
+                             03  DN9 PICTURE X.                                       *
               """.formatted(input, input, input),
             """
               IDENTIFICATION DIVISION.
-                  PROGRAM-ID.
-                      IC109A.
-                  DATA DIVISION.
-                  LINKAGE SECTION.
-                  01  GRP-01.
-                      02  SUB-CALLED.
-                          03  DN1  PICTURE X(6).
-                          03  DN2  PICTURE X(6).
-                          03  DN3  PICTURE X(6).
-                      02  SUB-CALLED.
-                          03  DN1  PICTURE X(6).
-                          03  DN2  PICTURE X(6).
-                          03  DN3  PICTURE X(6).
-                      02  SUB-CALLED.
-                          03  DN1  PICTURE X(6).
-                          03  DN2  PICTURE X(6).
-                          03  DN3  PICTURE X(6).
-                      02  SUB-CALLED.
-                          03  DN1  PICTURE X(6).
-                          03  DN2  PICTURE X(6).
-                          03  DN3  PICTURE X(6).
-                      02  SPECIAL-FLAGS.
-                          03  DN7 PICTURE X.
-                          03  DN8 PICTURE X.
-                          03  DN9 PICTURE X.
+              PROGRAM-ID.
+                  PREPROCESSOR_DIRECTIVE.
+              DATA DIVISION.
+              LINKAGE SECTION.
+              01  GRP-01.
+                  02  SUB-CALLED.
+                      03  DN1  PICTURE X(6).
+                      03  DN2  PICTURE X(6).
+                      03  DN3  PICTURE X(6).
+                  02  SUB-CALLED.
+                      03  DN1  PICTURE X(6).
+                      03  DN2  PICTURE X(6).
+                      03  DN3  PICTURE X(6).
+                  02  SUB-CALLED.
+                      03  DN1  PICTURE X(6).
+                      03  DN2  PICTURE X(6).
+                      03  DN3  PICTURE X(6).
+                  02  SUB-CALLED.
+                      03  DN1  PICTURE X(6).
+                      03  DN2  PICTURE X(6).
+                      03  DN3  PICTURE X(6).
+                  02  SPECIAL-FLAGS.
+                      03  DN7 PICTURE X.
+                      03  DN8 PICTURE X.
+                      03  DN9 PICTURE X.
               """
           )
         );
@@ -206,7 +206,7 @@ class CobolParserCopyTest extends CobolTest {
           cobolPostProcess(
             """
               000000 IDENTIFICATION DIVISION.                                         *
-                     PROGRAM-ID. IC109A.                                              *
+                     PROGRAM-ID. INCEPTION.                                           *
                      DATA DIVISION.                                                   *
                      LINKAGE SECTION.                                                 *
                          01  GRP-01.                                                  *
@@ -214,7 +214,7 @@ class CobolParserCopyTest extends CobolTest {
               """.formatted(input),
             """
               IDENTIFICATION DIVISION.
-              PROGRAM-ID. IC109A.
+              PROGRAM-ID. INCEPTION.
               DATA DIVISION.
               LINKAGE SECTION.
                   01  GRP-01.
@@ -238,33 +238,33 @@ class CobolParserCopyTest extends CobolTest {
           cobolPostProcess(
             """
               000000 IDENTIFICATION DIVISION.                                         *
-                         PROGRAM-ID.                                                  *
-                             IC109A.                                                  *
-                         DATA DIVISION.                                               *
-                         LINKAGE SECTION.                                             *
-                         01  GRP-01.                                                  *
-                             %s
+                     PROGRAM-ID.                                                      *
+                         MISSING_BOOK.                                                *
+                     DATA DIVISION.                                                   *
+                     LINKAGE SECTION.                                                 *
+                     01  GRP-01.                                                      *
+                         %s
               
                     *******************************************************************
                     /                                                                 *
-                             02  SPECIAL-FLAGS.                                       *
-                                 03  DN7 PICTURE X.                                   *
-                                 03  DN8 PICTURE X.                                   *
-                                 03  DN9 PICTURE X.                                   *
+                         02  SPECIAL-FLAGS.                                           *
+                             03  DN7 PICTURE X.                                       *
+                             03  DN8 PICTURE X.                                       *
+                             03  DN9 PICTURE X.                                       *
               """.formatted(input),
             """
               IDENTIFICATION DIVISION.
-                  PROGRAM-ID.
-                      IC109A.
-                  DATA DIVISION.
-                  LINKAGE SECTION.
-                  01  GRP-01.
-                      02  SUB-CALLED.
-                          03  DN3  PICTURE X(6).
-                      02  SPECIAL-FLAGS.
-                          03  DN7 PICTURE X.
-                          03  DN8 PICTURE X.
-                          03  DN9 PICTURE X.
+              PROGRAM-ID.
+                  MISSING_BOOK.
+              DATA DIVISION.
+              LINKAGE SECTION.
+              01  GRP-01.
+                  02  SUB-CALLED.
+                      03  DN3  PICTURE X(6).
+                  02  SPECIAL-FLAGS.
+                      03  DN7 PICTURE X.
+                      03  DN8 PICTURE X.
+                      03  DN9 PICTURE X.
               """
           )
         );
@@ -282,7 +282,7 @@ class CobolParserCopyTest extends CobolTest {
             """
               000000* Prevent trim
                      IDENTIFICATION DIVISION.
-                     PROGRAM-ID . HELLO-WORLD.
+                     PROGRAM-ID . ISSUE_27.
                      DATA DIVISION.
                      %s
                      PROCEDURE DIVISION.
@@ -294,7 +294,7 @@ class CobolParserCopyTest extends CobolTest {
               """.formatted(input),
             """
               IDENTIFICATION DIVISION.
-              PROGRAM-ID . HELLO-WORLD.
+              PROGRAM-ID . ISSUE_27.
               DATA DIVISION.
                   WORKING-STORAGE SECTION.
                       77 X PIC 99.
