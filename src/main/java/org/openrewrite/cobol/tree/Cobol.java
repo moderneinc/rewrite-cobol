@@ -2069,7 +2069,15 @@ public interface Cobol extends Tree {
         Space prefix;
         Markers markers;
         Word giving;
+
+        // roundables may be removed after new LSTs have been generated.
+        @Deprecated
+        @Nullable
         List<Roundable> roundables;
+
+        // Nullable may be removed after new LSTs have been generated.
+        @Nullable
+        List<Cobol> cobols;
 
         @Override
         public <P> Cobol acceptCobol(CobolVisitor<P> v, P p) {
@@ -2085,7 +2093,15 @@ public interface Cobol extends Tree {
         Space prefix;
         Markers markers;
         Word into;
+
+        // roundables may be removed after new LSTs have been generated.
+        @Deprecated
+        @Nullable
         List<Roundable> roundables;
+
+        // Nullable may be removed after new LSTs have been generated.
+        @Nullable
+        List<Cobol> cobols;
 
         @Override
         public <P> Cobol acceptCobol(CobolVisitor<P> v, P p) {
