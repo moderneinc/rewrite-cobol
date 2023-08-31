@@ -679,7 +679,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.USING()),
-                convertAllList(ctx.callUsingParameter(), ctx.COMMACHAR())
+                convertAllList(ctx.callUsingParameter())
         );
     }
 
@@ -737,7 +737,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 (Cobol.Word) visit(ctx.CLASS()),
                 visitNullable(ctx.className()),
                 wordsList(ctx.FOR(), ctx.ALPHANUMERIC(), ctx.NATIONAL(), ctx.IS()),
-                convertAllList(ctx.classClauseThrough(), ctx.COMMACHAR()),
+                convertAllList(ctx.classClauseThrough()),
                 null
         );
     }
@@ -839,7 +839,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.CLOSE()),
-                convertAllList(ctx.closeFile(), ctx.COMMACHAR())
+                convertAllList(ctx.closeFile())
         );
     }
 
@@ -1029,7 +1029,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.LPARENCHAR()),
-                convertAllList(ctx.subscript(), ctx.COMMACHAR()),
+                convertAllList(ctx.subscript()),
                 (Cobol.Word) visit(ctx.RPARENCHAR())
         );
     }
@@ -1410,7 +1410,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.VALUE(), ctx.VALUES(), ctx.IS(), ctx.ARE()),
-                convertAllList(ctx.dataValueInterval(), ctx.COMMACHAR())
+                convertAllList(ctx.dataValueInterval())
         );
     }
 
@@ -1578,7 +1578,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.DISPLAY()),
-                convertAllList(ctx.displayOperand(), ctx.COMMACHAR()),
+                convertAllList(ctx.displayOperand()),
                 visitNullable(ctx.displayAt()),
                 visitNullable(ctx.displayUpon()),
                 visitNullable(ctx.displayWith()),
@@ -1621,7 +1621,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.GIVING()),
                 null,
-                convertAllList(ctx.divideGiving(), ctx.COMMACHAR())
+                convertAllList(ctx.divideGiving())
         );
     }
 
@@ -1643,7 +1643,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.INTO()),
                 null,
-                convertAllList(ctx.divideInto(), ctx.COMMACHAR())
+                convertAllList(ctx.divideInto())
         );
     }
 
@@ -1920,7 +1920,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol) visit(ctx.selectClause()),
-                convertAllList(ctx.fileControlClause(), ctx.COMMACHAR())
+                convertAllList(ctx.fileControlClause())
         );
     }
 
@@ -1985,7 +1985,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.LPARENCHAR()),
-                convertAllList(ctx.argument(), ctx.COMMACHAR()),
+                convertAllList(ctx.argument()),
                 (Cobol.Word) visit(ctx.RPARENCHAR())
         );
     }
@@ -2186,7 +2186,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.INITIALIZE()),
-                convertAllList(ctx.identifier(), ctx.COMMACHAR()),
+                convertAllList(ctx.identifier()),
                 visitNullable(ctx.initializeReplacingPhrase())
         );
     }
@@ -2813,7 +2813,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 Markers.EMPTY,
                 (Name) visit(ctx.moveToSendingArea()),
                 (Cobol.Word) visit(ctx.TO()),
-                convertAllList(ctx.identifier(), ctx.COMMACHAR())
+                convertAllList(ctx.identifier())
         );
     }
 
@@ -3014,7 +3014,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.EXTEND()),
-                convertAllList(ctx.fileName(), ctx.COMMACHAR())
+                convertAllList(ctx.fileName())
         );
     }
 
@@ -3024,7 +3024,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.I_O()),
-                convertAllList(ctx.fileName(), ctx.COMMACHAR())
+                convertAllList(ctx.fileName())
         );
     }
 
@@ -3044,7 +3044,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.INPUT()),
-                convertAllList(ctx.openInput(), ctx.COMMACHAR())
+                convertAllList(ctx.openInput())
         );
     }
 
@@ -3064,7 +3064,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.OUTPUT()),
-                convertAllList(ctx.openOutput(), ctx.COMMACHAR())
+                convertAllList(ctx.openOutput())
         );
     }
 
@@ -3074,7 +3074,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.OPEN()),
-                convertAllList(ctx.openInputStatement(), ctx.COMMACHAR(), ctx.openOutputStatement(), ctx.openIOStatement(),
+                convertAllList(ctx.openInputStatement(), ctx.openOutputStatement(), ctx.openIOStatement(),
                         ctx.openExtendStatement())
         );
     }
@@ -3423,7 +3423,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.USING(), ctx.CHAINING()),
-                convertAllList(ctx.procedureDivisionUsingParameter(), ctx.COMMACHAR())
+                convertAllList(ctx.procedureDivisionUsingParameter())
         );
     }
 
@@ -4217,7 +4217,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         return new Cobol.ReportGroupSumClause(
                 EMPTY,
                 Markers.EMPTY,
-                convertAllList(singletonList(ctx.SUM()), ctx.identifier(), ctx.COMMACHAR(), singletonList(ctx.UPON()), ctx.dataName())
+                convertAllList(singletonList(ctx.SUM()), ctx.identifier(), singletonList(ctx.UPON()), ctx.dataName())
         );
     }
 
@@ -4984,7 +4984,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         return new Cobol.SetTo(
                 EMPTY,
                 Markers.EMPTY,
-                convertAllList(ctx.setTo(), ctx.COMMACHAR()),
+                convertAllList(ctx.setTo()),
                 (Cobol.Word) visit(ctx.TO()),
                 convertAll(ctx.setToValue())
         );
@@ -4995,7 +4995,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         return new Cobol.SetUpDown(
                 EMPTY,
                 Markers.EMPTY,
-                convertAllList(ctx.setTo(), ctx.COMMACHAR()),
+                convertAllList(ctx.setTo()),
                 wordsList(ctx.DOWN(), ctx.UP(), ctx.BY()),
                 (Name) visit(ctx.setByValue())
         );
@@ -5294,7 +5294,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         return new Cobol.StringSendingPhrase(
                 EMPTY,
                 Markers.EMPTY,
-                convertAllList(ctx.stringSending(), ctx.COMMACHAR()),
+                convertAllList(ctx.stringSending()),
                 visit(ctx.stringDelimitedByPhrase(), ctx.stringForPhrase())
         );
     }
@@ -5486,7 +5486,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.LPARENCHAR()),
-                convertAllList(ctx.subscript(), ctx.COMMACHAR()),
+                convertAllList(ctx.subscript()),
                 (Cobol.Word) visit(ctx.RPARENCHAR())
         );
     }
