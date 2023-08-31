@@ -191,7 +191,7 @@ channelClause
    ;
 
 classClause
-   : CLASS className (FOR? (ALPHANUMERIC | NATIONAL))? IS? classClauseThrough+
+   : CLASS className (FOR? (ALPHANUMERIC | NATIONAL))? IS? (classClauseThrough COMMACHAR?)+
    ;
 
 classClauseThrough
