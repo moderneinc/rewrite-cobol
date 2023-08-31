@@ -25,8 +25,6 @@ options { caseInsensitive = true; }
  * The IBM-ANSI-85 spec defines a whitespace character as ' ', ', ', or `; `.
  * However, client code contains custom whitespace rules that do not match the language spec.
  * The customized whitespace allows for new lines to exist anywhere in the source code.
- * A part of the grammar has been modified detect trailing commas that are not detected as a `SEPARATOR`.
- * We cannot skip `,\r?\n` because there are cases where a comma is not a separator.
  */
 
 compilationUnit
@@ -199,7 +197,7 @@ channelClause
    ;
 
 classClause
-   : CLASS className (FOR? (ALPHANUMERIC | NATIONAL))? IS? (classClauseThrough COMMACHAR?)+
+   : CLASS className (FOR? (ALPHANUMERIC | NATIONAL))? IS? classClauseThrough+
    ;
 
 classClauseThrough
@@ -273,7 +271,7 @@ fileControlParagraph
    ;
 
 fileControlEntry
-   : selectClause (fileControlClause COMMACHAR?)*
+   : selectClause fileControlClause*
    ;
 
 selectClause
@@ -829,7 +827,7 @@ reportGroupSourceClause
    ;
 
 reportGroupSumClause
-   : SUM (identifier COMMACHAR?)+ (UPON (dataName COMMACHAR?)+)?
+   : SUM identifier+ (UPON dataName+)?
    ;
 
 reportGroupTypeClause
@@ -1089,7 +1087,7 @@ dataUsingClause
    ;
 
 dataValueClause
-   : ((VALUE | VALUES) (IS | ARE)?)? (dataValueInterval COMMACHAR?)+
+   : ((VALUE | VALUES) (IS | ARE)?)? dataValueInterval+
    ;
 
 dataValueInterval
@@ -1115,7 +1113,7 @@ procedureDivision
    ;
 
 procedureDivisionUsingClause
-   : (USING | CHAINING) (procedureDivisionUsingParameter COMMACHAR?)+
+   : (USING | CHAINING) procedureDivisionUsingParameter+
    ;
 
 procedureDivisionGivingClause
@@ -1263,7 +1261,7 @@ callStatement
    ;
 
 callUsingPhrase
-   : USING (callUsingParameter COMMACHAR?)+
+   : USING callUsingParameter+
    ;
 
 callUsingParameter
@@ -1310,7 +1308,7 @@ cancelCall
 
 // close statement
 closeStatement
-   : CLOSE (closeFile COMMACHAR?)+
+   : CLOSE closeFile+
    ;
 
 closeFile
@@ -1376,7 +1374,7 @@ disableStatement
 // display statement
 
 displayStatement
-   : DISPLAY (displayOperand COMMACHAR?)+ displayAt? displayUpon? displayWith? onExceptionClause? notOnExceptionClause? END_DISPLAY?
+   : DISPLAY displayOperand+ displayAt? displayUpon? displayWith? onExceptionClause? notOnExceptionClause? END_DISPLAY?
    ;
 
 displayOperand
@@ -1402,7 +1400,7 @@ divideStatement
    ;
 
 divideIntoStatement
-   : INTO (divideInto COMMACHAR?)+
+   : INTO divideInto+
    ;
 
 divideIntoGivingStatement
@@ -1414,7 +1412,7 @@ divideByGivingStatement
    ;
 
 divideGivingPhrase
-   : GIVING (divideGiving COMMACHAR?)+
+   : GIVING divideGiving+
    ;
 
 divideInto
@@ -1560,7 +1558,7 @@ ifElse
 // initialize statement
 
 initializeStatement
-   : INITIALIZE (identifier COMMACHAR?)+ initializeReplacingPhrase?
+   : INITIALIZE identifier+ initializeReplacingPhrase?
    ;
 
 initializeReplacingPhrase
@@ -1688,7 +1686,7 @@ moveStatement
    ;
 
 moveToStatement
-   : moveToSendingArea TO (identifier COMMACHAR?)+
+   : moveToSendingArea TO identifier+
    ;
 
 moveToSendingArea
@@ -1738,11 +1736,11 @@ nextSentenceStatement
 // open statement
 
 openStatement
-   : OPEN (COMMACHAR? (openInputStatement | openOutputStatement | openIOStatement | openExtendStatement))+
+   : OPEN (openInputStatement | openOutputStatement | openIOStatement | openExtendStatement)+
    ;
 
 openInputStatement
-   : INPUT (openInput COMMACHAR?)+
+   : INPUT openInput+
    ;
 
 openInput
@@ -1750,7 +1748,7 @@ openInput
    ;
 
 openOutputStatement
-   : OUTPUT (openOutput COMMACHAR?)+
+   : OUTPUT openOutput+
    ;
 
 openOutput
@@ -1758,11 +1756,11 @@ openOutput
    ;
 
 openIOStatement
-   : I_O (fileName COMMACHAR?)+
+   : I_O fileName+
    ;
 
 openExtendStatement
-   : EXTEND (fileName COMMACHAR?)+
+   : EXTEND fileName+
    ;
 
 // perform statement
@@ -1978,11 +1976,11 @@ setStatement
    ;
 
 setToStatement
-   : (setTo COMMACHAR?)+ TO setToValue+
+   : setTo+ TO setToValue+
    ;
 
 setUpDownByStatement
-   : (setTo COMMACHAR?)+ (UP BY | DOWN BY) setByValue
+   : setTo+ (UP BY | DOWN BY) setByValue
    ;
 
 setTo
@@ -2078,7 +2076,7 @@ stringStatement
    ;
 
 stringSendingPhrase
-   : (stringSending COMMACHAR?)+ (stringDelimitedByPhrase | stringForPhrase)
+   : stringSending+ (stringDelimitedByPhrase | stringForPhrase)
    ;
 
 stringSending
@@ -2344,7 +2342,7 @@ conditionNameReference
    ;
 
 conditionNameSubscriptReference
-   : LPARENCHAR (subscript COMMACHAR?)+ RPARENCHAR
+   : LPARENCHAR subscript+ RPARENCHAR
    ;
 
 // relation ----------------------------------
@@ -2388,7 +2386,7 @@ tableCall
    ;
 
 tableCallSubscripts
-    : LPARENCHAR (subscript COMMACHAR?)+ RPARENCHAR
+    : LPARENCHAR subscript+ RPARENCHAR
     ;
 
 functionCall
@@ -2396,7 +2394,7 @@ functionCall
    ;
 
 functionCallArguments
-    : LPARENCHAR (argument COMMACHAR?)+ RPARENCHAR
+    : LPARENCHAR argument+ RPARENCHAR
     ;
 
 referenceModifier
@@ -3258,6 +3256,7 @@ IDENTIFIER : [A-Z0-9]+ ([-_]+ [A-Z0-9]+)*;
 
 // whitespace, line breaks, comments, ...
 // NEWLINE : '\r'? '\n' WS? '-'? -> channel(HIDDEN);
+SEPARATOR : (', ' | ',''\r'?'\n') -> channel(HIDDEN);
 NEWLINE : '\r'? '\n' -> channel(HIDDEN);
 EXECCICSLINE : EXECCICSTAG WS ~('\n' | '\r' | '}')* ('\n' | '\r' | '}');
 EXECSQLIMSLINE : EXECSQLIMSTAG WS ~('\n' | '\r' | '}')* ('\n' | '\r' | '}');
@@ -3265,4 +3264,3 @@ EXECSQLLINE : EXECSQLTAG WS ~('\n' | '\r' | '}')* ('\n' | '\r' | '}');
 COMMENTENTRYLINE : COMMENTENTRYTAG WS ~('\n' | '\r')*;
 COMMENTLINE : COMMENTTAG WS ~('\n' | '\r')* -> channel(HIDDEN);
 WS : [ \t\f;]+ -> channel(HIDDEN);
-SEPARATOR : ', ' -> channel(HIDDEN);
