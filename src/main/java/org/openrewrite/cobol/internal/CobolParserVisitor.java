@@ -1620,7 +1620,8 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.GIVING()),
-                convertAll(ctx.divideGiving())
+                null,
+                convertAllList(ctx.divideGiving(), ctx.COMMACHAR())
         );
     }
 
@@ -1641,7 +1642,8 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.INTO()),
-                convertAll(ctx.divideInto())
+                null,
+                convertAllList(ctx.divideInto(), ctx.COMMACHAR())
         );
     }
 

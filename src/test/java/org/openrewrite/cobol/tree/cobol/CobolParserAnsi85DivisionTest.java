@@ -256,6 +256,25 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
         );
     }
 
+    @Issue("https://github.com/moderneinc/rewrite-cobol/issues/106")
+    @Test
+    void commaDelimitedDivideGiving() {
+        rewriteRun(
+          cobol(
+            """
+              000001 IDENTIFICATION DIVISION.                                         C_AREA.01
+              000002 PROGRAM-ID. acceptStatement.                                     C_AREA.02
+              000003 PROCEDURE DIVISION USING GRP-01.                                 C_AREA.03
+              000004 SIG-TEST-GF-5-0.                                                 C_AREA.04
+              000006     DIVIDE 0.097 INTO DIV7,
+                                      REMAINDER DIV9.
+                         DIVIDE 0.097 BY +4 GIVING DIV8,
+                                            REMAINDER DIV9.
+              """
+          )
+        );
+    }
+
     @Issue("https://github.com/openrewrite/rewrite-cobol/issues/45")
     @ParameterizedTest
     @ValueSource(strings = {

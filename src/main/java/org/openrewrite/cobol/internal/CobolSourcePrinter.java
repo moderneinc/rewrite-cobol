@@ -1080,6 +1080,7 @@ public class CobolSourcePrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
     public Cobol visitDivideGivingPhrase(Cobol.DivideGivingPhrase divideGivingPhrase, PrintOutputCapture<P> p) {
         beforeSyntax(divideGivingPhrase, Space.Location.DIVIDE_GIVING_PHRASE_PREFIX, p);
         visit(divideGivingPhrase.getGiving(), p);
+        visit(divideGivingPhrase.getCobols(), p);
         visit(divideGivingPhrase.getRoundables(), p);
         afterSyntax(divideGivingPhrase, p);
         return divideGivingPhrase;
@@ -1089,6 +1090,7 @@ public class CobolSourcePrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
     public Cobol visitDivideInto(Cobol.DivideInto divideInto, PrintOutputCapture<P> p) {
         beforeSyntax(divideInto, Space.Location.DIVIDE_INTO_PREFIX, p);
         visit(divideInto.getInto(), p);
+        visit(divideInto.getCobols(), p);
         visit(divideInto.getRoundables(), p);
         afterSyntax(divideInto, p);
         return divideInto;

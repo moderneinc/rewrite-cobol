@@ -21,6 +21,14 @@ grammar Cobol;
 
 options { caseInsensitive = true; }
 
+/* Note:
+ * The IBM-ANSI-85 spec defines a whitespace character as ' ', ', ', or `; `.
+ * However, client code contains custom whitespace rules that do not match the language spec.
+ * The customized whitespace allows for new lines to exist anywhere in the source code.
+ * A part of the grammar has been modified detect trailing commas that are not detected as a `SEPARATOR`.
+ * We cannot skip `,\r?\n` because there are cases where a comma is not a separator.
+ */
+
 compilationUnit
    : programUnit* EOF
    ;
@@ -1394,7 +1402,7 @@ divideStatement
    ;
 
 divideIntoStatement
-   : INTO divideInto+
+   : INTO (divideInto COMMACHAR?)+
    ;
 
 divideIntoGivingStatement
@@ -1406,7 +1414,7 @@ divideByGivingStatement
    ;
 
 divideGivingPhrase
-   : GIVING divideGiving+
+   : GIVING (divideGiving COMMACHAR?)+
    ;
 
 divideInto
