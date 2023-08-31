@@ -737,7 +737,8 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 (Cobol.Word) visit(ctx.CLASS()),
                 visitNullable(ctx.className()),
                 wordsList(ctx.FOR(), ctx.ALPHANUMERIC(), ctx.NATIONAL(), ctx.IS()),
-                convertAll(ctx.classClauseThrough())
+                convertAllList(ctx.classClauseThrough(), ctx.COMMACHAR()),
+                null
         );
     }
 

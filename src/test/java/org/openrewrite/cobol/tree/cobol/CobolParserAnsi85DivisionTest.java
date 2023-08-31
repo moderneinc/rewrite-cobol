@@ -238,6 +238,24 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
         );
     }
 
+    @Issue("https://github.com/moderneinc/rewrite-cobol/issues/104")
+    @Test
+    void commaDelimitedClassThrough() {
+        rewriteRun(
+          cobol(
+            """
+              000001 IDENTIFICATION DIVISION.
+                     PROGRAM-ID. HELLO-WORLD.
+                     ENVIRONMENT DIVISION.
+                     CONFIGURATION SECTION.
+                     SPECIAL-NAMES.
+                            CLASS ALPHANUM IS '0' THRU '9',
+                                              'A' THRU 'Z', 'a' THRU 'z'.
+              """
+          )
+        );
+    }
+
     @Issue("https://github.com/openrewrite/rewrite-cobol/issues/45")
     @ParameterizedTest
     @ValueSource(strings = {

@@ -730,6 +730,14 @@ public interface Cobol extends Tree {
         Word clazz;
         Word className;
         List<Word> words;
+
+        // Nullable may be removed after new LSTs are generated.
+        @Nullable
+        List<Cobol> classThroughs;
+
+        // Field may be removed after new LSTs are generated.
+        @Deprecated
+        @Nullable
         List<ClassClauseThrough> throughs;
 
         @Override

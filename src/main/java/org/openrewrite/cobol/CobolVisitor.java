@@ -350,6 +350,7 @@ public class CobolVisitor<P> extends TreeVisitor<Cobol, P> {
         c = c.withClazz((Cobol.Word) visit(c.getClazz(), p));
         c = c.withClassName((Cobol.Word) visit(c.getClassName(), p));
         c = c.withWords(ListUtils.map(c.getWords(), it -> (Cobol.Word) visit(it, p)));
+        c = c.withClassThroughs(ListUtils.map(c.getClassThroughs(), t -> visit(t, p)));
         c = c.withThroughs(ListUtils.map(c.getThroughs(), t -> (Cobol.ClassClauseThrough) visit(t, p)));
         return c;
     }

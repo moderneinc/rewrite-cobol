@@ -376,6 +376,7 @@ public class CobolSourcePrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
         visit(classClause.getClazz(), p);
         visit(classClause.getClassName(), p);
         visit(classClause.getWords(), p);
+        visit(classClause.getClassThroughs(), p);
         visit(classClause.getThroughs(), p);
         afterSyntax(classClause, p);
         return classClause;
