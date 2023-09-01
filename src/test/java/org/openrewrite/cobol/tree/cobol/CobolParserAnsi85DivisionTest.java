@@ -181,6 +181,34 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
         );
     }
 
+    @Test
+    void customWhitespace() {
+        rewriteRun(
+          cobol(
+            """
+                    * The commas between the preprocessor directives are commas and not whitespace.
+                     CBL RENT,ADATA,DBCS
+                    * Use IBM spec whitespace characters with delimiter before new lines.
+              000001 IDENTIFICATION , DIVISION. ,
+              000002 PROGRAM-ID. ; HELLO. ;
+              000003 PROCEDURE DIVISION.
+                         NAME SECTION 01.
+                    * Trailing comma whitespace.
+                             CLOSE NAME01     ,
+                    * Trailing semi-colon whitespace.
+                                   NAME02     ;
+                    * Trailing comma
+                                   NAME03.
+                     DATA DIVISION.
+                     WORKING-STORAGE SECTION.
+                    * The commas between PIC characters are commas and not whitespace.
+                       02  FILLER PIC Z1,Z2,Z3.
+              000005 STOP RUN.
+              """
+          )
+        );
+    }
+
     @Issue("https://github.com/openrewrite/rewrite-cobol/issues/38")
     @Test
     void commaDelimitedCloseStatement() {
@@ -320,8 +348,8 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
                    02  FILLER PIC X VALUE  "************************************00000000
               -    "**************".                                            00000000
         """
-
     })
+
     void continuedLiterals(String continuation) {
         rewriteRun(
           cobol("""
@@ -433,23 +461,30 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
         );
     }
 
+    // TODO: add test for COBOL blank line. ,    ;     ,
     @Issue("https://github.com/openrewrite/rewrite-cobol/issues/42")
     @Test
     void commaDelimitedFileEntry() {
         rewriteRun(
           cobol(
             """
-              000001 IDENTIFICATION DIVISION .                                        000000000
-                     PROGRAM-ID . HELLO-WORLD .                                       000000000
-                     ENVIRONMENT DIVISION .                                           000000000
-                     INPUT-OUTPUT SECTION .                                           000000000
-                     FILE-CONTROL .                                                   000000000
-                         SELECT NAME ASSIGN TO DISK,
-                                     ASSIGN TO DISPLAY,
-                                     ASSIGN TO KEYBOARD.
-                     PROCEDURE DIVISION .                                             000000000
-                     STOP RUN .                                                       000000000
-              """
+              000001 IDENTIFICATION DIVISION.
+                     PROGRAM-ID. HELLO-WORLD.
+                     ENVIRONMENT DIVISION.
+                     INPUT-OUTPUT SECTION.
+                     FILE-CONTROL.
+                     
+                         SELECT NAME ASSIGN TO NAME    ,
+                                FILE STATUS IS NEW-NAME.
+              
+                        SELECT OTHER-NAME ASSIGN TO OTHER-NAME,
+                               FILE STATUS IS NEW-OTHER-NAME.
+                     
+                     PROCEDURE DIVISION.
+                     STOP RUN.
+              """, spec -> spec.afterRecipe(cu -> {
+                System.out.println();
+            })
           )
         );
     }

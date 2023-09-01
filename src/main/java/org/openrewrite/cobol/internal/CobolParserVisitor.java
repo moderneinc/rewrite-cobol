@@ -60,7 +60,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     private final NavigableMap<Integer, String> indicatorAreas = new TreeMap<>();
     private final NavigableMap<Integer, String> commentAreas = new TreeMap<>();
 
-    private final Set<String> separators = new HashSet<>();
     private static final Set<Character> commentIndicators = new HashSet<>();
     private int cursor = 0;
 
@@ -162,7 +161,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 pos += isCRLF ? 2 : 1; // Increment for new line delimiter.
             }
 
-            separators.addAll(cobolDialect.getSeparators());
             commentIndicators.addAll(cobolDialect.getCommentIndicators());
 
             CobolPreprocessorOutputSourcePrinter<ExecutionContext> templatePrinter = new CobolPreprocessorOutputSourcePrinter<>(cobolDialect, true);
@@ -5857,17 +5855,17 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         int delimIndex = cursor;
         boolean isColumnArea = false;
         for (; delimIndex < source.length(); delimIndex++) {
-            if (source.length() > delimIndex + 1) {
-                // separators are equivalent to a whitespace character, but are specific combinations of characters based on the dialect.
-                // I.E. In IBM-ANSI-85, comma space `, ` or semicolon space `; ` are equivalent to a space.
-                if (separators.contains(source.substring(delimIndex, delimIndex + 2))) {
-                    continue;
-                }
-            }
+            char c = source.charAt(delimIndex);
 
             // Do not consume whitespace in blank column areas.
             isColumnArea = sequenceAreas.containsKey(delimIndex) || indicatorAreas.containsKey(delimIndex) || commentAreas.containsKey(delimIndex);
-            if (!Character.isWhitespace(source.substring(delimIndex, delimIndex + 1).charAt(0)) || isColumnArea) {
+            if (!Character.isWhitespace(c) || isColumnArea) {
+                if (c == ',' || c == ';' && delimIndex + 1 < source.length() - 1) {
+                    char next = source.charAt(delimIndex + 1);
+                    if (next == ' ' || next == '\r' || next == '\n') {
+                        continue;
+                    }
+                }
                 break; // found it!
             }
         }

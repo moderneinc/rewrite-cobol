@@ -827,7 +827,7 @@ reportGroupSourceClause
    ;
 
 reportGroupSumClause
-   : SUM identifier+ (UPON dataName+)?
+   : SUM (identifier COMMACHAR?)+ (UPON (dataName COMMACHAR?)+)?
    ;
 
 reportGroupTypeClause
@@ -1087,7 +1087,7 @@ dataUsingClause
    ;
 
 dataValueClause
-   : ((VALUE | VALUES) (IS | ARE)?)? dataValueInterval+
+   : ((VALUE | VALUES) (IS | ARE)?)? (dataValueInterval COMMACHAR?)+
    ;
 
 dataValueInterval
@@ -1374,7 +1374,7 @@ disableStatement
 // display statement
 
 displayStatement
-   : DISPLAY displayOperand+ displayAt? displayUpon? displayWith? onExceptionClause? notOnExceptionClause? END_DISPLAY?
+   : DISPLAY (displayOperand COMMACHAR?)+ displayAt? displayUpon? displayWith? onExceptionClause? notOnExceptionClause? END_DISPLAY?
    ;
 
 displayOperand
@@ -2076,7 +2076,7 @@ stringStatement
    ;
 
 stringSendingPhrase
-   : stringSending+ (stringDelimitedByPhrase | stringForPhrase)
+   : (stringSending COMMACHAR?)+ (stringDelimitedByPhrase | stringForPhrase)
    ;
 
 stringSending
@@ -2342,7 +2342,7 @@ conditionNameReference
    ;
 
 conditionNameSubscriptReference
-   : LPARENCHAR subscript+ RPARENCHAR
+   : LPARENCHAR (subscript COMMACHAR?)+ RPARENCHAR
    ;
 
 // relation ----------------------------------
@@ -2386,7 +2386,7 @@ tableCall
    ;
 
 tableCallSubscripts
-    : LPARENCHAR subscript+ RPARENCHAR
+    : LPARENCHAR (subscript COMMACHAR?)+ RPARENCHAR
     ;
 
 functionCall
@@ -2394,7 +2394,7 @@ functionCall
    ;
 
 functionCallArguments
-    : LPARENCHAR argument+ RPARENCHAR
+    : LPARENCHAR (argument COMMACHAR?)+ RPARENCHAR
     ;
 
 referenceModifier
@@ -3256,7 +3256,7 @@ IDENTIFIER : [A-Z0-9]+ ([-_]+ [A-Z0-9]+)*;
 
 // whitespace, line breaks, comments, ...
 // NEWLINE : '\r'? '\n' WS? '-'? -> channel(HIDDEN);
-SEPARATOR : (', ' | ',''\r'?'\n') -> channel(HIDDEN);
+SEPARATOR : (COMMACHAR ' ' | COMMACHAR '\r'? '\n') -> skip;
 NEWLINE : '\r'? '\n' -> channel(HIDDEN);
 EXECCICSLINE : EXECCICSTAG WS ~('\n' | '\r' | '}')* ('\n' | '\r' | '}');
 EXECSQLIMSLINE : EXECSQLIMSTAG WS ~('\n' | '\r' | '}')* ('\n' | '\r' | '}');
