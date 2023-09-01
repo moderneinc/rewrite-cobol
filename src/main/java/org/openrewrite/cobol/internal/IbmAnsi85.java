@@ -23,7 +23,7 @@ public class IbmAnsi85 implements CobolDialect {
     private final Columns columns;
 
     private IbmAnsi85() {
-        this.separators = new HashSet<>(Arrays.asList(",\r\n", ",\n", ";\r\n", ";\n", ", ", "; "));
+        this.separators = new HashSet<>(Arrays.asList(", ", "; "));
         this.commentIndicators = new HashSet<>(Arrays.asList('*', '/'));
         this.columns = Columns.IBM_ANSI_85;
     }

@@ -65,8 +65,8 @@ public class CobolPreprocessorParser extends Parser {
 		I_CHAR=274, M_CHAR=275, N_CHAR=276, Q_CHAR=277, S_CHAR=278, U_CHAR=279,
 		W_CHAR=280, X_CHAR=281, COMMENTENTRYTAG=282, COMMENTTAG=283, COMMACHAR=284,
 		DOT=285, DOUBLEEQUALCHAR=286, NONNUMERICLITERAL=287, INTEGERLITERAL=288,
-		NUMERICLITERAL=289, IDENTIFIER=290, FILENAME=291, SEPARATOR=292, NEWLINE=293,
-		COMMENTENTRYLINE=294, COMMENTLINE=295, WS=296, TEXT=297;
+		NUMERICLITERAL=289, IDENTIFIER=290, FILENAME=291, NEWLINE=292, COMMENTENTRYLINE=293,
+		COMMENTLINE=294, WS=295, SEPARATOR=296, TEXT=297;
 	public static final int
 		RULE_compilationUnit = 0, RULE_compilerOptions = 1, RULE_compilerXOpts = 2,
 		RULE_compilerOption = 3, RULE_execCicsStatement = 4, RULE_execSqlStatement = 5,
@@ -137,7 +137,8 @@ public class CobolPreprocessorParser extends Parser {
 			"'TITLE'", "'TRIG'", "'TRUNC'", "'UE'", "'UPPER'", "'VBREF'", "'WD'",
 			"'WORD'", "'XMLPARSE'", "'XMLSS'", "'XOPTS'", "'XP'", "'XREF'", "'YEARWINDOW'",
 			"'YW'", "'ZWB'", "'C'", "'D'", "'E'", "'F'", "'H'", "'I'", "'M'", "'N'",
-			"'Q'", "'S'", "'U'", "'W'", "'X'", "'*>CE'", "'*>'", "','", "'.'", "'=='"
+			"'Q'", "'S'", "'U'", "'W'", "'X'", "'*>CE'", "'*>'", "','", "'.'", "'=='",
+			null, null, null, null, null, null, null, null, null, "', '"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
@@ -181,8 +182,8 @@ public class CobolPreprocessorParser extends Parser {
 			"F_CHAR", "H_CHAR", "I_CHAR", "M_CHAR", "N_CHAR", "Q_CHAR", "S_CHAR",
 			"U_CHAR", "W_CHAR", "X_CHAR", "COMMENTENTRYTAG", "COMMENTTAG", "COMMACHAR",
 			"DOT", "DOUBLEEQUALCHAR", "NONNUMERICLITERAL", "INTEGERLITERAL", "NUMERICLITERAL",
-			"IDENTIFIER", "FILENAME", "SEPARATOR", "NEWLINE", "COMMENTENTRYLINE",
-			"COMMENTLINE", "WS", "TEXT"
+			"IDENTIFIER", "FILENAME", "NEWLINE", "COMMENTENTRYLINE", "COMMENTLINE",
+			"WS", "SEPARATOR", "TEXT"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -340,7 +341,7 @@ public class CobolPreprocessorParser extends Parser {
 			setState(82);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (((_la) & ~0x3f) == 0 && ((1L << _la) & -2310346608841326594L) != 0 || (((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & -16449L) != 0 || (((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & -576460752303423489L) != 0 || (((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & -18084767253659649L) != 0 || (((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & 2541345570543L) != 0) {
+			while (((_la) & ~0x3f) == 0 && ((1L << _la) & -2310346608841326594L) != 0 || (((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & -16449L) != 0 || (((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & -576460752303423489L) != 0 || (((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & -18084767253659649L) != 0 || (((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & 2403906617071L) != 0) {
 				{
 				setState(80);
 				_errHandler.sync(this);
@@ -5161,7 +5162,7 @@ public class CobolPreprocessorParser extends Parser {
 				setState(539);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & -2346656880870555650L) != 0 || (((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & -16449L) != 0 || (((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & -576460752303423489L) != 0 || (((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & -2324912939422711809L) != 0 || (((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & 2541882441455L) != 0 );
+			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & -2346656880870555650L) != 0 || (((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & -16449L) != 0 || (((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & -576460752303423489L) != 0 || (((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & -2324912939422711809L) != 0 || (((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & 2404443487983L) != 0 );
 			setState(541);
 			match(DOT);
 			}
@@ -6380,7 +6381,7 @@ public class CobolPreprocessorParser extends Parser {
 			setState(599);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if (((_la) & ~0x3f) == 0 && ((1L << _la) & -2346656880870555650L) != 0 || (((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & -16449L) != 0 || (((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & -576460752303423489L) != 0 || (((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & -2324912939422711809L) != 0 || (((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & 2541345570543L) != 0) {
+			if (((_la) & ~0x3f) == 0 && ((1L << _la) & -2346656880870555650L) != 0 || (((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & -16449L) != 0 || (((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & -576460752303423489L) != 0 || (((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & -2324912939422711809L) != 0 || (((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & 2403906617071L) != 0) {
 				{
 				setState(598);
 				charData();
@@ -6815,7 +6816,7 @@ public class CobolPreprocessorParser extends Parser {
 				setState(613);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & -2346656880837001218L) != 0 || (((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & -16449L) != 0 || (((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & -576460752303423489L) != 0 || (((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & -2324912938885840897L) != 0 || (((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & 2541345570543L) != 0 );
+			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & -2346656880837001218L) != 0 || (((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & -16449L) != 0 || (((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & -576460752303423489L) != 0 || (((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & -2324912938885840897L) != 0 || (((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & 2403906617071L) != 0 );
 			}
 		}
 		catch (RecognitionException re) {
@@ -9650,7 +9651,7 @@ public class CobolPreprocessorParser extends Parser {
 		"B!\u0000\u0293\u0291\u0001\u0000\u0000\u0000\u0293\u0292\u0001\u0000\u0000"+
 		"\u0000\u0294;\u0001\u0000\u0000\u0000\u0295\u0296\u0007Q\u0000\u0000\u0296"+
 		"=\u0001\u0000\u0000\u0000\u0297\u0298\u0005\u0123\u0000\u0000\u0298?\u0001"+
-		"\u0000\u0000\u0000\u0299\u029b\u0005\u0126\u0000\u0000\u029a\u0299\u0001"+
+		"\u0000\u0000\u0000\u0299\u029b\u0005\u0125\u0000\u0000\u029a\u0299\u0001"+
 		"\u0000\u0000\u0000\u029b\u029c\u0001\u0000\u0000\u0000\u029c\u029a\u0001"+
 		"\u0000\u0000\u0000\u029c\u029d\u0001\u0000\u0000\u0000\u029dA\u0001\u0000"+
 		"\u0000\u0000\u029e\u029f\u0007R\u0000\u0000\u029fC\u0001\u0000\u0000\u0000"+

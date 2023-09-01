@@ -658,9 +658,9 @@ FILENAME : [A-Z0-9]+ '.' [A-Z0-9]+;
 
 
 // whitespace, line breaks, comments, ...
-SEPARATOR : (', ' | ',''\r'?'\n') -> channel(HIDDEN);
 NEWLINE : '\r'? '\n' -> channel(HIDDEN);
 COMMENTENTRYLINE : COMMENTENTRYTAG WS ~('\n' | '\r')*;
 COMMENTLINE : COMMENTTAG WS ~('\n' | '\r')* -> channel(HIDDEN);
 WS : [ \t\f;]+ -> channel(HIDDEN);
+SEPARATOR : ', ' -> channel(HIDDEN);
 TEXT : ~('\n' | '\r');
