@@ -1027,7 +1027,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.LPARENCHAR()),
-                convertAllList(ctx.subscript()),
+                convertAllList(ctx.subscript(), ctx.COMMACHAR()),
                 (Cobol.Word) visit(ctx.RPARENCHAR())
         );
     }
@@ -1408,7 +1408,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.VALUE(), ctx.VALUES(), ctx.IS(), ctx.ARE()),
-                convertAllList(ctx.dataValueInterval())
+                convertAllList(ctx.dataValueInterval(), ctx.COMMACHAR())
         );
     }
 
@@ -1576,7 +1576,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.DISPLAY()),
-                convertAllList(ctx.displayOperand()),
+                convertAllList(ctx.displayOperand(), ctx.COMMACHAR()),
                 visitNullable(ctx.displayAt()),
                 visitNullable(ctx.displayUpon()),
                 visitNullable(ctx.displayWith()),
@@ -1983,7 +1983,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.LPARENCHAR()),
-                convertAllList(ctx.argument()),
+                convertAllList(ctx.argument(), ctx.COMMACHAR()),
                 (Cobol.Word) visit(ctx.RPARENCHAR())
         );
     }
@@ -4215,7 +4215,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         return new Cobol.ReportGroupSumClause(
                 EMPTY,
                 Markers.EMPTY,
-                convertAllList(singletonList(ctx.SUM()), ctx.identifier(), singletonList(ctx.UPON()), ctx.dataName())
+                convertAllList(singletonList(ctx.SUM()), ctx.identifier(), ctx.COMMACHAR(), singletonList(ctx.UPON()), ctx.dataName())
         );
     }
 
@@ -5292,7 +5292,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         return new Cobol.StringSendingPhrase(
                 EMPTY,
                 Markers.EMPTY,
-                convertAllList(ctx.stringSending()),
+                convertAllList(ctx.stringSending(), ctx.COMMACHAR()),
                 visit(ctx.stringDelimitedByPhrase(), ctx.stringForPhrase())
         );
     }
@@ -5484,7 +5484,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.LPARENCHAR()),
-                convertAllList(ctx.subscript()),
+                convertAllList(ctx.subscript(), ctx.COMMACHAR()),
                 (Cobol.Word) visit(ctx.RPARENCHAR())
         );
     }

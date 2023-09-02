@@ -611,6 +611,23 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
     }
 
     @Test
+    void commaDelimitedDisplayStatements() {
+        rewriteRun(
+          cobol(
+            """
+              000001 IDENTIFICATION DIVISION.
+              000002 PROGRAM-ID . HELLO-WORLD.
+              000008 PROCEDURE DIVISION.
+              000012     DISPLAY 'N1',NAME1.
+              000012     DISPLAY 'N2',NAME2.
+              000012     DISPLAY 'N2',NAME3.
+              000013 STOP RUN.
+              """
+          )
+        );
+    }
+
+    @Test
     void environmentDivision() {
         rewriteRun(
           cobol(

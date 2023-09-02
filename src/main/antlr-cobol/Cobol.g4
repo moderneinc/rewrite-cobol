@@ -3252,7 +3252,7 @@ INTEGERLITERAL : (PLUSCHAR | MINUSCHAR)? [0-9]+;
 
 NUMERICLITERAL : (PLUSCHAR | MINUSCHAR)? [0-9]* ('.' | COMMACHAR) [0-9]+ ('E' (PLUSCHAR | MINUSCHAR)? [0-9]+)?;
 
-IDENTIFIER : [A-Z0-9]+ ([-_]+ [A-Z0-9]+)*;
+IDENTIFIER : COLONCHAR? [A-Z0-9]+ COLONCHAR? ([-_]+ [A-Z0-9]+)*;
 
 // whitespace, line breaks, comments, ...
 // NEWLINE : '\r'? '\n' WS? '-'? -> channel(HIDDEN);
