@@ -11,9 +11,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.junitpioneer.jupiter.ExpectedToFail;
 import org.openrewrite.Issue;
+import org.openrewrite.cobol.CobolIsoVisitor;
 import org.openrewrite.cobol.CobolTest;
+import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.internal.StringUtils;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.openrewrite.cobol.Assertions.cobol;
 
 public class CobolParserAnsi85DivisionTest extends CobolTest {
@@ -199,106 +204,95 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
                                    NAME02     ;
                     * Trailing comma
                                    NAME03.
-                     DATA DIVISION.
-                     WORKING-STORAGE SECTION.
-                    * The commas between PIC characters are commas and not whitespace.
-                       02  FILLER PIC Z1,Z2,Z3.
               000005 STOP RUN.
               """
           )
         );
     }
 
-    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/38")
-    @Test
-    void commaDelimitedCloseStatement() {
-        rewriteRun(
-          cobol(
-            """
-              000001 IDENTIFICATION DIVISION .                                        000000000
-                     PROGRAM-ID . HELLO-WORLD .                                       000000000
-                     PROCEDURE DIVISION .                                             000000000
-                         NAME SECTION 01.                                             000000000
-                             CLOSE NAME01,
-                                   NAME02,
-                                   NAME03.
-                     STOP RUN .                                                       000000000
-              """
-          )
-        );
-    }
-
-    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/42")
-    @Test
-    void commaDelimitedMoveToStatement() {
-        rewriteRun(
-          cobol(
-            """
-              000001 IDENTIFICATION DIVISION .                                        000000000
-                     PROGRAM-ID . HELLO-WORLD .                                       000000000
-                     PROCEDURE DIVISION .                                             000000000
-                         NAME SECTION 01.                                             000000000
-                             MOVE NAME01 TO NAME02,
-                                            NAME02,
-                                            NAME03.
-                     STOP RUN .                                                       000000000
-              """
-          )
-        );
-    }
-
-    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/42")
-    @Test
-    void commaDelimitedOpenStatement() {
-        rewriteRun(
-          cobol(
-            """
-              000001 IDENTIFICATION DIVISION .                                        000000000
-                     PROGRAM-ID . HELLO-WORLD .                                       000000000
-                     PROCEDURE DIVISION .                                             000000000
-                         NAME SECTION 01.                                             000000000
-                             OPEN INPUT NAME01,
-                                  INPUT NAME02,
-                                  INPUT NAME03.
-                     STOP RUN .                                                       000000000
-              """
-          )
-        );
-    }
-
-    @Issue("https://github.com/moderneinc/rewrite-cobol/issues/104")
-    @Test
-    void commaDelimitedClassThrough() {
+    @ParameterizedTest
+    @ValueSource(strings = {
+      """
+        000000* conditionNameSubscriptReference.
+                PROCEDURE DIVISION.
+                EVALUATE IDENTIFIER (ALL,ALL,ALL,).
+        """,
+      """
+        000000* dataValueClause.
+                DATA DIVISION.
+                WORKING-STORAGE SECTION.
+                    77 VALUE IS IDENTIFIER,IDENTIFIER,IDENTIFIER,IDENTIFIER.
+        """,
+      """
+        000000* displayStatement.
+                PROCEDURE DIVISION.
+                DISPLAY IDENTIFIER,IDENTIFIER,IDENTIFIER,IDENTIFIER.
+        """,
+      """
+        000000* fileDescriptionEntry.
+                DATA DIVISION.
+                FILE SECTION.
+                FD IDENTIFIER ,VALUE OF IDENTIFIER ZERO
+                              ,VALUE OF IDENTIFIER ZERO
+                              ,VALUE OF IDENTIFIER ZERO.
+        """,
+      """
+        000000* functionCallArguments.
+                DATA DIVISION.
+                REPORT SECTION.
+                RD REPORT-01.
+                    77 SUM FUNCTION INTEGER (ZERO,ZERO,ZERO,).
+        """,
+      """
+        000000* pictureChars.
+               DATA DIVISION.
+               WORKING-STORAGE SECTION.
+                 02  FILLER PIC Z1,Z2,Z3,.
+        """,
+      """
+        000000* reportGroupSumClause.
+               DATA DIVISION.
+               REPORT SECTION.
+               RD REPORT-01.
+                   77 SUM IDENTIFIER,IDENTIFIER,IDENTIFIER UPON
+                   IDENTIFIER,.
+        """,
+      """
+        000000* stringSendingPhrase.
+                PROCEDURE DIVISION.
+                STRING IDENTIFIER,IDENTIFIER,IDENTIFIER,IDENTIFIER
+                        FOR IDENTIFIER
+                        INTO IDENTIFIER.
+        """,
+      """
+        000000* tableCallSubscripts.
+                DATA DIVISION.
+                REPORT SECTION.
+                RD REPORT-01.
+                    77 SUM IDENTIFIER (ALL,ALL,ALL,).
+        """,
+    })
+    void commaDelimiters(String input) {
         rewriteRun(
           cobol(
             """
               000001 IDENTIFICATION DIVISION.
-                     PROGRAM-ID. HELLO-WORLD.
-                     ENVIRONMENT DIVISION.
-                     CONFIGURATION SECTION.
-                     SPECIAL-NAMES.
-                            CLASS ALPHANUM IS '0' THRU '9',
-                                              'A' THRU 'Z', 'a' THRU 'z'.
-              """
-          )
-        );
-    }
-
-    @Issue("https://github.com/moderneinc/rewrite-cobol/issues/106")
-    @Test
-    void commaDelimitedDivideGiving() {
-        rewriteRun(
-          cobol(
-            """
-              000001 IDENTIFICATION DIVISION.                                         C_AREA.01
-              000002 PROGRAM-ID. acceptStatement.                                     C_AREA.02
-              000003 PROCEDURE DIVISION USING GRP-01.                                 C_AREA.03
-              000004 SIG-TEST-GF-5-0.                                                 C_AREA.04
-              000006     DIVIDE 0.097 INTO DIV7,
-                                      REMAINDER DIV9.
-                         DIVIDE 0.097 BY +4 GIVING DIV8,
-                                            REMAINDER DIV9.
-              """
+              000002 PROGRAM-ID. HELLO-WORLD.
+              %s
+              """.formatted(input),
+            spec -> spec.afterRecipe(cu -> {
+                AtomicInteger count = new AtomicInteger();
+                new CobolIsoVisitor<AtomicInteger>() {
+                    @Override
+                    public Cobol.Word visitWord(Cobol.Word word, AtomicInteger atomicInteger) {
+                        if (",".equals(word.getWord())) {
+                            atomicInteger.incrementAndGet();
+                        }
+                        return super.visitWord(word, atomicInteger);
+                    }
+                }.visit(cu, count);
+                assertThat(count.get()).as("Comma count").isEqualTo(3);
+            })
           )
         );
     }
@@ -389,102 +383,6 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
                   -                                        UE               "GOVERNM00000000
                   -    "ENT".                                                       00000000
             """
-          )
-        );
-    }
-
-    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/42")
-    @ParameterizedTest
-    @ValueSource(strings = {
-      // OpenInputStatement
-      """
-        000000               OPEN INPUT NAME01,
-                                        NAME02,
-                                        NAME03.
-        """,
-      // OpenOutputStatement
-      """
-        000000               OPEN OUTPUT NAME01,
-                                         NAME02,
-                                         NAME03.
-        """,
-      // OpenIOStatement
-      """
-        000000               OPEN I-O NAME01,
-                                      NAME02,
-                                      NAME03.
-        """,
-      // OpenExtendStatement
-      """
-        000000               OPEN EXTEND NAME01,
-                                         NAME02,
-                                         NAME03.
-        """,
-      // InitializeStatement
-      """
-        000000               INITIALIZE NAME01,
-                                        NAME02,
-                                        NAME03.
-        """,
-      // CallUsingPhrase
-      """
-        000000               CALL NAME USING NAME01
-                                             NAME02,
-                                             NAME03.
-        """,
-      // SetStatement
-      """
-        000000               SET NAME01,
-                                 NAME02,
-                                 NAME03, TO TRUE.
-        """,
-      // StringStatement
-      """
-        000000          STRING NAME01,
-                               NAME02,
-                               NAME03,
-                               DELIMITED BY SIZE INTO NEWNAME.
-        """
-    })
-    void commaDelimitedStatements(String statement) {
-        rewriteRun(
-          cobol(
-            """
-              000001 IDENTIFICATION DIVISION .                                        000000000
-                     PROGRAM-ID . HELLO-WORLD .                                       000000000
-                     PROCEDURE DIVISION .                                             000000000
-                         NAME SECTION 01.                                             000000000
-              %s
-                     STOP RUN .                                                       000000000
-              """.formatted(StringUtils.trimIndent(statement))
-          )
-        );
-    }
-
-    // TODO: add test for COBOL blank line. ,    ;     ,
-    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/42")
-    @Test
-    void commaDelimitedFileEntry() {
-        rewriteRun(
-          cobol(
-            """
-              000001 IDENTIFICATION DIVISION.
-                     PROGRAM-ID. HELLO-WORLD.
-                     ENVIRONMENT DIVISION.
-                     INPUT-OUTPUT SECTION.
-                     FILE-CONTROL.
-                     
-                         SELECT NAME ASSIGN TO NAME    ,
-                                FILE STATUS IS NEW-NAME.
-              
-                        SELECT OTHER-NAME ASSIGN TO OTHER-NAME,
-                               FILE STATUS IS NEW-OTHER-NAME.
-                     
-                     PROCEDURE DIVISION.
-                     STOP RUN.
-              """, spec -> spec.afterRecipe(cu -> {
-                System.out.println();
-            })
           )
         );
     }

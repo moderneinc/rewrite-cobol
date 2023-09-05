@@ -21,12 +21,6 @@ grammar Cobol;
 
 options { caseInsensitive = true; }
 
-/* Note:
- * The IBM-ANSI-85 spec defines a whitespace character as ' ', ', ', or `; `.
- * However, client code contains custom whitespace rules that do not match the language spec.
- * The customized whitespace allows for new lines to exist anywhere in the source code.
- */
-
 compilationUnit
    : programUnit* EOF
    ;
@@ -3255,8 +3249,15 @@ NUMERICLITERAL : (PLUSCHAR | MINUSCHAR)? [0-9]* ('.' | COMMACHAR) [0-9]+ ('E' (P
 IDENTIFIER : COLONCHAR? [A-Z0-9]+ COLONCHAR? ([-_]+ [A-Z0-9]+)*;
 
 // whitespace, line breaks, comments, ...
-// NEWLINE : '\r'? '\n' WS? '-'? -> channel(HIDDEN);
-SEPARATOR : (COMMACHAR ' ' | COMMACHAR '\r'? '\n') -> skip;
+
+/* Note:
+ * The IBM-ANSI-85 spec defines a whitespace character as ' ', ', ', or `; `.
+ * However, client code contains custom whitespace rules that do not match the language spec.
+ * The customized whitespace allows for new lines to exist anywhere in the source code.
+ *
+ * SEPARATOR rule skips over the customized whitespace.
+ */
+SEPARATOR : (';' | COMMACHAR) (' ' | '\r'? '\n') -> skip;
 NEWLINE : '\r'? '\n' -> channel(HIDDEN);
 EXECCICSLINE : EXECCICSTAG WS ~('\n' | '\r' | '}')* ('\n' | '\r' | '}');
 EXECSQLIMSLINE : EXECSQLIMSTAG WS ~('\n' | '\r' | '}')* ('\n' | '\r' | '}');
