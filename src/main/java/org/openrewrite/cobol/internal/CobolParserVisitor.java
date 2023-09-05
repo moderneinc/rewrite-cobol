@@ -1884,10 +1884,18 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
 
     @Override
     public Object visitExitStatement(CobolParser.ExitStatementContext ctx) {
+        List<Cobol.Word> paragraphName = null;
+        if (ctx.paragraphName() != null) {
+            paragraphName = new ArrayList<>(3);
+            paragraphName.add((Cobol.Word) visit(ctx.paragraphName()));
+            paragraphName.add((Cobol.Word) visit(ctx.DOT_FS()));
+            paragraphName.add((Cobol.Word) visit(ctx.EXIT()));
+        }
+
         return new Cobol.Exit(
                 EMPTY,
                 Markers.EMPTY,
-                wordsList(ctx.EXIT(), ctx.PROGRAM())
+                paragraphName != null ? paragraphName : wordsList(ctx.EXIT(), ctx.PROGRAM(), ctx.METHOD(), ctx.PERFORM(), ctx.CYCLE(), ctx.SECTION(), ctx.PARAGRAPH())
         );
     }
 

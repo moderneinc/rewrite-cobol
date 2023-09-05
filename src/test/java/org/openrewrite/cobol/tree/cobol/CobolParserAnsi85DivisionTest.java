@@ -1393,8 +1393,36 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
         );
     }
 
-    @Test
-    void exitStatement() {
+    @ParameterizedTest
+    @ValueSource(strings = {
+      """
+        000005* only word.
+                   EXIT.
+        """,
+      """
+        000005* format-1
+                   IDENTIFIER. EXIT.
+        """,
+      """
+        000005* format-2
+                   EXIT PROGRAM.
+        """,
+      """
+        000005* format-3
+                   EXIT METHOD.
+        """,
+      """
+        000005* format-5. Note: format-4 does not exist in the spec.
+                   EXIT PERFORM
+                   EXIT PERFORM CYCLE.
+        """,
+      """
+        000005* format-6.
+                   EXIT PARAGRAPH
+                   EXIT SECTION.
+        """,
+    })
+    void exitStatement(String input) {
         rewriteRun(
           cobol(
             """
@@ -1402,8 +1430,8 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
               000002 PROGRAM-ID. exitStatement.                                       C_AREA.02
               000003 PROCEDURE DIVISION.                                              C_AREA.03
               000004 RW301M-CONTROL.                                                  C_AREA.04
-              000005     EXIT PROGRAM.                                                C_AREA.05
-              """
+              %s
+              """.formatted(input)
           )
         );
     }
