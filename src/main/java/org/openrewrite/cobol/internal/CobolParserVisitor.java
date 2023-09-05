@@ -60,7 +60,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     private final NavigableMap<Integer, String> indicatorAreas = new TreeMap<>();
     private final NavigableMap<Integer, String> commentAreas = new TreeMap<>();
 
-    private final Set<String> separators = new HashSet<>();
     private static final Set<Character> commentIndicators = new HashSet<>();
     private int cursor = 0;
 
@@ -162,7 +161,6 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 pos += isCRLF ? 2 : 1; // Increment for new line delimiter.
             }
 
-            separators.addAll(cobolDialect.getSeparators());
             commentIndicators.addAll(cobolDialect.getCommentIndicators());
 
             CobolPreprocessorOutputSourcePrinter<ExecutionContext> templatePrinter = new CobolPreprocessorOutputSourcePrinter<>(cobolDialect, true);
@@ -679,7 +677,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.USING()),
-                convertAllList(ctx.callUsingParameter(), ctx.COMMACHAR())
+                convertAllList(ctx.callUsingParameter())
         );
     }
 
@@ -737,7 +735,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 (Cobol.Word) visit(ctx.CLASS()),
                 visitNullable(ctx.className()),
                 wordsList(ctx.FOR(), ctx.ALPHANUMERIC(), ctx.NATIONAL(), ctx.IS()),
-                convertAllList(ctx.classClauseThrough(), ctx.COMMACHAR()),
+                convertAllList(ctx.classClauseThrough()),
                 null
         );
     }
@@ -839,7 +837,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.CLOSE()),
-                convertAllList(ctx.closeFile(), ctx.COMMACHAR())
+                convertAllList(ctx.closeFile())
         );
     }
 
@@ -1621,7 +1619,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.GIVING()),
                 null,
-                convertAllList(ctx.divideGiving(), ctx.COMMACHAR())
+                convertAllList(ctx.divideGiving())
         );
     }
 
@@ -1643,7 +1641,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.INTO()),
                 null,
-                convertAllList(ctx.divideInto(), ctx.COMMACHAR())
+                convertAllList(ctx.divideInto())
         );
     }
 
@@ -1920,7 +1918,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol) visit(ctx.selectClause()),
-                convertAllList(ctx.fileControlClause(), ctx.COMMACHAR())
+                convertAllList(ctx.fileControlClause())
         );
     }
 
@@ -2186,7 +2184,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.INITIALIZE()),
-                convertAllList(ctx.identifier(), ctx.COMMACHAR()),
+                convertAllList(ctx.identifier()),
                 visitNullable(ctx.initializeReplacingPhrase())
         );
     }
@@ -2813,7 +2811,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 Markers.EMPTY,
                 (Name) visit(ctx.moveToSendingArea()),
                 (Cobol.Word) visit(ctx.TO()),
-                convertAllList(ctx.identifier(), ctx.COMMACHAR())
+                convertAllList(ctx.identifier())
         );
     }
 
@@ -3014,7 +3012,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.EXTEND()),
-                convertAllList(ctx.fileName(), ctx.COMMACHAR())
+                convertAllList(ctx.fileName())
         );
     }
 
@@ -3024,7 +3022,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.I_O()),
-                convertAllList(ctx.fileName(), ctx.COMMACHAR())
+                convertAllList(ctx.fileName())
         );
     }
 
@@ -3044,7 +3042,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.INPUT()),
-                convertAllList(ctx.openInput(), ctx.COMMACHAR())
+                convertAllList(ctx.openInput())
         );
     }
 
@@ -3064,7 +3062,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.OUTPUT()),
-                convertAllList(ctx.openOutput(), ctx.COMMACHAR())
+                convertAllList(ctx.openOutput())
         );
     }
 
@@ -3074,7 +3072,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.OPEN()),
-                convertAllList(ctx.openInputStatement(), ctx.COMMACHAR(), ctx.openOutputStatement(), ctx.openIOStatement(),
+                convertAllList(ctx.openInputStatement(), ctx.openOutputStatement(), ctx.openIOStatement(),
                         ctx.openExtendStatement())
         );
     }
@@ -3423,7 +3421,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.USING(), ctx.CHAINING()),
-                convertAllList(ctx.procedureDivisionUsingParameter(), ctx.COMMACHAR())
+                convertAllList(ctx.procedureDivisionUsingParameter())
         );
     }
 
@@ -4984,7 +4982,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         return new Cobol.SetTo(
                 EMPTY,
                 Markers.EMPTY,
-                convertAllList(ctx.setTo(), ctx.COMMACHAR()),
+                convertAllList(ctx.setTo()),
                 (Cobol.Word) visit(ctx.TO()),
                 convertAll(ctx.setToValue())
         );
@@ -4995,7 +4993,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         return new Cobol.SetUpDown(
                 EMPTY,
                 Markers.EMPTY,
-                convertAllList(ctx.setTo(), ctx.COMMACHAR()),
+                convertAllList(ctx.setTo()),
                 wordsList(ctx.DOWN(), ctx.UP(), ctx.BY()),
                 (Name) visit(ctx.setByValue())
         );
@@ -5857,17 +5855,17 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         int delimIndex = cursor;
         boolean isColumnArea = false;
         for (; delimIndex < source.length(); delimIndex++) {
-            if (source.length() > delimIndex + 1) {
-                // separators are equivalent to a whitespace character, but are specific combinations of characters based on the dialect.
-                // I.E. In IBM-ANSI-85, comma space `, ` or semicolon space `; ` are equivalent to a space.
-                if (separators.contains(source.substring(delimIndex, delimIndex + 2))) {
-                    continue;
-                }
-            }
+            char c = source.charAt(delimIndex);
 
             // Do not consume whitespace in blank column areas.
             isColumnArea = sequenceAreas.containsKey(delimIndex) || indicatorAreas.containsKey(delimIndex) || commentAreas.containsKey(delimIndex);
-            if (!Character.isWhitespace(source.substring(delimIndex, delimIndex + 1).charAt(0)) || isColumnArea) {
+            if (!Character.isWhitespace(c) || isColumnArea) {
+                if (c == ',' || c == ';' && delimIndex + 1 < source.length() - 1) {
+                    char next = source.charAt(delimIndex + 1);
+                    if (next == ' ' || next == '\r' || next == '\n') {
+                        continue;
+                    }
+                }
                 break; // found it!
             }
         }

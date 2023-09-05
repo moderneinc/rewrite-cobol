@@ -658,9 +658,16 @@ FILENAME : [A-Z0-9]+ '.' [A-Z0-9]+;
 
 
 // whitespace, line breaks, comments, ...
+/* Note:
+ * The IBM-ANSI-85 spec defines a whitespace character as ' ', ', ', or `; `.
+ * However, client code contains custom whitespace rules that do not match the language spec.
+ * The customized whitespace allows for new lines to exist anywhere in the source code.
+ *
+ * SEPARATOR rule skips over the customized whitespace.
+ */
+SEPARATOR : (';' | COMMACHAR) (' ' | '\r'? '\n') -> skip;
 NEWLINE : '\r'? '\n' -> channel(HIDDEN);
 COMMENTENTRYLINE : COMMENTENTRYTAG WS ~('\n' | '\r')*;
 COMMENTLINE : COMMENTTAG WS ~('\n' | '\r')* -> channel(HIDDEN);
 WS : [ \t\f;]+ -> channel(HIDDEN);
-SEPARATOR : ', ' -> channel(HIDDEN);
 TEXT : ~('\n' | '\r');

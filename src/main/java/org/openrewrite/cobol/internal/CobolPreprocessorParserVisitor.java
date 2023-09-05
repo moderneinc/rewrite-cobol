@@ -45,7 +45,6 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
     private final Map<Integer, String> indicatorAreas = new LinkedHashMap<>();
     private final Map<Integer, String> commentAreas = new LinkedHashMap<>();
 
-    private final Set<String> separators = new HashSet<>();
     private final Set<Character> commentIndicators = new HashSet<>();
     private int cursor = 0;
 
@@ -121,7 +120,6 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
                 pos += isCRLF ? 2 : 1; // Increment for new line delimiter.
             }
 
-            separators.addAll(cobolDialect.getSeparators());
             commentIndicators.addAll(cobolDialect.getCommentIndicators());
         } else if (cobolDialect.getColumns() == CobolDialect.Columns.HP_TANDEM) {
             throw new UnsupportedOperationException("Implement me.");
@@ -838,17 +836,17 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
     private int indexOfNextNonWhitespace(int cursor, String source) {
         int delimIndex = cursor;
         for (; delimIndex < source.length(); delimIndex++) {
-            if (source.length() > delimIndex + 1) {
-                // separators are equivalent to a whitespace character, but are specific combinations of characters based on the dialect.
-                // I.E. In IBM-ANSI-85, comma space `, ` or semicolon space `; ` are equivalent to a space.
-                if (separators.contains(source.substring(delimIndex, delimIndex + 2))) {
-                    continue;
-                }
-            }
+            char c = source.charAt(delimIndex);
 
             // Do not consume whitespace in blank column areas.
             boolean isColumnArea = sequenceAreas.containsKey(delimIndex) || indicatorAreas.containsKey(delimIndex) || commentAreas.containsKey(delimIndex);
-            if (!Character.isWhitespace(source.substring(delimIndex, delimIndex + 1).charAt(0)) || isColumnArea) {
+            if (!Character.isWhitespace(c) || isColumnArea) {
+                if (c == ',' || c == ';' && delimIndex + 1 < source.length() - 1) {
+                    char next = source.charAt(delimIndex + 1);
+                    if (next == ' ' || next == '\r' || next == '\n') {
+                        continue;
+                    }
+                }
                 break; // found it!
             }
         }
