@@ -1493,6 +1493,21 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
     }
 
     @Test
+    void entryStatement() {
+        rewriteRun(
+          cobol(
+            """
+              000001 IDENTIFICATION  DIVISION.
+              000002 PROGRAM-ID. HELLO.
+              000003 PROCEDURE DIVISION.
+              000004 ENTRY 'Hello world!'
+              000005 ENTRY 'Hello world!' USING IDENTIFIER, IDENTIFIER, IDENTIFIER.
+              """
+          )
+        );
+    }
+
+    @Test
     void goToStatement() {
         rewriteRun(
           cobol(

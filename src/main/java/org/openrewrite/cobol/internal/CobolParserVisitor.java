@@ -735,8 +735,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 (Cobol.Word) visit(ctx.CLASS()),
                 visitNullable(ctx.className()),
                 wordsList(ctx.FOR(), ctx.ALPHANUMERIC(), ctx.NATIONAL(), ctx.IS()),
-                convertAllList(ctx.classClauseThrough()),
-                null
+                convertAll(ctx.classClauseThrough())
         );
     }
 
@@ -1618,8 +1617,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.GIVING()),
-                null,
-                convertAllList(ctx.divideGiving())
+                convertAll(ctx.divideGiving())
         );
     }
 
@@ -1640,8 +1638,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.INTO()),
-                null,
-                convertAllList(ctx.divideInto())
+                convertAll(ctx.divideInto())
         );
     }
 
@@ -1712,7 +1709,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 Markers.EMPTY,
                 (Cobol.Word) visit(ctx.ENTRY()),
                 (Literal) visit(ctx.literal()),
-                (Cobol.Word) visit(ctx.USING()),
+                visitNullable(ctx.USING()),
                 convertAll(ctx.identifier())
         );
     }
