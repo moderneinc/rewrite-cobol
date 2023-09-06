@@ -1,6 +1,6 @@
 parser grammar JCLParser;
 
-options { tokenVocab=JCLLexer; }
+options { caseInsensitive = true; tokenVocab=JCLLexer; }
 
 compilationUnit
     : statement* EOF
