@@ -15,14 +15,14 @@ public class JclLineReaderTest {
     void controlM() {
         assertThat(JclLineReader
           .readLines("%%LIBSYM NAME.FIELD %%MEMSYM NAME.FIELD"))
-          .isEqualTo("CM>>%%LIBSYM NAME.FIELD %%MEMSYM NAME.FIELD");
+          .isEqualTo("<<CM>>%%LIBSYM NAME.FIELD %%MEMSYM NAME.FIELD");
     }
 
     @Test
     void jcl() {
         assertThat(JclLineReader
           .readLines("//JOB1 JOB ,'H.H. MORRILL'"))
-          .isEqualTo("JCL_STATEMENT>>//JOB1 JOB ,'H.H. MORRILL'");
+          .isEqualTo("<<JCL_STATEMENT>>//JOB1 JOB ,'H.H. MORRILL'");
     }
 
     @Test
@@ -36,9 +36,9 @@ public class JclLineReaderTest {
               """))
           .isEqualTo(
             """
-              JCL_STATEMENT>>//%%JOBNAME.%%OTHER JOB (1,2,3),
-              JCL_CONT>>//    'NAME',//    'NAME',
-              JCL_CONT>>//    MSGCLASS=A//    MSGCLASS=A
+              <<JCL_STATEMENT>>//%%JOBNAME.%%OTHER JOB (1,2,3),
+              <<JCL_CONT>>//    'NAME',
+              <<JCL_CONT>>//    MSGCLASS=A
               """
           );
     }
@@ -47,7 +47,7 @@ public class JclLineReaderTest {
     void jes2() {
         assertThat(JclLineReader
           .readLines("/*JOBPARAM A=1,B=2,C=%%NAME.FIELD"))
-          .isEqualTo("JES2>>/*JOBPARAM A=1,B=2,C=%%NAME.FIELD");
+          .isEqualTo("<<JES2>>/*JOBPARAM A=1,B=2,C=%%NAME.FIELD");
     }
 
     @Test
@@ -61,8 +61,8 @@ public class JclLineReaderTest {
           ))
           .isEqualTo(
             """
-              JES2>>/*JOBPARAM A=1,
-              JES2_CONT>>/*B=2,C=%%NAME.FIELD
+              <<JES2>>/*JOBPARAM A=1,
+              <<JES2_CONT>>/*B=2,C=%%NAME.FIELD
               """
           );
     }
@@ -71,7 +71,7 @@ public class JclLineReaderTest {
     void jes3() {
         assertThat(JclLineReader
           .readLines("//*SYSTSPRT DD SYSOUT=*"))
-          .isEqualTo("JES3>>//*SYSTSPRT DD SYSOUT=*");
+          .isEqualTo("<<JES3>>//*SYSTSPRT DD SYSOUT=*");
     }
 
     @Test
@@ -84,8 +84,8 @@ public class JclLineReaderTest {
               """
           ))
           .isEqualTo("""
-            JES3>>//*NET NETID=EXP1,RELEASE=91,2,3,
-            JES3_CONT>>//*4,5)
+            <<JES3>>//*NET NETID=EXP1,RELEASE=91,2,3,
+            <<JES3_CONT>>//*4,5)
             """
           );
     }
@@ -104,11 +104,11 @@ public class JclLineReaderTest {
           ))
           .isEqualTo(
             """
-              JCL_STATEMENT>>//OBJECT DD *
-              STREAM>> REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(1,2,3),
-              STREAM>>   FIELDS=(ABC=XYZ)
-              STREAM>> REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(4,5,6),
-              STREAM>>   FIELDS=(ABC=XYZ)
+              <<JCL_STATEMENT>>//OBJECT DD *
+              <<STREAM>> REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(1,2,3),
+              <<STREAM>>   FIELDS=(ABC=XYZ)
+              <<STREAM>> REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(4,5,6),
+              <<STREAM>>   FIELDS=(ABC=XYZ)
               """
           );
     }
@@ -127,11 +127,11 @@ public class JclLineReaderTest {
           ))
           .isEqualTo(
             """
-              JCL_STATEMENT>>//OBJECT DD *    <<TC_START>>* Why is this possible?<<TC_STOP>>
-              STREAM>> REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(1,2,3),
-              STREAM>>   FIELDS=(ABC=XYZ)
-              STREAM>> REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(4,5,6),
-              STREAM>>   FIELDS=(ABC=XYZ)
+              <<JCL_STATEMENT>>//OBJECT DD *    <<TC_START>>* Why is this possible?<<TC_STOP>>
+              <<STREAM>> REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(1,2,3),
+              <<STREAM>>   FIELDS=(ABC=XYZ)
+              <<STREAM>> REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(4,5,6),
+              <<STREAM>>   FIELDS=(ABC=XYZ)
               """
           );
     }
@@ -150,11 +150,11 @@ public class JclLineReaderTest {
           ))
           .isEqualTo(
             """
-              JCL_STATEMENT>>//OBJECT DD *    <<TC_START>>* Why is this possible?                                <<TC_STOP>><<CA_START>>commentArea<<CA_STOP>>
-              STREAM>> REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(1,2,3),
-              STREAM>>   FIELDS=(ABC=XYZ)
-              STREAM>> REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(4,5,6),
-              STREAM>>   FIELDS=(ABC=XYZ)
+              <<JCL_STATEMENT>>//OBJECT DD *    <<TC_START>>* Why is this possible?                                <<TC_STOP>><<CA_START>>commentArea
+              <<STREAM>> REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(1,2,3),
+              <<STREAM>>   FIELDS=(ABC=XYZ)
+              <<STREAM>> REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(4,5,6),
+              <<STREAM>>   FIELDS=(ABC=XYZ)
               """
           );
     }
@@ -163,6 +163,6 @@ public class JclLineReaderTest {
     void commentArea() {
         assertThat(JclLineReader
           .readLines("//NAME                                                                  commentArea"))
-          .isEqualTo("JCL_STATEMENT>>//NAME                                                                  <<CA_START>>commentArea<<CA_STOP>>");
+          .isEqualTo("<<JCL_STATEMENT>>//NAME                                                                  <<CA_START>>commentArea");
     }
 }

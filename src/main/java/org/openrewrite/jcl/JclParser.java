@@ -42,9 +42,9 @@ public class JclParser implements Parser {
                     try {
                         EncodingDetectingInputStream is = sourceFile.getSource(ctx);
                         String sourceStr = is.readFully();
-
+                        String postProcess = JclLineReader.readLines(sourceStr);
                         JCLParser parser = new JCLParser(new CommonTokenStream(new JCLLexer(
-                                CharStreams.fromString(sourceStr))));
+                                CharStreams.fromString(postProcess))));
 
                         parser.removeErrorListeners();
                         parser.addErrorListener(new ForwardingErrorListener(sourceFile.getPath(), ctx));

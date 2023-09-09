@@ -64,4 +64,61 @@ public class JclTest implements RewriteTest {
           )
         );
     }
+
+    @Test
+    void ddStream() {
+        rewriteRun(
+          jcl(
+            """
+              //%%JOBNAME.%%OTHER JOB (1,2,3),
+              //    'NAME',
+              //    MSGCLASS=A
+              """
+          )
+        );
+    }
+
+    @Test
+    void commentArea() {
+        rewriteRun(
+          jcl(
+            "//NAME                                                                  commentArea"
+          )
+        );
+    }
+
+    @Test
+    void trailingCommentAndCommentArea() {
+        rewriteRun(
+          jcl(
+            """
+              //OBJECT DD *    * Why is this possible?                                commentArea
+                REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(1,2,3),
+                 FIELDS=(ABC=XYZ)
+                REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(4,5,6),
+                 FIELDS=(ABC=XYZ)
+              """
+          )
+        );
+    }
+
+    @Test
+    void unknown() {
+        rewriteRun(
+          jcl(
+            """
+              //* %%RANGE 1 42
+                TRACE OFF
+                MAXCOMMAND 42
+                CALLMEM SET42
+                CALLMEM SET42
+                 SETOLOC %%MAXRC = 42
+              %%RANGE 1 42
+              CALLMEM ORDERJOB %%LIBRO LCOPYJCL ALL
+              %%DATTR FORCE C
+              %% RANGE 1 42
+              """
+          )
+        );
+    }
 }

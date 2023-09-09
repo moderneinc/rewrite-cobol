@@ -7,135 +7,100 @@ compilationUnit
     ;
 
 statement
-    : jclStatement
-    | unsupportedStatement
+    : jcl
+    | jes2
+    | jes3
+    | stream
+    | controlM
+    | comment
+    | unknown
     ;
 
-jclStatement
-    : JCL_STATEMENT (jobStatement |ddStatement | execStatement | outputStatement | pendStatement | procStatement | setStatement | xmitStatement)
+jcl
+    : jclWord
+    | jclTrailingComment
     ;
 
-/* Syntax
-//jobname JOB [parameter [comments]]
-//jobname JOB
-*/
-jobStatement
-    : JOB (COMMA? parameter)* // comments ...
+jclWord
+    : JCL_TEXT jclCommentArea?
     ;
 
-/* Syntax
-// [ddname ] DD [positional-parameter][,keyword-parameter]...[comments]
-[procstepname.ddname]
-
-// [ddname ] DD
-[procstepname.ddname]
-*/
-ddStatement
-    : DD (COMMA? parameter)* // Add comments ...
+jclCommentArea
+    : CA_START jclWord
     ;
 
-/* Syntax
-//[stepname] EXEC positional-parm[,keyword-parm]...[,symbolic-parm=value]...
-[comments]
-*/
-execStatement
-    : EXEC (COMMA? parameter)* // Add comments ...
+jclTrailingComment
+    : jclWord JCL_TC_START jclWord* JCL_TC_STOP  jclCommentArea?
     ;
 
-/* Syntax
-//name OUTPUT parameter[,parameter]... [comments]
-*/
-outputStatement
-    : OUTPUT (COMMA? parameter)* // Add comments ...
+jes2
+    : jes2Word
     ;
 
-/* Syntax
-//[name] PEND [comments]
-The PEND statement consists of the characters // in columns 1 and 2 and three fields:
-name, operation (PEND), and comments. Do not continue a PEND statement.
-*/
-pendStatement
-    : PEND // Add comments
+jes2Word
+    : JES2_TEXT jes2CommentArea?
     ;
 
-/* Syntax
-//[name] PROC [parameter [comments]]
-//[name] PROC
-*/
-procStatement
-    : PROC (COMMA? parameter)* // Add comments ...
+jes2CommentArea
+    : CA_START jes2Word
     ;
 
-/* Syntax
-//[name] SET symbolic-parameter=value [,symbolic-parameter=value]... [comments]
-*/
-setStatement
-    : SET (COMMA? parameter)* // Add comments ...
+jes3
+    : jes3Word
     ;
 
-/* Syntax
-//[name] XMIT parameter[,parameter]... [comments]
-
-The XMIT JCL statement consists of the characters // in columns 1 and 2 and four fields:
-name, operation (XMIT), parameter, and comments.
-*/
-xmitStatement
-    : XMIT (COMMA? parameter)* // Add comments ...
+jes3Word
+    : JES3_TEXT jes3CommentArea?
     ;
 
-parameter
-    : name
-    | parameterLiteral
-    | parameterAssignment
-    | parameterParentheses
+jes3CommentArea
+    : CA_START jes3Word
     ;
 
-parameterParentheses
-    : L_PAREN (COMMA? parameter)* R_PAREN
+stream
+    : streamWord
     ;
 
-parameterAssignment
-    : (PARAMETER | NAME_FIELD | EXEC | OUTPUT | PROC) EQUAL parameter
+streamWord
+    : STREAM_TEXT streamCommentArea?
     ;
 
-// Force a separate visit on parameter literals since 'some , literal' may be comma separated.
-parameterLiteral
-    : PARAMETER_LITERAL
+streamCommentArea
+    : CA_START streamWord
     ;
 
-name
-    : (PARAMETER | NAME_FIELD) parameterParentheses?
+controlM
+    : controlMWord
     ;
 
-unsupportedStatement
-    : UNSUPPORTED UNSUPPORTED_TEXT?
-    | JES2 JES2_TEXT?
+controlMWord
+    : CM_TEXT controlMCommentArea?
     ;
 
-//conditionStatement
-//    : ifStatement
-//    | elseStatement
-//    | endifStatement
-//    ;
+controlMCommentArea
+    : CA_START controlMWord
+    ;
 
-//ifStatement
-//    : IF [relational expression] THEN [comments]
-//    ;
-//
-//elseStatement
-//    : ELSE [comments]
-//    ;
-//
-//endifStatement
-//    : ENDIF [comments]
-//    ;
-//
-//
+comment
+    : commentWord
+    ;
 
-// TODO: add statements with labels.
-/*
-//label CNTL [* comments]
-//[label] ENDCNTL [comments]
-//[label] EXPORT [comments]
-*/
+commentWord
+    : COMMENT_TEXT commentCommentArea?
+    ;
 
+commentCommentArea
+    : CA_START commentWord
+    ;
+
+unknown
+    : unknownWord
+    ;
+
+unknownWord
+    : UNKNOWN_TEXT unknownCommentArea?
+    ;
+
+unknownCommentArea
+    : CA_START unknownWord
+    ;
