@@ -5,14 +5,15 @@
  */
 package org.openrewrite.jcl.internal;
 
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.openrewrite.FileAttributes;
-import org.openrewrite.internal.StringUtils;
 import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.jcl.internal.grammar.JCLParser;
 import org.openrewrite.jcl.internal.grammar.JCLParserBaseVisitor;
-import org.openrewrite.jcl.markers.OmitFirstParam;
+import org.openrewrite.jcl.marker.CommentArea;
+import org.openrewrite.jcl.marker.TrailingComment;
 import org.openrewrite.jcl.tree.*;
 import org.openrewrite.marker.Markers;
 
@@ -20,9 +21,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
-import static java.util.Collections.emptyList;
 import static org.openrewrite.Tree.randomId;
 import static org.openrewrite.jcl.tree.Space.EMPTY;
 
@@ -58,15 +57,6 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
         throw new IllegalStateException("Expected one of the supplied trees to be non-null");
     }
 
-    public <T> T visitNullable(@Nullable ParseTree tree) {
-        if (tree == null) {
-            //noinspection ConstantConditions
-            return null;
-        }
-        //noinspection unchecked
-        return (T) super.visit(tree);
-    }
-
     @Override
     public Jcl.CompilationUnit visitCompilationUnit(JCLParser.CompilationUnitContext ctx) {
         List<Statement> statements = new ArrayList<>(ctx.statement().size());
@@ -89,264 +79,143 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
     }
 
     @Override
-    public Jcl visitDdStatement(JCLParser.DdStatementContext ctx) {
-        return new Jcl.DataDefinitionStatement(
-                randomId(),
-                whitespace(),
-                Markers.EMPTY,
-                createIdentifier(ctx.DD().getText()),
-                createParameters(ctx.parameter())
-        );
-    }
-
-    @Override
-    public Jcl visitExecStatement(JCLParser.ExecStatementContext ctx) {
-        return new Jcl.ExecStatement(
-                randomId(),
-                whitespace(),
-                Markers.EMPTY,
-                createIdentifier(ctx.EXEC().getText()),
-                createParameters(ctx.parameter())
-        );
-    }
-
-    @Override
-    public Jcl visitJclStatement(JCLParser.JclStatementContext ctx) {
-        Space prefix = whitespace(true);
-        skip("//");
-        return new Jcl.JclStatement(
-                randomId(),
-                prefix,
-                Markers.EMPTY,
-                createIdentifier(StringUtils.isBlank(ctx.JCL_STATEMENT().getText().substring(2)) ? "" :
-                        ctx.JCL_STATEMENT().getText().substring(2)),
-                visit(ctx.jobStatement(),
-                        ctx.ddStatement(),
-                        ctx.execStatement(),
-                        ctx.outputStatement(),
-                        ctx.pendStatement(),
-                        ctx.procStatement(),
-                        ctx.setStatement(),
-                        ctx.xmitStatement())
-        );
-    }
-
-    @Override
-    public Jcl visitJobStatement(JCLParser.JobStatementContext ctx) {
-        return new Jcl.JobStatement(
-                randomId(),
-                whitespace(),
-                Markers.EMPTY,
-                createIdentifier(ctx.JOB().getText()),
-                createParameters(ctx.parameter())
-        );
-    }
-
-    @Override
-    public Jcl visitName(JCLParser.NameContext ctx) {
-        return new Jcl.JclName(
-                randomId(),
-                whitespace(),
-                Markers.EMPTY,
-                visit(ctx.PARAMETER(), ctx.NAME_FIELD()),
-                visitNullable(ctx.parameterParentheses())
-        );
-    }
-
-    @Override
-    public Jcl visitOutputStatement(JCLParser.OutputStatementContext ctx) {
-        return new Jcl.JobStatement(
-                randomId(),
-                whitespace(),
-                Markers.EMPTY,
-                createIdentifier(ctx.OUTPUT().getText()),
-                createParameters(ctx.parameter())
-        );
-    }
-
-    @Override
-    public Jcl visitParameter(JCLParser.ParameterContext ctx) {
-        return super.visitParameter(ctx);
-    }
-
-    @Override
-    public Jcl visitParameterAssignment(JCLParser.ParameterAssignmentContext ctx) {
-        return new Jcl.Assignment(
-                randomId(),
-                whitespace(),
-                Markers.EMPTY,
-                visit(ctx.PARAMETER(), ctx.NAME_FIELD(), ctx.EXEC(), ctx.OUTPUT(), ctx.PROC()),
-                padLeft(sourceBefore("="), (Expression) visit(ctx.parameter()))
-        );
-    }
-
-    @Override
-    public Jcl visitParameterLiteral(JCLParser.ParameterLiteralContext ctx) {
-        Space prefix = whitespace();
-        String value = ctx.getText();
-        String sourceText = source.substring(ctx.start.getStartIndex(), ctx.stop.getStopIndex() + 1);
-        skip(sourceText);
-        return new Jcl.Literal(
-                randomId(),
-                prefix,
-                Markers.EMPTY,
-                value,
-                sourceText
-        );
-    }
-
-    @Override
-    public Jcl visitParameterParentheses(JCLParser.ParameterParenthesesContext ctx) {
+    public Jcl visitCommentWord(JCLParser.CommentWordContext ctx) {
         Space prefix = whitespace();
         Markers markers = Markers.EMPTY;
-        skip("(");
-        List<JclRightPadded<Jcl>> padded = new ArrayList<>(ctx.parameter().size());
-        for (int i = 0; i < ctx.parameter().size(); i++) {
-            if (i == 0) {
-                int saveCursor = cursor;
-                whitespace();
-                if (source.startsWith(",", cursor)) {
-                    markers = markers.addIfAbsent(new OmitFirstParam(randomId()));
-                    skip(",");
-                } else {
-                    cursor = saveCursor;
-                }
-            }
-            Jcl tree = visit(ctx.parameter().get(i));
-            padded.add(padRight(tree, i < ctx.parameter().size() - 1 ?
-                    sourceBefore(",") : sourceBefore(")"))
-            );
+        Jcl.Word word = (Jcl.Word) visit(ctx.COMMENT_TEXT());
+        if (ctx.commentCommentArea() != null) {
+            markers = markers.addIfAbsent(mapCommentArea(ctx.commentCommentArea()));
         }
-        return new Jcl.Parentheses<>(
+        return new Jcl.Comment(
                 randomId(),
                 prefix,
                 markers,
-                padded
+                word
         );
     }
 
     @Override
-    public Jcl visitPendStatement(JCLParser.PendStatementContext ctx) {
-        return new Jcl.Pend(
-                randomId(),
-                whitespace(),
-                Markers.EMPTY,
-                createIdentifier(ctx.PEND().getText())
-        );
-    }
-
-    @Override
-    public Jcl visitProcStatement(JCLParser.ProcStatementContext ctx) {
-        return new Jcl.ProcStatement(
-                randomId(),
-                whitespace(),
-                Markers.EMPTY,
-                createIdentifier(ctx.PROC().getText()),
-                createParameters(ctx.parameter())
-        );
-    }
-
-    @Override
-    public Jcl visitSetStatement(JCLParser.SetStatementContext ctx) {
-        return new Jcl.SetStatement(
-                randomId(),
-                whitespace(),
-                Markers.EMPTY,
-                createIdentifier(ctx.SET().getText()),
-                createParameters(ctx.parameter())
-        );
-    }
-
-    @Override
-    public Jcl visitXmitStatement(JCLParser.XmitStatementContext ctx) {
-        return new Jcl.XmitStatement(
-                randomId(),
-                whitespace(),
-                Markers.EMPTY,
-                createIdentifier(ctx.XMIT().getText()),
-                createParameters(ctx.parameter())
-        );
-    }
-
-    @SuppressWarnings("ConstantValue")
-    @Override
-    public Jcl visitUnsupportedStatement(JCLParser.UnsupportedStatementContext ctx) {
-        Space prefix = whitespace(true);
-        String text;
-        if (ctx.JES2() != null) {
-            text = ctx.JES2().getText() + ctx.JES2_TEXT().getText();
-        } else {
-            text = ctx.UNSUPPORTED().getText() + ctx.UNSUPPORTED_TEXT().getText();
+    public Jcl visitControlMWord(JCLParser.ControlMWordContext ctx) {
+        Space prefix = whitespace();
+        Markers markers = Markers.EMPTY;
+        Jcl.Word word = (Jcl.Word) visit(ctx.CM_TEXT());
+        if (ctx.controlMCommentArea() != null) {
+            markers = markers.addIfAbsent(mapCommentArea(ctx.controlMCommentArea()));
         }
-        skip(text);
-        return new Jcl.Unsupported(
+        return new Jcl.ControlM(
                 randomId(),
                 prefix,
-                Markers.EMPTY,
-                text
+                markers,
+                word
+        );
+    }
+
+    @Override
+    public Jcl visitJclWord(JCLParser.JclWordContext ctx) {
+        Space prefix = whitespace();
+        Markers markers = Markers.EMPTY;
+        Jcl.Word word = (Jcl.Word) visit(ctx.JCL_TEXT());
+        if (ctx.jclCommentArea() != null) {
+            markers = markers.addIfAbsent(mapCommentArea(ctx.jclCommentArea()));
+        }
+        return new Jcl.JclStatement(
+                randomId(),
+                prefix,
+                markers,
+                word
+        );
+    }
+
+    @Override
+    public Jcl visitJclTrailingComment(JCLParser.JclTrailingCommentContext ctx) {
+        Markers markers = Markers.EMPTY;
+        Jcl.JclStatement jclStatement = (Jcl.JclStatement) visit(ctx.jclWord(0));
+
+        markers = markers.addIfAbsent(mapTrailingComment(ctx.jclWord().subList(1, ctx.jclWord().size())));
+        if (ctx.jclCommentArea() != null) {
+            markers = markers.addIfAbsent(mapCommentArea(ctx.jclCommentArea()));
+        }
+        return jclStatement.withMarkers(markers);
+    }
+
+    @Override
+    public Jcl visitJes2Word(JCLParser.Jes2WordContext ctx) {
+        Space prefix = whitespace();
+        Markers markers = Markers.EMPTY;
+        Jcl.Word word = (Jcl.Word) visit(ctx.JES2_TEXT());
+        if (ctx.jes2CommentArea() != null) {
+            markers = markers.addIfAbsent(mapCommentArea(ctx.jes2CommentArea()));
+        }
+        return new Jcl.Jes2(
+                randomId(),
+                prefix,
+                markers,
+                word
+        );
+    }
+
+    @Override
+    public Jcl visitJes3Word(JCLParser.Jes3WordContext ctx) {
+        Space prefix = whitespace();
+        Markers markers = Markers.EMPTY;
+        Jcl.Word word = (Jcl.Word) visit(ctx.JES3_TEXT());
+        if (ctx.jes3CommentArea() != null) {
+            markers = markers.addIfAbsent(mapCommentArea(ctx.jes3CommentArea()));
+        }
+        return new Jcl.Jes3(
+                randomId(),
+                prefix,
+                markers,
+                word
+        );
+    }
+
+    @Override
+    public Jcl visitUnknownWord(JCLParser.UnknownWordContext ctx) {
+        Space prefix = whitespace();
+        Markers markers = Markers.EMPTY;
+        Jcl.Word word = (Jcl.Word) visit(ctx.UNKNOWN_TEXT());
+        if (ctx.unknownCommentArea() != null) {
+            markers = markers.addIfAbsent(mapCommentArea(ctx.unknownCommentArea()));
+        }
+        return new Jcl.Unknown(
+                randomId(),
+                prefix,
+                markers,
+                word
         );
     }
 
     @Override
     public Jcl visitTerminal(TerminalNode node) {
-        return createIdentifier(node.getText());
-    }
-
-    private Jcl.Identifier createIdentifier(@Nullable String name) {
-        Space prefix = whitespace();
-        skip(name);
-        return new Jcl.Identifier(
+        return new Jcl.Word(
                 randomId(),
-                prefix,
+                sourceBefore(node.getText()),
                 Markers.EMPTY,
-                name
+                node.getText()
         );
     }
 
-    private JclContainer<Parameter> createParameters(List<JCLParser.ParameterContext> parameters) {
-        Space before = whitespace();
-        Markers markers = Markers.EMPTY;
-        if (source.startsWith(",", cursor)) {
-            skip(",");
-            markers = markers.addIfAbsent(new OmitFirstParam(randomId()));
-        }
-        return JclContainer.build(before, parameters.isEmpty() ? emptyList() :
-                convertAll(parameters, commaDelim, t -> EMPTY), markers);
+    private CommentArea mapCommentArea(ParserRuleContext ctx) {
+        return new CommentArea(
+                randomId(),
+                sourceBefore(ctx.getChild(ctx.getChildCount() - 1).getText()),
+                ctx.getChild(ctx.getChildCount() - 1).getText()
+        );
     }
 
-    private <C extends Jcl, T extends ParseTree> List<C> convertAll(List<T> trees) {
-        //noinspection unchecked
-        return convertAll(trees, t -> (C) visit(t));
-    }
-
-    private <C, T extends ParseTree> List<C> convertAll(List<T> trees, Function<T, C> convert) {
-        List<C> converted = new ArrayList<>(trees.size());
-        for (T tree : trees) {
-            converted.add(convert.apply(tree));
+    private TrailingComment mapTrailingComment(List<JCLParser.JclWordContext> rules) {
+        Space prefix = whitespace();
+        StringBuilder trailingComment = new StringBuilder();
+        for (ParserRuleContext ctx : rules) {
+            trailingComment.append(sourceBefore(ctx.getText()).getWhitespace());
+            trailingComment.append(ctx.getText());
         }
-        return converted;
-    }
-
-    private final Function<ParseTree, Space> commaDelim = ignored -> sourceBefore(",");
-    private final Function<ParseTree, Space> noDelim = ignored -> EMPTY;
-
-    private <J2 extends Jcl> List<JclRightPadded<J2>> convertAll(List<JCLParser.ParameterContext> elements,
-                                                                 Function<ParseTree, Space> innerSuffix,
-                                                                 Function<ParseTree, Space> suffix) {
-        if (elements.isEmpty()) {
-            return emptyList();
-        }
-
-        List<JclRightPadded<J2>> converted = new ArrayList<>(elements.size());
-        for (int i = 0; i < elements.size(); i++) {
-            ParseTree element = elements.get(i);
-            //noinspection unchecked
-            J2 j = (J2) visit(element);
-            Space after = i == elements.size() - 1 ? suffix.apply(element) : innerSuffix.apply(element);
-            JclRightPadded<J2> rightPadded = padRight(j, after);
-            converted.add(rightPadded);
-        }
-        return converted.isEmpty() ? emptyList() : converted;
+        return new TrailingComment(
+                randomId(),
+                prefix,
+                trailingComment.toString()
+        );
     }
 
     private void skip(@Nullable String token) {
@@ -355,20 +224,11 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
         }
     }
 
-    private Space whitespace(boolean skipContinuations) {
-        boolean isContinued = false;
-        if (!skipContinuations && source.startsWith("//", cursor)) {
-            skip("//");
-            isContinued = true;
-        }
+    private Space whitespace() {
         int endIndex = indexOfNextNonWhitespace(cursor, source);
         String prefix = source.substring(cursor, endIndex);
         cursor += prefix.length();
-        return Space.build(prefix, isContinued);
-    }
-
-    private Space whitespace() {
-        return whitespace(false);
+        return Space.build(prefix, false);
     }
 
     private Space sourceBefore(String untilDelim) {
@@ -380,19 +240,10 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
     public static int indexOfNextNonWhitespace(int cursor, String source) {
         int delimIndex = cursor;
         for (; delimIndex < source.length(); delimIndex++) {
-            if (!Character.isWhitespace(source.substring(delimIndex, delimIndex + 1).charAt(0))) {
-                break; // found it!
+            if (!Character.isWhitespace(source.charAt(delimIndex))) {
+                break;
             }
         }
         return delimIndex;
-    }
-
-    private <T> JclLeftPadded<T> padLeft(Space left, T tree) {
-        return new JclLeftPadded<>(left, tree, Markers.EMPTY);
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    private <T> JclRightPadded<T> padRight(T tree, @Nullable Space right) {
-        return new JclRightPadded<>(tree, right == null ? EMPTY : right, Markers.EMPTY);
     }
 }

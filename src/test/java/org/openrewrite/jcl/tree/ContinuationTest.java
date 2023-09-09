@@ -59,18 +59,4 @@ public class ContinuationTest implements RewriteTest {
           )
         );
     }
-
-    @ExpectedToFail("Requires preprocessing. Note: the comma exists in ''")
-    @Test
-    void referenceReplacement() {
-        rewriteRun(
-          jcl(
-            """
-            //SET1 SET VAL1=’ABC,’
-            //S1 EXEC PGM=IEFBR14,PARM=&VAL1
-            //    TIME=30
-            """
-          )
-        );
-    }
 }

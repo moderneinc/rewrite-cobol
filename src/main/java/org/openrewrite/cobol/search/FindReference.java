@@ -94,22 +94,7 @@ public class FindReference extends Recipe {
             }
 
             class JclReference extends JclIsoVisitor<ExecutionContext> {
-
-                @Override
-                public Jcl.JclName visitJclName(Jcl.JclName jclName, ExecutionContext executionContext) {
-                    if (matches(jclName.getName().getSimpleName())) {
-                        return SearchResult.found(jclName);
-                    }
-                    return super.visitJclName(jclName, executionContext);
-                }
-
-                @Override
-                public Jcl.Identifier visitIdentifier(Jcl.Identifier identifier, ExecutionContext executionContext) {
-                    if (matches(identifier.getSimpleName())) {
-                        return SearchResult.found(identifier);
-                    }
-                    return super.visitIdentifier(identifier, executionContext);
-                }
+                // TODO: FIXME.
             }
 
             private boolean matches(String word) {

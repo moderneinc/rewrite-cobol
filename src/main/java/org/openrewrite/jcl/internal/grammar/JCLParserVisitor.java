@@ -28,93 +28,135 @@ public interface JCLParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStatement(JCLParser.StatementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link JCLParser#jclStatement}.
+	 * Visit a parse tree produced by {@link JCLParser#jcl}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitJclStatement(JCLParser.JclStatementContext ctx);
+	T visitJcl(JCLParser.JclContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link JCLParser#jobStatement}.
+	 * Visit a parse tree produced by {@link JCLParser#jclWord}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitJobStatement(JCLParser.JobStatementContext ctx);
+	T visitJclWord(JCLParser.JclWordContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link JCLParser#ddStatement}.
+	 * Visit a parse tree produced by {@link JCLParser#jclCommentArea}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitDdStatement(JCLParser.DdStatementContext ctx);
+	T visitJclCommentArea(JCLParser.JclCommentAreaContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link JCLParser#execStatement}.
+	 * Visit a parse tree produced by {@link JCLParser#jclTrailingComment}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExecStatement(JCLParser.ExecStatementContext ctx);
+	T visitJclTrailingComment(JCLParser.JclTrailingCommentContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link JCLParser#outputStatement}.
+	 * Visit a parse tree produced by {@link JCLParser#jes2}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitOutputStatement(JCLParser.OutputStatementContext ctx);
+	T visitJes2(JCLParser.Jes2Context ctx);
 	/**
-	 * Visit a parse tree produced by {@link JCLParser#pendStatement}.
+	 * Visit a parse tree produced by {@link JCLParser#jes2Word}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitPendStatement(JCLParser.PendStatementContext ctx);
+	T visitJes2Word(JCLParser.Jes2WordContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link JCLParser#procStatement}.
+	 * Visit a parse tree produced by {@link JCLParser#jes2CommentArea}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitProcStatement(JCLParser.ProcStatementContext ctx);
+	T visitJes2CommentArea(JCLParser.Jes2CommentAreaContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link JCLParser#setStatement}.
+	 * Visit a parse tree produced by {@link JCLParser#jes3}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitSetStatement(JCLParser.SetStatementContext ctx);
+	T visitJes3(JCLParser.Jes3Context ctx);
 	/**
-	 * Visit a parse tree produced by {@link JCLParser#xmitStatement}.
+	 * Visit a parse tree produced by {@link JCLParser#jes3Word}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitXmitStatement(JCLParser.XmitStatementContext ctx);
+	T visitJes3Word(JCLParser.Jes3WordContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link JCLParser#parameter}.
+	 * Visit a parse tree produced by {@link JCLParser#jes3CommentArea}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitParameter(JCLParser.ParameterContext ctx);
+	T visitJes3CommentArea(JCLParser.Jes3CommentAreaContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link JCLParser#parameterParentheses}.
+	 * Visit a parse tree produced by {@link JCLParser#stream}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitParameterParentheses(JCLParser.ParameterParenthesesContext ctx);
+	T visitStream(JCLParser.StreamContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link JCLParser#parameterAssignment}.
+	 * Visit a parse tree produced by {@link JCLParser#streamWord}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitParameterAssignment(JCLParser.ParameterAssignmentContext ctx);
+	T visitStreamWord(JCLParser.StreamWordContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link JCLParser#parameterLiteral}.
+	 * Visit a parse tree produced by {@link JCLParser#streamCommentArea}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitParameterLiteral(JCLParser.ParameterLiteralContext ctx);
+	T visitStreamCommentArea(JCLParser.StreamCommentAreaContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link JCLParser#name}.
+	 * Visit a parse tree produced by {@link JCLParser#controlM}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitName(JCLParser.NameContext ctx);
+	T visitControlM(JCLParser.ControlMContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link JCLParser#unsupportedStatement}.
+	 * Visit a parse tree produced by {@link JCLParser#controlMWord}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitUnsupportedStatement(JCLParser.UnsupportedStatementContext ctx);
+	T visitControlMWord(JCLParser.ControlMWordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JCLParser#controlMCommentArea}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitControlMCommentArea(JCLParser.ControlMCommentAreaContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JCLParser#comment}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitComment(JCLParser.CommentContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JCLParser#commentWord}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCommentWord(JCLParser.CommentWordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JCLParser#commentCommentArea}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCommentCommentArea(JCLParser.CommentCommentAreaContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JCLParser#unknown}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitUnknown(JCLParser.UnknownContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JCLParser#unknownWord}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitUnknownWord(JCLParser.UnknownWordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JCLParser#unknownCommentArea}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitUnknownCommentArea(JCLParser.UnknownCommentAreaContext ctx);
 }
