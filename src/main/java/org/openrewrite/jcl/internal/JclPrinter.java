@@ -47,6 +47,14 @@ public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
     }
 
     @Override
+    public Jcl visitDataDefinitionStream(Jcl.DataDefinitionStream ddStream, PrintOutputCapture<P> p) {
+        beforeSyntax(ddStream, Space.Location.DATA_DEFINITION_STREAM_PREFIX, p);
+        visit(ddStream.getWord(), p);
+        afterSyntax(ddStream, p);
+        return ddStream;
+    }
+
+    @Override
     public Jcl visitJclStatement(Jcl.JclStatement jclStatement, PrintOutputCapture<P> p) {
         beforeSyntax(jclStatement, Space.Location.JCL_STATEMENT_PREFIX, p);
         visit(jclStatement.getWord(), p);

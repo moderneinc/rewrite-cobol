@@ -154,13 +154,6 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
         );
     }
 
-    /**
-     * In name => trigged by
-     * Out => next
-
-     //       DD *
-     // SUBJECT:'%%JOBNAME - Words ' commentArea
-     */
     @Override
     public Jcl visitJes3Word(JCLParser.Jes3WordContext ctx) {
         Space prefix = whitespace();
@@ -185,7 +178,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
         if (ctx.streamCommentArea() != null) {
             markers = markers.addIfAbsent(mapCommentArea(ctx.streamCommentArea()));
         }
-        return new Jcl.JclStatement(
+        return new Jcl.DataDefinitionStream(
                 randomId(),
                 prefix,
                 markers,

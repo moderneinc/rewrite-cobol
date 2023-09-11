@@ -36,6 +36,14 @@ public class JclVisitor<P> extends TreeVisitor<Jcl, P> {
         return c;
     }
 
+    public Jcl visitDataDefinitionStream(Jcl.DataDefinitionStream ddStream, P p) {
+        Jcl.DataDefinitionStream d = ddStream;
+        d = d.withPrefix(visitSpace(d.getPrefix(), Space.Location.DATA_DEFINITION_STREAM_PREFIX, p));
+        d = d.withMarkers(visitMarkers(d.getMarkers(), p));
+        d = d.withWord(visitAndCast(d.getWord(), p));
+        return d;
+    }
+
     public Jcl visitJclStatement(Jcl.JclStatement jclStatement, P p) {
         Jcl.JclStatement j = jclStatement;
         j = j.withPrefix(visitSpace(j.getPrefix(), Space.Location.JES2_PREFIX, p));

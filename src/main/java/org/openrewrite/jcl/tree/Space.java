@@ -138,6 +138,7 @@ public class Space {
         COMPILATION_UNIT_EOF,
         COMMENT_AREA_PREFIX,
         CONTROL_M_PREFIX,
+        DATA_DEFINITION_STREAM_PREFIX,
         JCL_STATEMENT_PREFIX,
         JES2_PREFIX,
         JES3_PREFIX,
