@@ -44,4 +44,16 @@ public class CommentStatementTest implements RewriteTest {
             """)
         );
     }
+
+    @Test
+    void emptyCommentWithCommentArea() {
+        rewriteRun(
+          jcl("""
+              //*
+              //*                                                                     commentArea
+              //*
+              """
+          )
+        );
+    }
 }

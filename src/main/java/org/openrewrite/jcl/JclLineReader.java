@@ -30,29 +30,29 @@ public class JclLineReader {
 
             if (lineType == LineType.JES2) {
                 if (jclLineContext == JclLineContext.STREAM) {
-                    p.append("<<STREAM_END>>");
+                    p.append("^^STREAM_END^^");
                 } else if (jclLineContext == JclLineContext.CONT) {
-                    p.append("<<JES2_CONT>>");
+                    p.append("^^JES2_CONT^^");
                 } else {
-                    p.append("<<JES2>>");
+                    p.append("^^JES2^^");
                 }
                 jclLineContext = getLineContext(line);
             } else if (lineType == LineType.JES3) {
                 if (jclLineContext == JclLineContext.CONT) {
-                    p.append("<<JES3_CONT>>");
+                    p.append("^^JES3_CONT^^");
                 } else {
-                    p.append("<<JES3>>");
+                    p.append("^^JES3^^");
                 }
                 jclLineContext = getLineContext(line);
             } else if (lineType == LineType.JCL) {
                 if (jclLineContext == JclLineContext.CONT) {
-                    p.append("<<JCL_CONT>>");
+                    p.append("^^JCL_CONT^^");
                 } else {
-                    p.append("<<JCL>>");
+                    p.append("^^JCL^^");
                 }
                 jclLineContext = getLineContext(line);
             } else if (lineType == LineType.JCL_STATEMENT) {
-                p.append("<<JCL_STATEMENT>>");
+                p.append("^^JCL_STATEMENT^^");
                 jclLineContext = getLineContext(line);
                 if (jclLineContext == JclLineContext.STREAM) {
                     // Check for trailing comment.
@@ -82,29 +82,29 @@ public class JclLineReader {
                     }
                 }
             } else if (lineType == LineType.COMMENT) {
-                p.append("<<COMMENT>>");
+                p.append("^^COMMENT^^");
                 jclLineContext = null;
             } else {
                 if (line.trim().startsWith("%%")) {
-                    p.append("<<CM>>");
+                    p.append("^^CM^^");
                     jclLineContext = null;
                 } else if (jclLineContext == JclLineContext.STREAM) {
-                    p.append("<<STREAM>>");
+                    p.append("^^STREAM^^");
                 } else {
-                    p.append("<<UNKNOWN>>");
+                    p.append("^^UNKNOWN^^");
                     jclLineContext = null;
                 }
             }
 
             p.append(line);
             if (trailingComment != null) {
-                p.append("<<TC_START>>");
+                p.append("^^TC_START^^");
                 p.append(trailingComment);
-                p.append("<<TC_STOP>>");
+                p.append("^^TC_STOP^^");
             }
 
             if (commentArea != null) {
-                p.append("<<CA_START>>");
+                p.append("^^CA_START^^");
                 p.append(commentArea);
             }
 

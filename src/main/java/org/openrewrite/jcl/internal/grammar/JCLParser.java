@@ -47,9 +47,9 @@ public class JCLParser extends Parser {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'\\uFEFF'", null, null, null, "'<<STREAM>>'", null, null, "'<<CM>>'",
-			"'<<COMMENT>>'", "'<<UNKNOWN>>'", "'<<CA_START>>'", null, "'<<TC_START>>'",
-			"'<<TC_STOP>>'"
+			null, "'\\uFEFF'", null, null, null, "'^^STREAM^^'", null, null, "'^^CM^^'",
+			"'^^COMMENT^^'", "'^^UNKNOWN^^'", "'^^CA_START^^'", null, "'^^TC_START^^'",
+			"'^^TC_STOP^^'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
