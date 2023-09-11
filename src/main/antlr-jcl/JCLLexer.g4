@@ -37,7 +37,7 @@ JCL_STRINGLITERAL : STRINGLITERAL;
 JCL_TEXT : TEXT;
 
 mode INSIDE_STREAM;
-STREAM_WS : WS -> type(WS), channel(HIDDEN);
+STREAM_WS : [ \t\f]+ -> channel(HIDDEN);
 STREAM_EOL : EOL -> type(EOL), channel(HIDDEN), popMode;
 
 STREAM_CA_START : CA_START -> type(CA_START);
@@ -82,7 +82,7 @@ COMMENT_STRINGLITERAL : STRINGLITERAL;
 COMMENT_TEXT : TEXT;
 
 mode INSIDE_UNKNOWN;
-UNKNOWN_WS : WS -> type(WS), skip;
+UNKNOWN_WS : [ \t\f]+ -> channel(HIDDEN);
 UNKNOWN_EOL : EOL -> type(EOL), channel(HIDDEN), popMode;
 
 UNKNOWN_CA_START : CA_START -> type(CA_START);
