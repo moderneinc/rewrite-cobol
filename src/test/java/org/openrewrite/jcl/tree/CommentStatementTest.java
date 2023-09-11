@@ -31,4 +31,17 @@ public class CommentStatementTest implements RewriteTest {
             """)
         );
     }
+
+    @Test
+    void semiColons() {
+        rewriteRun(
+          jcl(
+            """
+            //* THE COMMENT ; STATEMENT CANNOT BE CONTINUED,
+            //* BUT IF YOU HAVE;  A LOT TO SAY, YOU CAN FOLLOW A
+            //* COMMENT STATEMENT ; WITH MORE ; COMMENT
+            //* STATEMENTS; .
+            """)
+        );
+    }
 }

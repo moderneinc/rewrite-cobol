@@ -55,7 +55,7 @@ CM_EOL : EOL -> type(EOL), channel(HIDDEN), popMode;
 CM_TEXT : TEXT;
 
 mode INSIDE_COMMENT;
-COMMENT_WS : WS -> type(WS), channel(HIDDEN);
+COMMENT_WS : [ \t\f]+ -> channel(HIDDEN);
 COMMENT_EOL : EOL -> type(EOL), channel(HIDDEN), popMode;
 
 COMMENT_TEXT : TEXT;

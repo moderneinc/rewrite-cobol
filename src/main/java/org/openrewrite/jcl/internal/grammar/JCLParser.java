@@ -24,8 +24,8 @@ public class JCLParser extends Parser {
 	public static final int
 		UTF_8_BOM=1, WS=2, EOL=3, JCL_STATEMENT=4, JCL_STREAM=5, JES2=6, JES3=7,
 		CM=8, COMMENT=9, UNKNOWN=10, CA_START=11, TEXT=12, JCL_TC_START=13, JCL_TC_STOP=14,
-		JCL_TEXT=15, STREAM_TEXT=16, JES2_TEXT=17, JES3_TEXT=18, CM_TEXT=19, COMMENT_TEXT=20,
-		UNKNOWN_TEXT=21;
+		JCL_TEXT=15, STREAM_TEXT=16, JES2_TEXT=17, JES3_TEXT=18, CM_TEXT=19, COMMENT_WS=20,
+		COMMENT_TEXT=21, UNKNOWN_TEXT=22;
 	public static final int
 		RULE_compilationUnit = 0, RULE_statement = 1, RULE_jcl = 2, RULE_jclWord = 3,
 		RULE_jclCommentArea = 4, RULE_jclTrailingComment = 5, RULE_jes2 = 6, RULE_jes2Word = 7,
@@ -58,7 +58,7 @@ public class JCLParser extends Parser {
 			null, "UTF_8_BOM", "WS", "EOL", "JCL_STATEMENT", "JCL_STREAM", "JES2",
 			"JES3", "CM", "COMMENT", "UNKNOWN", "CA_START", "TEXT", "JCL_TC_START",
 			"JCL_TC_STOP", "JCL_TEXT", "STREAM_TEXT", "JES2_TEXT", "JES3_TEXT", "CM_TEXT",
-			"COMMENT_TEXT", "UNKNOWN_TEXT"
+			"COMMENT_WS", "COMMENT_TEXT", "UNKNOWN_TEXT"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -150,7 +150,7 @@ public class JCLParser extends Parser {
 			setState(51);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (((_la) & ~0x3f) == 0 && ((1L << _la) & 4161536L) != 0) {
+			while (((_la) & ~0x3f) == 0 && ((1L << _la) & 7307264L) != 0) {
 				{
 				{
 				setState(48);
@@ -1438,7 +1438,7 @@ public class JCLParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001\u0015\u008f\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001"+
+		"\u0004\u0001\u0016\u008f\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001"+
 		"\u0002\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004"+
 		"\u0002\u0005\u0007\u0005\u0002\u0006\u0007\u0006\u0002\u0007\u0007\u0007"+
 		"\u0002\b\u0007\b\u0002\t\u0007\t\u0002\n\u0007\n\u0002\u000b\u0007\u000b"+
@@ -1506,11 +1506,11 @@ public class JCLParser extends Parser {
 		"\u0000wv\u0001\u0000\u0000\u0000wx\u0001\u0000\u0000\u0000x!\u0001\u0000"+
 		"\u0000\u0000yz\u0005\u000b\u0000\u0000z{\u0003 \u0010\u0000{#\u0001\u0000"+
 		"\u0000\u0000|}\u0003&\u0013\u0000}%\u0001\u0000\u0000\u0000~\u0080\u0005"+
-		"\u0014\u0000\u0000\u007f\u0081\u0003(\u0014\u0000\u0080\u007f\u0001\u0000"+
+		"\u0015\u0000\u0000\u007f\u0081\u0003(\u0014\u0000\u0080\u007f\u0001\u0000"+
 		"\u0000\u0000\u0080\u0081\u0001\u0000\u0000\u0000\u0081\'\u0001\u0000\u0000"+
 		"\u0000\u0082\u0083\u0005\u000b\u0000\u0000\u0083\u0084\u0003&\u0013\u0000"+
 		"\u0084)\u0001\u0000\u0000\u0000\u0085\u0086\u0003,\u0016\u0000\u0086+"+
-		"\u0001\u0000\u0000\u0000\u0087\u0089\u0005\u0015\u0000\u0000\u0088\u008a"+
+		"\u0001\u0000\u0000\u0000\u0087\u0089\u0005\u0016\u0000\u0000\u0088\u008a"+
 		"\u0003.\u0017\u0000\u0089\u0088\u0001\u0000\u0000\u0000\u0089\u008a\u0001"+
 		"\u0000\u0000\u0000\u008a-\u0001\u0000\u0000\u0000\u008b\u008c\u0005\u000b"+
 		"\u0000\u0000\u008c\u008d\u0003,\u0016\u0000\u008d/\u0001\u0000\u0000\u0000"+
