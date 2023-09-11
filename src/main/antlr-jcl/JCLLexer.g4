@@ -14,7 +14,7 @@ COMMENT : '^^COMMENT^^' -> skip, pushMode(INSIDE_COMMENT);
 UNKNOWN : '^^UNKNOWN^^' -> skip, pushMode(INSIDE_UNKNOWN);
 
 CA_START : '^^CA_START^^';
-TEXT : ~[ <\r\n^]+ | '^';
+TEXT : ~[ \r\n^]+ | '^';
 
 fragment LF : '\n';
 fragment CR : '\r';
