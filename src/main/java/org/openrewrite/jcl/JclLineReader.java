@@ -127,7 +127,7 @@ public class JclLineReader {
         char c2 = line.length() > 2 ? line.charAt(2) : '~';
         char c3 = line.length() > 3 ? line.charAt(3) : '~';
 
-        if (c0 == '/' && c1 == '/' && c2 == '*' && (c3 == ' ' || c3 == '~')) {
+        if (c0 == '/' && c1 == '/' && c2 == '*' && (c3 == ' ' || c3 == '~' || c3 == '*')) {
             return LineType.COMMENT;
         } else if (c0 == '/' && c1 == '/' && c2 == '*') {
             return LineType.JES3;
