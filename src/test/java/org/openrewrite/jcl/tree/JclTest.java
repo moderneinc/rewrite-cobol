@@ -73,6 +73,8 @@ public class JclTest implements RewriteTest {
               //%%JOBNAME.%%OTHER JOB (1,2,3),
               //    'NAME',
               //    MSGCLASS=A
+              /*
+              //* Stream should be ended.
               """
           )
         );

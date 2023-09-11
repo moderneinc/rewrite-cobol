@@ -5,7 +5,7 @@ UTF_8_BOM : '\uFEFF' -> skip;
 WS : [ \t\f;]+ -> channel(HIDDEN);
 EOL : (CR? LF | FORM_FEED) -> channel(HIDDEN);
 
-JCL_STATEMENT : ('<<JCL_STATEMENT>>' | '<<JCL_CONT>>' | '<<JCL>>') -> skip, pushMode(INSIDE_JCL);
+JCL_STATEMENT : ('<<JCL_STATEMENT>>' | '<<JCL_CONT>>' | '<<JCL>>' | '<<STREAM_END>>') -> skip, pushMode(INSIDE_JCL);
 JCL_STREAM : '<<STREAM>>' -> skip, pushMode(INSIDE_STREAM);
 JES2 : ('<<JES2>>' | '<<JES2_CONT>>') -> skip, pushMode(INSIDE_JES2);
 JES3 : ('<<JES3>>' | '<<JES3_CONT>>') -> skip, pushMode(INSIDE_JES3);

@@ -137,6 +137,35 @@ public class JclLineReaderTest {
     }
 
     @Test
+    void ddStreamEnd() {
+        assertThat(JclLineReader
+          .readLines(
+            """
+              //OBJECT DD *
+               REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(1,2,3),
+                 FIELDS=(ABC=XYZ)
+               REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(4,5,6),
+                 FIELDS=(ABC=XYZ)
+              /*
+              //*
+              //JOB1 JOB ,'H.H. MORRILL'
+              """
+          ))
+          .isEqualTo(
+            """
+              <<JCL_STATEMENT>>//OBJECT DD *
+              <<STREAM>> REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(1,2,3),
+              <<STREAM>>   FIELDS=(ABC=XYZ)
+              <<STREAM>> REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(4,5,6),
+              <<STREAM>>   FIELDS=(ABC=XYZ)
+              <<STREAM_END>>/*
+              <<COMMENT>>//*
+              <<JCL_STATEMENT>>//JOB1 JOB ,'H.H. MORRILL'
+              """
+          );
+    }
+
+    @Test
     void trailingCommentAndCommentArea() {
         assertThat(JclLineReader
           .readLines(
