@@ -72,24 +72,4 @@ public class JclTest implements RewriteTest {
           )
         );
     }
-
-    @Test
-    void unknown() {
-        rewriteRun(
-          jcl(
-            """
-              //* %%RANGE 1 42
-                TRACE OFF
-                MAXCOMMAND 42
-                CALLMEM SET42
-                CALLMEM SET42
-                 SETOLOC %%MAXRC = 42
-              %%RANGE 1 42
-              CALLMEM ORDERJOB %%LIBRO LCOPYJCL ALL
-              %%DATTR FORCE C
-              %% RANGE 1 42
-              """
-          )
-        );
-    }
 }

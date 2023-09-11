@@ -99,6 +99,7 @@ unknown
 
 unknownWord
     : (UNKNOWN_TEXT | UNKNOWN_STRINGLITERAL) unknownCommentArea?
+    | unknownCommentArea
     ;
 
 unknownCommentArea

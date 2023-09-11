@@ -155,7 +155,7 @@ public class JCLParser extends Parser {
 			setState(51);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (((_la) & ~0x3f) == 0 && ((1L << _la) & 7381647360L) != 0) {
+			while (((_la) & ~0x3f) == 0 && ((1L << _la) & 7381649408L) != 0) {
 				{
 				{
 				setState(48);
@@ -278,6 +278,7 @@ public class JCLParser extends Parser {
 				comment();
 				}
 				break;
+			case CA_START:
 			case UNKNOWN_STRINGLITERAL:
 			case UNKNOWN_TEXT:
 				enterOuterAlt(_localctx, 7);
@@ -407,14 +408,14 @@ public class JCLParser extends Parser {
 			}
 			setState(71);
 			_errHandler.sync(this);
-			_la = _input.LA(1);
-			if (_la==CA_START) {
+			switch ( getInterpreter().adaptivePredict(_input,3,_ctx) ) {
+			case 1:
 				{
 				setState(70);
 				jclCommentArea();
 				}
+				break;
 			}
-
 			}
 		}
 		catch (RecognitionException re) {
@@ -537,14 +538,14 @@ public class JCLParser extends Parser {
 			match(JCL_TC_STOP);
 			setState(86);
 			_errHandler.sync(this);
-			_la = _input.LA(1);
-			if (_la==CA_START) {
+			switch ( getInterpreter().adaptivePredict(_input,5,_ctx) ) {
+			case 1:
 				{
 				setState(85);
 				jclCommentArea();
 				}
+				break;
 			}
-
 			}
 		}
 		catch (RecognitionException re) {
@@ -648,14 +649,14 @@ public class JCLParser extends Parser {
 			}
 			setState(92);
 			_errHandler.sync(this);
-			_la = _input.LA(1);
-			if (_la==CA_START) {
+			switch ( getInterpreter().adaptivePredict(_input,6,_ctx) ) {
+			case 1:
 				{
 				setState(91);
 				jes2CommentArea();
 				}
+				break;
 			}
-
 			}
 		}
 		catch (RecognitionException re) {
@@ -807,14 +808,14 @@ public class JCLParser extends Parser {
 			}
 			setState(101);
 			_errHandler.sync(this);
-			_la = _input.LA(1);
-			if (_la==CA_START) {
+			switch ( getInterpreter().adaptivePredict(_input,7,_ctx) ) {
+			case 1:
 				{
 				setState(100);
 				jes3CommentArea();
 				}
+				break;
 			}
-
 			}
 		}
 		catch (RecognitionException re) {
@@ -966,14 +967,14 @@ public class JCLParser extends Parser {
 			}
 			setState(110);
 			_errHandler.sync(this);
-			_la = _input.LA(1);
-			if (_la==CA_START) {
+			switch ( getInterpreter().adaptivePredict(_input,8,_ctx) ) {
+			case 1:
 				{
 				setState(109);
 				streamCommentArea();
 				}
+				break;
 			}
-
 			}
 		}
 		catch (RecognitionException re) {
@@ -1125,14 +1126,14 @@ public class JCLParser extends Parser {
 			}
 			setState(119);
 			_errHandler.sync(this);
-			_la = _input.LA(1);
-			if (_la==CA_START) {
+			switch ( getInterpreter().adaptivePredict(_input,9,_ctx) ) {
+			case 1:
 				{
 				setState(118);
 				controlMCommentArea();
 				}
+				break;
 			}
-
 			}
 		}
 		catch (RecognitionException re) {
@@ -1284,14 +1285,14 @@ public class JCLParser extends Parser {
 			}
 			setState(128);
 			_errHandler.sync(this);
-			_la = _input.LA(1);
-			if (_la==CA_START) {
+			switch ( getInterpreter().adaptivePredict(_input,10,_ctx) ) {
+			case 1:
 				{
 				setState(127);
 				commentCommentArea();
 				}
+				break;
 			}
-
 			}
 		}
 		catch (RecognitionException re) {
@@ -1429,28 +1430,44 @@ public class JCLParser extends Parser {
 		enterRule(_localctx, 44, RULE_unknownWord);
 		int _la;
 		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(135);
-			_la = _input.LA(1);
-			if ( !(_la==UNKNOWN_STRINGLITERAL || _la==UNKNOWN_TEXT) ) {
-			_errHandler.recoverInline(this);
-			}
-			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-				_errHandler.reportMatch(this);
-				consume();
-			}
-			setState(137);
+			setState(140);
 			_errHandler.sync(this);
-			_la = _input.LA(1);
-			if (_la==CA_START) {
+			switch (_input.LA(1)) {
+			case UNKNOWN_STRINGLITERAL:
+			case UNKNOWN_TEXT:
+				enterOuterAlt(_localctx, 1);
 				{
-				setState(136);
+				setState(135);
+				_la = _input.LA(1);
+				if ( !(_la==UNKNOWN_STRINGLITERAL || _la==UNKNOWN_TEXT) ) {
+				_errHandler.recoverInline(this);
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
+					consume();
+				}
+				setState(137);
+				_errHandler.sync(this);
+				switch ( getInterpreter().adaptivePredict(_input,11,_ctx) ) {
+				case 1:
+					{
+					setState(136);
+					unknownCommentArea();
+					}
+					break;
+				}
+				}
+				break;
+			case CA_START:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(139);
 				unknownCommentArea();
 				}
-			}
-
+				break;
+			default:
+				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1495,9 +1512,9 @@ public class JCLParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(139);
+			setState(142);
 			match(CA_START);
-			setState(140);
+			setState(143);
 			unknownWord();
 			}
 		}
@@ -1513,7 +1530,7 @@ public class JCLParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001 \u008f\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
+		"\u0004\u0001 \u0092\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
 		"\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004\u0002"+
 		"\u0005\u0007\u0005\u0002\u0006\u0007\u0006\u0002\u0007\u0007\u0007\u0002"+
 		"\b\u0007\b\u0002\t\u0007\t\u0002\n\u0007\n\u0002\u000b\u0007\u000b\u0002"+
@@ -1534,64 +1551,66 @@ public class JCLParser extends Parser {
 		"\u0010\u0003\u0010x\b\u0010\u0001\u0011\u0001\u0011\u0001\u0011\u0001"+
 		"\u0012\u0001\u0012\u0001\u0013\u0001\u0013\u0003\u0013\u0081\b\u0013\u0001"+
 		"\u0014\u0001\u0014\u0001\u0014\u0001\u0015\u0001\u0015\u0001\u0016\u0001"+
-		"\u0016\u0003\u0016\u008a\b\u0016\u0001\u0017\u0001\u0017\u0001\u0017\u0001"+
-		"\u0017\u0000\u0000\u0018\u0000\u0002\u0004\u0006\b\n\f\u000e\u0010\u0012"+
-		"\u0014\u0016\u0018\u001a\u001c\u001e \"$&(*,.\u0000\u0007\u0001\u0000"+
-		"\u0010\u0011\u0001\u0000\u0015\u0016\u0001\u0000\u0017\u0018\u0001\u0000"+
-		"\u0013\u0014\u0001\u0000\u0019\u001a\u0001\u0000\u001c\u001d\u0001\u0000"+
-		"\u001f \u0087\u00003\u0001\u0000\u0000\u0000\u0002?\u0001\u0000\u0000"+
-		"\u0000\u0004C\u0001\u0000\u0000\u0000\u0006E\u0001\u0000\u0000\u0000\b"+
-		"I\u0001\u0000\u0000\u0000\nL\u0001\u0000\u0000\u0000\fX\u0001\u0000\u0000"+
-		"\u0000\u000eZ\u0001\u0000\u0000\u0000\u0010^\u0001\u0000\u0000\u0000\u0012"+
-		"a\u0001\u0000\u0000\u0000\u0014c\u0001\u0000\u0000\u0000\u0016g\u0001"+
-		"\u0000\u0000\u0000\u0018j\u0001\u0000\u0000\u0000\u001al\u0001\u0000\u0000"+
-		"\u0000\u001cp\u0001\u0000\u0000\u0000\u001es\u0001\u0000\u0000\u0000 "+
-		"u\u0001\u0000\u0000\u0000\"y\u0001\u0000\u0000\u0000$|\u0001\u0000\u0000"+
-		"\u0000&~\u0001\u0000\u0000\u0000(\u0082\u0001\u0000\u0000\u0000*\u0085"+
-		"\u0001\u0000\u0000\u0000,\u0087\u0001\u0000\u0000\u0000.\u008b\u0001\u0000"+
-		"\u0000\u000002\u0003\u0002\u0001\u000010\u0001\u0000\u0000\u000025\u0001"+
-		"\u0000\u0000\u000031\u0001\u0000\u0000\u000034\u0001\u0000\u0000\u0000"+
-		"46\u0001\u0000\u0000\u000053\u0001\u0000\u0000\u000067\u0005\u0000\u0000"+
-		"\u00017\u0001\u0001\u0000\u0000\u00008@\u0003\u0004\u0002\u00009@\u0003"+
-		"\f\u0006\u0000:@\u0003\u0012\t\u0000;@\u0003\u0018\f\u0000<@\u0003\u001e"+
-		"\u000f\u0000=@\u0003$\u0012\u0000>@\u0003*\u0015\u0000?8\u0001\u0000\u0000"+
-		"\u0000?9\u0001\u0000\u0000\u0000?:\u0001\u0000\u0000\u0000?;\u0001\u0000"+
-		"\u0000\u0000?<\u0001\u0000\u0000\u0000?=\u0001\u0000\u0000\u0000?>\u0001"+
-		"\u0000\u0000\u0000@\u0003\u0001\u0000\u0000\u0000AD\u0003\u0006\u0003"+
-		"\u0000BD\u0003\n\u0005\u0000CA\u0001\u0000\u0000\u0000CB\u0001\u0000\u0000"+
-		"\u0000D\u0005\u0001\u0000\u0000\u0000EG\u0007\u0000\u0000\u0000FH\u0003"+
-		"\b\u0004\u0000GF\u0001\u0000\u0000\u0000GH\u0001\u0000\u0000\u0000H\u0007"+
-		"\u0001\u0000\u0000\u0000IJ\u0005\u000b\u0000\u0000JK\u0003\u0006\u0003"+
-		"\u0000K\t\u0001\u0000\u0000\u0000LM\u0003\u0006\u0003\u0000MQ\u0005\u000e"+
-		"\u0000\u0000NP\u0003\u0006\u0003\u0000ON\u0001\u0000\u0000\u0000PS\u0001"+
-		"\u0000\u0000\u0000QO\u0001\u0000\u0000\u0000QR\u0001\u0000\u0000\u0000"+
-		"RT\u0001\u0000\u0000\u0000SQ\u0001\u0000\u0000\u0000TV\u0005\u000f\u0000"+
-		"\u0000UW\u0003\b\u0004\u0000VU\u0001\u0000\u0000\u0000VW\u0001\u0000\u0000"+
-		"\u0000W\u000b\u0001\u0000\u0000\u0000XY\u0003\u000e\u0007\u0000Y\r\u0001"+
-		"\u0000\u0000\u0000Z\\\u0007\u0001\u0000\u0000[]\u0003\u0010\b\u0000\\"+
-		"[\u0001\u0000\u0000\u0000\\]\u0001\u0000\u0000\u0000]\u000f\u0001\u0000"+
-		"\u0000\u0000^_\u0005\u000b\u0000\u0000_`\u0003\u000e\u0007\u0000`\u0011"+
-		"\u0001\u0000\u0000\u0000ab\u0003\u0014\n\u0000b\u0013\u0001\u0000\u0000"+
-		"\u0000ce\u0007\u0002\u0000\u0000df\u0003\u0016\u000b\u0000ed\u0001\u0000"+
-		"\u0000\u0000ef\u0001\u0000\u0000\u0000f\u0015\u0001\u0000\u0000\u0000"+
-		"gh\u0005\u000b\u0000\u0000hi\u0003\u0014\n\u0000i\u0017\u0001\u0000\u0000"+
-		"\u0000jk\u0003\u001a\r\u0000k\u0019\u0001\u0000\u0000\u0000ln\u0007\u0003"+
-		"\u0000\u0000mo\u0003\u001c\u000e\u0000nm\u0001\u0000\u0000\u0000no\u0001"+
-		"\u0000\u0000\u0000o\u001b\u0001\u0000\u0000\u0000pq\u0005\u000b\u0000"+
-		"\u0000qr\u0003\u001a\r\u0000r\u001d\u0001\u0000\u0000\u0000st\u0003 \u0010"+
-		"\u0000t\u001f\u0001\u0000\u0000\u0000uw\u0007\u0004\u0000\u0000vx\u0003"+
-		"\"\u0011\u0000wv\u0001\u0000\u0000\u0000wx\u0001\u0000\u0000\u0000x!\u0001"+
-		"\u0000\u0000\u0000yz\u0005\u000b\u0000\u0000z{\u0003 \u0010\u0000{#\u0001"+
-		"\u0000\u0000\u0000|}\u0003&\u0013\u0000}%\u0001\u0000\u0000\u0000~\u0080"+
-		"\u0007\u0005\u0000\u0000\u007f\u0081\u0003(\u0014\u0000\u0080\u007f\u0001"+
-		"\u0000\u0000\u0000\u0080\u0081\u0001\u0000\u0000\u0000\u0081\'\u0001\u0000"+
-		"\u0000\u0000\u0082\u0083\u0005\u000b\u0000\u0000\u0083\u0084\u0003&\u0013"+
-		"\u0000\u0084)\u0001\u0000\u0000\u0000\u0085\u0086\u0003,\u0016\u0000\u0086"+
-		"+\u0001\u0000\u0000\u0000\u0087\u0089\u0007\u0006\u0000\u0000\u0088\u008a"+
-		"\u0003.\u0017\u0000\u0089\u0088\u0001\u0000\u0000\u0000\u0089\u008a\u0001"+
-		"\u0000\u0000\u0000\u008a-\u0001\u0000\u0000\u0000\u008b\u008c\u0005\u000b"+
-		"\u0000\u0000\u008c\u008d\u0003,\u0016\u0000\u008d/\u0001\u0000\u0000\u0000"+
-		"\f3?CGQV\\enw\u0080\u0089";
+		"\u0016\u0003\u0016\u008a\b\u0016\u0001\u0016\u0003\u0016\u008d\b\u0016"+
+		"\u0001\u0017\u0001\u0017\u0001\u0017\u0001\u0017\u0000\u0000\u0018\u0000"+
+		"\u0002\u0004\u0006\b\n\f\u000e\u0010\u0012\u0014\u0016\u0018\u001a\u001c"+
+		"\u001e \"$&(*,.\u0000\u0007\u0001\u0000\u0010\u0011\u0001\u0000\u0015"+
+		"\u0016\u0001\u0000\u0017\u0018\u0001\u0000\u0013\u0014\u0001\u0000\u0019"+
+		"\u001a\u0001\u0000\u001c\u001d\u0001\u0000\u001f \u008b\u00003\u0001\u0000"+
+		"\u0000\u0000\u0002?\u0001\u0000\u0000\u0000\u0004C\u0001\u0000\u0000\u0000"+
+		"\u0006E\u0001\u0000\u0000\u0000\bI\u0001\u0000\u0000\u0000\nL\u0001\u0000"+
+		"\u0000\u0000\fX\u0001\u0000\u0000\u0000\u000eZ\u0001\u0000\u0000\u0000"+
+		"\u0010^\u0001\u0000\u0000\u0000\u0012a\u0001\u0000\u0000\u0000\u0014c"+
+		"\u0001\u0000\u0000\u0000\u0016g\u0001\u0000\u0000\u0000\u0018j\u0001\u0000"+
+		"\u0000\u0000\u001al\u0001\u0000\u0000\u0000\u001cp\u0001\u0000\u0000\u0000"+
+		"\u001es\u0001\u0000\u0000\u0000 u\u0001\u0000\u0000\u0000\"y\u0001\u0000"+
+		"\u0000\u0000$|\u0001\u0000\u0000\u0000&~\u0001\u0000\u0000\u0000(\u0082"+
+		"\u0001\u0000\u0000\u0000*\u0085\u0001\u0000\u0000\u0000,\u008c\u0001\u0000"+
+		"\u0000\u0000.\u008e\u0001\u0000\u0000\u000002\u0003\u0002\u0001\u0000"+
+		"10\u0001\u0000\u0000\u000025\u0001\u0000\u0000\u000031\u0001\u0000\u0000"+
+		"\u000034\u0001\u0000\u0000\u000046\u0001\u0000\u0000\u000053\u0001\u0000"+
+		"\u0000\u000067\u0005\u0000\u0000\u00017\u0001\u0001\u0000\u0000\u0000"+
+		"8@\u0003\u0004\u0002\u00009@\u0003\f\u0006\u0000:@\u0003\u0012\t\u0000"+
+		";@\u0003\u0018\f\u0000<@\u0003\u001e\u000f\u0000=@\u0003$\u0012\u0000"+
+		">@\u0003*\u0015\u0000?8\u0001\u0000\u0000\u0000?9\u0001\u0000\u0000\u0000"+
+		"?:\u0001\u0000\u0000\u0000?;\u0001\u0000\u0000\u0000?<\u0001\u0000\u0000"+
+		"\u0000?=\u0001\u0000\u0000\u0000?>\u0001\u0000\u0000\u0000@\u0003\u0001"+
+		"\u0000\u0000\u0000AD\u0003\u0006\u0003\u0000BD\u0003\n\u0005\u0000CA\u0001"+
+		"\u0000\u0000\u0000CB\u0001\u0000\u0000\u0000D\u0005\u0001\u0000\u0000"+
+		"\u0000EG\u0007\u0000\u0000\u0000FH\u0003\b\u0004\u0000GF\u0001\u0000\u0000"+
+		"\u0000GH\u0001\u0000\u0000\u0000H\u0007\u0001\u0000\u0000\u0000IJ\u0005"+
+		"\u000b\u0000\u0000JK\u0003\u0006\u0003\u0000K\t\u0001\u0000\u0000\u0000"+
+		"LM\u0003\u0006\u0003\u0000MQ\u0005\u000e\u0000\u0000NP\u0003\u0006\u0003"+
+		"\u0000ON\u0001\u0000\u0000\u0000PS\u0001\u0000\u0000\u0000QO\u0001\u0000"+
+		"\u0000\u0000QR\u0001\u0000\u0000\u0000RT\u0001\u0000\u0000\u0000SQ\u0001"+
+		"\u0000\u0000\u0000TV\u0005\u000f\u0000\u0000UW\u0003\b\u0004\u0000VU\u0001"+
+		"\u0000\u0000\u0000VW\u0001\u0000\u0000\u0000W\u000b\u0001\u0000\u0000"+
+		"\u0000XY\u0003\u000e\u0007\u0000Y\r\u0001\u0000\u0000\u0000Z\\\u0007\u0001"+
+		"\u0000\u0000[]\u0003\u0010\b\u0000\\[\u0001\u0000\u0000\u0000\\]\u0001"+
+		"\u0000\u0000\u0000]\u000f\u0001\u0000\u0000\u0000^_\u0005\u000b\u0000"+
+		"\u0000_`\u0003\u000e\u0007\u0000`\u0011\u0001\u0000\u0000\u0000ab\u0003"+
+		"\u0014\n\u0000b\u0013\u0001\u0000\u0000\u0000ce\u0007\u0002\u0000\u0000"+
+		"df\u0003\u0016\u000b\u0000ed\u0001\u0000\u0000\u0000ef\u0001\u0000\u0000"+
+		"\u0000f\u0015\u0001\u0000\u0000\u0000gh\u0005\u000b\u0000\u0000hi\u0003"+
+		"\u0014\n\u0000i\u0017\u0001\u0000\u0000\u0000jk\u0003\u001a\r\u0000k\u0019"+
+		"\u0001\u0000\u0000\u0000ln\u0007\u0003\u0000\u0000mo\u0003\u001c\u000e"+
+		"\u0000nm\u0001\u0000\u0000\u0000no\u0001\u0000\u0000\u0000o\u001b\u0001"+
+		"\u0000\u0000\u0000pq\u0005\u000b\u0000\u0000qr\u0003\u001a\r\u0000r\u001d"+
+		"\u0001\u0000\u0000\u0000st\u0003 \u0010\u0000t\u001f\u0001\u0000\u0000"+
+		"\u0000uw\u0007\u0004\u0000\u0000vx\u0003\"\u0011\u0000wv\u0001\u0000\u0000"+
+		"\u0000wx\u0001\u0000\u0000\u0000x!\u0001\u0000\u0000\u0000yz\u0005\u000b"+
+		"\u0000\u0000z{\u0003 \u0010\u0000{#\u0001\u0000\u0000\u0000|}\u0003&\u0013"+
+		"\u0000}%\u0001\u0000\u0000\u0000~\u0080\u0007\u0005\u0000\u0000\u007f"+
+		"\u0081\u0003(\u0014\u0000\u0080\u007f\u0001\u0000\u0000\u0000\u0080\u0081"+
+		"\u0001\u0000\u0000\u0000\u0081\'\u0001\u0000\u0000\u0000\u0082\u0083\u0005"+
+		"\u000b\u0000\u0000\u0083\u0084\u0003&\u0013\u0000\u0084)\u0001\u0000\u0000"+
+		"\u0000\u0085\u0086\u0003,\u0016\u0000\u0086+\u0001\u0000\u0000\u0000\u0087"+
+		"\u0089\u0007\u0006\u0000\u0000\u0088\u008a\u0003.\u0017\u0000\u0089\u0088"+
+		"\u0001\u0000\u0000\u0000\u0089\u008a\u0001\u0000\u0000\u0000\u008a\u008d"+
+		"\u0001\u0000\u0000\u0000\u008b\u008d\u0003.\u0017\u0000\u008c\u0087\u0001"+
+		"\u0000\u0000\u0000\u008c\u008b\u0001\u0000\u0000\u0000\u008d-\u0001\u0000"+
+		"\u0000\u0000\u008e\u008f\u0005\u000b\u0000\u0000\u008f\u0090\u0003,\u0016"+
+		"\u0000\u0090/\u0001\u0000\u0000\u0000\r3?CGQV\\enw\u0080\u0089\u008c";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

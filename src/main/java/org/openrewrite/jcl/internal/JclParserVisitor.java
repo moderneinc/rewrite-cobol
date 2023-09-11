@@ -190,7 +190,17 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
     public Jcl visitUnknownWord(JCLParser.UnknownWordContext ctx) {
         Space prefix = whitespace();
         Markers markers = Markers.EMPTY;
-        Jcl.Word word = visit(ctx.UNKNOWN_TEXT(), ctx.UNKNOWN_STRINGLITERAL());
+        Jcl.Word word;
+        if (ctx.UNKNOWN_TEXT() == null && ctx.UNKNOWN_STRINGLITERAL() == null) {
+            word = new Jcl.Word(
+                    randomId(),
+                    EMPTY,
+                    Markers.EMPTY,
+                    ""
+            );
+        } else {
+            word = visit(ctx.UNKNOWN_TEXT(), ctx.UNKNOWN_STRINGLITERAL());
+        }
         if (ctx.unknownCommentArea() != null) {
             markers = markers.addIfAbsent(mapCommentArea(ctx.unknownCommentArea()));
         }
