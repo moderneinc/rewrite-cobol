@@ -74,7 +74,8 @@ public class JclTest implements RewriteTest {
               //    'NAME',
               //    MSGCLASS=A
               /*
-              //* Stream should be ended.
+              //*
+              //JOB1 JOB ,'H.H. MORRILL'
               """
           )
         );
