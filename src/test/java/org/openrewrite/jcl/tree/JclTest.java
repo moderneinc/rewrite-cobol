@@ -65,41 +65,10 @@ public class JclTest implements RewriteTest {
     }
 
     @Test
-    void ddStream() {
-        rewriteRun(
-          jcl(
-            """
-              //%%JOBNAME.%%OTHER JOB (1,2,3),
-              //    'NAME',
-              //    MSGCLASS=A
-              /*
-              //*
-              //JOB1 JOB ,'H.H. MORRILL'
-              """
-          )
-        );
-    }
-
-    @Test
     void commentArea() {
         rewriteRun(
           jcl(
             "//NAME                                                                  commentArea"
-          )
-        );
-    }
-
-    @Test
-    void trailingCommentAndCommentArea() {
-        rewriteRun(
-          jcl(
-            """
-              //OBJECT DD *    * Why is this possible?                                commentArea
-                REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(1,2,3),
-                 FIELDS=(ABC=XYZ)
-                REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(4,5,6),
-                 FIELDS=(ABC=XYZ)
-              """
           )
         );
     }

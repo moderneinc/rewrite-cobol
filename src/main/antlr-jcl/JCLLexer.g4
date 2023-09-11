@@ -14,7 +14,12 @@ COMMENT : '^^COMMENT^^' -> skip, pushMode(INSIDE_COMMENT);
 UNKNOWN : '^^UNKNOWN^^' -> skip, pushMode(INSIDE_UNKNOWN);
 
 CA_START : '^^CA_START^^';
-TEXT : ~[ \r\n^]+ | '^';
+STRINGLITERAL
+    : '"' (~["\n\r] | '""' | '\'')* '"'
+    | '\'' (~['\n\r] | '\'\'' | '"')* '\''
+    ;
+
+TEXT : ~[ \r\n^']+ | '^' | '\'';
 
 fragment LF : '\n';
 fragment CR : '\r';
@@ -28,6 +33,7 @@ JCL_TC_START : '^^TC_START^^';
 JCL_TC_STOP : '^^TC_STOP^^';
 JCL_CA_START : CA_START -> type(CA_START);
 
+JCL_STRINGLITERAL : STRINGLITERAL;
 JCL_TEXT : TEXT;
 
 mode INSIDE_STREAM;
@@ -35,6 +41,8 @@ STREAM_WS : WS -> type(WS), channel(HIDDEN);
 STREAM_EOL : EOL -> type(EOL), channel(HIDDEN), popMode;
 
 STREAM_CA_START : CA_START -> type(CA_START);
+
+STREAM_STRINGLITERAL : STRINGLITERAL;
 STREAM_TEXT : TEXT;
 
 mode INSIDE_JES2;
@@ -42,6 +50,8 @@ JES2_WS : WS -> type(WS), channel(HIDDEN);
 JES2_EOL : EOL -> type(EOL), channel(HIDDEN), popMode;
 
 JES2_CA_START : CA_START -> type(CA_START);
+
+JES2_STRINGLITERAL : STRINGLITERAL;
 JES2_TEXT : TEXT;
 
 mode INSIDE_JES3;
@@ -49,6 +59,8 @@ JES3_WS : WS -> type(WS), channel(HIDDEN);
 JES3_EOL : EOL -> type(EOL), channel(HIDDEN), popMode;
 
 JES3_CA_START : CA_START -> type(CA_START);
+
+JES3_STRINGLITERAL : STRINGLITERAL;
 JES3_TEXT : TEXT;
 
 mode INSIDE_CM;
@@ -56,6 +68,8 @@ CM_WS : WS -> type(WS), channel(HIDDEN);
 CM_EOL : EOL -> type(EOL), channel(HIDDEN), popMode;
 
 CM_CA_START : CA_START -> type(CA_START);
+
+CM_STRINGLITERAL : STRINGLITERAL;
 CM_TEXT : TEXT;
 
 mode INSIDE_COMMENT;
@@ -63,6 +77,8 @@ COMMENT_WS : [ \t\f]+ -> channel(HIDDEN);
 COMMENT_EOL : EOL -> type(EOL), channel(HIDDEN), popMode;
 
 COMMENT_CA_START : CA_START -> type(CA_START);
+
+COMMENT_STRINGLITERAL : STRINGLITERAL;
 COMMENT_TEXT : TEXT;
 
 mode INSIDE_UNKNOWN;
@@ -70,4 +86,6 @@ UNKNOWN_WS : WS -> type(WS), skip;
 UNKNOWN_EOL : EOL -> type(EOL), channel(HIDDEN), popMode;
 
 UNKNOWN_CA_START : CA_START -> type(CA_START);
+
+UNKNOWN_STRINGLITERAL : STRINGLITERAL;
 UNKNOWN_TEXT : TEXT;

@@ -22,7 +22,7 @@ jcl
     ;
 
 jclWord
-    : JCL_TEXT jclCommentArea?
+    : (JCL_TEXT | JCL_STRINGLITERAL) jclCommentArea?
     ;
 
 jclCommentArea
@@ -38,7 +38,7 @@ jes2
     ;
 
 jes2Word
-    : JES2_TEXT jes2CommentArea?
+    : (JES2_TEXT | JES2_STRINGLITERAL) jes2CommentArea?
     ;
 
 jes2CommentArea
@@ -50,7 +50,7 @@ jes3
     ;
 
 jes3Word
-    : JES3_TEXT jes3CommentArea?
+    : (JES3_TEXT | JES3_STRINGLITERAL) jes3CommentArea?
     ;
 
 jes3CommentArea
@@ -62,7 +62,7 @@ stream
     ;
 
 streamWord
-    : STREAM_TEXT streamCommentArea?
+    : (STREAM_TEXT | STREAM_STRINGLITERAL) streamCommentArea?
     ;
 
 streamCommentArea
@@ -74,7 +74,7 @@ controlM
     ;
 
 controlMWord
-    : CM_TEXT controlMCommentArea?
+    : (CM_TEXT | CM_STRINGLITERAL) controlMCommentArea?
     ;
 
 controlMCommentArea
@@ -86,7 +86,7 @@ comment
     ;
 
 commentWord
-    : COMMENT_TEXT commentCommentArea?
+    : (COMMENT_TEXT | COMMENT_STRINGLITERAL) commentCommentArea?
     ;
 
 commentCommentArea
@@ -98,7 +98,7 @@ unknown
     ;
 
 unknownWord
-    : UNKNOWN_TEXT unknownCommentArea?
+    : (UNKNOWN_TEXT | UNKNOWN_STRINGLITERAL) unknownCommentArea?
     ;
 
 unknownCommentArea

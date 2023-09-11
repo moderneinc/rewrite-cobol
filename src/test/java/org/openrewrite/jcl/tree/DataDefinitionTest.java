@@ -73,4 +73,47 @@ public class DataDefinitionTest implements RewriteTest {
           jcl("//Name DD OUTPUT=(*.OUT1,*.OUT2)")
         );
     }
+
+    @Test
+    void ddStream() {
+        rewriteRun(
+          jcl(
+            """
+              //OBJECT DD *
+               REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(1,2,3),
+                 FIELDS=(ABC=XYZ)
+               REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(4,5,6),
+                 FIELDS=(ABC=XYZ)
+              """
+          )
+        );
+    }
+
+    @Test
+    void ddStreamLiteral() {
+        rewriteRun(
+          jcl(
+            """
+              //OBJECT DD *
+              SUBJECT:'%%JOBNAME -                                                  ' commentArea
+              //JOB1 JOB ,'H.H. MORRILL'
+              """
+          )
+        );
+    }
+
+    @Test
+    void trailingCommentAndCommentArea() {
+        rewriteRun(
+          jcl(
+            """
+              //OBJECT DD *    * Why is this possible?                                commentArea
+                REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(1,2,3),
+                 FIELDS=(ABC=XYZ)
+                REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(4,5,6),
+                 FIELDS=(ABC=XYZ)
+              """
+          )
+        );
+    }
 }

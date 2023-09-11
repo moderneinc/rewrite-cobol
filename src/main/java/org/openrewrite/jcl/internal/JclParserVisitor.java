@@ -82,7 +82,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
     public Jcl visitCommentWord(JCLParser.CommentWordContext ctx) {
         Space prefix = whitespace();
         Markers markers = Markers.EMPTY;
-        Jcl.Word word = (Jcl.Word) visit(ctx.COMMENT_TEXT());
+        Jcl.Word word = visit(ctx.COMMENT_TEXT(), ctx.COMMENT_STRINGLITERAL());
         if (ctx.commentCommentArea() != null) {
             markers = markers.addIfAbsent(mapCommentArea(ctx.commentCommentArea()));
         }
@@ -98,7 +98,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
     public Jcl visitControlMWord(JCLParser.ControlMWordContext ctx) {
         Space prefix = whitespace();
         Markers markers = Markers.EMPTY;
-        Jcl.Word word = (Jcl.Word) visit(ctx.CM_TEXT());
+        Jcl.Word word = visit(ctx.CM_TEXT(), ctx.CM_STRINGLITERAL());
         if (ctx.controlMCommentArea() != null) {
             markers = markers.addIfAbsent(mapCommentArea(ctx.controlMCommentArea()));
         }
@@ -114,7 +114,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
     public Jcl visitJclWord(JCLParser.JclWordContext ctx) {
         Space prefix = whitespace();
         Markers markers = Markers.EMPTY;
-        Jcl.Word word = (Jcl.Word) visit(ctx.JCL_TEXT());
+        Jcl.Word word = visit(ctx.JCL_TEXT(), ctx.JCL_STRINGLITERAL());
         if (ctx.jclCommentArea() != null) {
             markers = markers.addIfAbsent(mapCommentArea(ctx.jclCommentArea()));
         }
@@ -142,7 +142,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
     public Jcl visitJes2Word(JCLParser.Jes2WordContext ctx) {
         Space prefix = whitespace();
         Markers markers = Markers.EMPTY;
-        Jcl.Word word = (Jcl.Word) visit(ctx.JES2_TEXT());
+        Jcl.Word word = visit(ctx.JES2_TEXT(), ctx.JES2_STRINGLITERAL());
         if (ctx.jes2CommentArea() != null) {
             markers = markers.addIfAbsent(mapCommentArea(ctx.jes2CommentArea()));
         }
@@ -154,11 +154,18 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
         );
     }
 
+    /**
+     * In name => trigged by
+     * Out => next
+
+     //       DD *
+     // SUBJECT:'%%JOBNAME - Words ' commentArea
+     */
     @Override
     public Jcl visitJes3Word(JCLParser.Jes3WordContext ctx) {
         Space prefix = whitespace();
         Markers markers = Markers.EMPTY;
-        Jcl.Word word = (Jcl.Word) visit(ctx.JES3_TEXT());
+        Jcl.Word word = visit(ctx.JES3_TEXT(), ctx.JES3_STRINGLITERAL());
         if (ctx.jes3CommentArea() != null) {
             markers = markers.addIfAbsent(mapCommentArea(ctx.jes3CommentArea()));
         }
@@ -171,10 +178,26 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
     }
 
     @Override
+    public Jcl visitStreamWord(JCLParser.StreamWordContext ctx) {
+        Space prefix = whitespace();
+        Markers markers = Markers.EMPTY;
+        Jcl.Word word = visit(ctx.STREAM_TEXT(), ctx.STREAM_STRINGLITERAL());
+        if (ctx.streamCommentArea() != null) {
+            markers = markers.addIfAbsent(mapCommentArea(ctx.streamCommentArea()));
+        }
+        return new Jcl.JclStatement(
+                randomId(),
+                prefix,
+                markers,
+                word
+        );
+    }
+
+    @Override
     public Jcl visitUnknownWord(JCLParser.UnknownWordContext ctx) {
         Space prefix = whitespace();
         Markers markers = Markers.EMPTY;
-        Jcl.Word word = (Jcl.Word) visit(ctx.UNKNOWN_TEXT());
+        Jcl.Word word = visit(ctx.UNKNOWN_TEXT(), ctx.UNKNOWN_STRINGLITERAL());
         if (ctx.unknownCommentArea() != null) {
             markers = markers.addIfAbsent(mapCommentArea(ctx.unknownCommentArea()));
         }
