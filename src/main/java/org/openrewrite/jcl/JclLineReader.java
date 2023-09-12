@@ -142,10 +142,10 @@ public class JclLineReader {
 
     @Getter
     private enum LineType {
-        JES2("/*"),
-        JES3("//*"),
         JCL_STATEMENT("//"),
         JCL("//"),
+        JES2("/*"),
+        JES3("//*"),
         COMMENT("//* "),
         UNKNOWN("");
 

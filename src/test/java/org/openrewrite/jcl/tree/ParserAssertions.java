@@ -9,7 +9,6 @@ import org.openrewrite.ExecutionContext;
 import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.jcl.JclIsoVisitor;
 import org.openrewrite.jcl.JclParser;
-import org.openrewrite.jcl.JclVisitor;
 import org.openrewrite.test.SourceSpec;
 import org.openrewrite.test.SourceSpecs;
 

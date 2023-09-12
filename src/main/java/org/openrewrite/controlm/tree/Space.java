@@ -3,7 +3,7 @@
  * For everyone else, this is licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International.
  * See: https://creativecommons.org/licenses/by-nc-sa/4.0/
  */
-package org.openrewrite.jcl.tree;
+package org.openrewrite.controlm.tree;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 /**
- * JCL white space.
+ * Control-M white space.
  */
 @EqualsAndHashCode
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@ref")
@@ -120,15 +120,5 @@ public class Space {
     public enum Location {
         COMPILATION_UNIT_PREFIX,
         COMPILATION_UNIT_EOF,
-        COMMENT_AREA_PREFIX,
-        CONTROL_M_PREFIX,
-        DATA_DEFINITION_STREAM_PREFIX,
-        JCL_STATEMENT_PREFIX,
-        JES2_PREFIX,
-        JES3_PREFIX,
-        UNKNOWN_PREFIX,
-        TRAILING_COMMENT_PREFIX,
-        COMMENT_PREFIX,
-        WORD_PREFIX
     }
 }

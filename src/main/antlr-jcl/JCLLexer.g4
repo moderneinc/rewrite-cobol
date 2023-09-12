@@ -19,7 +19,7 @@ STRINGLITERAL
     | '\'' (~['\n\r] | '\'\'' | '"')* '\''
     ;
 
-TEXT : ~[ \r\n^']+ | '^' | '\'';
+TEXT : ~[ \r\n^'"]+ | '^' | '\'' | '"';
 
 fragment LF : '\n';
 fragment CR : '\r';
@@ -73,6 +73,7 @@ CM_STRINGLITERAL : STRINGLITERAL;
 CM_TEXT : TEXT;
 
 mode INSIDE_COMMENT;
+// JCL whitespace rules do not apply.
 COMMENT_WS : [ \t\f]+ -> channel(HIDDEN);
 COMMENT_EOL : EOL -> type(EOL), channel(HIDDEN), popMode;
 
@@ -82,6 +83,7 @@ COMMENT_STRINGLITERAL : STRINGLITERAL;
 COMMENT_TEXT : TEXT;
 
 mode INSIDE_UNKNOWN;
+// JCL whitespace rules do not apply.
 UNKNOWN_WS : [ \t\f]+ -> channel(HIDDEN);
 UNKNOWN_EOL : EOL -> type(EOL), channel(HIDDEN), popMode;
 

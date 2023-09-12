@@ -6,22 +6,17 @@
 package org.openrewrite.jcl.tree;
 
 import lombok.*;
-import lombok.experimental.FieldDefaults;
-import lombok.experimental.NonFinal;
 import org.openrewrite.*;
 import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.jcl.JclVisitor;
 import org.openrewrite.jcl.internal.JclPrinter;
 import org.openrewrite.marker.Markers;
 
-import java.lang.ref.WeakReference;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.UUID;
-
-import static java.util.Objects.requireNonNull;
 
 public interface Jcl extends Tree {
 

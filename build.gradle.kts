@@ -29,6 +29,17 @@ tasks.register<JavaExec>("generateAntlrSourcesJcl") {
     classpath = sourceSets["main"].runtimeClasspath
 }
 
+tasks.register<JavaExec>("generateAntlrSourcesControlM") {
+    mainClass.set("org.antlr.v4.Tool")
+    args = listOf(
+        "-o", "src/main/java/org/openrewrite/controlm/internal/grammar",
+        "-package", "org.openrewrite.controlm.internal.grammar",
+        "-visitor"
+    ) + fileTree("src/main/antlr-controlm").matching { include("**/*.g4") }.map { it.path }
+
+    classpath = sourceSets["main"].runtimeClasspath
+}
+
 sourceSets {
     create("model") {
         compileClasspath += sourceSets.main.get().output

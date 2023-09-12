@@ -74,7 +74,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
                 charsetBomMarked,
                 null,
                 statements,
-                Space.build(source.substring(cursor), false)
+                Space.build(source.substring(cursor))
         );
     }
 
@@ -254,13 +254,13 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
         int endIndex = indexOfNextNonWhitespace(cursor, source);
         String prefix = source.substring(cursor, endIndex);
         cursor += prefix.length();
-        return Space.build(prefix, false);
+        return Space.build(prefix);
     }
 
     private Space sourceBefore(String untilDelim) {
         Space prefix = whitespace();
         skip(untilDelim);
-        return Space.build(prefix.getWhitespace(), prefix.isContinued());
+        return Space.build(prefix.getWhitespace());
     }
 
     public static int indexOfNextNonWhitespace(int cursor, String source) {
