@@ -26,7 +26,7 @@ jclWord
     ;
 
 jclCommentArea
-    : CA_START jclWord
+    : CA_START (JCL_TEXT | JCL_STRINGLITERAL)
     ;
 
 jclTrailingComment
@@ -42,7 +42,7 @@ jes2Word
     ;
 
 jes2CommentArea
-    : CA_START jes2Word
+    : CA_START (JES2_TEXT | JES2_STRINGLITERAL)
     ;
 
 jes3
@@ -54,7 +54,7 @@ jes3Word
     ;
 
 jes3CommentArea
-    : CA_START jes3Word
+    : CA_START (JES3_TEXT | JES3_STRINGLITERAL)
     ;
 
 stream
@@ -66,7 +66,7 @@ streamWord
     ;
 
 streamCommentArea
-    : CA_START streamWord
+    : CA_START (STREAM_TEXT | STREAM_STRINGLITERAL)
     ;
 
 controlM
@@ -78,7 +78,7 @@ controlMWord
     ;
 
 controlMCommentArea
-    : CA_START controlMWord
+    : CA_START (CM_TEXT | CM_STRINGLITERAL)
     ;
 
 comment
@@ -90,7 +90,7 @@ commentWord
     ;
 
 commentCommentArea
-    : CA_START commentWord
+    : CA_START (COMMENT_TEXT | COMMENT_STRINGLITERAL)
     ;
 
 unknown
@@ -103,5 +103,5 @@ unknownWord
     ;
 
 unknownCommentArea
-    : CA_START unknownWord
+    : CA_START (UNKNOWN_TEXT | UNKNOWN_STRINGLITERAL)
     ;

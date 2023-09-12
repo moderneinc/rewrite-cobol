@@ -37,8 +37,9 @@ public class UnknownTest implements RewriteTest {
         rewriteRun(
           jcl(
             """
-              //* %%RANGE 1 42                                                        commentArea
+              *---------------------------------------------------------------------- commentArea
                                                                                       commentArea
+                                                                                      'literal  '
                 TRACE OFF                                                             commentArea
                 MAXCOMMAND 42                                                         commentArea
                 CALLMEM SET42                                                         commentArea
