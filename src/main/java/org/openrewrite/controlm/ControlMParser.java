@@ -67,13 +67,13 @@ public class ControlMParser implements Parser {
 
     @Override
     public boolean accept(Path path) {
-        return path.toString().toLowerCase().endsWith(".jcl") ||
-                path.toString().toLowerCase().endsWith(".prc");
+        // TODO: file extension for control-m schedules is TBD.
+        return path.toString().toLowerCase().endsWith(".ctms");
     }
 
     @Override
     public Path sourcePathFromSourceText(Path prefix, String sourceCode) {
-        return prefix.resolve("file.jcl");
+        return prefix.resolve("file.ctms");
     }
 
     private static class ForwardingErrorListener extends BaseErrorListener {
