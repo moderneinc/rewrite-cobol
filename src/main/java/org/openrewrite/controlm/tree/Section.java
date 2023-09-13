@@ -5,5 +5,5 @@
  */
 package org.openrewrite.controlm.tree;
 
-public interface Statement extends ControlM {
+public interface Section extends ControlM {
 }

@@ -22,27 +22,243 @@ public interface ControlMParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCompilationUnit(ControlMParser.CompilationUnitContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link ControlMParser#statement}.
+	 * Visit a parse tree produced by {@link ControlMParser#definitionSection}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitStatement(ControlMParser.StatementContext ctx);
+	T visitDefinitionSection(ControlMParser.DefinitionSectionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link ControlMParser#controlM}.
+	 * Visit a parse tree produced by {@link ControlMParser#definitionLine}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitControlM(ControlMParser.ControlMContext ctx);
+	T visitDefinitionLine(ControlMParser.DefinitionLineContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link ControlMParser#controlMWord}.
+	 * Visit a parse tree produced by {@link ControlMParser#memLine}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitControlMWord(ControlMParser.ControlMWordContext ctx);
+	T visitMemLine(ControlMParser.MemLineContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link ControlMParser#controlMCommentArea}.
+	 * Visit a parse tree produced by {@link ControlMParser#memName}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitControlMCommentArea(ControlMParser.ControlMCommentAreaContext ctx);
+	T visitMemName(ControlMParser.MemNameContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#memLib}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMemLib(ControlMParser.MemLibContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#ownerLine}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOwnerLine(ControlMParser.OwnerLineContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#owner}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOwner(ControlMParser.OwnerContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#taskType}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTaskType(ControlMParser.TaskTypeContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#preventNc2}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPreventNc2(ControlMParser.PreventNc2Context ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#dflt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDflt(ControlMParser.DfltContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#applLine}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitApplLine(ControlMParser.ApplLineContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#appl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAppl(ControlMParser.ApplContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#group}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGroup(ControlMParser.GroupContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#descLine}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDescLine(ControlMParser.DescLineContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#overlibLine}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOverlibLine(ControlMParser.OverlibLineContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#overlib}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOverlib(ControlMParser.OverlibContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#statCal}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStatCal(ControlMParser.StatCalContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#schenvLine}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSchenvLine(ControlMParser.SchenvLineContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#schenv}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSchenv(ControlMParser.SchenvContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#systemId}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSystemId(ControlMParser.SystemIdContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#njeNode}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNjeNode(ControlMParser.NjeNodeContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#setVarLine}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSetVarLine(ControlMParser.SetVarLineContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#ctbSetLine}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCtbSetLine(ControlMParser.CtbSetLineContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#docLine}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDocLine(ControlMParser.DocLineContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#docMem}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDocMem(ControlMParser.DocMemContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#docLib}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDocLib(ControlMParser.DocLibContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#scheduleSection}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitScheduleSection(ControlMParser.ScheduleSectionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#scheduleLine}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitScheduleLine(ControlMParser.ScheduleLineContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#inputSection}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInputSection(ControlMParser.InputSectionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#inputLine}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInputLine(ControlMParser.InputLineContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#inLine}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInLine(ControlMParser.InLineContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#in}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIn(ControlMParser.InContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#odat}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOdat(ControlMParser.OdatContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#outputSection}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOutputSection(ControlMParser.OutputSectionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#outputLine}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOutputLine(ControlMParser.OutputLineContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#outLine}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOutLine(ControlMParser.OutLineContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#out}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOut(ControlMParser.OutContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#applicationFormSection}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitApplicationFormSection(ControlMParser.ApplicationFormSectionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#applicationFormLine}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitApplicationFormLine(ControlMParser.ApplicationFormLineContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#name}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitName(ControlMParser.NameContext ctx);
 }

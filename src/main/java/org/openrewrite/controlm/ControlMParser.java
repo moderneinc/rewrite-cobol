@@ -41,8 +41,9 @@ public class ControlMParser implements Parser {
                     try {
                         EncodingDetectingInputStream is = sourceFile.getSource(ctx);
                         String sourceStr = is.readFully();
+                        String processedStr = ControlMLineReader.readLines(sourceStr);
                         org.openrewrite.controlm.internal.grammar.ControlMParser parser = new org.openrewrite.controlm.internal.grammar.ControlMParser(new CommonTokenStream(new ControlMLexer(
-                                CharStreams.fromString(sourceStr))));
+                                CharStreams.fromString(processedStr))));
 
                         parser.removeErrorListeners();
                         parser.addErrorListener(new ControlMParser.ForwardingErrorListener(sourceFile.getPath(), ctx));

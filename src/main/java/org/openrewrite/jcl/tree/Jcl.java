@@ -220,7 +220,7 @@ public interface Jcl extends Tree {
     @Value
     @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
-    class Word implements Jcl, Statement {
+    class Word implements Jcl {
 
         @EqualsAndHashCode.Include
         UUID id;
