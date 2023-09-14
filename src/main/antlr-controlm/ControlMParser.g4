@@ -34,11 +34,11 @@ memLine
     ;
 
 memName
-    : MEMNAME name
+    : MEMNAME name?
     ;
 
 memLib
-    : MEMLIB name
+    : MEMLIB name?
     ;
 
 ownerLine
@@ -46,19 +46,19 @@ ownerLine
     ;
 
 owner
-    : OWNER name
+    : OWNER name?
     ;
 
 taskType
-    : TASKTYPE name
+    : TASKTYPE name?
     ;
 
 preventNc2
-    : PREVENT_NCT2 name
+    : PREVENT_NCT2 name?
     ;
 
 dflt
-    : DFLT name
+    : DFLT name?
     ;
 
 applLine
@@ -70,7 +70,7 @@ appl
     ;
 
 group
-    : GROUP name
+    : GROUP name?
     ;
 
 descLine
@@ -119,11 +119,11 @@ docLine
     ;
 
 docMem
-    : DOCMEM name
+    : DOCMEM name?
     ;
 
 docLib
-    : DOCLIB name
+    : DOCLIB name?
     ;
 
 scheduleSection
@@ -147,7 +147,7 @@ inLine
     ;
 
 in
-    : IN name
+    : IN name?
     ;
 
 odat
@@ -167,7 +167,7 @@ outLine
     ;
 
 out
-    : OUT name
+    : OUT name?
     ;
 
 applicationFormSection
