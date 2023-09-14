@@ -12,7 +12,7 @@ compilationUnit
     ;
 
 definitionSection
-    : BROWSE_HEADER definitionLine*
+    : BROWSE_HEADER definitionLine+
     ;
 
 definitionLine
