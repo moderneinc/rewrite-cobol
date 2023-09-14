@@ -64,11 +64,21 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
     public ControlM.CompilationUnit visitCompilationUnit(ControlMParser.CompilationUnitContext ctx) {
         Space prefix = whitespace();
         List<Section> sections = new ArrayList<>(6);
-        sections.add(visitDefinitionSection(ctx.definitionSection()));
-        sections.add(visitScheduleSection(ctx.scheduleSection()));
-        sections.add(visitInputSection(ctx.inputSection()));
-        sections.add(visitOutputSection(ctx.outputSection()));
-        sections.add(visitApplicationFormSection(ctx.applicationFormSection()));
+        if (ctx.definitionSection() != null) {
+            sections.add(visitDefinitionSection(ctx.definitionSection()));
+        }
+        if (ctx.scheduleSection() != null) {
+            sections.add(visitScheduleSection(ctx.scheduleSection()));
+        }
+        if (ctx.inputSection() != null) {
+            sections.add(visitInputSection(ctx.inputSection()));
+        }
+        if (ctx.outputSection() != null) {
+            sections.add(visitOutputSection(ctx.outputSection()));
+        }
+        if (ctx.applicationFormSection() != null) {
+            sections.add(visitApplicationFormSection(ctx.applicationFormSection()));
+        }
         return new ControlM.CompilationUnit(
                 randomId(),
                 path,

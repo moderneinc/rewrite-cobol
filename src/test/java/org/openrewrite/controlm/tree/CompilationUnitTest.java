@@ -13,6 +13,13 @@ import static org.openrewrite.controlm.tree.ParserAssertions.controlM;
 public class CompilationUnitTest implements RewriteTest {
 
     @Test
+    void blankFile() {
+        rewriteRun(
+          controlM("")
+        );
+    }
+
+    @Test
     void schedule() {
         rewriteRun(
           controlM(

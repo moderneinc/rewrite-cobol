@@ -8,7 +8,7 @@ parser grammar ControlMParser;
 options { caseInsensitive = true; tokenVocab=ControlMLexer; }
 
 compilationUnit
-    : definitionSection scheduleSection inputSection outputSection applicationFormSection EOF
+    : (definitionSection scheduleSection inputSection outputSection applicationFormSection)? EOF
     ;
 
 definitionSection
