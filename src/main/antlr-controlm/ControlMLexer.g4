@@ -25,7 +25,7 @@ fragment FORM_FEED : '\u000C';
 VERTICAL_BAR_CHAR : '|';
 ODAT : 'ODAT';
 
-NAME : [@%#a-zA-Z0-9-_:.*?]+;
+NAME : [@%#=a-zA-Z0-9-_:.*?]+;
 
 mode DEFINITION;
 DEFINITION_END : '|DEFINITION_END|' -> skip, popMode;
