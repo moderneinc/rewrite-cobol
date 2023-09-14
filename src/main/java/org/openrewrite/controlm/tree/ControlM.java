@@ -159,7 +159,12 @@ public interface ControlM extends Tree {
         @Getter
         String setVar;
 
-        @Nullable
+        @With
+        @Getter
+        Word varName;
+
+        @With
+        @Getter
         ControlMLeftPadded<Word> value;
 
         @Override
@@ -192,7 +197,7 @@ public interface ControlM extends Tree {
             }
 
             public SetVar withValue(@Nullable ControlMLeftPadded<Word> value) {
-                return t.value == value ? t : new SetVar(t.id, t.prefix, t.markers, t.setVar, value);
+                return t.value == value ? t : new SetVar(t.id, t.prefix, t.markers, t.setVar, t.varName, value);
             }
         }
     }

@@ -44,8 +44,8 @@ public class ControlMVisitor<P> extends TreeVisitor<ControlM, P> {
         ControlM.SetVar s = setVar;
         s = s.withPrefix(visitSpace(s.getPrefix(), Space.Location.SET_VAR_PREFIX, p));
         s = s.withMarkers(visitMarkers(s.getMarkers(), p));
-        s = s.getPadding().withValue(visitLeftPadded(s.getPadding().getValue(),
-                ControlMLeftPadded.Location.SET_VAR_INITIALIZER, p));
+        s = s.withVarName(visitAndCast(s.getVarName(), p));
+        s = s.getPadding().withValue(visitLeftPadded(s.getPadding().getValue(), ControlMLeftPadded.Location.SET_VAR_INITIALIZER, p));
         return s;
     }
 

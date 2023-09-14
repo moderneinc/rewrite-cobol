@@ -19,12 +19,13 @@ public class CompilationUnitTest implements RewriteTest {
             """
                 +---------------------------------- BROWSE -----------------------------------+
                 | MEMNAME HELLO_WORLD    MEMLIB   PRD.HELLO_WORLD.JCL                         |
-                | OWNER   %%USER_NAME    TASKTYPE JOB    PREVENT-NCT2 Y DFLT  N                 |
+                | OWNER   %%USER_NAME    TASKTYPE JOB    PREVENT-NCT2 Y DFLT  N               |
                 | APPL H-E-L-L-O                          GROUP HWOR#090                      |
                 | DESC PRINT HELLO WORLD                                                      |
                 |                                                                             |
                 | OVERLIB HELLO.WORLD.EXAMPLE.JCL.OVERLIB                   STAT CAL          |
                 | SCHENV                         SYSTEM ID                  NJE NODE          |
+                | SET VAR %%NAME=NAME                                                         |
                 | SET VAR                                                                     |
                 | CTB STEP AT         NAME            TYPE                                    |
                 | DOCMEM  HELLO_WORLD    DOCLIB   HELLO.WORLD.TEXT.JOB                        |

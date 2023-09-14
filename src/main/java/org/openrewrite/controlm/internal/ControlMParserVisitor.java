@@ -380,6 +380,7 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
                     sourceBefore(ctx.SET_VAR().getText()),
                     Markers.EMPTY,
                     ctx.SET_VAR().getText(),
+                    (ControlM.Word) visit(ctx.name(0)),
                     padLeft(sourceBefore(ctx.EQUALS_CHAR().getText()), (ControlM.Word) visit(ctx.name(1)))
             );
         } else {

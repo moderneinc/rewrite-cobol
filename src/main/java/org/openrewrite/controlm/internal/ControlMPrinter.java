@@ -53,9 +53,8 @@ public class ControlMPrinter<P> extends ControlMVisitor<PrintOutputCapture<P>> {
     public ControlM visitSetVar(ControlM.SetVar setVar, PrintOutputCapture<P> p) {
         beforeSyntax(setVar, Space.Location.SET_VAR_PREFIX, p);
         p.append(setVar.getSetVar());
-        if (setVar.getPadding().getValue() != null) {
-            visitLeftPadded("=", setVar.getPadding().getValue(), ControlMLeftPadded.Location.SET_VAR_INITIALIZER, p);
-        }
+        visit(setVar.getVarName(), p);
+        visitLeftPadded("=", setVar.getPadding().getValue(), ControlMLeftPadded.Location.SET_VAR_INITIALIZER, p);
         afterSyntax(setVar, p);
         return setVar;
     }
