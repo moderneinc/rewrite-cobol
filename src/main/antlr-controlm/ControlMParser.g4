@@ -74,7 +74,7 @@ group
     ;
 
 descLine
-    : DESC name*
+    : DESC LINE_TEXT?
     ;
 
 overlibLine
@@ -179,5 +179,5 @@ applicationFormLine
     ;
 
 name
-    : (NAME | REGEX_NAME)
+    : NAME
     ;

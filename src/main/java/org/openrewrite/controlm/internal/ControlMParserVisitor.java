@@ -271,7 +271,7 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
                 sourceBefore(ctx.DESC().getText()),
                 Markers.EMPTY,
                 ctx.DESC().getText(),
-                convertAll(ctx.name())
+                visitNullable(ctx.LINE_TEXT())
         );
 
         markers = markers.addIfAbsent(mapColumn(Column.Location.END));
