@@ -8,8 +8,54 @@ package org.openrewrite.controlm;
 import org.openrewrite.controlm.tree.ControlM;
 
 public class ControlMIsoVisitor<P> extends ControlMVisitor<P> {
+
     @Override
     public ControlM.CompilationUnit visitCompilationUnit(ControlM.CompilationUnit compilationUnit, P p) {
         return (ControlM.CompilationUnit) super.visitCompilationUnit(compilationUnit, p);
+    }
+
+    @Override
+    public ControlM.DefinitionSection visitDefinitionSection(ControlM.DefinitionSection definitionSection, P p) {
+        return (ControlM.DefinitionSection) super.visitDefinitionSection(definitionSection, p);
+    }
+
+    @Override
+    public ControlM.Description visitDescription(ControlM.Description description, P p) {
+        return (ControlM.Description) super.visitDescription(description, p);
+    }
+
+    @Override
+    public ControlM.SetVar visitSetVar(ControlM.SetVar setVar, P p) {
+        return (ControlM.SetVar) super.visitSetVar(setVar, p);
+    }
+
+    @Override
+    public ControlM.ScheduleSection visitScheduleSection(ControlM.ScheduleSection scheduleSection, P p) {
+        return (ControlM.ScheduleSection) super.visitScheduleSection(scheduleSection, p);
+    }
+
+    @Override
+    public ControlM.InputSection visitInputSection(ControlM.InputSection inputSection, P p) {
+        return (ControlM.InputSection) super.visitInputSection(inputSection, p);
+    }
+
+    @Override
+    public ControlM.OutputSection visitOutputSection(ControlM.OutputSection outputSection, P p) {
+        return (ControlM.OutputSection) super.visitOutputSection(outputSection, p);
+    }
+
+    @Override
+    public ControlM.ApplicationFormSection visitApplicationFormSection(ControlM.ApplicationFormSection applicationFormSection, P p) {
+        return (ControlM.ApplicationFormSection) super.visitApplicationFormSection(applicationFormSection, p);
+    }
+
+    @Override
+    public ControlM.Line visitLine(ControlM.Line line, P p) {
+        return (ControlM.Line) super.visitLine(line, p);
+    }
+
+    @Override
+    public ControlM.Parameter visitParameter(ControlM.Parameter parameter, P p) {
+        return (ControlM.Parameter) super.visitParameter(parameter, p);
     }
 }

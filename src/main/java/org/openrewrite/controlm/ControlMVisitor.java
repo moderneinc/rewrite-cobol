@@ -36,7 +36,7 @@ public class ControlMVisitor<P> extends TreeVisitor<ControlM, P> {
         ControlM.Description d = description;
         d = d.withPrefix(visitSpace(d.getPrefix(), Space.Location.DESCRIPTION_PREFIX, p));
         d = d.withMarkers(visitMarkers(d.getMarkers(), p));
-        d = d.withDescription(ListUtils.map(d.getDescription(), e -> visitAndCast(e, p)));
+        d = d.withDescription(visitAndCast(d.getDescription(), p));
         return d;
     }
 

@@ -125,7 +125,7 @@ public interface ControlM extends Tree {
         String word;
 
         @Nullable
-        List<Word> description;
+        Word description;
 
         @Override
         public <P> ControlM acceptControlM(ControlMVisitor<P> v, P p) {
