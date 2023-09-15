@@ -74,7 +74,7 @@ group
     ;
 
 descLine
-    : DEFINITION_DESC name*
+    : DEFINITION_DESC DESC_TEXT_WORD*
     ;
 
 overlibLine

@@ -60,6 +60,7 @@ public class ControlMLineReader {
                         p.append("<<OUTPUT_NAMES_END>> ");
                     }
                 }
+
                 // `|` characters are used as column areas for the Control-M template.
                 // LINE_START and LINE_END are used to mark the beginning and end of a line
                 // so that the `|` is not converted to a NAME token and simplify parsing whitespace.
