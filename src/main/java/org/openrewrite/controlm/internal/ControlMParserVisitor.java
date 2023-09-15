@@ -527,7 +527,7 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
                 randomId(),
                 whitespace(),
                 Markers.EMPTY,
-                (ControlM.Word) visit(ctx.name()),
+                visitNullable(ctx.name()),
                 (ControlM.Parameter) visit(ctx.date())
         );
     }
@@ -597,7 +597,7 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
                 randomId(),
                 whitespace(),
                 Markers.EMPTY,
-                (ControlM.Word) visit(ctx.name()),
+                visitNullable(ctx.name()),
                 (ControlM.Parameter) visit(ctx.date())
         );
     }

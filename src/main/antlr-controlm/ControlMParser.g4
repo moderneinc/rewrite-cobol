@@ -146,7 +146,7 @@ inputNamesLine
     ;
 
 input
-    : name date
+    : name? date
     ;
 
 date
@@ -167,7 +167,7 @@ outputNamesLine
     ;
 
 output
-    : name date
+    : name? date
     ;
 
 outputLine
