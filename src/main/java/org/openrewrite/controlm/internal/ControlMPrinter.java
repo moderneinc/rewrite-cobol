@@ -72,18 +72,56 @@ public class ControlMPrinter<P> extends ControlMVisitor<PrintOutputCapture<P>> {
     public ControlM visitInputSection(ControlM.InputSection inputSection, PrintOutputCapture<P> p) {
         beforeSyntax(inputSection, Space.Location.INPUT_SECTION_PREFIX, p);
         p.append("| =========================================================================== |");
+        visit(inputSection.getInputNames(), p);
         visit(inputSection.getLines(), p);
         afterSyntax(inputSection, p);
         return inputSection;
     }
 
     @Override
+    public ControlM visitInput(ControlM.Input input, PrintOutputCapture<P> p) {
+        beforeSyntax(input, Space.Location.INPUT_PREFIX, p);
+        visit(input.getIn(), p);
+        visit(input.getInput(), p);
+        afterSyntax(input, p);
+        return input;
+    }
+
+    @Override
+    public ControlM visitInputNameParameter(ControlM.Input.NameParameter nameParameter, PrintOutputCapture<P> p) {
+        beforeSyntax(nameParameter, Space.Location.PARAMETER_PREFIX, p);
+        visit(nameParameter.getName(), p);
+        visit(nameParameter.getDate(), p);
+        afterSyntax(nameParameter, p);
+        return nameParameter;
+    }
+
+    @Override
     public ControlM visitOutputSection(ControlM.OutputSection outputSection, PrintOutputCapture<P> p) {
         beforeSyntax(outputSection, Space.Location.OUTPUT_SECTION_PREFIX, p);
         p.append("| =========================================================================== |");
+        visit(outputSection.getOutputNames(), p);
         visit(outputSection.getLines(), p);
         afterSyntax(outputSection, p);
         return outputSection;
+    }
+
+    @Override
+    public ControlM visitOutput(ControlM.Output output, PrintOutputCapture<P> p) {
+        beforeSyntax(output, Space.Location.OUTPUT_PREFIX, p);
+        visit(output.getOut(), p);
+        visit(output.getOutput(), p);
+        afterSyntax(output, p);
+        return output;
+    }
+
+    @Override
+    public ControlM visitOutputNameParameter(ControlM.Output.NameParameter nameParameter, PrintOutputCapture<P> p) {
+        beforeSyntax(nameParameter, Space.Location.PARAMETER_PREFIX, p);
+        visit(nameParameter.getName(), p);
+        visit(nameParameter.getDate(), p);
+        afterSyntax(nameParameter, p);
+        return nameParameter;
     }
 
     @Override

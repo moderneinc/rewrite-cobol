@@ -12,11 +12,11 @@ compilationUnit
     ;
 
 definitionSection
-    : BROWSE_HEADER definitionLine+
+    : DEFINITION_HEADER definitionLine+
     ;
 
 definitionLine
-    : VERTICAL_BAR_CHAR (
+    : DEFINITION_LINE_START (
         memLine
         | ownerLine
         | applLine
@@ -26,7 +26,7 @@ definitionLine
         | setVarLine
         | ctbSetLine
         | docLine
-        )? VERTICAL_BAR_CHAR
+        )? DEFINITION_LINE_END
     ;
 
 memLine
@@ -34,11 +34,11 @@ memLine
     ;
 
 memName
-    : MEMNAME name?
+    : DEFINITION_MEMNAME name?
     ;
 
 memLib
-    : MEMLIB name?
+    : DEFINITION_MEMLIB name?
     ;
 
 ownerLine
@@ -46,19 +46,19 @@ ownerLine
     ;
 
 owner
-    : OWNER name?
+    : DEFINITION_OWNER name?
     ;
 
 taskType
-    : TASKTYPE name?
+    : DEFINITION_TASKTYPE name?
     ;
 
 preventNc2
-    : PREVENT_NCT2 name?
+    : DEFINITION_PREVENT_NCT2 name?
     ;
 
 dflt
-    : DFLT name?
+    : DEFINITION_DFLT name?
     ;
 
 applLine
@@ -66,15 +66,15 @@ applLine
     ;
 
 appl
-    : APPL name?
+    : DEFINITION_APPL name?
     ;
 
 group
-    : GROUP name?
+    : DEFINITION_GROUP name?
     ;
 
 descLine
-    : DESC LINE_TEXT?
+    : DEFINITION_DESC name*
     ;
 
 overlibLine
@@ -82,11 +82,11 @@ overlibLine
     ;
 
 overlib
-    : OVERLIB name?
+    : DEFINITION_OVERLIB name?
     ;
 
 statCal
-    : STAT_CAL name?
+    : DEFINITION_STAT_CAL name?
     ;
 
 schenvLine
@@ -94,24 +94,24 @@ schenvLine
     ;
 
 schenv
-    : SCHENV name?
+    : DEFINITION_SCHENV name?
     ;
 
 systemId
-    : SYSTEM_ID name?
+    : DEFINITION_SYSTEM_ID name?
     ;
 
 njeNode
-    : NJE_NODE name?
+    : DEFINITION_NJE_NODE name?
     ;
 
 setVarLine
-    : SET_VAR name?
-    | SET_VAR name? EQUALS_CHAR name
+    : DEFINITION_SET_VAR name?
+    | DEFINITION_SET_VAR name DEFINITION_EQUALS_CHAR name
     ;
 
 ctbSetLine
-    : CTB_STEP AT NAME TYPE
+    : DEFINITION_CTB_STEP DEFINITION_AT name DEFINITION_TYPE
     ;
 
 docLine
@@ -119,55 +119,59 @@ docLine
     ;
 
 docMem
-    : DOCMEM name?
+    : DEFINITION_DOCMEM name?
     ;
 
 docLib
-    : DOCLIB name?
+    : DEFINITION_DOCLIB name?
     ;
 
+// Section 2.
 scheduleSection
-    : SECTION_HEADER scheduleLine+
+    : SCHEDULE_HEADER scheduleLine+
     ;
 
 scheduleLine
-    : VERTICAL_BAR_CHAR SCHEDULE_TEXT* VERTICAL_BAR_CHAR
+    : SCHEDULE_LINE_START name* SCHEDULE_LINE_END
     ;
 
+// Section 3.
 inputSection
-    : SECTION_HEADER inputLine+
+    : INPUT_HEADER inputNamesLine+ inputLine+
+    ;
+
+// The `IN` portion of an INPUT section is separated since the names are relevant for relationships.
+inputNamesLine
+    : INPUT_NAMES_LINE_START INPUT_NAMES_IN? (input)* INPUT_NAMES_LINE_END
+    ;
+
+input
+    : name date
+    ;
+
+date
+    : (ODAT | DATE_WILDCARD) name?
     ;
 
 inputLine
-    : VERTICAL_BAR_CHAR (inLine | INPUT_TEXT*) VERTICAL_BAR_CHAR
-    ;
-
-inLine
-    : in odat
-    ;
-
-in
-    : IN name?
-    ;
-
-odat
-    : ODAT name?
+    : INPUT_LINE_START name* INPUT_LINE_END
     ;
 
 outputSection
-    :  SECTION_HEADER outputLine+
+    :  OUTPUT_HEADER outputNamesLine+ outputLine+
+    ;
+
+// Output line is separated from consumed text since it contains relevant file names.
+outputNamesLine
+    : OUTPUT_NAMES_LINE_START OUTPUT_NAMES_OUT? (output)* OUTPUT_NAMES_LINE_END
+    ;
+
+output
+    : name date
     ;
 
 outputLine
-    : VERTICAL_BAR_CHAR (outLine | OUTPUT_TEXT*) VERTICAL_BAR_CHAR
-    ;
-
-outLine
-    : out odat
-    ;
-
-out
-    : OUT name?
+    : OUTPUT_LINE_START name* OUTPUT_LINE_END
     ;
 
 applicationFormSection
@@ -175,7 +179,7 @@ applicationFormSection
     ;
 
 applicationFormLine
-    : VERTICAL_BAR_CHAR APP_FORM_TEXT* VERTICAL_BAR_CHAR
+    : APP_FORM_LINE_START name* APP_FORM_LINE_END
     ;
 
 name

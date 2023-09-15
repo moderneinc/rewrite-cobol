@@ -156,9 +156,9 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
     public ControlM.Parameter visitMemName(ControlMParser.MemNameContext ctx) {
         return new ControlM.Parameter(
                 randomId(),
-                sourceBefore(ctx.MEMNAME().getText()),
+                sourceBefore(ctx.DEFINITION_MEMNAME().getText()),
                 Markers.EMPTY,
-                ctx.MEMNAME().getText(),
+                ctx.DEFINITION_MEMNAME().getText(),
                 visitNullable(ctx.name())
         );
     }
@@ -167,9 +167,9 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
     public ControlM.Parameter visitMemLib(ControlMParser.MemLibContext ctx) {
         return new ControlM.Parameter(
                 randomId(),
-                sourceBefore(ctx.MEMLIB().getText()),
+                sourceBefore(ctx.DEFINITION_MEMLIB().getText()),
                 Markers.EMPTY,
-                ctx.MEMLIB().getText(),
+                ctx.DEFINITION_MEMLIB().getText(),
                 visitNullable(ctx.name())
         );
     }
@@ -193,9 +193,9 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
     public ControlM visitOwner(ControlMParser.OwnerContext ctx) {
         return new ControlM.Parameter(
                 randomId(),
-                sourceBefore(ctx.OWNER().getText()),
+                sourceBefore(ctx.DEFINITION_OWNER().getText()),
                 Markers.EMPTY,
-                ctx.OWNER().getText(),
+                ctx.DEFINITION_OWNER().getText(),
                 visitNullable(ctx.name())
         );
     }
@@ -204,9 +204,9 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
     public ControlM visitTaskType(ControlMParser.TaskTypeContext ctx) {
         return new ControlM.Parameter(
                 randomId(),
-                sourceBefore(ctx.TASKTYPE().getText()),
+                sourceBefore(ctx.DEFINITION_TASKTYPE().getText()),
                 Markers.EMPTY,
-                ctx.TASKTYPE().getText(),
+                ctx.DEFINITION_TASKTYPE().getText(),
                 visitNullable(ctx.name())
         );
     }
@@ -215,9 +215,9 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
     public ControlM visitPreventNc2(ControlMParser.PreventNc2Context ctx) {
         return new ControlM.Parameter(
                 randomId(),
-                sourceBefore(ctx.PREVENT_NCT2().getText()),
+                sourceBefore(ctx.DEFINITION_PREVENT_NCT2().getText()),
                 Markers.EMPTY,
-                ctx.PREVENT_NCT2().getText(),
+                ctx.DEFINITION_PREVENT_NCT2().getText(),
                 visitNullable(ctx.name())
         );
     }
@@ -226,9 +226,9 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
     public ControlM visitDflt(ControlMParser.DfltContext ctx) {
         return new ControlM.Parameter(
                 randomId(),
-                sourceBefore(ctx.DFLT().getText()),
+                sourceBefore(ctx.DEFINITION_DFLT().getText()),
                 Markers.EMPTY,
-                ctx.DFLT().getText(),
+                ctx.DEFINITION_DFLT().getText(),
                 visitNullable(ctx.name())
         );
     }
@@ -252,9 +252,9 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
     public ControlM visitAppl(ControlMParser.ApplContext ctx) {
         return new ControlM.Parameter(
                 randomId(),
-                sourceBefore(ctx.APPL().getText()),
+                sourceBefore(ctx.DEFINITION_APPL().getText()),
                 Markers.EMPTY,
-                ctx.APPL().getText(),
+                ctx.DEFINITION_APPL().getText(),
                 visitNullable(ctx.name())
         );
     }
@@ -263,9 +263,9 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
     public ControlM visitGroup(ControlMParser.GroupContext ctx) {
         return new ControlM.Parameter(
                 randomId(),
-                sourceBefore(ctx.GROUP().getText()),
+                sourceBefore(ctx.DEFINITION_GROUP().getText()),
                 Markers.EMPTY,
-                ctx.GROUP().getText(),
+                ctx.DEFINITION_GROUP().getText(),
                 visitNullable(ctx.name())
         );
     }
@@ -278,10 +278,10 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
 
         ControlM.Description description = new ControlM.Description(
                 randomId(),
-                sourceBefore(ctx.DESC().getText()),
+                sourceBefore(ctx.DEFINITION_DESC().getText()),
                 Markers.EMPTY,
-                ctx.DESC().getText(),
-                visitNullable(ctx.LINE_TEXT())
+                ctx.DEFINITION_DESC().getText(),
+                convertAll(ctx.name())
         );
 
         markers = markers.addIfAbsent(mapColumn(Column.Location.END));
@@ -312,9 +312,9 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
     public ControlM visitOverlib(ControlMParser.OverlibContext ctx) {
         return new ControlM.Parameter(
                 randomId(),
-                sourceBefore(ctx.OVERLIB().getText()),
+                sourceBefore(ctx.DEFINITION_OVERLIB().getText()),
                 Markers.EMPTY,
-                ctx.OVERLIB().getText(),
+                ctx.DEFINITION_OVERLIB().getText(),
                 visitNullable(ctx.name())
         );
     }
@@ -323,9 +323,9 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
     public ControlM visitStatCal(ControlMParser.StatCalContext ctx) {
         return new ControlM.Parameter(
                 randomId(),
-                sourceBefore(ctx.STAT_CAL().getText()),
+                sourceBefore(ctx.DEFINITION_STAT_CAL().getText()),
                 Markers.EMPTY,
-                ctx.STAT_CAL().getText(),
+                ctx.DEFINITION_STAT_CAL().getText(),
                 visitNullable(ctx.name())
         );
     }
@@ -349,9 +349,9 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
     public ControlM visitSchenv(ControlMParser.SchenvContext ctx) {
         return new ControlM.Parameter(
                 randomId(),
-                sourceBefore(ctx.SCHENV().getText()),
+                sourceBefore(ctx.DEFINITION_SCHENV().getText()),
                 Markers.EMPTY,
-                ctx.SCHENV().getText(),
+                ctx.DEFINITION_SCHENV().getText(),
                 visitNullable(ctx.name())
         );
     }
@@ -360,9 +360,9 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
     public ControlM visitSystemId(ControlMParser.SystemIdContext ctx) {
         return new ControlM.Parameter(
                 randomId(),
-                sourceBefore(ctx.SYSTEM_ID().getText()),
+                sourceBefore(ctx.DEFINITION_SYSTEM_ID().getText()),
                 Markers.EMPTY,
-                ctx.SYSTEM_ID().getText(),
+                ctx.DEFINITION_SYSTEM_ID().getText(),
                 visitNullable(ctx.name())
         );
     }
@@ -371,9 +371,9 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
     public ControlM visitNjeNode(ControlMParser.NjeNodeContext ctx) {
         return new ControlM.Parameter(
                 randomId(),
-                sourceBefore(ctx.NJE_NODE().getText()),
+                sourceBefore(ctx.DEFINITION_NJE_NODE().getText()),
                 Markers.EMPTY,
-                ctx.NJE_NODE().getText(),
+                ctx.DEFINITION_NJE_NODE().getText(),
                 visitNullable(ctx.name())
         );
     }
@@ -384,21 +384,21 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
         Markers markers = Markers.EMPTY;
         markers = markers.addIfAbsent(mapColumn(Column.Location.START));
         ControlM set;
-        if (ctx.EQUALS_CHAR() != null) {
+        if (ctx.DEFINITION_EQUALS_CHAR() != null) {
             set = new ControlM.SetVar(
                     randomId(),
-                    sourceBefore(ctx.SET_VAR().getText()),
+                    sourceBefore(ctx.DEFINITION_SET_VAR().getText()),
                     Markers.EMPTY,
-                    ctx.SET_VAR().getText(),
+                    ctx.DEFINITION_SET_VAR().getText(),
                     (ControlM.Word) visit(ctx.name(0)),
-                    padLeft(sourceBefore(ctx.EQUALS_CHAR().getText()), (ControlM.Word) visit(ctx.name(1)))
+                    padLeft(sourceBefore(ctx.DEFINITION_EQUALS_CHAR().getText()), (ControlM.Word) visit(ctx.name(1)))
             );
         } else {
             set = new ControlM.Parameter(
                     randomId(),
-                    sourceBefore(ctx.SET_VAR().getText()),
+                    sourceBefore(ctx.DEFINITION_SET_VAR().getText()),
                     Markers.EMPTY,
-                    ctx.SET_VAR().getText(),
+                    ctx.DEFINITION_SET_VAR().getText(),
                     ctx.name().isEmpty() ? null : (ControlM.Word) visit(ctx.name(0))
             );
         }
@@ -417,7 +417,7 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
         Space prefix = whitespace();
         Markers markers = Markers.EMPTY;
         markers = markers.addIfAbsent(mapColumn(Column.Location.START));
-        List<ControlM> words = convertAll(Arrays.asList(ctx.CTB_STEP(), ctx.AT(), ctx.NAME(), ctx.TYPE()));
+        List<ControlM> words = convertAll(Arrays.asList(ctx.DEFINITION_CTB_STEP(), ctx.DEFINITION_AT(), ctx.name(), ctx.DEFINITION_TYPE()));
         markers = markers.addIfAbsent(mapColumn(Column.Location.END));
         return new ControlM.Line(
                 randomId(),
@@ -446,9 +446,9 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
     public ControlM visitDocMem(ControlMParser.DocMemContext ctx) {
         return new ControlM.Parameter(
                 randomId(),
-                sourceBefore(ctx.DOCMEM().getText()),
+                sourceBefore(ctx.DEFINITION_DOCMEM().getText()),
                 Markers.EMPTY,
-                ctx.DOCMEM().getText(),
+                ctx.DEFINITION_DOCMEM().getText(),
                 visitNullable(ctx.name())
         );
     }
@@ -457,9 +457,9 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
     public ControlM visitDocLib(ControlMParser.DocLibContext ctx) {
         return new ControlM.Parameter(
                 randomId(),
-                sourceBefore(ctx.DOCLIB().getText()),
+                sourceBefore(ctx.DEFINITION_DOCLIB().getText()),
                 Markers.EMPTY,
-                ctx.DOCLIB().getText(),
+                ctx.DEFINITION_DOCLIB().getText(),
                 visitNullable(ctx.name())
         );
     }
@@ -480,7 +480,7 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
         Markers markers = Markers.EMPTY;
         markers = markers.addIfAbsent(mapColumn(Column.Location.START));
 
-        List<ControlM> words = convertAll(ctx.SCHEDULE_TEXT());
+        List<ControlM> words = convertAll(ctx.name());
 
         markers = markers.addIfAbsent(mapColumn(Column.Location.END));
         return new ControlM.Line(
@@ -497,20 +497,60 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
                 randomId(),
                 sourceBefore("| =========================================================================== |"),
                 Markers.EMPTY,
+                convertAll(ctx.inputNamesLine()),
                 convertAll(ctx.inputLine())
         );
     }
 
     @Override
-    public ControlM visitInputLine(ControlMParser.InputLineContext ctx) {
-        if (ctx.inLine() != null) {
-            return visit(ctx.inLine());
-        }
+    public ControlM visitInputNamesLine(ControlMParser.InputNamesLineContext ctx) {
         Space prefix = whitespace();
         Markers markers = Markers.EMPTY;
         markers = markers.addIfAbsent(mapColumn(Column.Location.START));
 
-        List<ControlM> words = convertAll(ctx.INPUT_TEXT());
+        ControlM.Word in = visitNullable(ctx.INPUT_NAMES_IN());
+        List<ControlM> inputs = convertAll(ctx.input());
+
+        markers = markers.addIfAbsent(mapColumn(Column.Location.END));
+        return new ControlM.Input(
+                randomId(),
+                prefix,
+                markers,
+                in,
+                inputs
+        );
+    }
+
+    @Override
+    public ControlM visitInput(ControlMParser.InputContext ctx) {
+        return new ControlM.Input.NameParameter(
+                randomId(),
+                whitespace(),
+                Markers.EMPTY,
+                (ControlM.Word) visit(ctx.name()),
+                (ControlM.Parameter) visit(ctx.date())
+        );
+    }
+
+    @Override
+    public ControlM visitDate(ControlMParser.DateContext ctx) {
+        String text = ctx.ODAT() != null ? ctx.ODAT().getText() : ctx.DATE_WILDCARD().getText();
+        return new ControlM.Parameter(
+                randomId(),
+                sourceBefore(text),
+                Markers.EMPTY,
+                text,
+                visitNullable(ctx.name())
+        );
+    }
+
+    @Override
+    public ControlM visitInputLine(ControlMParser.InputLineContext ctx) {
+        Space prefix = whitespace();
+        Markers markers = Markers.EMPTY;
+        markers = markers.addIfAbsent(mapColumn(Column.Location.START));
+
+        List<ControlM> words = convertAll(ctx.name());
 
         markers = markers.addIfAbsent(mapColumn(Column.Location.END));
         return new ControlM.Line(
@@ -518,43 +558,6 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
                 prefix,
                 markers,
                 words
-        );
-    }
-
-    @Override
-    public ControlM visitInLine(ControlMParser.InLineContext ctx) {
-        Space prefix = whitespace();
-        Markers markers = Markers.EMPTY;
-        markers = markers.addIfAbsent(mapColumn(Column.Location.START));
-        List<ControlM> parameters = convertAll(Arrays.asList(ctx.in(), ctx.odat()));
-        markers = markers.addIfAbsent(mapColumn(Column.Location.END));
-        return new ControlM.Line(
-                randomId(),
-                prefix,
-                markers,
-                parameters
-        );
-    }
-
-    @Override
-    public ControlM visitIn(ControlMParser.InContext ctx) {
-        return new ControlM.Parameter(
-                randomId(),
-                sourceBefore(ctx.IN().getText()),
-                Markers.EMPTY,
-                ctx.IN().getText(),
-                visitNullable(ctx.name())
-        );
-    }
-
-    @Override
-    public ControlM visitOdat(ControlMParser.OdatContext ctx) {
-        return new ControlM.Parameter(
-                randomId(),
-                sourceBefore(ctx.ODAT().getText()),
-                Markers.EMPTY,
-                ctx.ODAT().getText(),
-                visitNullable(ctx.name())
         );
     }
 
@@ -564,20 +567,48 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
                 randomId(),
                 sourceBefore("| =========================================================================== |"),
                 Markers.EMPTY,
+                convertAll(ctx.outputNamesLine()),
                 convertAll(ctx.outputLine())
         );
     }
 
     @Override
-    public ControlM visitOutputLine(ControlMParser.OutputLineContext ctx) {
-        if (ctx.outLine() != null) {
-            return visit(ctx.outLine());
-        }
+    public ControlM visitOutputNamesLine(ControlMParser.OutputNamesLineContext ctx) {
         Space prefix = whitespace();
         Markers markers = Markers.EMPTY;
         markers = markers.addIfAbsent(mapColumn(Column.Location.START));
 
-        List<ControlM> words = convertAll(ctx.OUTPUT_TEXT());
+        ControlM.Word out = visitNullable(ctx.OUTPUT_NAMES_OUT());
+        List<ControlM> outputs = convertAll(ctx.output());
+
+        markers = markers.addIfAbsent(mapColumn(Column.Location.END));
+        return new ControlM.Output(
+                randomId(),
+                prefix,
+                markers,
+                out,
+                outputs
+        );
+    }
+
+    @Override
+    public ControlM visitOutput(ControlMParser.OutputContext ctx) {
+        return new ControlM.Output.NameParameter(
+                randomId(),
+                whitespace(),
+                Markers.EMPTY,
+                (ControlM.Word) visit(ctx.name()),
+                (ControlM.Parameter) visit(ctx.date())
+        );
+    }
+
+    @Override
+    public ControlM visitOutputLine(ControlMParser.OutputLineContext ctx) {
+        Space prefix = whitespace();
+        Markers markers = Markers.EMPTY;
+        markers = markers.addIfAbsent(mapColumn(Column.Location.START));
+
+        List<ControlM> words = convertAll(ctx.name());
 
         markers = markers.addIfAbsent(mapColumn(Column.Location.END));
         return new ControlM.Line(
@@ -585,32 +616,6 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
                 prefix,
                 markers,
                 words
-        );
-    }
-
-    @Override
-    public ControlM visitOutLine(ControlMParser.OutLineContext ctx) {
-        Space prefix = whitespace();
-        Markers markers = Markers.EMPTY;
-        markers = markers.addIfAbsent(mapColumn(Column.Location.START));
-        List<ControlM> parameters = convertAll(Arrays.asList(ctx.out(), ctx.odat()));
-        markers = markers.addIfAbsent(mapColumn(Column.Location.END));
-        return new ControlM.Line(
-                randomId(),
-                prefix,
-                markers,
-                parameters
-        );
-    }
-
-    @Override
-    public ControlM visitOut(ControlMParser.OutContext ctx) {
-        return new ControlM.Parameter(
-                randomId(),
-                sourceBefore(ctx.OUT().getText()),
-                Markers.EMPTY,
-                ctx.OUT().getText(),
-                visitNullable(ctx.name())
         );
     }
 
@@ -630,7 +635,7 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
         Markers markers = Markers.EMPTY;
         markers = markers.addIfAbsent(mapColumn(Column.Location.START));
 
-        List<ControlM> words = convertAll(ctx.APP_FORM_TEXT());
+        List<ControlM> words = convertAll(ctx.name());
 
         markers = markers.addIfAbsent(mapColumn(Column.Location.END));
         return new ControlM.Line(
@@ -670,22 +675,6 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
     private <C extends ControlM, T extends ParseTree> List<C> convertAll(List<T> trees) {
         //noinspection unchecked
         return convertAll(trees, t -> (C) visit(t));
-    }
-
-    private @Nullable List<ControlM.Word> wordsList(TerminalNode... wordNodes) {
-        List<ControlM.Word> words = new ArrayList<>(wordNodes.length);
-        for (TerminalNode wordNode : wordNodes) {
-            if (wordNode != null) {
-                ControlM.Word cw = (ControlM.Word) visit(wordNode);
-                words.add(cw);
-            }
-        }
-
-        if (words.isEmpty()) {
-            return null;
-        }
-
-        return words;
     }
 
     private <T> ControlMLeftPadded<T>  padLeft(Space left, T tree) {

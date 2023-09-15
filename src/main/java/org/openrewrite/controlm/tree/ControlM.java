@@ -104,7 +104,7 @@ public interface ControlM extends Tree {
 
         Space prefix;
         Markers markers;
-        List<Line> lines;
+        List<ControlM> lines;
 
         @Override
         public <P> ControlM acceptControlM(ControlMVisitor<P> v, P p) {
@@ -124,8 +124,7 @@ public interface ControlM extends Tree {
         Markers markers;
         String word;
 
-        @Nullable
-        Word description;
+        List<Word> description;
 
         @Override
         public <P> ControlM acceptControlM(ControlMVisitor<P> v, P p) {
@@ -212,7 +211,7 @@ public interface ControlM extends Tree {
 
         Space prefix;
         Markers markers;
-        List<Line> lines;
+        List<ControlM> lines;
 
         @Override
         public <P> ControlM acceptControlM(ControlMVisitor<P> v, P p) {
@@ -230,11 +229,57 @@ public interface ControlM extends Tree {
 
         Space prefix;
         Markers markers;
-        List<Line> lines;
+        List<ControlM> inputNames;
+        List<ControlM> lines;
 
         @Override
         public <P> ControlM acceptControlM(ControlMVisitor<P> v, P p) {
             return v.visitInputSection(this, p);
+        }
+    }
+
+    @Value
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+    @With
+    class Input implements ControlM {
+
+        @EqualsAndHashCode.Include
+        UUID id;
+
+        Space prefix;
+        Markers markers;
+
+        @Nullable
+        Word in;
+
+        List<ControlM> input;
+
+        @Override
+        public <P> ControlM acceptControlM(ControlMVisitor<P> v, P p) {
+            return v.visitInput(this, p);
+        }
+
+        @Value
+        @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+        @With
+        public static class NameParameter implements ControlM {
+
+            @EqualsAndHashCode.Include
+            UUID id;
+
+            Space prefix;
+            Markers markers;
+
+            @Nullable
+            Word name;
+
+            @Nullable
+            Parameter date;
+
+            @Override
+            public <P> ControlM acceptControlM(ControlMVisitor<P> v, P p) {
+                return v.visitInputNameParameter(this, p);
+            }
         }
     }
 
@@ -248,11 +293,57 @@ public interface ControlM extends Tree {
 
         Space prefix;
         Markers markers;
-        List<Line> lines;
+        List<ControlM> outputNames;
+        List<ControlM> lines;
 
         @Override
         public <P> ControlM acceptControlM(ControlMVisitor<P> v, P p) {
             return v.visitOutputSection(this, p);
+        }
+    }
+
+    @Value
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+    @With
+    class Output implements ControlM {
+
+        @EqualsAndHashCode.Include
+        UUID id;
+
+        Space prefix;
+        Markers markers;
+
+        @Nullable
+        Word out;
+
+        List<ControlM> output;
+
+        @Override
+        public <P> ControlM acceptControlM(ControlMVisitor<P> v, P p) {
+            return v.visitOutput(this, p);
+        }
+
+        @Value
+        @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+        @With
+        public static class NameParameter implements ControlM {
+
+            @EqualsAndHashCode.Include
+            UUID id;
+
+            Space prefix;
+            Markers markers;
+
+            @Nullable
+            Word name;
+
+            @Nullable
+            Parameter date;
+
+            @Override
+            public <P> ControlM acceptControlM(ControlMVisitor<P> v, P p) {
+                return v.visitOutputNameParameter(this, p);
+            }
         }
     }
 
@@ -266,7 +357,7 @@ public interface ControlM extends Tree {
 
         Space prefix;
         Markers markers;
-        List<Line> lines;
+        List<ControlM> lines;
 
         @Override
         public <P> ControlM acceptControlM(ControlMVisitor<P> v, P p) {

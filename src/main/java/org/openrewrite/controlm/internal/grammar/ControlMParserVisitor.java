@@ -196,29 +196,29 @@ public interface ControlMParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitInputSection(ControlMParser.InputSectionContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link ControlMParser#inputNamesLine}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInputNamesLine(ControlMParser.InputNamesLineContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#input}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInput(ControlMParser.InputContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#date}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDate(ControlMParser.DateContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link ControlMParser#inputLine}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitInputLine(ControlMParser.InputLineContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link ControlMParser#inLine}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitInLine(ControlMParser.InLineContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link ControlMParser#in}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitIn(ControlMParser.InContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link ControlMParser#odat}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitOdat(ControlMParser.OdatContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link ControlMParser#outputSection}.
 	 * @param ctx the parse tree
@@ -226,23 +226,23 @@ public interface ControlMParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitOutputSection(ControlMParser.OutputSectionContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link ControlMParser#outputNamesLine}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOutputNamesLine(ControlMParser.OutputNamesLineContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ControlMParser#output}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOutput(ControlMParser.OutputContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link ControlMParser#outputLine}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitOutputLine(ControlMParser.OutputLineContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link ControlMParser#outLine}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitOutLine(ControlMParser.OutLineContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link ControlMParser#out}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitOut(ControlMParser.OutContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link ControlMParser#applicationFormSection}.
 	 * @param ctx the parse tree

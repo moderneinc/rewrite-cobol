@@ -313,6 +313,36 @@ public interface ControlMParserListener extends ParseTreeListener {
 	 */
 	void exitInputSection(ControlMParser.InputSectionContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link ControlMParser#inputNamesLine}.
+	 * @param ctx the parse tree
+	 */
+	void enterInputNamesLine(ControlMParser.InputNamesLineContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ControlMParser#inputNamesLine}.
+	 * @param ctx the parse tree
+	 */
+	void exitInputNamesLine(ControlMParser.InputNamesLineContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ControlMParser#input}.
+	 * @param ctx the parse tree
+	 */
+	void enterInput(ControlMParser.InputContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ControlMParser#input}.
+	 * @param ctx the parse tree
+	 */
+	void exitInput(ControlMParser.InputContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ControlMParser#date}.
+	 * @param ctx the parse tree
+	 */
+	void enterDate(ControlMParser.DateContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ControlMParser#date}.
+	 * @param ctx the parse tree
+	 */
+	void exitDate(ControlMParser.DateContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link ControlMParser#inputLine}.
 	 * @param ctx the parse tree
 	 */
@@ -322,36 +352,6 @@ public interface ControlMParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitInputLine(ControlMParser.InputLineContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ControlMParser#inLine}.
-	 * @param ctx the parse tree
-	 */
-	void enterInLine(ControlMParser.InLineContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ControlMParser#inLine}.
-	 * @param ctx the parse tree
-	 */
-	void exitInLine(ControlMParser.InLineContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ControlMParser#in}.
-	 * @param ctx the parse tree
-	 */
-	void enterIn(ControlMParser.InContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ControlMParser#in}.
-	 * @param ctx the parse tree
-	 */
-	void exitIn(ControlMParser.InContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ControlMParser#odat}.
-	 * @param ctx the parse tree
-	 */
-	void enterOdat(ControlMParser.OdatContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ControlMParser#odat}.
-	 * @param ctx the parse tree
-	 */
-	void exitOdat(ControlMParser.OdatContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ControlMParser#outputSection}.
 	 * @param ctx the parse tree
@@ -363,6 +363,26 @@ public interface ControlMParserListener extends ParseTreeListener {
 	 */
 	void exitOutputSection(ControlMParser.OutputSectionContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link ControlMParser#outputNamesLine}.
+	 * @param ctx the parse tree
+	 */
+	void enterOutputNamesLine(ControlMParser.OutputNamesLineContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ControlMParser#outputNamesLine}.
+	 * @param ctx the parse tree
+	 */
+	void exitOutputNamesLine(ControlMParser.OutputNamesLineContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ControlMParser#output}.
+	 * @param ctx the parse tree
+	 */
+	void enterOutput(ControlMParser.OutputContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ControlMParser#output}.
+	 * @param ctx the parse tree
+	 */
+	void exitOutput(ControlMParser.OutputContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link ControlMParser#outputLine}.
 	 * @param ctx the parse tree
 	 */
@@ -372,26 +392,6 @@ public interface ControlMParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitOutputLine(ControlMParser.OutputLineContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ControlMParser#outLine}.
-	 * @param ctx the parse tree
-	 */
-	void enterOutLine(ControlMParser.OutLineContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ControlMParser#outLine}.
-	 * @param ctx the parse tree
-	 */
-	void exitOutLine(ControlMParser.OutLineContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ControlMParser#out}.
-	 * @param ctx the parse tree
-	 */
-	void enterOut(ControlMParser.OutContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ControlMParser#out}.
-	 * @param ctx the parse tree
-	 */
-	void exitOut(ControlMParser.OutContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ControlMParser#applicationFormSection}.
 	 * @param ctx the parse tree

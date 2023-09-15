@@ -36,7 +36,7 @@ public class ControlMVisitor<P> extends TreeVisitor<ControlM, P> {
         ControlM.Description d = description;
         d = d.withPrefix(visitSpace(d.getPrefix(), Space.Location.DESCRIPTION_PREFIX, p));
         d = d.withMarkers(visitMarkers(d.getMarkers(), p));
-        d = d.withDescription(visitAndCast(d.getDescription(), p));
+        d = d.withDescription(ListUtils.map(d.getDescription(), it -> visitAndCast(it, p)));
         return d;
     }
 
@@ -65,12 +65,48 @@ public class ControlMVisitor<P> extends TreeVisitor<ControlM, P> {
         return i;
     }
 
+    public ControlM visitInput(ControlM.Input input, P p) {
+        ControlM.Input i = input;
+        i = i.withPrefix(visitSpace(i.getPrefix(), Space.Location.INPUT_PREFIX, p));
+        i = i.withMarkers(visitMarkers(i.getMarkers(), p));
+        i = i.withIn(visitAndCast(i.getIn(), p));
+        i = i.withInput(ListUtils.map(i.getInput(), it -> visitAndCast(it, p)));
+        return i;
+    }
+
+    public ControlM visitInputNameParameter(ControlM.Input.NameParameter nameParameter, P p) {
+        ControlM.Input.NameParameter n = nameParameter;
+        n = n.withPrefix(visitSpace(n.getPrefix(), Space.Location.PARAMETER_PREFIX, p));
+        n = n.withMarkers(visitMarkers(n.getMarkers(), p));
+        n = n.withName(visitAndCast(n.getName(), p));
+        n = n.withDate(visitAndCast(n.getDate(), p));
+        return n;
+    }
+
     public ControlM visitOutputSection(ControlM.OutputSection outputSection, P p) {
         ControlM.OutputSection o = outputSection;
         o = o.withPrefix(visitSpace(o.getPrefix(), Space.Location.OUTPUT_SECTION_PREFIX, p));
         o = o.withMarkers(visitMarkers(o.getMarkers(), p));
         o = o.withLines(ListUtils.map(o.getLines(), e -> visitAndCast(e, p)));
         return o;
+    }
+
+    public ControlM visitOutput(ControlM.Output output, P p) {
+        ControlM.Output o = output;
+        o = o.withPrefix(visitSpace(o.getPrefix(), Space.Location.OUTPUT_PREFIX, p));
+        o = o.withMarkers(visitMarkers(o.getMarkers(), p));
+        o = o.withOut(visitAndCast(o.getOut(), p));
+        o = o.withOutput(ListUtils.map(o.getOutput(), it -> visitAndCast(it, p)));
+        return o;
+    }
+
+    public ControlM visitOutputNameParameter(ControlM.Output.NameParameter nameParameter, P p) {
+        ControlM.Output.NameParameter n = nameParameter;
+        n = n.withPrefix(visitSpace(n.getPrefix(), Space.Location.PARAMETER_PREFIX, p));
+        n = n.withMarkers(visitMarkers(n.getMarkers(), p));
+        n = n.withName(visitAndCast(n.getName(), p));
+        n = n.withDate(visitAndCast(n.getDate(), p));
+        return n;
     }
 
     public ControlM visitApplicationFormSection(ControlM.ApplicationFormSection applicationFormSection, P p) {
