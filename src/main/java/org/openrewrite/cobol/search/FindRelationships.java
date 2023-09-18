@@ -14,6 +14,8 @@ import org.openrewrite.cobol.table.CobolRelationships;
 import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
 import org.openrewrite.cobol.tree.Name;
+import org.openrewrite.controlm.ControlMVisitor;
+import org.openrewrite.controlm.tree.ControlM;
 import org.openrewrite.internal.ListUtils;
 import org.openrewrite.internal.StringUtils;
 import org.openrewrite.marker.SearchResult;
@@ -21,6 +23,7 @@ import org.openrewrite.text.PlainText;
 import org.openrewrite.text.PlainTextVisitor;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -269,6 +272,54 @@ public class FindRelationships extends Recipe {
             }
         };
 
+        ControlMVisitor<ExecutionContext> controlMVisitor = new ControlMVisitor<ExecutionContext>() {
+            String sourceName = "UNKNOWN";
+            @Override
+            public ControlM visitCompilationUnit(ControlM.CompilationUnit compilationUnit, ExecutionContext executionContext) {
+                sourceName = compilationUnit.getSourcePath().getFileName().toString();
+                sourceName = sourceName.contains(".") ? sourceName.substring(0, sourceName.indexOf(".")) : sourceName;
+                return super.visitCompilationUnit(compilationUnit, executionContext);
+            }
+
+            @Override
+            public ControlM visitDefinitionSection(ControlM.DefinitionSection definitionSection, ExecutionContext ctx) {
+                ControlM.DefinitionSection d = (ControlM.DefinitionSection) super.visitDefinitionSection(definitionSection, ctx);
+                d = d.withLines(ListUtils.map(d.getLines(), (i, it) -> {
+                    if (i == 0 && it instanceof ControlM.Line) {
+                        ControlM.Line line = (ControlM.Line) it;
+                        if (line.getParameters().size() == 2 &&
+                                line.getParameters().get(0) instanceof ControlM.Parameter &&
+                                ((ControlM.Parameter) line.getParameters().get(0)).getValue() != null &&
+                                line.getParameters().get(1) instanceof ControlM.Parameter &&
+                                ((ControlM.Parameter) line.getParameters().get(1)).getValue() != null &&
+                                !"DUMMY".equalsIgnoreCase(Objects.requireNonNull(((ControlM.Parameter) line.getParameters().get(1)).getValue()).getText())) {
+                            line = line.withParameters(ListUtils.map(line.getParameters(), (j, param) -> {
+                                if (j == 0) {
+                                    ControlM.Parameter p = (ControlM.Parameter) param;
+                                    cobolRelationships.insertRow(ctx,
+                                            new CobolRelationships.Row(
+                                                    sourceName,
+                                                    CONTROL_M_SCHEDULE,
+                                                    TRIGGER,
+                                                    p.getValue().getText(),
+                                                    JCL,
+                                                    false,
+                                                    ""
+                                            )
+                                    );
+                                    return p.withValue(SearchResult.found(p.getValue()));
+                                }
+                                return param;
+                            }));
+                        }
+                        return line;
+                    }
+                    return it;
+                }));
+                return d;
+            }
+        };
+
         return new TreeVisitor<Tree, ExecutionContext>() {
             @Override
             public Tree preVisit(Tree tree, ExecutionContext ctx) {
@@ -281,6 +332,8 @@ public class FindRelationships extends Recipe {
                     t = bindCardVisitor.visit(t, ctx);
                 } else if (tree instanceof CobolPreprocessor) {
                     t = preprocessorVisitor.visit(t, ctx);
+                } else if (tree instanceof ControlM) {
+                    t = controlMVisitor.visit(t, ctx);
                 }
                 return t;
             }

@@ -56,7 +56,9 @@ public class CobolRelationships extends DataTable<CobolRelationships.Row> {
         BINDPACKAGE,
         @Deprecated // This may be removed after the next ingest.
         SQL_CURSOR,
-        SQL_TABLE
+        SQL_TABLE,
+        CONTROL_M_SCHEDULE,
+        JCL
     }
 
     public enum ResourceAction {
@@ -85,6 +87,10 @@ public class CobolRelationships extends DataTable<CobolRelationships.Row> {
         /**
          * A Bind Card (package) specifies the name of a COBOL program in its MEMBER field
          */
-        MEMBER
+        MEMBER,
+        /**
+         * Control-M schedules trigger JCL jobs based on provided conditions.
+         */
+        TRIGGER
     }
 }
