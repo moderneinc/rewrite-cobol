@@ -150,7 +150,7 @@ input
     ;
 
 date
-    : (ODAT | DATE_WILDCARD) name?
+    : name name?
     ;
 
 inputLine

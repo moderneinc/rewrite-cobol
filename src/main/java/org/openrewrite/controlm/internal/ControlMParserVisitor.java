@@ -534,13 +534,12 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
 
     @Override
     public ControlM visitDate(ControlMParser.DateContext ctx) {
-        String text = ctx.ODAT() != null ? ctx.ODAT().getText() : ctx.DATE_WILDCARD().getText();
         return new ControlM.Parameter(
                 randomId(),
-                sourceBefore(text),
+                sourceBefore(ctx.name().get(0).getText()),
                 Markers.EMPTY,
-                text,
-                visitNullable(ctx.name())
+                ctx.name().get(0).getText(),
+                ctx.name().size() == 1 ? null : visitNullable(ctx.name().get(1))
         );
     }
 
