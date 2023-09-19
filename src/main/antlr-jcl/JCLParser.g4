@@ -183,7 +183,7 @@ jclWord
     ;
 
 jclName
-    : JCL_CONT? (JCL_PARAMETER | JCL_NAME_FIELD | jclKeyword)  jclCommentArea?
+    : JCL_CONT? (JCL_NAME_FIELD | JCL_PARAMETER | jclKeyword)  jclCommentArea?
     ;
 
 jclKeyword

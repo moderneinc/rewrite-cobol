@@ -65,6 +65,19 @@ public class JclTest implements RewriteTest {
     }
 
     @Test
+    void variableRef() {
+        rewriteRun(
+          jcl(
+            """
+            //JOB1 JOB
+            //ADD1 OUTPUT COPIES=%SYSUID
+            //PS1.DSB DD DISP=SHR,DSN=&NAME..&NAME..OBJECT(&MBR)
+            """
+          )
+        );
+    }
+
+    @Test
     void commentArea() {
         rewriteRun(
           jcl(

@@ -3315,8 +3315,8 @@ public class JCLParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class JclNameContext extends ParserRuleContext {
-		public TerminalNode JCL_PARAMETER() { return getToken(JCLParser.JCL_PARAMETER, 0); }
 		public TerminalNode JCL_NAME_FIELD() { return getToken(JCLParser.JCL_NAME_FIELD, 0); }
+		public TerminalNode JCL_PARAMETER() { return getToken(JCLParser.JCL_PARAMETER, 0); }
 		public JclKeywordContext jclKeyword() {
 			return getRuleContext(JclKeywordContext.class,0);
 		}
@@ -3363,16 +3363,16 @@ public class JCLParser extends Parser {
 			setState(425);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
-			case JCL_PARAMETER:
-				{
-				setState(422);
-				match(JCL_PARAMETER);
-				}
-				break;
 			case JCL_NAME_FIELD:
 				{
-				setState(423);
+				setState(422);
 				match(JCL_NAME_FIELD);
+				}
+				break;
+			case JCL_PARAMETER:
+				{
+				setState(423);
+				match(JCL_PARAMETER);
 				}
 				break;
 			case JCL_CNTL:
@@ -4788,7 +4788,7 @@ public class JCLParser extends Parser {
 		"\u0000\u0000\u0000\u01a1\u01a2\u0001\u0000\u0000\u0000\u01a2G\u0001\u0000"+
 		"\u0000\u0000\u01a3\u01a5\u0005\u0005\u0000\u0000\u01a4\u01a3\u0001\u0000"+
 		"\u0000\u0000\u01a4\u01a5\u0001\u0000\u0000\u0000\u01a5\u01a9\u0001\u0000"+
-		"\u0000\u0000\u01a6\u01aa\u00058\u0000\u0000\u01a7\u01aa\u0005\u00e7\u0000"+
+		"\u0000\u0000\u01a6\u01aa\u0005\u00e7\u0000\u0000\u01a7\u01aa\u00058\u0000"+
 		"\u0000\u01a8\u01aa\u0003J%\u0000\u01a9\u01a6\u0001\u0000\u0000\u0000\u01a9"+
 		"\u01a7\u0001\u0000\u0000\u0000\u01a9\u01a8\u0001\u0000\u0000\u0000\u01aa"+
 		"\u01ac\u0001\u0000\u0000\u0000\u01ab\u01ad\u0003L&\u0000\u01ac\u01ab\u0001"+
