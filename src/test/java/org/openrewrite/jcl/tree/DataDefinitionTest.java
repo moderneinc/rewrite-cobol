@@ -84,6 +84,7 @@ public class DataDefinitionTest implements RewriteTest {
                  FIELDS=(ABC=XYZ)
                REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(4,5,6),
                  FIELDS=(ABC=XYZ)
+              /*
               """
           )
         );
@@ -112,6 +113,7 @@ public class DataDefinitionTest implements RewriteTest {
                  FIELDS=(ABC=XYZ)
                 REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(4,5,6),
                  FIELDS=(ABC=XYZ)
+              /*
               """
           )
         );

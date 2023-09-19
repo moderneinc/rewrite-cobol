@@ -54,6 +54,7 @@ public class JclLineReader {
             } else if (lineType == LineType.JCL_STATEMENT) {
                 p.append("^^JCL_STATEMENT^^");
                 jclLineContext = getLineContext(line);
+                // Trailing comments may exist after every JCL statement, but we've only seen them after DD statements.
                 if (jclLineContext == JclLineContext.STREAM) {
                     // Check for trailing comment.
                     int i = 0;

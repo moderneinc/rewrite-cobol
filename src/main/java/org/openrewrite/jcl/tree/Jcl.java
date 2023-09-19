@@ -6,17 +6,22 @@
 package org.openrewrite.jcl.tree;
 
 import lombok.*;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import org.openrewrite.*;
 import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.jcl.JclVisitor;
 import org.openrewrite.jcl.internal.JclPrinter;
 import org.openrewrite.marker.Markers;
 
+import java.lang.ref.WeakReference;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.UUID;
+
+import static java.util.Objects.requireNonNull;
 
 public interface Jcl extends Tree {
 
@@ -91,6 +96,76 @@ public interface Jcl extends Tree {
         }
     }
 
+    @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+    @RequiredArgsConstructor
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    class Assignment implements Jcl, Parameter {
+        @Nullable
+        @NonFinal
+        transient WeakReference<Padding> padding;
+
+        @With
+        @EqualsAndHashCode.Include
+        @Getter
+        UUID id;
+
+        @With
+        @Getter
+        Space prefix;
+
+        @With
+        @Getter
+        Markers markers;
+
+        @With
+        @Getter
+        Word variable;
+
+        JclLeftPadded<Parameter> assignment;
+
+        public Parameter getAssignment() {
+            return assignment.getElement();
+        }
+
+        public Assignment withAssignment(Parameter assignment) {
+            return getPadding().withAssignment(this.assignment.withElement(assignment));
+        }
+
+        @Override
+        public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
+            return v.visitAssignment(this, p);
+        }
+
+        public Padding getPadding() {
+            Padding p;
+            if (this.padding == null) {
+                p = new Padding(this);
+                this.padding = new WeakReference<>(p);
+            } else {
+                p = this.padding.get();
+                if (p == null || p.t != this) {
+                    p = new Padding(this);
+                    this.padding = new WeakReference<>(p);
+                }
+            }
+            return p;
+        }
+
+        @RequiredArgsConstructor
+        public static class Padding {
+            private final Assignment t;
+
+            public JclLeftPadded<Parameter> getAssignment() {
+                return t.assignment;
+            }
+
+            public Assignment withAssignment(JclLeftPadded<Parameter> assignment) {
+                return t.assignment == assignment ? t : new Assignment(t.id, t.prefix, t.markers, t.variable, assignment);
+            }
+        }
+    }
+
     @Value
     @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
@@ -127,21 +202,330 @@ public interface Jcl extends Tree {
         }
     }
 
-    @Value
+    @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
     @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
-    @With
-    class DataDefinitionStream implements Jcl, Statement {
+    @RequiredArgsConstructor
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    class DataDefinitionStatement implements Jcl, Statement {
+        @Nullable
+        @NonFinal
+        transient WeakReference<DataDefinitionStatement.Padding> padding;
 
+        @With
         @EqualsAndHashCode.Include
+        @Getter
         UUID id;
 
+        @With
+        @Getter
         Space prefix;
+
+        @With
+        @Getter
         Markers markers;
-        Word word;
+
+        @With
+        @Getter
+        Name step;
+
+        @With
+        @Getter
+        Name name;
+
+        JclContainer<Parameter> parameters;
+
+        public List<Parameter> getParameters() {
+            return parameters.getElements();
+        }
+
+        public DataDefinitionStatement withParameters(List<Parameter> parameters) {
+            return getPadding().withParameters(requireNonNull(JclContainer.withElementsNullable(this.parameters, parameters)));
+        }
+
+        @Override
+        public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
+            return v.visitDataDefinitionStatement(this, p);
+        }
+
+        public DataDefinitionStatement.Padding getPadding() {
+            DataDefinitionStatement.Padding p;
+            if (this.padding == null) {
+                p = new DataDefinitionStatement.Padding(this);
+                this.padding = new WeakReference<>(p);
+            } else {
+                p = this.padding.get();
+                if (p == null || p.t != this) {
+                    p = new DataDefinitionStatement.Padding(this);
+                    this.padding = new WeakReference<>(p);
+                }
+            }
+            return p;
+        }
+
+        @RequiredArgsConstructor
+        public static class Padding {
+            private final DataDefinitionStatement t;
+
+            public JclContainer<Parameter> getParameters() {
+                return t.parameters;
+            }
+
+            public DataDefinitionStatement withParameters(JclContainer<Parameter> parameters) {
+                return t.parameters == parameters ? t : new DataDefinitionStatement(t.id, t.prefix, t.markers, t.step, t.name, parameters);
+            }
+        }
+    }
+
+    @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+    @RequiredArgsConstructor
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    class DataDefinitionStream implements Jcl, Statement {
+
+        @Nullable
+        @NonFinal
+        transient WeakReference<DataDefinitionStream.Padding> padding;
+
+        @With
+        @EqualsAndHashCode.Include
+        @Getter
+        UUID id;
+
+        @With
+        @Getter
+        Space prefix;
+
+        @With
+        @Getter
+        Markers markers;
+
+        @With
+        @Getter
+        Name step;
+
+        @With
+        @Getter
+        Name name;
+
+        @With
+        @Getter
+        Parameter parameter;
+
+        List<JclRightPadded<Parameter>> streamParameters;
+
+        @With
+        @Getter
+        Word end;
+
+        public List<Parameter> getStreamParameters() {
+            return JclRightPadded.getElements(streamParameters);
+        }
+
+        public DataDefinitionStream withStreamParameters(List<Parameter> streamParameters) {
+            return getPadding().withStreamParameters(JclRightPadded.withElements(this.streamParameters, streamParameters));
+        }
 
         @Override
         public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
             return v.visitDataDefinitionStream(this, p);
+        }
+
+        public DataDefinitionStream.Padding getPadding() {
+            DataDefinitionStream.Padding p;
+            if (this.padding == null) {
+                p = new DataDefinitionStream.Padding(this);
+                this.padding = new WeakReference<>(p);
+            } else {
+                p = this.padding.get();
+                if (p == null || p.t != this) {
+                    p = new DataDefinitionStream.Padding(this);
+                    this.padding = new WeakReference<>(p);
+                }
+            }
+            return p;
+        }
+
+        @RequiredArgsConstructor
+        public static class Padding {
+            private final DataDefinitionStream t;
+
+            public List<JclRightPadded<Parameter>> getStreamParameters() {
+                return t.streamParameters;
+            }
+
+            public DataDefinitionStream withStreamParameters(List<JclRightPadded<Parameter>> streamParameters) {
+                return t.streamParameters == streamParameters ? t : new DataDefinitionStream(t.id, t.prefix, t.markers, t.step, t.name, t.parameter, streamParameters, t.end);
+            }
+        }
+    }
+
+    @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+    @RequiredArgsConstructor
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    class ExecStatement implements Jcl, Statement {
+        @Nullable
+        @NonFinal
+        transient WeakReference<ExecStatement.Padding> padding;
+
+        @With
+        @EqualsAndHashCode.Include
+        @Getter
+        UUID id;
+
+        @With
+        @Getter
+        Space prefix;
+
+        @With
+        @Getter
+        Markers markers;
+
+        @With
+        @Getter
+        Name step;
+
+        @With
+        @Getter
+        Name name;
+
+        JclContainer<Parameter> parameters;
+
+        public List<Parameter> getParameters() {
+            return parameters.getElements();
+        }
+
+        public ExecStatement withParameters(List<Parameter> parameters) {
+            return getPadding().withParameters(requireNonNull(JclContainer.withElementsNullable(this.parameters, parameters)));
+        }
+
+        @Override
+        public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
+            return v.visitExecStatement(this, p);
+        }
+
+        public ExecStatement.Padding getPadding() {
+            ExecStatement.Padding p;
+            if (this.padding == null) {
+                p = new ExecStatement.Padding(this);
+                this.padding = new WeakReference<>(p);
+            } else {
+                p = this.padding.get();
+                if (p == null || p.t != this) {
+                    p = new ExecStatement.Padding(this);
+                    this.padding = new WeakReference<>(p);
+                }
+            }
+            return p;
+        }
+
+        @RequiredArgsConstructor
+        public static class Padding {
+            private final ExecStatement t;
+
+            public JclContainer<Parameter> getParameters() {
+                return t.parameters;
+            }
+
+            public ExecStatement withParameters(JclContainer<Parameter> parameters) {
+                return t.parameters == parameters ? t : new ExecStatement(t.id, t.prefix, t.markers, t.step, t.name, parameters);
+            }
+        }
+    }
+
+    @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+    @RequiredArgsConstructor
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    class JobStatement implements Jcl, Statement {
+        @Nullable
+        @NonFinal
+        transient WeakReference<JobStatement.Padding> padding;
+
+        @With
+        @EqualsAndHashCode.Include
+        @Getter
+        UUID id;
+
+        @With
+        @Getter
+        Space prefix;
+
+        @With
+        @Getter
+        Markers markers;
+
+        @With
+        @Getter
+        Name step;
+
+        @With
+        @Getter
+        Name name;
+
+        JclContainer<Parameter> parameters;
+
+        public List<Parameter> getParameters() {
+            return parameters.getElements();
+        }
+
+        public JobStatement withParameters(List<Parameter> parameters) {
+            return getPadding().withParameters(requireNonNull(JclContainer.withElementsNullable(this.parameters, parameters)));
+        }
+
+        @Override
+        public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
+            return v.visitJobStatement(this, p);
+        }
+
+        public JobStatement.Padding getPadding() {
+            JobStatement.Padding p;
+            if (this.padding == null) {
+                p = new JobStatement.Padding(this);
+                this.padding = new WeakReference<>(p);
+            } else {
+                p = this.padding.get();
+                if (p == null || p.t != this) {
+                    p = new JobStatement.Padding(this);
+                    this.padding = new WeakReference<>(p);
+                }
+            }
+            return p;
+        }
+
+        @RequiredArgsConstructor
+        public static class Padding {
+            private final JobStatement t;
+
+            public JclContainer<Parameter> getParameters() {
+                return t.parameters;
+            }
+
+            public JobStatement withParameters(JclContainer<Parameter> parameters) {
+                return t.parameters == parameters ? t : new JobStatement(t.id, t.prefix, t.markers, t.step, t.name, parameters);
+            }
+        }
+    }
+
+    @Value
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+    @With
+    class Identifier implements Jcl, Name {
+        @Getter
+        @EqualsAndHashCode.Include
+        UUID id;
+
+        @Getter
+        Space prefix;
+
+        @Getter
+        Markers markers;
+
+        String simpleName;
+
+        @Override
+        public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
+            return v.visitIdentifier(this, p);
         }
     }
 
@@ -160,6 +544,434 @@ public interface Jcl extends Tree {
         @Override
         public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
             return v.visitJclStatement(this, p);
+        }
+    }
+
+    @Value
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+    @With
+    class JclName implements Jcl, Parameter, Name {
+        @Getter
+        @EqualsAndHashCode.Include
+        UUID id;
+
+        @Getter
+        Space prefix;
+
+        @Getter
+        Markers markers;
+
+        Jcl.Word name;
+
+        @Nullable
+        Jcl.Parentheses<JclName> parentheses;
+
+        @Override
+        public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
+            return v.visitJclName(this, p);
+        }
+    }
+
+    @Value
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+    @With
+    class Literal implements Jcl, Parameter {
+        @EqualsAndHashCode.Include
+        UUID id;
+
+        Space prefix;
+        Markers markers;
+
+        @Nullable
+        Object value;
+
+        @Nullable
+        String valueSource;
+
+        @Override
+        public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
+            return v.visitLiteral(this, p);
+        }
+    }
+
+    @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+    @RequiredArgsConstructor
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    class OutputStatement implements Jcl, Statement {
+        @Nullable
+        @NonFinal
+        transient WeakReference<OutputStatement.Padding> padding;
+
+        @With
+        @EqualsAndHashCode.Include
+        @Getter
+        UUID id;
+
+        @With
+        @Getter
+        Space prefix;
+
+        @With
+        @Getter
+        Markers markers;
+
+        @With
+        @Getter
+        Name step;
+
+        @With
+        @Getter
+        Name name;
+
+        JclContainer<Parameter> parameters;
+
+        public List<Parameter> getParameters() {
+            return parameters.getElements();
+        }
+
+        public OutputStatement withParameters(List<Parameter> parameters) {
+            return getPadding().withParameters(requireNonNull(JclContainer.withElementsNullable(this.parameters, parameters)));
+        }
+
+        @Override
+        public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
+            return v.visitOutputStatement(this, p);
+        }
+
+        public OutputStatement.Padding getPadding() {
+            OutputStatement.Padding p;
+            if (this.padding == null) {
+                p = new OutputStatement.Padding(this);
+                this.padding = new WeakReference<>(p);
+            } else {
+                p = this.padding.get();
+                if (p == null || p.t != this) {
+                    p = new OutputStatement.Padding(this);
+                    this.padding = new WeakReference<>(p);
+                }
+            }
+            return p;
+        }
+
+        @RequiredArgsConstructor
+        public static class Padding {
+            private final OutputStatement t;
+
+            public JclContainer<Parameter> getParameters() {
+                return t.parameters;
+            }
+
+            public OutputStatement withParameters(JclContainer<Parameter> parameters) {
+                return t.parameters == parameters ? t : new OutputStatement(t.id, t.prefix, t.markers, t.step, t.name, parameters);
+            }
+        }
+    }
+
+    @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+    @RequiredArgsConstructor
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    class Parentheses<J2 extends Jcl> implements Jcl, Parameter {
+        @Nullable
+        @NonFinal
+        transient WeakReference<Padding<J2>> padding;
+
+        @With
+        @EqualsAndHashCode.Include
+        @Getter
+        UUID id;
+
+        @With
+        @Getter
+        Space prefix;
+
+        @With
+        @Getter
+        Markers markers;
+
+        List<JclRightPadded<J2>> trees;
+
+        public List<J2> getTrees() {
+            return JclRightPadded.getElements(trees);
+        }
+
+        Parentheses<J2> withTrees(List<J2> trees) {
+            return getPadding().withTrees(JclRightPadded.withElements(this.trees, trees));
+        }
+
+        @Override
+        public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
+            return v.visitParentheses(this, p);
+        }
+
+        public Padding<J2> getPadding() {
+            Padding<J2> p;
+            if (this.padding == null) {
+                p = new Padding<>(this);
+                this.padding = new WeakReference<>(p);
+            } else {
+                p = this.padding.get();
+                if (p == null || p.t != this) {
+                    p = new Padding<>(this);
+                    this.padding = new WeakReference<>(p);
+                }
+            }
+            return p;
+        }
+
+        @RequiredArgsConstructor
+        public static class Padding<J2 extends Jcl> {
+            private final Parentheses<J2> t;
+
+            public List<JclRightPadded<J2>> getTrees() {
+                return t.trees;
+            }
+
+            public Parentheses<J2> withTrees(List<JclRightPadded<J2>> trees) {
+                return t.trees == trees ? t : new Parentheses<>(t.id, t.prefix, t.markers, trees);
+            }
+        }
+    }
+
+    @Value
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+    @With
+    class PendStatement implements Jcl, Statement {
+        @EqualsAndHashCode.Include
+        UUID id;
+
+        Space prefix;
+        Markers markers;
+
+        Name step;
+        Name name;
+
+        @Override
+        public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
+            return v.visitPendStatement(this, p);
+        }
+    }
+
+    @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+    @RequiredArgsConstructor
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    class ProcStatement implements Jcl, Statement {
+        @Nullable
+        @NonFinal
+        transient WeakReference<ProcStatement.Padding> padding;
+
+        @With
+        @EqualsAndHashCode.Include
+        @Getter
+        UUID id;
+
+        @With
+        @Getter
+        Space prefix;
+
+        @With
+        @Getter
+        Markers markers;
+
+        @With
+        @Getter
+        Name step;
+
+        @With
+        @Getter
+        Name name;
+
+        JclContainer<Parameter> parameters;
+
+        public List<Parameter> getParameters() {
+            return parameters.getElements();
+        }
+
+        public ProcStatement withParameters(List<Parameter> parameters) {
+            return getPadding().withParameters(requireNonNull(JclContainer.withElementsNullable(this.parameters, parameters)));
+        }
+
+        @Override
+        public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
+            return v.visitProcStatement(this, p);
+        }
+
+        public ProcStatement.Padding getPadding() {
+            ProcStatement.Padding p;
+            if (this.padding == null) {
+                p = new ProcStatement.Padding(this);
+                this.padding = new WeakReference<>(p);
+            } else {
+                p = this.padding.get();
+                if (p == null || p.t != this) {
+                    p = new ProcStatement.Padding(this);
+                    this.padding = new WeakReference<>(p);
+                }
+            }
+            return p;
+        }
+
+        @RequiredArgsConstructor
+        public static class Padding {
+            private final ProcStatement t;
+
+            public JclContainer<Parameter> getParameters() {
+                return t.parameters;
+            }
+
+            public ProcStatement withParameters(JclContainer<Parameter> parameters) {
+                return t.parameters == parameters ? t : new ProcStatement(t.id, t.prefix, t.markers, t.step, t.name, parameters);
+            }
+        }
+    }
+
+    @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+    @RequiredArgsConstructor
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    class SetStatement implements Jcl, Statement {
+        @Nullable
+        @NonFinal
+        transient WeakReference<SetStatement.Padding> padding;
+
+        @With
+        @EqualsAndHashCode.Include
+        @Getter
+        UUID id;
+
+        @With
+        @Getter
+        Space prefix;
+
+        @With
+        @Getter
+        Markers markers;
+
+        @With
+        @Getter
+        Name step;
+
+        @With
+        @Getter
+        Name name;
+
+        JclContainer<Parameter> parameters;
+
+        public List<Parameter> getParameters() {
+            return parameters.getElements();
+        }
+
+        public SetStatement withParameters(List<Parameter> parameters) {
+            return getPadding().withParameters(requireNonNull(JclContainer.withElementsNullable(this.parameters, parameters)));
+        }
+
+        @Override
+        public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
+            return v.visitSetStatement(this, p);
+        }
+
+        public SetStatement.Padding getPadding() {
+            SetStatement.Padding p;
+            if (this.padding == null) {
+                p = new SetStatement.Padding(this);
+                this.padding = new WeakReference<>(p);
+            } else {
+                p = this.padding.get();
+                if (p == null || p.t != this) {
+                    p = new SetStatement.Padding(this);
+                    this.padding = new WeakReference<>(p);
+                }
+            }
+            return p;
+        }
+
+        @RequiredArgsConstructor
+        public static class Padding {
+            private final SetStatement t;
+
+            public JclContainer<Parameter> getParameters() {
+                return t.parameters;
+            }
+
+            public SetStatement withParameters(JclContainer<Parameter> parameters) {
+                return t.parameters == parameters ? t : new SetStatement(t.id, t.prefix, t.markers, t.step, t.name, parameters);
+            }
+        }
+    }
+
+    @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+    @RequiredArgsConstructor
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    class XmitStatement implements Jcl, Statement {
+        @Nullable
+        @NonFinal
+        transient WeakReference<XmitStatement.Padding> padding;
+
+        @With
+        @EqualsAndHashCode.Include
+        @Getter
+        UUID id;
+
+        @With
+        @Getter
+        Space prefix;
+
+        @With
+        @Getter
+        Markers markers;
+
+        @With
+        @Getter
+        Name step;
+
+        @With
+        @Getter
+        Name name;
+
+        JclContainer<Parameter> parameters;
+
+        public List<Parameter> getParameters() {
+            return parameters.getElements();
+        }
+
+        public XmitStatement withParameters(List<Parameter> parameters) {
+            return getPadding().withParameters(requireNonNull(JclContainer.withElementsNullable(this.parameters, parameters)));
+        }
+
+        @Override
+        public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
+            return v.visitXmitStatement(this, p);
+        }
+
+        public XmitStatement.Padding getPadding() {
+            XmitStatement.Padding p;
+            if (this.padding == null) {
+                p = new XmitStatement.Padding(this);
+                this.padding = new WeakReference<>(p);
+            } else {
+                p = this.padding.get();
+                if (p == null || p.t != this) {
+                    p = new XmitStatement.Padding(this);
+                    this.padding = new WeakReference<>(p);
+                }
+            }
+            return p;
+        }
+
+        @RequiredArgsConstructor
+        public static class Padding {
+            private final XmitStatement t;
+
+            public JclContainer<Parameter> getParameters() {
+                return t.parameters;
+            }
+
+            public XmitStatement withParameters(JclContainer<Parameter> parameters) {
+                return t.parameters == parameters ? t : new XmitStatement(t.id, t.prefix, t.markers, t.step, t.name, parameters);
+            }
         }
     }
 
@@ -220,7 +1032,7 @@ public interface Jcl extends Tree {
     @Value
     @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
-    class Word implements Jcl {
+    class Word implements Jcl, Name {
 
         @EqualsAndHashCode.Include
         UUID id;

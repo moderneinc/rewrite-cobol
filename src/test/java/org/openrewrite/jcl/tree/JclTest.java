@@ -68,7 +68,7 @@ public class JclTest implements RewriteTest {
     void commentArea() {
         rewriteRun(
           jcl(
-            "//NAME                                                                  commentArea"
+            "//NAME JOB                                                              commentArea"
           )
         );
     }

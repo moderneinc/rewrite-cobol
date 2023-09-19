@@ -15,27 +15,195 @@ statement
     : jcl
     | jes2
     | jes3
-    | stream
     | controlM
     | comment
     | unknown
     ;
 
 jcl
-    : jclWord
-    | jclTrailingComment
+    : jclStatement
+    ;
+
+jclStatement
+    : jobStatement
+    | ddStatement
+    | ddStreamStatement
+    | execStatement
+    | outputStatement
+    | pendStatement
+    | procStatement
+    | setStatement
+    | xmitStatement
+    ;
+
+jobStatement
+    : JCL_DOUBLE_SLASH jclName? jobName (JCL_COMMA_CHAR? parameter)*
+    ;
+
+jobName
+    : JCL_JOB jclCommentArea?
+    ;
+
+ddStatement
+    : JCL_DOUBLE_SLASH jclName? ddName (JCL_COMMA_CHAR? parameter)* jclTrailingComment?
+    ;
+
+ddStreamStatement
+    : JCL_DOUBLE_SLASH jclName? ddName parameter (STREAM_COMMA_CHAR? streamParameter)* jclTrailingComment? ddStreamEnd?
+    ;
+
+ddName
+    : JCL_DD jclCommentArea?
+    ;
+
+ddStreamEnd
+    : END_TOKEN jclTrailingComment?
+    ;
+
+streamParameter
+    : streamName
+    | streamParameterAssignment
+    | streamParameterParentheses
+    ;
+
+streamParameterAssignment
+    : streamJclName STREAM_EQUAL_CHAR streamParameter
+    ;
+
+streamParameterParentheses
+    : STREAM_L_PAREN_CHAR (STREAM_COMMA_CHAR? streamParameter)* STREAM_R_PAREN_CHAR  streamJclCommentArea?
+    ;
+
+streamName
+    : streamJclWord streamParameterParentheses?
+    ;
+
+streamJclWord
+    : JCL_CONT? (STREAM_STRINGLITERAL | streamJclName)  streamJclCommentArea?
+    ;
+
+streamJclName
+    : JCL_CONT? (STREAM_PARAMETER | STREAM_NAME_FIELD | streamJclKeyword)  streamJclCommentArea?
+    ;
+
+streamJclKeyword
+    : STREAM_CNTL
+    | STREAM_DATASET | STREAM_DD
+    | STREAM_ELSE | STREAM_ENDCNTL | STREAM_ENDDATASET | STREAM_ENDIF | STREAM_ENDPROCESS | STREAM_EXEC | STREAM_EXPORT
+    | STREAM_FORMAT
+    | STREAM_IF | STREAM_INCLUDE
+    | STREAM_JCLLIB | STREAM_JOB | STREAM_JOBPARM
+    | STREAM_MAIN | STREAM_MESSAGE
+    | STREAM_NET | STREAM_NETACCT | STREAM_NOTIFY
+    | STREAM_OPERATOR | STREAM_OUTPUT
+    | STREAM_PAUSE | STREAM_PEND | STREAM_PRIORITY | STREAM_PROC | STREAM_PROCESS
+    | STREAM_ROUTE
+    | STREAM_SCHEDULE | STREAM_SET | STREAM_SETUP | STREAM_SIGNOFF | STREAM_SIGNON
+    | STREAM_THEN
+    | STREAM_XEQ | STREAM_XMIT
+    ;
+
+streamJclCommentArea
+    : STREAM_CA_START streamJclWord
+    ;
+
+execStatement
+    : JCL_DOUBLE_SLASH jclName? execName (JCL_COMMA_CHAR? parameter)*
+    ;
+
+execName
+    : JCL_EXEC jclCommentArea?
+    ;
+
+outputStatement
+    : JCL_DOUBLE_SLASH jclName? outputName (JCL_COMMA_CHAR? parameter)*
+    ;
+
+outputName
+    : JCL_OUTPUT jclCommentArea?
+    ;
+
+pendStatement
+    : JCL_DOUBLE_SLASH jclName? pendName
+    ;
+
+pendName
+    : JCL_PEND jclCommentArea?
+    ;
+
+procStatement
+    : JCL_DOUBLE_SLASH jclName? procName (JCL_COMMA_CHAR? parameter)*
+    ;
+
+procName
+    : JCL_PROC jclCommentArea?
+    ;
+
+setStatement
+    : JCL_DOUBLE_SLASH jclName? setName (JCL_COMMA_CHAR? parameter)*
+    ;
+
+setName
+    : JCL_SET jclCommentArea?
+    ;
+
+xmitStatement
+    : JCL_DOUBLE_SLASH jclName? xmitName (JCL_COMMA_CHAR? parameter)*
+    ;
+
+xmitName
+    : JCL_XMIT jclCommentArea?
+    ;
+
+parameter
+    : name jclTrailingComment?
+    | parameterAssignment jclTrailingComment?
+    | parameterParentheses jclTrailingComment?
+    ;
+
+parameterParentheses
+    : JCL_L_PAREN_CHAR (JCL_COMMA_CHAR? parameter)* JCL_R_PAREN_CHAR  jclCommentArea?
+    ;
+
+parameterAssignment
+    : jclName JCL_EQUAL_CHAR parameter
+    ;
+
+name
+    : jclWord parameterParentheses?
     ;
 
 jclWord
-    : (JCL_TEXT | JCL_STRINGLITERAL) jclCommentArea?
+    : JCL_CONT? (JCL_STRINGLITERAL | jclName)  jclCommentArea?
+    ;
+
+jclName
+    : JCL_CONT? (JCL_PARAMETER | JCL_NAME_FIELD | jclKeyword)  jclCommentArea?
+    ;
+
+jclKeyword
+    : JCL_CNTL
+    | JCL_DATASET | JCL_DD
+    | JCL_ELSE | JCL_ENDCNTL | JCL_ENDDATASET | JCL_ENDIF | JCL_ENDPROCESS | JCL_EXEC | JCL_EXPORT
+    | JCL_FORMAT
+    | JCL_IF | JCL_INCLUDE
+    | JCL_JCLLIB | JCL_JOB | JCL_JOBPARM
+    | JCL_MAIN | JCL_MESSAGE
+    | JCL_NET | JCL_NETACCT | JCL_NOTIFY
+    | JCL_OPERATOR | JCL_OUTPUT
+    | JCL_PAUSE | JCL_PEND | JCL_PRIORITY | JCL_PROC | JCL_PROCESS
+    | JCL_ROUTE
+    | JCL_SCHEDULE | JCL_SET | JCL_SETUP | JCL_SIGNOFF | JCL_SIGNON
+    | JCL_THEN
+    | JCL_XEQ | JCL_XMIT
     ;
 
 jclCommentArea
-    : CA_START (JCL_TEXT | JCL_STRINGLITERAL)
+    : JCL_CA_START jclWord
     ;
 
 jclTrailingComment
-    : jclWord JCL_TC_START jclWord* JCL_TC_STOP  jclCommentArea?
+    : JCL_TC_START TRAILING_COMMENT_TEXT* jclCommentArea?
     ;
 
 jes2
@@ -60,18 +228,6 @@ jes3Word
 
 jes3CommentArea
     : CA_START (JES3_TEXT | JES3_STRINGLITERAL)
-    ;
-
-stream
-    : streamWord
-    ;
-
-streamWord
-    : (STREAM_TEXT | STREAM_STRINGLITERAL) streamCommentArea?
-    ;
-
-streamCommentArea
-    : CA_START (STREAM_TEXT | STREAM_STRINGLITERAL)
     ;
 
 controlM

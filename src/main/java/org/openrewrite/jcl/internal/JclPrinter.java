@@ -9,12 +9,12 @@ import org.openrewrite.Cursor;
 import org.openrewrite.PrintOutputCapture;
 import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.jcl.JclVisitor;
-import org.openrewrite.jcl.marker.CommentArea;
-import org.openrewrite.jcl.marker.TrailingComment;
+import org.openrewrite.jcl.marker.*;
 import org.openrewrite.jcl.tree.*;
 import org.openrewrite.marker.Marker;
 import org.openrewrite.marker.Markers;
 
+import java.util.List;
 import java.util.function.UnaryOperator;
 
 public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
@@ -28,6 +28,15 @@ public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
         afterSyntax(cu, p);
         visitSpace(cu.getEof(), Space.Location.COMPILATION_UNIT_EOF, p);
         return cu;
+    }
+
+    @Override
+    public Jcl visitAssignment(Jcl.Assignment assignment, PrintOutputCapture<P> p) {
+        beforeSyntax(assignment, Space.Location.ASSIGNMENT_PREFIX, p);
+        visit(assignment.getVariable(), p);
+        visitLeftPadded("=", assignment.getPadding().getAssignment(), JclLeftPadded.Location.ASSIGNMENT, p);
+        afterSyntax(assignment, p);
+        return assignment;
     }
 
     @Override
@@ -47,11 +56,55 @@ public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
     }
 
     @Override
+    public Jcl visitDataDefinitionStatement(Jcl.DataDefinitionStatement dataDefinitionStatement, PrintOutputCapture<P> p) {
+        beforeSyntax(dataDefinitionStatement, Space.Location.DATA_DEFINITION_STATEMENT_PREFIX, p);
+        p.append("//");
+        visit(dataDefinitionStatement.getStep(), p);
+        visit(dataDefinitionStatement.getName(), p);
+        visitContainer("", dataDefinitionStatement.getPadding().getParameters(), JclContainer.Location.PARAMETERS, ",", "", p);
+        afterSyntax(dataDefinitionStatement, p);
+        return dataDefinitionStatement;
+    }
+
+    @Override
     public Jcl visitDataDefinitionStream(Jcl.DataDefinitionStream ddStream, PrintOutputCapture<P> p) {
-        beforeSyntax(ddStream, Space.Location.DATA_DEFINITION_STREAM_PREFIX, p);
-        visit(ddStream.getWord(), p);
+        beforeSyntax(ddStream, Space.Location.DATA_DEFINITION_STATEMENT_PREFIX, p);
+        p.append("//");
+        visit(ddStream.getStep(), p);
+        visit(ddStream.getName(), p);
+        visit(ddStream.getParameter(), p);
+        visitRightPadded(ddStream.getPadding().getStreamParameters(), JclRightPadded.Location.PARAMETERS, "", p);
+        visit(ddStream.getEnd(), p);
         afterSyntax(ddStream, p);
         return ddStream;
+    }
+
+    @Override
+    public Jcl visitExecStatement(Jcl.ExecStatement execStatement, PrintOutputCapture<P> p) {
+        beforeSyntax(execStatement, Space.Location.EXEC_STATEMENT_PREFIX, p);
+        p.append("//");
+        visit(execStatement.getStep(), p);
+        visit(execStatement.getName(), p);
+        visitContainer("", execStatement.getPadding().getParameters(), JclContainer.Location.PARAMETERS, ",", "", p);
+        afterSyntax(execStatement, p);
+        return execStatement;
+    }
+
+    @Override
+    public Jcl visitIdentifier(Jcl.Identifier identifier, PrintOutputCapture<P> p) {
+        beforeSyntax(identifier, Space.Location.IDENTIFIER_PREFIX, p);
+        p.append(identifier.getSimpleName());
+        afterSyntax(identifier, p);
+        return identifier;
+    }
+
+    @Override
+    public Jcl visitJclName(Jcl.JclName jclName, PrintOutputCapture<P> p) {
+        beforeSyntax(jclName, Space.Location.JCL_NAME_PREFIX, p);
+        visit(jclName.getName(), p);
+        visit(jclName.getParentheses(), p);
+        afterSyntax(jclName, p);
+        return jclName;
     }
 
     @Override
@@ -60,6 +113,92 @@ public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
         visit(jclStatement.getWord(), p);
         afterSyntax(jclStatement, p);
         return jclStatement;
+    }
+
+    @Override
+    public Jcl visitJobStatement(Jcl.JobStatement jobStatement, PrintOutputCapture<P> p) {
+        beforeSyntax(jobStatement, Space.Location.JOB_STATEMENT_PREFIX, p);
+        p.append("//");
+        visit(jobStatement.getStep(), p);
+        visit(jobStatement.getName(), p);
+        visitContainer("", jobStatement.getPadding().getParameters(), JclContainer.Location.PARAMETERS, ",", "", p);
+        afterSyntax(jobStatement, p);
+        return jobStatement;
+    }
+
+    @Override
+    public Jcl visitLiteral(Jcl.Literal literal, PrintOutputCapture<P> p) {
+        beforeSyntax(literal, Space.Location.LITERAL_PREFIX, p);
+        p.append(literal.getValueSource());
+        afterSyntax(literal, p);
+        return literal;
+    }
+
+    @Override
+    public Jcl visitOutputStatement(Jcl.OutputStatement outputStatement, PrintOutputCapture<P> p) {
+        beforeSyntax(outputStatement, Space.Location.OUTPUT_STATEMENT_PREFIX, p);
+        p.append("//");
+        visit(outputStatement.getStep(), p);
+        visit(outputStatement.getName(), p);
+        visitContainer("", outputStatement.getPadding().getParameters(), JclContainer.Location.PARAMETERS, ",", "", p);
+        afterSyntax(outputStatement, p);
+        return outputStatement;
+    }
+
+    @Override
+    public <T extends Jcl> Jcl visitParentheses(Jcl.Parentheses<T> parentheses, PrintOutputCapture<P> p) {
+        beforeSyntax(parentheses, Space.Location.PARENTHESES_PREFIX, p);
+        p.append("(");
+        if (parentheses.getMarkers().findFirst(OmitFirstParam.class).isPresent()) {
+            p.append(",");
+        }
+        visitRightPadded(parentheses.getPadding().getTrees(), JclRightPadded.Location.PARENTHESES, ",", p);
+        p.append(")");
+        afterSyntax(parentheses, p);
+        return parentheses;
+    }
+
+    @Override
+    public Jcl visitPendStatement(Jcl.PendStatement pendStatement, PrintOutputCapture<P> p) {
+        beforeSyntax(pendStatement, Space.Location.PEND_STATEMENT_PREFIX, p);
+        p.append("//");
+        visit(pendStatement.getStep(), p);
+        visit(pendStatement.getName(), p);
+        afterSyntax(pendStatement, p);
+        return pendStatement;
+    }
+
+    @Override
+    public Jcl visitProcStatement(Jcl.ProcStatement procStatement, PrintOutputCapture<P> p) {
+        beforeSyntax(procStatement, Space.Location.PROC_STATEMENT_PREFIX, p);
+        p.append("//");
+        visit(procStatement.getStep(), p);
+        visit(procStatement.getName(), p);
+        visitContainer("", procStatement.getPadding().getParameters(), JclContainer.Location.PARAMETERS, ",", "", p);
+        afterSyntax(procStatement, p);
+        return procStatement;
+    }
+
+    @Override
+    public Jcl visitSetStatement(Jcl.SetStatement setStatement, PrintOutputCapture<P> p) {
+        beforeSyntax(setStatement, Space.Location.SET_STATEMENT_PREFIX, p);
+        p.append("//");
+        visit(setStatement.getStep(), p);
+        visit(setStatement.getName(), p);
+        visitContainer("", setStatement.getPadding().getParameters(), JclContainer.Location.PARAMETERS, ",", "", p);
+        afterSyntax(setStatement, p);
+        return setStatement;
+    }
+
+    @Override
+    public Jcl visitXmitStatement(Jcl.XmitStatement xmitStatement, PrintOutputCapture<P> p) {
+        beforeSyntax(xmitStatement, Space.Location.XMIT_STATEMENT_PREFIX, p);
+        p.append("//");
+        visit(xmitStatement.getStep(), p);
+        visit(xmitStatement.getName(), p);
+        visitContainer("", xmitStatement.getPadding().getParameters(), JclContainer.Location.PARAMETERS, ",", "", p);
+        afterSyntax(xmitStatement, p);
+        return xmitStatement;
     }
 
     @Override
@@ -100,6 +239,52 @@ public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
         return space;
     }
 
+    @Override
+    public <M extends Marker> M visitMarker(Marker marker, PrintOutputCapture<P> p) {
+        if (marker instanceof Comma) {
+            p.append(",");
+        }
+        return super.visitMarker(marker, p);
+    }
+
+    protected void visitContainer(String before, @Nullable JclContainer<? extends Jcl> container, JclContainer.Location location,
+                                  String suffixBetween, @Nullable String after, PrintOutputCapture<P> p) {
+        if (container == null) {
+            return;
+        }
+        beforeSyntax(container.getBefore(), container.getMarkers(), location.getBeforeLocation(), p);
+        p.append(before);
+        if (container.getMarkers().findFirst(OmitFirstParam.class).isPresent()) {
+            p.append(",");
+        }
+        visitRightPadded(container.getPadding().getElements(), location.getElementLocation(), suffixBetween, p);
+        afterSyntax(container.getMarkers(), p);
+        p.append(after == null ? "" : after);
+    }
+
+    protected void visitLeftPadded(@Nullable String prefix, @Nullable JclLeftPadded<? extends Jcl> leftPadded, JclLeftPadded.Location location, PrintOutputCapture<P> p) {
+        if (leftPadded != null) {
+            beforeSyntax(leftPadded.getBefore(), leftPadded.getMarkers(), location.getBeforeLocation(), p);
+            if (prefix != null) {
+                p.append(prefix);
+            }
+            visit(leftPadded.getElement(), p);
+            afterSyntax(leftPadded.getMarkers(), p);
+        }
+    }
+
+    protected void visitRightPadded(List<? extends JclRightPadded<? extends Jcl>> nodes, JclRightPadded.Location location, String suffixBetween, PrintOutputCapture<P> p) {
+        for (int i = 0; i < nodes.size(); i++) {
+            JclRightPadded<? extends Jcl> node = nodes.get(i);
+            visit(node.getElement(), p);
+            visitSpace(node.getAfter(), location.getAfterLocation(), p);
+            visitMarkers(node.getMarkers(), p);
+            if (i < nodes.size() - 1) {
+                p.append(suffixBetween);
+            }
+        }
+    }
+
     protected void beforeSyntax(Jcl c, Space.Location loc, PrintOutputCapture<P> p) {
         beforeSyntax(c.getPrefix(), c.getMarkers(), loc, p);
     }
@@ -107,6 +292,9 @@ public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
     protected void beforeSyntax(Space prefix, Markers markers, @Nullable Space.Location loc, PrintOutputCapture<P> p) {
         for (Marker marker : markers.getMarkers()) {
             p.out.append(p.getMarkerPrinter().beforePrefix(marker, new Cursor(getCursor(), marker), JCL_MARKER_WRAPPER));
+            if (marker instanceof Continuation) {
+                p.append("//");
+            }
         }
         if (loc != null) {
             visitSpace(prefix, loc, p);

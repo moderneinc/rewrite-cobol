@@ -13,9 +13,9 @@ import static org.openrewrite.jcl.tree.ParserAssertions.jcl;
 public class PendTest implements RewriteTest {
 
     @Test
-    void proc() {
+    void pend() {
         rewriteRun(
-          jcl("//Name PROC")
+          jcl("//Name PEND")
         );
     }
 }
