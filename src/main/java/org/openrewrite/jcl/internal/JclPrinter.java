@@ -99,6 +99,17 @@ public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
     }
 
     @Override
+    public Jcl visitJclLibStatement(Jcl.JclLibStatement jclLibStatement, PrintOutputCapture<P> p) {
+        beforeSyntax(jclLibStatement, Space.Location.JCL_LIB_STATEMENT_PREFIX, p);
+        p.append("//");
+        visit(jclLibStatement.getStep(), p);
+        visit(jclLibStatement.getName(), p);
+        visitContainer("", jclLibStatement.getPadding().getParameters(), JclContainer.Location.PARAMETERS, ",", "", p);
+        afterSyntax(jclLibStatement, p);
+        return jclLibStatement;
+    }
+
+    @Override
     public Jcl visitJclName(Jcl.JclName jclName, PrintOutputCapture<P> p) {
         beforeSyntax(jclName, Space.Location.JCL_NAME_PREFIX, p);
         visit(jclName.getName(), p);

@@ -28,12 +28,6 @@ public interface JCLParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStatement(JCLParser.StatementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link JCLParser#jcl}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitJcl(JCLParser.JclContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link JCLParser#jclStatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -51,6 +45,18 @@ public interface JCLParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitJobName(JCLParser.JobNameContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JCLParser#jclLibStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitJclLibStatement(JCLParser.JclLibStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JCLParser#jclLibName}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitJclLibName(JCLParser.JclLibNameContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link JCLParser#ddStatement}.
 	 * @param ctx the parse tree

@@ -33,16 +33,6 @@ public interface JCLParserListener extends ParseTreeListener {
 	 */
 	void exitStatement(JCLParser.StatementContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link JCLParser#jcl}.
-	 * @param ctx the parse tree
-	 */
-	void enterJcl(JCLParser.JclContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link JCLParser#jcl}.
-	 * @param ctx the parse tree
-	 */
-	void exitJcl(JCLParser.JclContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link JCLParser#jclStatement}.
 	 * @param ctx the parse tree
 	 */
@@ -72,6 +62,26 @@ public interface JCLParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitJobName(JCLParser.JobNameContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link JCLParser#jclLibStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterJclLibStatement(JCLParser.JclLibStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JCLParser#jclLibStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitJclLibStatement(JCLParser.JclLibStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link JCLParser#jclLibName}.
+	 * @param ctx the parse tree
+	 */
+	void enterJclLibName(JCLParser.JclLibNameContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JCLParser#jclLibName}.
+	 * @param ctx the parse tree
+	 */
+	void exitJclLibName(JCLParser.JclLibNameContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link JCLParser#ddStatement}.
 	 * @param ctx the parse tree

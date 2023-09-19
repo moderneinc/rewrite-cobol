@@ -50,6 +50,11 @@ public class JclIsoVisitor<P> extends JclVisitor<P> {
     }
 
     @Override
+    public Jcl.JclLibStatement visitJclLibStatement(Jcl.JclLibStatement jclLibStatement, P p) {
+        return (Jcl.JclLibStatement) super.visitJclLibStatement(jclLibStatement, p);
+    }
+
+    @Override
     public Jcl.JclName visitJclName(Jcl.JclName jclName, P p) {
         return (Jcl.JclName) super.visitJclName(jclName, p);
     }

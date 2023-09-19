@@ -12,7 +12,7 @@ compilationUnit
     ;
 
 statement
-    : jcl
+    : jclStatement
     | jes2
     | jes3
     | controlM
@@ -20,12 +20,9 @@ statement
     | unknown
     ;
 
-jcl
-    : jclStatement
-    ;
-
 jclStatement
     : jobStatement
+    | jclLibStatement
     | ddStatement
     | ddStreamStatement
     | execStatement
@@ -42,6 +39,14 @@ jobStatement
 
 jobName
     : JCL_JOB jclCommentArea?
+    ;
+
+jclLibStatement
+    : JCL_DOUBLE_SLASH jclName? jclLibName (JCL_COMMA_CHAR? parameter)*
+    ;
+
+jclLibName
+    : JCL_JCLLIB jclCommentArea?
     ;
 
 ddStatement
