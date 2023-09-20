@@ -14,7 +14,7 @@ import org.openrewrite.cobol.table.CobolRelationships;
 import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
 import org.openrewrite.cobol.tree.Name;
-import org.openrewrite.controlm.ControlMVisitor;
+import org.openrewrite.controlm.ControlMIsoVisitor;
 import org.openrewrite.controlm.tree.ControlM;
 import org.openrewrite.internal.ListUtils;
 import org.openrewrite.internal.StringUtils;
@@ -272,51 +272,89 @@ public class FindRelationships extends Recipe {
             }
         };
 
-        ControlMVisitor<ExecutionContext> controlMVisitor = new ControlMVisitor<ExecutionContext>() {
+        ControlMIsoVisitor<ExecutionContext> controlMVisitor = new ControlMIsoVisitor<ExecutionContext>() {
             String sourceName = "UNKNOWN";
             @Override
-            public ControlM visitCompilationUnit(ControlM.CompilationUnit compilationUnit, ExecutionContext executionContext) {
+            public ControlM.CompilationUnit visitCompilationUnit(ControlM.CompilationUnit compilationUnit, ExecutionContext executionContext) {
                 sourceName = compilationUnit.getSourcePath().getFileName().toString();
                 sourceName = sourceName.contains(".") ? sourceName.substring(0, sourceName.indexOf(".")) : sourceName;
                 return super.visitCompilationUnit(compilationUnit, executionContext);
             }
 
             @Override
-            public ControlM visitDefinitionSection(ControlM.DefinitionSection definitionSection, ExecutionContext ctx) {
-                ControlM.DefinitionSection d = (ControlM.DefinitionSection) super.visitDefinitionSection(definitionSection, ctx);
+            public ControlM.DefinitionSection visitDefinitionSection(ControlM.DefinitionSection definitionSection, ExecutionContext ctx) {
+                boolean isValid = isValidSchedule(definitionSection);
+                if (!isValid) {
+                    return definitionSection;
+                }
+
+                ControlM.DefinitionSection d = super.visitDefinitionSection(definitionSection, ctx);
                 d = d.withLines(ListUtils.map(d.getLines(), (i, it) -> {
                     if (i == 0 && it instanceof ControlM.Line) {
                         ControlM.Line line = (ControlM.Line) it;
-                        if (line.getParameters().size() == 2 &&
-                                line.getParameters().get(0) instanceof ControlM.Parameter &&
-                                ((ControlM.Parameter) line.getParameters().get(0)).getValue() != null &&
-                                line.getParameters().get(1) instanceof ControlM.Parameter &&
-                                ((ControlM.Parameter) line.getParameters().get(1)).getValue() != null &&
-                                !"DUMMY".equalsIgnoreCase(Objects.requireNonNull(((ControlM.Parameter) line.getParameters().get(1)).getValue()).getText())) {
-                            line = line.withParameters(ListUtils.map(line.getParameters(), (j, param) -> {
-                                if (j == 0) {
-                                    ControlM.Parameter p = (ControlM.Parameter) param;
-                                    cobolRelationships.insertRow(ctx,
-                                            new CobolRelationships.Row(
-                                                    sourceName,
-                                                    CONTROL_M_SCHEDULE,
-                                                    TRIGGER,
-                                                    p.getValue().getText(),
-                                                    JCL,
-                                                    false,
-                                                    ""
-                                            )
-                                    );
-                                    return p.withValue(SearchResult.found(p.getValue()));
-                                }
-                                return param;
-                            }));
-                        }
+                        line = line.withParameters(ListUtils.map(line.getParameters(), (j, param) -> {
+                            if (j == 0) {
+                                ControlM.Parameter p = (ControlM.Parameter) param;
+                                cobolRelationships.insertRow(ctx,
+                                        new CobolRelationships.Row(
+                                                sourceName,
+                                                CONTROL_M_SCHEDULE,
+                                                TRIGGERS,
+                                                p.getValue().getText(),
+                                                JCL,
+                                                false,
+                                                ""
+                                        )
+                                );
+                                return p.withValue(SearchResult.found(p.getValue()));
+                            }
+                            return param;
+                        }));
                         return line;
                     }
                     return it;
                 }));
                 return d;
+            }
+
+            private boolean isValidSchedule(ControlM.DefinitionSection d) {
+                return !d.getLines().isEmpty() && d.getLines().get(0) instanceof ControlM.Line &&
+                        ((ControlM.Line) d.getLines().get(0)).getParameters().size() == 2 &&
+                        ((ControlM.Line) d.getLines().get(0)).getParameters().get(1) instanceof ControlM.Parameter &&
+                        ((ControlM.Parameter) ((ControlM.Line) d.getLines().get(0)).getParameters().get(0)).getValue() != null &&
+                        ((ControlM.Parameter) ((ControlM.Line) d.getLines().get(0)).getParameters().get(1)).getValue() != null &&
+                        !"DUMMY".equalsIgnoreCase(Objects.requireNonNull(((ControlM.Parameter) ((ControlM.Line) d.getLines().get(0)).getParameters().get(1)).getValue()).getText());
+            }
+
+            @Override
+            public ControlM.Input visitInput(ControlM.Input input, ExecutionContext executionContext) {
+                ControlM.Input i = super.visitInput(input, executionContext);
+                if (!i.getInput().isEmpty() && i.getInput().get(0) instanceof ControlM.Input.NameParameter) {
+                    i = i.withInput(ListUtils.map(i.getInput(), it -> {
+                        if (it instanceof ControlM.Input.NameParameter) {
+                            ControlM.Input.NameParameter nameParameter = (ControlM.Input.NameParameter) it;
+                            if (nameParameter.getName() != null && nameParameter.getName().getText().contains("_")) {
+                                String[] parts = nameParameter.getName().getText().split("_");
+                                if (parts.length == 3) {
+                                    cobolRelationships.insertRow(executionContext,
+                                            new CobolRelationships.Row(
+                                                    parts[1],
+                                                    CONTROL_M_SCHEDULE,
+                                                    TRIGGERS,
+                                                    sourceName,
+                                                    CONTROL_M_SCHEDULE,
+                                                    false,
+                                                    ""
+                                            )
+                                    );
+                                }
+                                return nameParameter.withName(SearchResult.found(nameParameter.getName()));
+                            }
+                        }
+                        return it;
+                    }));
+                }
+                return i;
             }
         };
 

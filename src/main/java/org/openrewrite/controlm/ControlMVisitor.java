@@ -61,6 +61,7 @@ public class ControlMVisitor<P> extends TreeVisitor<ControlM, P> {
         ControlM.InputSection i = inputSection;
         i = i.withPrefix(visitSpace(i.getPrefix(), Space.Location.INPUT_SECTION_PREFIX, p));
         i = i.withMarkers(visitMarkers(i.getMarkers(), p));
+        i = i.withInputNames(ListUtils.map(i.getInputNames(), e -> visitAndCast(e, p)));
         i = i.withLines(ListUtils.map(i.getLines(), e -> visitAndCast(e, p)));
         return i;
     }
@@ -87,6 +88,7 @@ public class ControlMVisitor<P> extends TreeVisitor<ControlM, P> {
         ControlM.OutputSection o = outputSection;
         o = o.withPrefix(visitSpace(o.getPrefix(), Space.Location.OUTPUT_SECTION_PREFIX, p));
         o = o.withMarkers(visitMarkers(o.getMarkers(), p));
+        o = o.withOutputNames(ListUtils.map(o.getOutputNames(), e -> visitAndCast(e, p)));
         o = o.withLines(ListUtils.map(o.getLines(), e -> visitAndCast(e, p)));
         return o;
     }

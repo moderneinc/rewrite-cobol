@@ -513,11 +513,11 @@ public class FindRelationshipsTest extends CobolTest {
     void controlMScheduleToJcl() {
         rewriteRun(
           spec -> spec.dataTable(Row.class, rows -> {
-              assertThat(rows.stream().map(Row::getDependent)).containsOnly("CTM_SCHEDULE");
+              assertThat(rows.stream().map(Row::getDependent)).containsOnly("CTM_SCHEDULE", "JOBNAME1", "JOBNAME2", "JOBNAME3", "JOBNAME4");
               assertThat(rows.stream().map(Row::getDependentType)).contains(CONTROL_M_SCHEDULE);
-              assertThat(rows.stream().map(Row::getAction)).contains(TRIGGER);
-              assertThat(rows.stream().map(Row::getDependency)).contains("JCL_JOB");
-              assertThat(rows.stream().map(Row::getDependencyType)).contains(JCL);
+              assertThat(rows.stream().map(Row::getAction)).contains(TRIGGERS);
+              assertThat(rows.stream().map(Row::getDependency)).contains("JCL_JOB", "CTM_SCHEDULE");
+              assertThat(rows.stream().map(Row::getDependencyType)).contains(JCL, CONTROL_M_SCHEDULE);
           }),
           controlM(
             """
@@ -545,7 +545,8 @@ public class FindRelationshipsTest extends CobolTest {
               | MINIMUM          PDS                                                        |
               | DEFINITION ACTIVE FROM          UNTIL                                       |
               | =========================================================================== |
-              | IN                            ODAT                                          |
+              | IN  GROUP_JOBNAME1_OK  ODAT   GROUP_JOBNAME2_OK  ODAT                       |
+              |     GROUP_JOBNAME3_OK  ODAT - GROUP_JOBNAME4_OK  ODAT +                     |
               | CONTROL                                                                     |
               | RESOURCE INIT5                0001          UNICPAL              0001       |
               |          STOPALL              0001          DB2S                 0001       |
@@ -554,7 +555,8 @@ public class FindRelationshipsTest extends CobolTest {
               | DUE OUT TIME      +     DAYS    PRIORITY NN  SAC    CONFIRM                 |
               | TIME ZONE:                                                                  |
               | =========================================================================== |
-              | OUT                           ODAT                                          |
+              | OUT  GROUP_JOBNAME1_OK  ODAT  GROUP_JOBNAME2_OK  ODAT                       |
+              |      GROUP_JOBNAME3_OK  ODAT  GROUP_JOBNAME4_OK  ODAT                       |
               | AUTO-ARCHIVE Y          SYSDB    Y      MAXDAYS      MAXRUNS                |
               | SYSOUT OP   (C,D,F,N,R)                                              FROM   |
               | MAXRERUN      RERUNMEM                                                      |

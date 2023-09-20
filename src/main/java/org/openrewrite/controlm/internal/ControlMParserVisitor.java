@@ -536,10 +536,10 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
     public ControlM visitDate(ControlMParser.DateContext ctx) {
         return new ControlM.Parameter(
                 randomId(),
-                sourceBefore(ctx.name().get(0).getText()),
+                sourceBefore(ctx.dateParam().getText()),
                 Markers.EMPTY,
-                ctx.name().get(0).getText(),
-                ctx.name().size() == 1 ? null : visitNullable(ctx.name().get(1))
+                ctx.dateParam().getText(),
+                ctx.MINUS_CHAR() != null ? (ControlM.Word) visit(ctx.MINUS_CHAR()) : ctx.PLUS_CHAR() != null ? (ControlM.Word) visit(ctx.PLUS_CHAR()) : null
         );
     }
 

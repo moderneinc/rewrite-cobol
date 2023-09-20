@@ -150,7 +150,11 @@ input
     ;
 
 date
-    : name name?
+    : dateParam (PLUS_CHAR | MINUS_CHAR)?
+    ;
+
+dateParam
+    : ODAT | STAT | PREV | INCR_DATE | DECR_DATE | ANY_DATE
     ;
 
 inputLine
@@ -183,5 +187,5 @@ applicationFormLine
     ;
 
 name
-    : NAME
+    : NAME | PLUS_CHAR | MINUS_CHAR
     ;

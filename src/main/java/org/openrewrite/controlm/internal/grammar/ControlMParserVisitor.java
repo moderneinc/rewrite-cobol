@@ -214,6 +214,12 @@ public interface ControlMParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDate(ControlMParser.DateContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link ControlMParser#dateParam}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDateParam(ControlMParser.DateParamContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link ControlMParser#inputLine}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

@@ -35,8 +35,28 @@ public class ControlMIsoVisitor<P> extends ControlMVisitor<P> {
     }
 
     @Override
+    public ControlM.Input visitInput(ControlM.Input input, P p) {
+        return (ControlM.Input) super.visitInput(input, p);
+    }
+
+    @Override
+    public ControlM.Input.NameParameter visitInputNameParameter(ControlM.Input.NameParameter nameParameter, P p) {
+        return (ControlM.Input.NameParameter) super.visitInputNameParameter(nameParameter, p);
+    }
+
+    @Override
     public ControlM.InputSection visitInputSection(ControlM.InputSection inputSection, P p) {
         return (ControlM.InputSection) super.visitInputSection(inputSection, p);
+    }
+
+    @Override
+    public ControlM.Output visitOutput(ControlM.Output output, P p) {
+        return (ControlM.Output) super.visitOutput(output, p);
+    }
+
+    @Override
+    public ControlM.Output.NameParameter visitOutputNameParameter(ControlM.Output.NameParameter nameParameter, P p) {
+        return (ControlM.Output.NameParameter) super.visitOutputNameParameter(nameParameter, p);
     }
 
     @Override

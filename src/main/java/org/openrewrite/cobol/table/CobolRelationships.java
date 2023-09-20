@@ -89,8 +89,8 @@ public class CobolRelationships extends DataTable<CobolRelationships.Row> {
          */
         MEMBER,
         /**
-         * Control-M schedules trigger JCL jobs based on provided conditions.
+         * A Control-M schedule triggers a JCL job or a Control-M schedules another Control-M job.
          */
-        TRIGGER
+        TRIGGERS
     }
 }

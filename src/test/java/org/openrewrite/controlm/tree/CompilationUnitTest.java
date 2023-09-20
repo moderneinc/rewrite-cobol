@@ -349,12 +349,15 @@ public class CompilationUnitTest implements RewriteTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-      "RDAT  ",
-      "ODAY  ",
+      "ODAT  ",
+      "PREV  ",
       "STAT  ",
-      "STAT +",
-      "**** -",
-      "****",
+      "????  ",
+      "****  ",
+      "+123  ",
+      "-123  ",
+      "ODAT +",
+      "ODAT -",
     })
     void outParams(String input) {
         rewriteRun(

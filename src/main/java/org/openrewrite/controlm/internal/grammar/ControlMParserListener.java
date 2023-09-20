@@ -343,6 +343,16 @@ public interface ControlMParserListener extends ParseTreeListener {
 	 */
 	void exitDate(ControlMParser.DateContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link ControlMParser#dateParam}.
+	 * @param ctx the parse tree
+	 */
+	void enterDateParam(ControlMParser.DateParamContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ControlMParser#dateParam}.
+	 * @param ctx the parse tree
+	 */
+	void exitDateParam(ControlMParser.DateParamContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link ControlMParser#inputLine}.
 	 * @param ctx the parse tree
 	 */

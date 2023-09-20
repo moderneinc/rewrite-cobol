@@ -418,6 +418,18 @@ public class ControlMParserBaseListener implements ControlMParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterDateParam(ControlMParser.DateParamContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDateParam(ControlMParser.DateParamContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterInputLine(ControlMParser.InputLineContext ctx) { }
 	/**
 	 * {@inheritDoc}
