@@ -13,6 +13,7 @@ import org.openrewrite.cobol.CopybookParser;
 import org.openrewrite.cobol.marker.MissingCopybook;
 import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
+import org.openrewrite.controlm.ControlMParser;
 import org.openrewrite.marker.LstProvenance;
 import org.openrewrite.text.PlainTextParser;
 import org.openrewrite.tree.ParsingEventListener;
@@ -140,6 +141,24 @@ public class Build implements Callable<Integer> {
                         }),
                         outputDir
                 );
+            }
+
+            try (ProgressBar progressBar = DefaultProgressBar.builder(spec).build()) {
+                ControlMParser controlMParser = ControlMParser.builder().build();
+                List<Path> controlMSources = OmniParser.builder().parsers(controlMParser)
+                        .exclusions(alreadyParsed)
+                        .build()
+                        .acceptedPaths(repository.getRootDir());
+                progressBar.intermediateResult(ansi().fgRgb(ModerneColors.Yellow.rgb()).a(">").reset()
+                        .a(" Parsing " + controlMSources.size() + " Control-M schedules.")
+                        .toString());
+                progressBar.setMax(referencedCopybooks.size());
+                serializer.write(
+                        controlMParser.parse(controlMSources, repository.getRootDir(),
+                                progressReportingExecutionContext(progressBar)),
+                        outputDir
+                );
+                alreadyParsed.addAll(controlMSources);
             }
 
             try (ProgressBar progressBar = DefaultProgressBar.builder(spec).build()) {
