@@ -124,6 +124,12 @@ public interface JCLParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStreamJclKeyword(JCLParser.StreamJclKeywordContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link JCLParser#streamCharacter}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStreamCharacter(JCLParser.StreamCharacterContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link JCLParser#streamJclCommentArea}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

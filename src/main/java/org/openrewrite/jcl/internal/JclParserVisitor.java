@@ -434,7 +434,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
             skip("//");
         }
 
-        Jcl jcl = visit(ctx.STREAM_PARAMETER(), ctx.STREAM_NAME_FIELD(), ctx.streamJclKeyword());
+        Jcl jcl = visit(ctx.STREAM_PARAMETER(), ctx.STREAM_NAME_FIELD(), ctx.streamJclKeyword(), ctx.streamCharacter());
 
         if (ctx.JCL_CONT() != null) {
             jcl = jcl.withMarkers(jcl.getMarkers().addIfAbsent(new Continuation(randomId())));

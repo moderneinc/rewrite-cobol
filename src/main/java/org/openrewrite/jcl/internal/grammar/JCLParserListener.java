@@ -193,6 +193,16 @@ public interface JCLParserListener extends ParseTreeListener {
 	 */
 	void exitStreamJclKeyword(JCLParser.StreamJclKeywordContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link JCLParser#streamCharacter}.
+	 * @param ctx the parse tree
+	 */
+	void enterStreamCharacter(JCLParser.StreamCharacterContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JCLParser#streamCharacter}.
+	 * @param ctx the parse tree
+	 */
+	void exitStreamCharacter(JCLParser.StreamCharacterContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link JCLParser#streamJclCommentArea}.
 	 * @param ctx the parse tree
 	 */

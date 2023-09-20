@@ -6,6 +6,8 @@
 package org.openrewrite.jcl.tree;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.openrewrite.test.RewriteTest;
 
 import static org.openrewrite.jcl.tree.ParserAssertions.jcl;
@@ -118,4 +120,41 @@ public class DataDefinitionTest implements RewriteTest {
           )
         );
     }
+
+    @Test
+    void commentAreaAfterStreamEnd() {
+        rewriteRun(
+          jcl(
+            """
+              //OBJECT DD *    * Why is this possible?                                commentArea
+                REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(1,2,3),
+                 FIELDS=(ABC=XYZ)
+                REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(4,5,6),
+                 FIELDS=(ABC=XYZ)
+              /*                                                                      commentArea
+              """
+          )
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+      "SYSUID",
+      "%SYSUID",
+      "%NAME..%OTHERNAME",
+      "OBJECT(&MBR)",
+      "(NAME-PART,EQ,C'OTHER')",
+      "LIST AGGREGATE(%%NAME) - OUTDATASET(%%OTHERNAME)"
+    })
+    void ddNames(String input) {
+        rewriteRun(
+          jcl(
+            """
+            //JOB1 DD *
+              %s
+            """.formatted(input)
+          )
+        );
+    }
+
 }

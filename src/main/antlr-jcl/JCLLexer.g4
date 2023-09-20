@@ -13,9 +13,7 @@ EOL : (CR? LF | FORM_FEED) -> channel(HIDDEN);
 JCL_STATEMENT : ('^^JCL_STATEMENT^^' | '^^JCL^^') -> skip, pushMode(INSIDE_JCL);
 JCL_CONT : '^^JCL_CONT^^//' -> pushMode(INSIDE_JCL);
 
-JCL_STREAM : '^^STREAM^^' -> skip, pushMode(INSIDE_STREAM);
-END_TOKEN : '/*';
-JCL_STREAM_END : '^^STREAM_END^^' -> skip;
+JCL_STREAM : ('^^STREAM^^' | '^^STREAM_END^^') -> skip, pushMode(INSIDE_STREAM);
 
 JES2 : ('^^JES2^^' | '^^JES2_CONT^^') -> skip, pushMode(INSIDE_JES2);
 JES3 : ('^^JES3^^' | '^^JES3_CONT^^') -> skip, pushMode(INSIDE_JES3);
@@ -302,13 +300,14 @@ JCL_STRINGLITERAL : STRINGLITERAL;
 
 // names
 JCL_NAME_FIELD : JCL_NAME_CHAR ((JCL_PERIOD_CHAR JCL_NAME_CHAR)+)?;
-JCL_NAME_CHAR : ([a-zA-Z0-9$#@&%.]+ | JCL_ASTERISK_CHAR);
+JCL_NAME_CHAR : ([a-zA-Z0-9$#@&%.-]+ | JCL_ASTERISK_CHAR);
 
 mode INSIDE_STREAM;
 STREAM_WS : WS -> type(WS), channel(HIDDEN);
 STREAM_EOL : EOL -> type(EOL), channel(HIDDEN), popMode;
 
 STREAM_TC_START : '^^TC_START^^' -> pushMode(INSIDE_TRAILING_COMMENT);
+STREAM_END_TOKEN : '/*';
 STREAM_CA_START : CA_START;
 
 // keywords
@@ -570,7 +569,7 @@ STREAM_STRINGLITERAL : STRINGLITERAL;
 
 // names
 STREAM_NAME_FIELD : STREAM_NAME_CHAR ((STREAM_PERIOD_CHAR STREAM_NAME_CHAR)+)?;
-STREAM_NAME_CHAR : ([a-zA-Z0-9$#@&%:.]+ | STREAM_ASTERISK_CHAR);
+STREAM_NAME_CHAR : [a-zA-Z0-9$#@&%:.'-]+;
 
 mode INSIDE_JES2;
 JES2_WS : WS -> type(WS), channel(HIDDEN);

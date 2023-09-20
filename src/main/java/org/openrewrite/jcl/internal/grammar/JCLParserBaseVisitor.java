@@ -149,6 +149,13 @@ public class JCLParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitStreamCharacter(JCLParser.StreamCharacterContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitStreamJclCommentArea(JCLParser.StreamJclCommentAreaContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}

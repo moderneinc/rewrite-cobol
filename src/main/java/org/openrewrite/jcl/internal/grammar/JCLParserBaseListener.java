@@ -238,6 +238,18 @@ public class JCLParserBaseListener implements JCLParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterStreamCharacter(JCLParser.StreamCharacterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStreamCharacter(JCLParser.StreamCharacterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterStreamJclCommentArea(JCLParser.StreamJclCommentAreaContext ctx) { }
 	/**
 	 * {@inheritDoc}

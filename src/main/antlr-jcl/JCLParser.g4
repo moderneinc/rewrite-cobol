@@ -62,7 +62,7 @@ ddName
     ;
 
 ddStreamEnd
-    : END_TOKEN jclTrailingComment?
+    : STREAM_END_TOKEN streamJclCommentArea?
     ;
 
 streamParameter
@@ -88,7 +88,7 @@ streamJclWord
     ;
 
 streamJclName
-    : JCL_CONT? (STREAM_PARAMETER | STREAM_NAME_FIELD | streamJclKeyword)  streamJclCommentArea?
+    : JCL_CONT? (STREAM_PARAMETER | STREAM_NAME_FIELD | streamJclKeyword | streamCharacter)  streamJclCommentArea?
     ;
 
 streamJclKeyword
@@ -106,6 +106,12 @@ streamJclKeyword
     | STREAM_SCHEDULE | STREAM_SET | STREAM_SETUP | STREAM_SIGNOFF | STREAM_SIGNON
     | STREAM_THEN
     | STREAM_XEQ | STREAM_XMIT
+    ;
+
+streamCharacter
+    : STREAM_ASTERISK_CHAR
+    | STREAM_PLUS_CHAR
+    | STREAM_MINUS_CHAR
     ;
 
 streamJclCommentArea
