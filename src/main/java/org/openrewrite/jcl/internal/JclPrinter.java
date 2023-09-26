@@ -15,6 +15,7 @@ import org.openrewrite.marker.Marker;
 import org.openrewrite.marker.Markers;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.UnaryOperator;
 
 public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
@@ -74,7 +75,6 @@ public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
         visit(ddStream.getName(), p);
         visit(ddStream.getParameter(), p);
         visitRightPadded(ddStream.getPadding().getStreamParameters(), JclRightPadded.Location.PARAMETERS, "", p);
-        visit(ddStream.getEnd(), p);
         afterSyntax(ddStream, p);
         return ddStream;
     }
@@ -292,6 +292,11 @@ public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
             visitMarkers(node.getMarkers(), p);
             if (i < nodes.size() - 1) {
                 p.append(suffixBetween);
+            }
+            Optional<CommentArea> commentArea = node.getMarkers().findFirst(CommentArea.class);
+            if (commentArea.isPresent()) {
+                visitSpace(commentArea.get().getPrefix(), Space.Location.COMMENT_AREA_PREFIX, p);
+                p.append(commentArea.get().getComment());
             }
         }
     }

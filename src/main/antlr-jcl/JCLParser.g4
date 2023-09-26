@@ -34,7 +34,11 @@ jclStatement
     ;
 
 jobStatement
-    : JCL_DOUBLE_SLASH jclName? jobName (JCL_COMMA_CHAR? parameter)*
+    : JCL_DOUBLE_SLASH jclName? jobName JCL_COMMA_CHAR? parameterArgument*
+    ;
+
+parameterArgument
+    : parameter JCL_COMMA_CHAR? jclCommentArea?
     ;
 
 jobName
@@ -42,7 +46,7 @@ jobName
     ;
 
 jclLibStatement
-    : JCL_DOUBLE_SLASH jclName? jclLibName (JCL_COMMA_CHAR? parameter)*
+    : JCL_DOUBLE_SLASH jclName? jclLibName JCL_COMMA_CHAR? parameterArgument*
     ;
 
 jclLibName
@@ -50,76 +54,27 @@ jclLibName
     ;
 
 ddStatement
-    : JCL_DOUBLE_SLASH jclName? ddName (JCL_COMMA_CHAR? parameter)* jclTrailingComment?
+    : JCL_DOUBLE_SLASH jclName? ddName JCL_COMMA_CHAR? parameterArgument* jclTrailingComment?
     ;
 
 ddStreamStatement
-    : JCL_DOUBLE_SLASH jclName? ddName parameter (STREAM_COMMA_CHAR? streamParameter)* jclTrailingComment? ddStreamEnd?
+    : JCL_DOUBLE_SLASH jclName? ddName parameter streamText* jclTrailingComment?
     ;
 
 ddName
     : JCL_DD jclCommentArea?
     ;
 
-ddStreamEnd
-    : STREAM_END_TOKEN streamJclCommentArea?
-    ;
-
-streamParameter
-    : streamName
-    | streamParameterAssignment
-    | streamParameterParentheses
-    ;
-
-streamParameterAssignment
-    : streamJclName STREAM_EQUAL_CHAR streamParameter
-    ;
-
-streamParameterParentheses
-    : STREAM_L_PAREN_CHAR (STREAM_COMMA_CHAR? streamParameter)* STREAM_R_PAREN_CHAR  streamJclCommentArea?
-    ;
-
-streamName
-    : streamJclWord streamParameterParentheses?
-    ;
-
-streamJclWord
-    : JCL_CONT? (STREAM_STRINGLITERAL | streamJclName)  streamJclCommentArea?
-    ;
-
-streamJclName
-    : JCL_CONT? (STREAM_PARAMETER | STREAM_NAME_FIELD | streamJclKeyword | streamCharacter)  streamJclCommentArea?
-    ;
-
-streamJclKeyword
-    : STREAM_CNTL
-    | STREAM_DATASET | STREAM_DD
-    | STREAM_ELSE | STREAM_ENDCNTL | STREAM_ENDDATASET | STREAM_ENDIF | STREAM_ENDPROCESS | STREAM_EXEC | STREAM_EXPORT
-    | STREAM_FORMAT
-    | STREAM_IF | STREAM_INCLUDE
-    | STREAM_JCLLIB | STREAM_JOB | STREAM_JOBPARM
-    | STREAM_MAIN | STREAM_MESSAGE
-    | STREAM_NET | STREAM_NETACCT | STREAM_NOTIFY
-    | STREAM_OPERATOR | STREAM_OUTPUT
-    | STREAM_PAUSE | STREAM_PEND | STREAM_PRIORITY | STREAM_PROC | STREAM_PROCESS
-    | STREAM_ROUTE
-    | STREAM_SCHEDULE | STREAM_SET | STREAM_SETUP | STREAM_SIGNOFF | STREAM_SIGNON
-    | STREAM_THEN
-    | STREAM_XEQ | STREAM_XMIT
-    ;
-
-streamCharacter
-    : STREAM_ASTERISK_CHAR
-    | STREAM_PLUS_CHAR
-    | STREAM_MINUS_CHAR
+streamText
+    : (STREAM_TEXT | STREAM_STRINGLITERAL) streamJclCommentArea?
     ;
 
 streamJclCommentArea
-    : STREAM_CA_START streamJclWord
+    : STREAM_CA_START streamText
     ;
 
 execStatement
-    : JCL_DOUBLE_SLASH jclName? execName (JCL_COMMA_CHAR? parameter)*
+    : JCL_DOUBLE_SLASH jclName? execName JCL_COMMA_CHAR? parameterArgument*
     ;
 
 execName
@@ -127,7 +82,7 @@ execName
     ;
 
 outputStatement
-    : JCL_DOUBLE_SLASH jclName? outputName (JCL_COMMA_CHAR? parameter)*
+    : JCL_DOUBLE_SLASH jclName? outputName JCL_COMMA_CHAR? parameterArgument*
     ;
 
 outputName
@@ -143,7 +98,7 @@ pendName
     ;
 
 procStatement
-    : JCL_DOUBLE_SLASH jclName? procName (JCL_COMMA_CHAR? parameter)*
+    : JCL_DOUBLE_SLASH jclName? procName JCL_COMMA_CHAR? parameterArgument*
     ;
 
 procName
@@ -151,7 +106,7 @@ procName
     ;
 
 setStatement
-    : JCL_DOUBLE_SLASH jclName? setName (JCL_COMMA_CHAR? parameter)*
+    : JCL_DOUBLE_SLASH jclName? setName JCL_COMMA_CHAR? parameterArgument*
     ;
 
 setName
@@ -159,7 +114,7 @@ setName
     ;
 
 xmitStatement
-    : JCL_DOUBLE_SLASH jclName? xmitName (JCL_COMMA_CHAR? parameter)*
+    : JCL_DOUBLE_SLASH jclName? xmitName JCL_COMMA_CHAR? parameterArgument*
     ;
 
 xmitName
@@ -173,7 +128,7 @@ parameter
     ;
 
 parameterParentheses
-    : JCL_L_PAREN_CHAR (JCL_COMMA_CHAR? parameter)* JCL_R_PAREN_CHAR  jclCommentArea?
+    : JCL_L_PAREN_CHAR JCL_COMMA_CHAR? parameterArgument* JCL_R_PAREN_CHAR  jclCommentArea?
     ;
 
 parameterAssignment

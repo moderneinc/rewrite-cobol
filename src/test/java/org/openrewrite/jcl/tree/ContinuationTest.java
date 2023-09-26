@@ -37,6 +37,20 @@ public class ContinuationTest implements RewriteTest {
     }
 
     @Test
+    void commentAreas() {
+        rewriteRun(
+          jcl(
+            """
+            //Name DD DSNAME=DS4,                                                   commentArea
+            //        UNIT=3380,                                                    commentArea
+            //        VOL=SER=111112         ,                                      commentArea
+            //        DISP=(NEW,KEEP),SPACE=(TRK,(5,1,2))                           commentArea
+            """
+          )
+        );
+    }
+
+    @Test
     void blankLabelsAndContinuations() {
         rewriteRun(
           jcl(

@@ -58,7 +58,6 @@ public class JclVisitor<P> extends TreeVisitor<Jcl, P> {
         d = d.withName(visitAndCast(d.getName(), p));
         d = d.withParameter(visitAndCast(d.getParameter(), p));
         d = d.getPadding().withStreamParameters(ListUtils.map(d.getPadding().getStreamParameters(), t -> visitRightPadded(t, JclRightPadded.Location.PARAMETERS, p)));
-        d = d.withEnd(visitAndCast(d.getEnd(), p));
         return d;
     }
 

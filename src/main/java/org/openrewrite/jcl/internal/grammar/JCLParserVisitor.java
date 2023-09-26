@@ -40,6 +40,12 @@ public interface JCLParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitJobStatement(JCLParser.JobStatementContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link JCLParser#parameterArgument}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParameterArgument(JCLParser.ParameterArgumentContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link JCLParser#jobName}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -76,59 +82,11 @@ public interface JCLParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDdName(JCLParser.DdNameContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link JCLParser#ddStreamEnd}.
+	 * Visit a parse tree produced by {@link JCLParser#streamText}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitDdStreamEnd(JCLParser.DdStreamEndContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link JCLParser#streamParameter}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStreamParameter(JCLParser.StreamParameterContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link JCLParser#streamParameterAssignment}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStreamParameterAssignment(JCLParser.StreamParameterAssignmentContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link JCLParser#streamParameterParentheses}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStreamParameterParentheses(JCLParser.StreamParameterParenthesesContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link JCLParser#streamName}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStreamName(JCLParser.StreamNameContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link JCLParser#streamJclWord}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStreamJclWord(JCLParser.StreamJclWordContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link JCLParser#streamJclName}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStreamJclName(JCLParser.StreamJclNameContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link JCLParser#streamJclKeyword}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStreamJclKeyword(JCLParser.StreamJclKeywordContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link JCLParser#streamCharacter}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStreamCharacter(JCLParser.StreamCharacterContext ctx);
+	T visitStreamText(JCLParser.StreamTextContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link JCLParser#streamJclCommentArea}.
 	 * @param ctx the parse tree

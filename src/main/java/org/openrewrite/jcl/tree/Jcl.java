@@ -309,19 +309,15 @@ public interface Jcl extends Tree {
 
         @With
         @Getter
-        Parameter parameter;
+        Name parameter;
 
-        List<JclRightPadded<Parameter>> streamParameters;
+        List<JclRightPadded<Word>> streamParameters;
 
-        @With
-        @Getter
-        Word end;
-
-        public List<Parameter> getStreamParameters() {
+        public List<Word> getStreamParameters() {
             return JclRightPadded.getElements(streamParameters);
         }
 
-        public DataDefinitionStream withStreamParameters(List<Parameter> streamParameters) {
+        public DataDefinitionStream withStreamParameters(List<Word> streamParameters) {
             return getPadding().withStreamParameters(JclRightPadded.withElements(this.streamParameters, streamParameters));
         }
 
@@ -349,12 +345,12 @@ public interface Jcl extends Tree {
         public static class Padding {
             private final DataDefinitionStream t;
 
-            public List<JclRightPadded<Parameter>> getStreamParameters() {
+            public List<JclRightPadded<Word>> getStreamParameters() {
                 return t.streamParameters;
             }
 
-            public DataDefinitionStream withStreamParameters(List<JclRightPadded<Parameter>> streamParameters) {
-                return t.streamParameters == streamParameters ? t : new DataDefinitionStream(t.id, t.prefix, t.markers, t.step, t.name, t.parameter, streamParameters, t.end);
+            public DataDefinitionStream withStreamParameters(List<JclRightPadded<Word>> streamParameters) {
+                return t.streamParameters == streamParameters ? t : new DataDefinitionStream(t.id, t.prefix, t.markers, t.step, t.name, t.parameter, streamParameters);
             }
         }
     }

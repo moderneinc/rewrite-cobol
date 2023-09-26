@@ -129,7 +129,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
                 Markers.EMPTY,
                 visitNullable(ctx.jclName()),
                 (Name) visit(ctx.ddName()),
-                createParameters(ctx.parameter())
+                createParameters(ctx.JCL_COMMA_CHAR(), ctx.parameterArgument())
         );
         if (ctx.jclTrailingComment() != null) {
             for (Marker marker : mapTrailingComment(ctx.jclTrailingComment())) {
@@ -156,11 +156,9 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
                 Markers.EMPTY,
                 visitNullable(ctx.jclName()),
                 (Name) visit(ctx.ddName()),
-                (Parameter) visit(ctx.parameter()),
-                createStreamParameters(ctx.streamParameter()),
-                visitNullable(ctx.ddStreamEnd())
+                (Name) visit(ctx.parameter()),
+                convertAll(ctx.streamText(), noDelim, noDelim)
         );
-
         if (ctx.jclTrailingComment() != null) {
             for (Marker marker : mapTrailingComment(ctx.jclTrailingComment())) {
                 dd = dd.withMarkers(dd.getMarkers().addIfAbsent(marker));
@@ -170,12 +168,10 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
     }
 
     @Override
-    public Jcl visitDdStreamEnd(JCLParser.DdStreamEndContext ctx) {
-        Jcl jcl = visit(ctx.END_TOKEN());
-        if (ctx.jclTrailingComment() != null) {
-            for (Marker marker : mapTrailingComment(ctx.jclTrailingComment())) {
-                jcl = jcl.withMarkers(jcl.getMarkers().addIfAbsent(marker));
-            }
+    public Jcl visitStreamText(JCLParser.StreamTextContext ctx) {
+        Jcl jcl = visit(ctx.STREAM_TEXT(), ctx.STREAM_STRINGLITERAL());
+        if (ctx.streamJclCommentArea() != null) {
+            jcl = jcl.withMarkers(jcl.getMarkers().addIfAbsent(mapCommentArea(ctx.streamJclCommentArea())));
         }
         return jcl;
     }
@@ -188,7 +184,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
                 Markers.EMPTY,
                 visitNullable(ctx.jclName()),
                 (Name) visit(ctx.execName()),
-                createParameters(ctx.parameter())
+                createParameters(ctx.JCL_COMMA_CHAR(), ctx.parameterArgument())
         );
     }
 
@@ -206,13 +202,10 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
         if (ctx.JCL_CONT() != null) {
             skip("//");
         }
-
         Jcl jcl = visit(ctx.JCL_PARAMETER(), ctx.JCL_NAME_FIELD(), ctx.jclKeyword());
-
         if (ctx.JCL_CONT() != null) {
             jcl = jcl.withMarkers(jcl.getMarkers().addIfAbsent(new Continuation(randomId())));
         }
-
         if (ctx.jclCommentArea() != null) {
             jcl = jcl.withMarkers(jcl.getMarkers().addIfAbsent(mapCommentArea(ctx.jclCommentArea())));
         }
@@ -227,7 +220,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
                 Markers.EMPTY,
                 visitNullable(ctx.jclName()),
                 (Name) visit(ctx.jclLibName()),
-                createParameters(ctx.parameter())
+                createParameters(ctx.JCL_COMMA_CHAR(), ctx.parameterArgument())
         );
     }
 
@@ -245,13 +238,10 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
         if (ctx.JCL_CONT() != null) {
             skip("//");
         }
-
         Jcl jcl = visit(ctx.JCL_STRINGLITERAL(), ctx.jclName());
-
         if (ctx.JCL_CONT() != null) {
             jcl = jcl.withMarkers(jcl.getMarkers().addIfAbsent(new Continuation(randomId())));
         }
-
         if (ctx.jclCommentArea() != null) {
             jcl = jcl.withMarkers(jcl.getMarkers().addIfAbsent(mapCommentArea(ctx.jclCommentArea())));
         }
@@ -266,7 +256,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
                 Markers.EMPTY,
                 visitNullable(ctx.jclName()),
                 (Name) visit(ctx.jobName()),
-                createParameters(ctx.parameter())
+                createParameters(ctx.JCL_COMMA_CHAR(), ctx.parameterArgument())
         );
     }
 
@@ -298,7 +288,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
                 Markers.EMPTY,
                 visitNullable(ctx.jclName()),
                 (Name) visit(ctx.outputName()),
-                createParameters(ctx.parameter())
+                createParameters(ctx.JCL_COMMA_CHAR(), ctx.parameterArgument())
         );
     }
 
@@ -338,22 +328,22 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
         Space prefix = whitespace();
         Markers markers = Markers.EMPTY;
         skip("(");
-        List<JclRightPadded<Jcl>> padded = new ArrayList<>(ctx.parameter().size());
-        for (int i = 0; i < ctx.parameter().size(); i++) {
-            if (i == 0) {
-                int saveCursor = cursor;
-                whitespace();
-                if (source.startsWith(",", cursor)) {
-                    markers = markers.addIfAbsent(new OmitFirstParam(randomId()));
-                    skip(",");
-                } else {
-                    cursor = saveCursor;
-                }
+        List<JclRightPadded<Jcl>> padded = new ArrayList<>(ctx.parameterArgument().size());
+        if (ctx.JCL_COMMA_CHAR() != null) {
+            skip(",");
+            markers = markers.addIfAbsent(new OmitFirstParam(randomId()));
+        }
+
+        for (int i = 0; i < ctx.parameterArgument().size(); i++) {
+            JCLParser.ParameterArgumentContext parameterArgument = ctx.parameterArgument().get(i);
+            Jcl tree = visit(parameterArgument.parameter());
+            Marker marker = null;
+            if (parameterArgument.jclCommentArea() != null) {
+                marker = mapCommentArea(parameterArgument.jclCommentArea());
             }
-            Jcl tree = visit(ctx.parameter().get(i));
-            padded.add(padRight(tree, i < ctx.parameter().size() - 1 ?
-                    sourceBefore(",") : sourceBefore(")"))
-            );
+            JclRightPadded<Jcl> p = padRight(tree, i < ctx.parameterArgument().size() - 1 ?
+                    sourceBefore(",") : sourceBefore(")"));
+            padded.add(marker == null ? p : p.withMarkers(p.getMarkers().addIfAbsent(marker)));
         }
         if (ctx.jclCommentArea() != null) {
             markers = markers.addIfAbsent(mapCommentArea(ctx.jclCommentArea()));
@@ -394,7 +384,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
                 Markers.EMPTY,
                 visitNullable(ctx.jclName()),
                 (Name) visit(ctx.procName()),
-                createParameters(ctx.parameter())
+                createParameters(ctx.JCL_COMMA_CHAR(), ctx.parameterArgument())
         );
     }
 
@@ -415,7 +405,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
                 Markers.EMPTY,
                 visitNullable(ctx.jclName()),
                 (Name) visit(ctx.setName()),
-                createParameters(ctx.parameter())
+                createParameters(ctx.JCL_COMMA_CHAR(), ctx.parameterArgument())
         );
     }
 
@@ -429,97 +419,6 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
     }
 
     @Override
-    public Jcl visitStreamJclName(JCLParser.StreamJclNameContext ctx) {
-        if (ctx.JCL_CONT() != null) {
-            skip("//");
-        }
-
-        Jcl jcl = visit(ctx.STREAM_PARAMETER(), ctx.STREAM_NAME_FIELD(), ctx.streamJclKeyword(), ctx.streamCharacter());
-
-        if (ctx.JCL_CONT() != null) {
-            jcl = jcl.withMarkers(jcl.getMarkers().addIfAbsent(new Continuation(randomId())));
-        }
-
-        if (ctx.streamJclCommentArea() != null) {
-            jcl = jcl.withMarkers(jcl.getMarkers().addIfAbsent(mapCommentArea(ctx.streamJclCommentArea())));
-        }
-        return jcl;
-    }
-
-    @Override
-    public Jcl visitStreamJclWord(JCLParser.StreamJclWordContext ctx) {
-        if (ctx.JCL_CONT() != null) {
-            skip("//");
-        }
-
-        Jcl jcl = visit(ctx.STREAM_STRINGLITERAL(), ctx.streamJclName());
-
-        if (ctx.JCL_CONT() != null) {
-            jcl = jcl.withMarkers(jcl.getMarkers().addIfAbsent(new Continuation(randomId())));
-        }
-
-        if (ctx.streamJclCommentArea() != null) {
-            jcl = jcl.withMarkers(jcl.getMarkers().addIfAbsent(mapCommentArea(ctx.streamJclCommentArea())));
-        }
-        return jcl;
-    }
-
-    @Override
-    public Jcl visitStreamName(JCLParser.StreamNameContext ctx) {
-        return new Jcl.JclName(
-                randomId(),
-                whitespace(),
-                Markers.EMPTY,
-                (Jcl.Word) visit(ctx.streamJclWord()),
-                visitNullable(ctx.streamParameterParentheses())
-        );
-    }
-
-    @Override
-    public Jcl visitStreamParameterAssignment(JCLParser.StreamParameterAssignmentContext ctx) {
-        return new Jcl.Assignment(
-                randomId(),
-                whitespace(),
-                Markers.EMPTY,
-                (Jcl.Word) visit(ctx.streamJclName()),
-                padLeft(sourceBefore("="), (Parameter) visit(ctx.streamParameter()))
-        );
-    }
-
-    @Override
-    public Jcl visitStreamParameterParentheses(JCLParser.StreamParameterParenthesesContext ctx) {
-        Space prefix = whitespace();
-        Markers markers = Markers.EMPTY;
-        skip("(");
-        List<JclRightPadded<Jcl>> padded = new ArrayList<>(ctx.streamParameter().size());
-        for (int i = 0; i < ctx.streamParameter().size(); i++) {
-            if (i == 0) {
-                int saveCursor = cursor;
-                whitespace();
-                if (source.startsWith(",", cursor)) {
-                    markers = markers.addIfAbsent(new OmitFirstParam(randomId()));
-                    skip(",");
-                } else {
-                    cursor = saveCursor;
-                }
-            }
-            Jcl tree = visit(ctx.streamParameter().get(i));
-            padded.add(padRight(tree, i < ctx.streamParameter().size() - 1 ?
-                    sourceBefore(",") : sourceBefore(")"))
-            );
-        }
-        if (ctx.streamJclCommentArea() != null) {
-            markers = markers.addIfAbsent(mapCommentArea(ctx.streamJclCommentArea()));
-        }
-        return new Jcl.Parentheses<>(
-                randomId(),
-                prefix,
-                markers,
-                padded
-        );
-    }
-
-    @Override
     public Jcl visitXmitStatement(JCLParser.XmitStatementContext ctx) {
         return new Jcl.XmitStatement(
                 randomId(),
@@ -527,7 +426,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
                 Markers.EMPTY,
                 visitNullable(ctx.jclName()),
                 (Name) visit(ctx.xmitName()),
-                createParameters(ctx.parameter())
+                createParameters(ctx.JCL_COMMA_CHAR(), ctx.parameterArgument())
         );
     }
 
@@ -646,10 +545,10 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
         return markers;
     }
 
-    private JclContainer<Parameter> createParameters(List<JCLParser.ParameterContext> parameters) {
+    private JclContainer<Parameter> createParameters(@Nullable TerminalNode leadingComma, List<JCLParser.ParameterArgumentContext> parameters) {
         Space before = whitespace();
         Markers markers = Markers.EMPTY;
-        if (source.startsWith(",", cursor)) {
+        if (leadingComma != null) {
             skip(",");
             markers = markers.addIfAbsent(new OmitFirstParam(randomId()));
         }
@@ -657,22 +556,10 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
                 convertAll(parameters, commaDelim, t -> EMPTY), markers);
     }
 
-    private List<JclRightPadded<Parameter>> createStreamParameters(List<JCLParser.StreamParameterContext> parameters) {
-        List<JclRightPadded<Parameter>> params = new ArrayList<>(parameters.size());
-        for (JCLParser.StreamParameterContext parameter : parameters) {
-            JclRightPadded<Parameter> p = padRight((Parameter) visit(parameter), whitespace());
-            if (source.startsWith(",", cursor)) {
-                skip(",");
-                p = p.withMarkers(p.getMarkers().addIfAbsent(new Comma(randomId())));
-            }
-            params.add(p);
-        }
-        return params;
-    }
-
     private final Function<ParseTree, Space> commaDelim = ignored -> sourceBefore(",");
+    private final Function<ParseTree, Space> noDelim = ignored -> EMPTY;
 
-    private <J2 extends Jcl> List<JclRightPadded<J2>> convertAll(List<JCLParser.ParameterContext> elements,
+    private <J2 extends Jcl> List<JclRightPadded<J2>> convertAll(List<? extends ParserRuleContext> elements,
                                                                  Function<ParseTree, Space> innerSuffix,
                                                                  Function<ParseTree, Space> suffix) {
         if (elements.isEmpty()) {
@@ -682,11 +569,24 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
         List<JclRightPadded<J2>> converted = new ArrayList<>(elements.size());
         for (int i = 0; i < elements.size(); i++) {
             ParseTree element = elements.get(i);
-            //noinspection unchecked
-            J2 j = (J2) visit(element);
-            Space after = i == elements.size() - 1 ? suffix.apply(element) : innerSuffix.apply(element);
-            JclRightPadded<J2> rightPadded = padRight(j, after);
-            converted.add(rightPadded);
+            if (element instanceof JCLParser.ParameterArgumentContext) {
+                JCLParser.ParameterArgumentContext p = (JCLParser.ParameterArgumentContext) element;
+                //noinspection unchecked
+                J2 j = (J2) visit(p.parameter());
+                Space after = i == elements.size() - 1 ? suffix.apply(element) : innerSuffix.apply(element);
+                Markers markers = Markers.EMPTY;
+                if (p.jclCommentArea() != null) {
+                    markers = markers.addIfAbsent(mapCommentArea(p.jclCommentArea()));
+                }
+                JclRightPadded<J2> rightPadded = padRight(j, after).withMarkers(markers);
+                converted.add(rightPadded);
+            } else {
+                //noinspection unchecked
+                J2 j = (J2) visit(element);
+                Space after = i == elements.size() - 1 ? suffix.apply(element) : innerSuffix.apply(element);
+                JclRightPadded<J2> rightPadded = padRight(j, after);
+                converted.add(rightPadded);
+            }
         }
         return converted.isEmpty() ? emptyList() : converted;
     }

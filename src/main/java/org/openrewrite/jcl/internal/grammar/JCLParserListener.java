@@ -53,6 +53,16 @@ public interface JCLParserListener extends ParseTreeListener {
 	 */
 	void exitJobStatement(JCLParser.JobStatementContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link JCLParser#parameterArgument}.
+	 * @param ctx the parse tree
+	 */
+	void enterParameterArgument(JCLParser.ParameterArgumentContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JCLParser#parameterArgument}.
+	 * @param ctx the parse tree
+	 */
+	void exitParameterArgument(JCLParser.ParameterArgumentContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link JCLParser#jobName}.
 	 * @param ctx the parse tree
 	 */
@@ -113,95 +123,15 @@ public interface JCLParserListener extends ParseTreeListener {
 	 */
 	void exitDdName(JCLParser.DdNameContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link JCLParser#ddStreamEnd}.
+	 * Enter a parse tree produced by {@link JCLParser#streamText}.
 	 * @param ctx the parse tree
 	 */
-	void enterDdStreamEnd(JCLParser.DdStreamEndContext ctx);
+	void enterStreamText(JCLParser.StreamTextContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link JCLParser#ddStreamEnd}.
+	 * Exit a parse tree produced by {@link JCLParser#streamText}.
 	 * @param ctx the parse tree
 	 */
-	void exitDdStreamEnd(JCLParser.DdStreamEndContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link JCLParser#streamParameter}.
-	 * @param ctx the parse tree
-	 */
-	void enterStreamParameter(JCLParser.StreamParameterContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link JCLParser#streamParameter}.
-	 * @param ctx the parse tree
-	 */
-	void exitStreamParameter(JCLParser.StreamParameterContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link JCLParser#streamParameterAssignment}.
-	 * @param ctx the parse tree
-	 */
-	void enterStreamParameterAssignment(JCLParser.StreamParameterAssignmentContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link JCLParser#streamParameterAssignment}.
-	 * @param ctx the parse tree
-	 */
-	void exitStreamParameterAssignment(JCLParser.StreamParameterAssignmentContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link JCLParser#streamParameterParentheses}.
-	 * @param ctx the parse tree
-	 */
-	void enterStreamParameterParentheses(JCLParser.StreamParameterParenthesesContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link JCLParser#streamParameterParentheses}.
-	 * @param ctx the parse tree
-	 */
-	void exitStreamParameterParentheses(JCLParser.StreamParameterParenthesesContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link JCLParser#streamName}.
-	 * @param ctx the parse tree
-	 */
-	void enterStreamName(JCLParser.StreamNameContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link JCLParser#streamName}.
-	 * @param ctx the parse tree
-	 */
-	void exitStreamName(JCLParser.StreamNameContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link JCLParser#streamJclWord}.
-	 * @param ctx the parse tree
-	 */
-	void enterStreamJclWord(JCLParser.StreamJclWordContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link JCLParser#streamJclWord}.
-	 * @param ctx the parse tree
-	 */
-	void exitStreamJclWord(JCLParser.StreamJclWordContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link JCLParser#streamJclName}.
-	 * @param ctx the parse tree
-	 */
-	void enterStreamJclName(JCLParser.StreamJclNameContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link JCLParser#streamJclName}.
-	 * @param ctx the parse tree
-	 */
-	void exitStreamJclName(JCLParser.StreamJclNameContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link JCLParser#streamJclKeyword}.
-	 * @param ctx the parse tree
-	 */
-	void enterStreamJclKeyword(JCLParser.StreamJclKeywordContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link JCLParser#streamJclKeyword}.
-	 * @param ctx the parse tree
-	 */
-	void exitStreamJclKeyword(JCLParser.StreamJclKeywordContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link JCLParser#streamCharacter}.
-	 * @param ctx the parse tree
-	 */
-	void enterStreamCharacter(JCLParser.StreamCharacterContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link JCLParser#streamCharacter}.
-	 * @param ctx the parse tree
-	 */
-	void exitStreamCharacter(JCLParser.StreamCharacterContext ctx);
+	void exitStreamText(JCLParser.StreamTextContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link JCLParser#streamJclCommentArea}.
 	 * @param ctx the parse tree

@@ -106,15 +106,31 @@ public class DataDefinitionTest implements RewriteTest {
     }
 
     @Test
+    void commentAreaOnDDStream() {
+        rewriteRun(
+          jcl(
+            """
+              //OBJECT DD *    * Why is this possible?                                commentArea
+                REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(1,2,3),                           commentArea
+                 FIELDS=(ABC=XYZ)                                                     commentArea
+                REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(4,5,6),                           commentArea
+                 FIELDS=(ABC=XYZ)                                                     commentArea
+              /*
+              """
+          )
+        );
+    }
+
+    @Test
     void trailingCommentAndCommentArea() {
         rewriteRun(
           jcl(
             """
               //OBJECT DD *    * Why is this possible?                                commentArea
-                REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(1,2,3),
-                 FIELDS=(ABC=XYZ)
-                REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(4,5,6),
-                 FIELDS=(ABC=XYZ)
+                REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(1,2,3),                           commentArea
+                 FIELDS=(ABC=XYZ)                                                     commentArea
+                REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(4,5,6),                           commentArea
+                 FIELDS=(ABC=XYZ)                                                     commentArea
               /*
               """
           )
