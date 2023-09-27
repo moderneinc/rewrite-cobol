@@ -34,6 +34,15 @@ public class JclVisitor<P> extends TreeVisitor<Jcl, P> {
         return a;
     }
 
+    public Jcl visitCntlStatement(Jcl.CntlStatement cntlStatement, P p ) {
+        Jcl.CntlStatement c = cntlStatement;
+        c = c.withPrefix(visitSpace(c.getPrefix(), Space.Location.CNTL_STATEMENT_PREFIX, p));
+        c = c.withMarkers(visitMarkers(c.getMarkers(), p));
+        c = c.withStep(visitAndCast(c.getStep(), p));
+        c = c.withName(visitAndCast(c.getName(), p));
+        return c;
+    }
+
     public Jcl visitComment(Jcl.Comment comment, P p) {
         Jcl.Comment c = comment;
         c = c.withPrefix(visitSpace(c.getPrefix(), Space.Location.COMMENT_PREFIX, p));
@@ -46,6 +55,7 @@ public class JclVisitor<P> extends TreeVisitor<Jcl, P> {
         Jcl.DataDefinitionStatement d = dataDefinitionStatement;
         d = d.withPrefix(visitSpace(d.getPrefix(), Space.Location.DATA_DEFINITION_STATEMENT_PREFIX, p));
         d = d.withMarkers(visitMarkers(d.getMarkers(), p));
+        d = d.withStep(visitAndCast(d.getStep(), p));
         d = d.withName(visitAndCast(d.getName(), p));
         d = d.getPadding().withParameters(visitContainer(d.getPadding().getParameters(), JclContainer.Location.PARAMETERS, p));
         return d;
@@ -55,16 +65,37 @@ public class JclVisitor<P> extends TreeVisitor<Jcl, P> {
         Jcl.DataDefinitionStream d = ddStream;
         d = d.withPrefix(visitSpace(d.getPrefix(), Space.Location.DATA_DEFINITION_STREAM_PREFIX, p));
         d = d.withMarkers(visitMarkers(d.getMarkers(), p));
+        d = d.withStep(visitAndCast(d.getStep(), p));
         d = d.withName(visitAndCast(d.getName(), p));
         d = d.withParameter(visitAndCast(d.getParameter(), p));
         d = d.getPadding().withStreamParameters(ListUtils.map(d.getPadding().getStreamParameters(), t -> visitRightPadded(t, JclRightPadded.Location.PARAMETERS, p)));
         return d;
     }
 
+    public Jcl visitEndCntlStatement(Jcl.EndCntlStatement endCntlStatement, P p) {
+        Jcl.EndCntlStatement e = endCntlStatement;
+        e = e.withPrefix(visitSpace(e.getPrefix(), Space.Location.END_CNTL_STATEMENT_PREFIX, p));
+        e = e.withMarkers(visitMarkers(e.getMarkers(), p));
+        e = e.withStep(visitAndCast(e.getStep(), p));
+        e = e.withName(visitAndCast(e.getName(), p));
+        return e;
+    }
+
     public Jcl visitExecStatement(Jcl.ExecStatement execStatement, P p) {
         Jcl.ExecStatement e = execStatement;
         e = e.withPrefix(visitSpace(e.getPrefix(), Space.Location.EXEC_STATEMENT_PREFIX, p));
         e = e.withMarkers(visitMarkers(e.getMarkers(), p));
+        e = e.withStep(visitAndCast(e.getStep(), p));
+        e = e.withName(visitAndCast(e.getName(), p));
+        e = e.getPadding().withParameters(visitContainer(e.getPadding().getParameters(), JclContainer.Location.PARAMETERS, p));
+        return e;
+    }
+
+    public Jcl visitExportStatement(Jcl.ExportStatement exportStatement, P p) {
+        Jcl.ExportStatement e = exportStatement;
+        e = e.withPrefix(visitSpace(e.getPrefix(), Space.Location.EXPORT_STATEMENT_PREFIX, p));
+        e = e.withMarkers(visitMarkers(e.getMarkers(), p));
+        e = e.withStep(visitAndCast(e.getStep(), p));
         e = e.withName(visitAndCast(e.getName(), p));
         e = e.getPadding().withParameters(visitContainer(e.getPadding().getParameters(), JclContainer.Location.PARAMETERS, p));
         return e;
@@ -77,10 +108,21 @@ public class JclVisitor<P> extends TreeVisitor<Jcl, P> {
         return i;
     }
 
+    public Jcl visitIncludeStatement(Jcl.IncludeStatement includeStatement, P p) {
+        Jcl.IncludeStatement i = includeStatement;
+        i = i.withPrefix(visitSpace(i.getPrefix(), Space.Location.INCLUDE_STATEMENT_PREFIX, p));
+        i = i.withMarkers(visitMarkers(i.getMarkers(), p));
+        i = i.withStep(visitAndCast(i.getStep(), p));
+        i = i.withName(visitAndCast(i.getName(), p));
+        i = i.getPadding().withParameters(visitContainer(i.getPadding().getParameters(), JclContainer.Location.PARAMETERS, p));
+        return i;
+    }
+
     public Jcl visitJclLibStatement(Jcl.JclLibStatement jclLibStatement, P p) {
         Jcl.JclLibStatement j = jclLibStatement;
         j = j.withPrefix(visitSpace(j.getPrefix(), Space.Location.JOB_STATEMENT_PREFIX, p));
         j = j.withMarkers(visitMarkers(j.getMarkers(), p));
+        j = j.withStep(visitAndCast(j.getStep(), p));
         j = j.withName(visitAndCast(j.getName(), p));
         j = j.getPadding().withParameters(visitContainer(j.getPadding().getParameters(), JclContainer.Location.PARAMETERS, p));
         return j;
@@ -95,18 +137,11 @@ public class JclVisitor<P> extends TreeVisitor<Jcl, P> {
         return j;
     }
 
-    public Jcl visitJclStatement(Jcl.JclStatement jclStatement, P p) {
-        Jcl.JclStatement j = jclStatement;
-        j = j.withPrefix(visitSpace(j.getPrefix(), Space.Location.JES2_PREFIX, p));
-        j = j.withMarkers(visitMarkers(j.getMarkers(), p));
-        j = j.withWord(visitAndCast(j.getWord(), p));
-        return j;
-    }
-
     public Jcl visitJobStatement(Jcl.JobStatement jobStatement, P p) {
         Jcl.JobStatement j = jobStatement;
         j = j.withPrefix(visitSpace(j.getPrefix(), Space.Location.JOB_STATEMENT_PREFIX, p));
         j = j.withMarkers(visitMarkers(j.getMarkers(), p));
+        j = j.withStep(visitAndCast(j.getStep(), p));
         j = j.withName(visitAndCast(j.getName(), p));
         j = j.getPadding().withParameters(visitContainer(j.getPadding().getParameters(), JclContainer.Location.PARAMETERS, p));
         return j;
@@ -123,6 +158,7 @@ public class JclVisitor<P> extends TreeVisitor<Jcl, P> {
         Jcl.OutputStatement o = outputStatement;
         o = o.withPrefix(visitSpace(o.getPrefix(), Space.Location.OUTPUT_STATEMENT_PREFIX, p));
         o = o.withMarkers(visitMarkers(o.getMarkers(), p));
+        o = o.withStep(visitAndCast(o.getStep(), p));
         o = o.withName(visitAndCast(o.getName(), p));
         o = o.getPadding().withParameters(visitContainer(o.getPadding().getParameters(), JclContainer.Location.PARAMETERS, p));
         return o;
@@ -140,6 +176,8 @@ public class JclVisitor<P> extends TreeVisitor<Jcl, P> {
         Jcl.PendStatement pe = pendStatement;
         pe = pe.withPrefix(visitSpace(pe.getPrefix(), Space.Location.PEND_STATEMENT_PREFIX, p));
         pe = pe.withMarkers(visitMarkers(pe.getMarkers(), p));
+        pe = pe.withStep(visitAndCast(pe.getStep(), p));
+        pe = pe.withName(visitAndCast(pe.getName(), p));
         return pe;
     }
 
@@ -147,6 +185,7 @@ public class JclVisitor<P> extends TreeVisitor<Jcl, P> {
         Jcl.ProcStatement pr = procStatement;
         pr = pr.withPrefix(visitSpace(pr.getPrefix(), Space.Location.PROC_STATEMENT_PREFIX, p));
         pr = pr.withMarkers(visitMarkers(pr.getMarkers(), p));
+        pr = pr.withStep(visitAndCast(pr.getStep(), p));
         pr = pr.withName(visitAndCast(pr.getName(), p));
         pr = pr.getPadding().withParameters(visitContainer(pr.getPadding().getParameters(), JclContainer.Location.PARAMETERS, p));
         return pr;
@@ -156,6 +195,7 @@ public class JclVisitor<P> extends TreeVisitor<Jcl, P> {
         Jcl.SetStatement s = setStatement;
         s = s.withPrefix(visitSpace(s.getPrefix(), Space.Location.SET_STATEMENT_PREFIX, p));
         s = s.withMarkers(visitMarkers(s.getMarkers(), p));
+        s = s.withStep(visitAndCast(s.getStep(), p));
         s = s.withName(visitAndCast(s.getName(), p));
         s = s.getPadding().withParameters(visitContainer(s.getPadding().getParameters(), JclContainer.Location.PARAMETERS, p));
         return s;
@@ -165,6 +205,7 @@ public class JclVisitor<P> extends TreeVisitor<Jcl, P> {
         Jcl.XmitStatement x = xmitStatement;
         x = x.withPrefix(visitSpace(x.getPrefix(), Space.Location.XMIT_STATEMENT_PREFIX, p));
         x = x.withMarkers(visitMarkers(x.getMarkers(), p));
+        x = x.withStep(visitAndCast(x.getStep(), p));
         x = x.withName(visitAndCast(x.getName(), p));
         x = x.getPadding().withParameters(visitContainer(x.getPadding().getParameters(), JclContainer.Location.PARAMETERS, p));
         return x;

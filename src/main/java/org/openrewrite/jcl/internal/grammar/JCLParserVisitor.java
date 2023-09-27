@@ -64,6 +64,30 @@ public interface JCLParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitJclLibName(JCLParser.JclLibNameContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link JCLParser#cntlStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCntlStatement(JCLParser.CntlStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JCLParser#cntlName}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCntlName(JCLParser.CntlNameContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JCLParser#endcntlStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEndcntlStatement(JCLParser.EndcntlStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JCLParser#endcntlName}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEndcntlName(JCLParser.EndcntlNameContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link JCLParser#ddStatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -94,6 +118,18 @@ public interface JCLParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStreamJclCommentArea(JCLParser.StreamJclCommentAreaContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link JCLParser#endifStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEndifStatement(JCLParser.EndifStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JCLParser#endifName}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEndifName(JCLParser.EndifNameContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link JCLParser#execStatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -105,6 +141,60 @@ public interface JCLParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitExecName(JCLParser.ExecNameContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JCLParser#exportStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExportStatement(JCLParser.ExportStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JCLParser#exportName}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExportName(JCLParser.ExportNameContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JCLParser#ifStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIfStatement(JCLParser.IfStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JCLParser#ifName}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIfName(JCLParser.IfNameContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JCLParser#thenName}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitThenName(JCLParser.ThenNameContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JCLParser#elseStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitElseStatement(JCLParser.ElseStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JCLParser#elseName}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitElseName(JCLParser.ElseNameContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JCLParser#includeStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIncludeStatement(JCLParser.IncludeStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JCLParser#includeName}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIncludeName(JCLParser.IncludeNameContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link JCLParser#outputStatement}.
 	 * @param ctx the parse tree

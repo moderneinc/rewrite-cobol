@@ -122,6 +122,30 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
     }
 
     @Override
+    public Jcl visitCntlStatement(JCLParser.CntlStatementContext ctx) {
+        Jcl.CntlStatement cntl = new Jcl.CntlStatement(
+                randomId(),
+                sourceBefore("//"),
+                Markers.EMPTY,
+                visitNullable(ctx.jclName()),
+                (Name) visit(ctx.cntlName())
+        );
+        if (ctx.jclCommentArea() != null) {
+            cntl = cntl.withMarkers(cntl.getMarkers().addIfAbsent(mapCommentArea(ctx.jclCommentArea())));
+        }
+        return cntl;
+    }
+
+    @Override
+    public Jcl visitCntlName(JCLParser.CntlNameContext ctx) {
+        Jcl.Identifier id = createIdentifier(ctx.JCL_CNTL().getText());
+        if (ctx.jclCommentArea() != null) {
+            id = id.withMarkers(id.getMarkers().addIfAbsent(mapCommentArea(ctx.jclCommentArea())));
+        }
+        return id;
+    }
+
+    @Override
     public Jcl visitDdStatement(JCLParser.DdStatementContext ctx) {
         Jcl.DataDefinitionStatement dd = new Jcl.DataDefinitionStatement(
                 randomId(),
@@ -189,8 +213,74 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
     }
 
     @Override
+    public Jcl visitEndcntlStatement(JCLParser.EndcntlStatementContext ctx) {
+        Jcl.CntlStatement cntl = new Jcl.CntlStatement(
+                randomId(),
+                sourceBefore("//"),
+                Markers.EMPTY,
+                visitNullable(ctx.jclName()),
+                (Name) visit(ctx.endcntlName())
+        );
+        if (ctx.jclCommentArea() != null) {
+            cntl = cntl.withMarkers(cntl.getMarkers().addIfAbsent(mapCommentArea(ctx.jclCommentArea())));
+        }
+        return cntl;
+    }
+
+    @Override
+    public Jcl visitEndcntlName(JCLParser.EndcntlNameContext ctx) {
+        Jcl.Identifier id = createIdentifier(ctx.JCL_ENDCNTL().getText());
+        if (ctx.jclCommentArea() != null) {
+            id = id.withMarkers(id.getMarkers().addIfAbsent(mapCommentArea(ctx.jclCommentArea())));
+        }
+        return id;
+    }
+
+    @Override
     public Jcl visitExecName(JCLParser.ExecNameContext ctx) {
         Jcl.Identifier id = createIdentifier(ctx.JCL_EXEC().getText());
+        if (ctx.jclCommentArea() != null) {
+            id = id.withMarkers(id.getMarkers().addIfAbsent(mapCommentArea(ctx.jclCommentArea())));
+        }
+        return id;
+    }
+
+    @Override
+    public Jcl visitExportStatement(JCLParser.ExportStatementContext ctx) {
+        return new Jcl.ExportStatement(
+                randomId(),
+                sourceBefore("//"),
+                Markers.EMPTY,
+                visitNullable(ctx.jclName()),
+                (Name) visit(ctx.exportName()),
+                createParameters(ctx.JCL_COMMA_CHAR(), ctx.parameterArgument())
+        );
+    }
+
+    @Override
+    public Jcl visitExportName(JCLParser.ExportNameContext ctx) {
+        Jcl.Identifier id = createIdentifier(ctx.JCL_EXPORT().getText());
+        if (ctx.jclCommentArea() != null) {
+            id = id.withMarkers(id.getMarkers().addIfAbsent(mapCommentArea(ctx.jclCommentArea())));
+        }
+        return id;
+    }
+
+    @Override
+    public Jcl visitIncludeStatement(JCLParser.IncludeStatementContext ctx) {
+        return new Jcl.IncludeStatement(
+                randomId(),
+                sourceBefore("//"),
+                Markers.EMPTY,
+                visitNullable(ctx.jclName()),
+                (Name) visit(ctx.includeName()),
+                createParameters(ctx.JCL_COMMA_CHAR(), ctx.parameterArgument())
+        );
+    }
+
+    @Override
+    public Jcl visitIncludeName(JCLParser.IncludeNameContext ctx) {
+        Jcl.Identifier id = createIdentifier(ctx.JCL_INCLUDE().getText());
         if (ctx.jclCommentArea() != null) {
             id = id.withMarkers(id.getMarkers().addIfAbsent(mapCommentArea(ctx.jclCommentArea())));
         }

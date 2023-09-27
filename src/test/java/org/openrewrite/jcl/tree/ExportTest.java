@@ -12,17 +12,17 @@ import org.openrewrite.test.RewriteTest;
 
 import static org.openrewrite.jcl.tree.ParserAssertions.jcl;
 
-public class JclLibTest implements RewriteTest {
+public class ExportTest implements RewriteTest {
 
     @ParameterizedTest
     @ValueSource(
       strings = {
-        "NAME JCLLIB",
-        "     JCLLIB",
-        "     JCLLIB                                                           commentArea"
+        "NAME EXPORT",
+        "     EXPORT",
+        "     EXPORT                                                           commentArea"
       }
     )
-    void jclLib(String input) {
+    void export(String input) {
         rewriteRun(
           jcl(
             "//%s".formatted(input)
@@ -31,58 +31,50 @@ public class JclLibTest implements RewriteTest {
     }
 
     @Test
-    void parameterLiteral() {
-        rewriteRun(
-          jcl("//Name JOB 'name'")
-        );
-    }
-
-    @Test
-    void orderParam() {
-        rewriteRun(
-          jcl("//Name JCLLIB ORDER=SYS1.PROCLIB")
-        );
-    }
-
-    @Test
-    void parameterLiteralStartsWithComma() {
-        rewriteRun(
-                jcl("//JOB1 JOB ,'H.H. MORRILL'")
-        );
-    }
-
-    @Test
     void parameterAssignment() {
         rewriteRun(
-          jcl("//Name JOB CLASS=A")
+          jcl("//Name EXPORT DSNAME=ALPHA.PGM")
         );
     }
 
     @Test
     void specialCharacters() {
         rewriteRun(
-          jcl("//Name JOB CLASS='3400-6'")
+          jcl("//Name EXPORT DSNAME='3400-6'")
+        );
+    }
+
+    @Test
+    void multiAssignment() {
+        rewriteRun(
+          jcl("//Name EXPORT VOLUME=SER=389984")
+        );
+    }
+    @Test
+    void nameWithParameter() {
+        rewriteRun(
+          jcl("//Name EXPORT DSNAME=REPORT.THREE(WEEK3)")
         );
     }
 
     @Test
     void parensAssignment() {
         rewriteRun(
-          jcl("//Name JOB MSGLEVEL=(1,1)")
+          jcl("//Name EXPORT DISP=(NEW,KEEP)")
         );
     }
 
     @Test
     void startsWithComma() {
         rewriteRun(
-          jcl("//Name JOB (,DEPTD58,921)")
+          jcl("//Name EXPORT DISP=(,KEEP)")
         );
     }
 
     @Test
     void multipleParameterTypes() {
         rewriteRun(
-          jcl("//Name JOB 'name',CLASS=A,MSGLEVEL=(1,1)")
+          jcl("//Name EXPORT DSNAME=DS4,DISP=(NEW,KEEP),SPACE=(TRK,(5,1,2))")
         );
     }
 }

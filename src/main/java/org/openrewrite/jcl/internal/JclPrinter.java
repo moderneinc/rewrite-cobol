@@ -57,6 +57,16 @@ public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
     }
 
     @Override
+    public Jcl visitCntlStatement(Jcl.CntlStatement cntlStatement, PrintOutputCapture<P> p) {
+        beforeSyntax(cntlStatement, Space.Location.CNTL_STATEMENT_PREFIX, p);
+        p.append("//");
+        visit(cntlStatement.getStep(), p);
+        visit(cntlStatement.getName(), p);
+        afterSyntax(cntlStatement, p);
+        return cntlStatement;
+    }
+
+    @Override
     public Jcl visitDataDefinitionStatement(Jcl.DataDefinitionStatement dataDefinitionStatement, PrintOutputCapture<P> p) {
         beforeSyntax(dataDefinitionStatement, Space.Location.DATA_DEFINITION_STATEMENT_PREFIX, p);
         p.append("//");
@@ -80,6 +90,16 @@ public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
     }
 
     @Override
+    public Jcl visitEndCntlStatement(Jcl.EndCntlStatement endCntlStatement, PrintOutputCapture<P> p) {
+        beforeSyntax(endCntlStatement, Space.Location.END_CNTL_STATEMENT_PREFIX, p);
+        p.append("//");
+        visit(endCntlStatement.getStep(), p);
+        visit(endCntlStatement.getName(), p);
+        afterSyntax(endCntlStatement, p);
+        return endCntlStatement;
+    }
+
+    @Override
     public Jcl visitExecStatement(Jcl.ExecStatement execStatement, PrintOutputCapture<P> p) {
         beforeSyntax(execStatement, Space.Location.EXEC_STATEMENT_PREFIX, p);
         p.append("//");
@@ -91,11 +111,33 @@ public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
     }
 
     @Override
+    public Jcl visitExportStatement(Jcl.ExportStatement exportStatement, PrintOutputCapture<P> p) {
+        beforeSyntax(exportStatement, Space.Location.EXPORT_STATEMENT_PREFIX, p);
+        p.append("//");
+        visit(exportStatement.getStep(), p);
+        visit(exportStatement.getName(), p);
+        visitContainer("", exportStatement.getPadding().getParameters(), JclContainer.Location.PARAMETERS, ",", "", p);
+        afterSyntax(exportStatement, p);
+        return exportStatement;
+    }
+
+    @Override
     public Jcl visitIdentifier(Jcl.Identifier identifier, PrintOutputCapture<P> p) {
         beforeSyntax(identifier, Space.Location.IDENTIFIER_PREFIX, p);
         p.append(identifier.getSimpleName());
         afterSyntax(identifier, p);
         return identifier;
+    }
+
+    @Override
+    public Jcl visitIncludeStatement(Jcl.IncludeStatement includeStatement, PrintOutputCapture<P> p) {
+        beforeSyntax(includeStatement, Space.Location.INCLUDE_STATEMENT_PREFIX, p);
+        p.append("//");
+        visit(includeStatement.getStep(), p);
+        visit(includeStatement.getName(), p);
+        visitContainer("", includeStatement.getPadding().getParameters(), JclContainer.Location.PARAMETERS, ",", "", p);
+        afterSyntax(includeStatement, p);
+        return includeStatement;
     }
 
     @Override
@@ -116,14 +158,6 @@ public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
         visit(jclName.getParentheses(), p);
         afterSyntax(jclName, p);
         return jclName;
-    }
-
-    @Override
-    public Jcl visitJclStatement(Jcl.JclStatement jclStatement, PrintOutputCapture<P> p) {
-        beforeSyntax(jclStatement, Space.Location.JCL_STATEMENT_PREFIX, p);
-        visit(jclStatement.getWord(), p);
-        afterSyntax(jclStatement, p);
-        return jclStatement;
     }
 
     @Override

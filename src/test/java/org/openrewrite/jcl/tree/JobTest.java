@@ -6,16 +6,27 @@
 package org.openrewrite.jcl.tree;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.openrewrite.test.RewriteTest;
 
 import static org.openrewrite.jcl.tree.ParserAssertions.jcl;
 
 public class JobTest implements RewriteTest {
 
-    @Test
-    void job() {
+    @ParameterizedTest
+    @ValueSource(
+      strings = {
+        "NAME JOB",
+        "     JOB",
+        "     JOB                                                              commentArea"
+      }
+    )
+    void job(String input) {
         rewriteRun(
-          jcl("//Name JOB")
+          jcl(
+            "//%s".formatted(input)
+          )
         );
     }
 

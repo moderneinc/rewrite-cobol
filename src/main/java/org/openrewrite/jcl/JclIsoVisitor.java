@@ -30,6 +30,11 @@ public class JclIsoVisitor<P> extends JclVisitor<P> {
     }
 
     @Override
+    public Jcl.CntlStatement visitCntlStatement(Jcl.CntlStatement cntlStatement, P p) {
+        return (Jcl.CntlStatement) super.visitCntlStatement(cntlStatement, p);
+    }
+
+    @Override
     public Jcl.DataDefinitionStatement visitDataDefinitionStatement(Jcl.DataDefinitionStatement dataDefinitionStatement, P p) {
         return (Jcl.DataDefinitionStatement) super.visitDataDefinitionStatement(dataDefinitionStatement, p);
     }
@@ -40,13 +45,28 @@ public class JclIsoVisitor<P> extends JclVisitor<P> {
     }
 
     @Override
+    public Jcl.EndCntlStatement visitEndCntlStatement(Jcl.EndCntlStatement endCntlStatement, P p) {
+        return (Jcl.EndCntlStatement) super.visitEndCntlStatement(endCntlStatement, p);
+    }
+
+    @Override
     public Jcl.ExecStatement visitExecStatement(Jcl.ExecStatement execStatement, P p) {
         return (Jcl.ExecStatement) super.visitExecStatement(execStatement, p);
     }
 
     @Override
+    public Jcl.ExportStatement visitExportStatement(Jcl.ExportStatement exportStatement, P p) {
+        return (Jcl.ExportStatement) super.visitExportStatement(exportStatement, p);
+    }
+
+    @Override
     public Jcl.Identifier visitIdentifier(Jcl.Identifier identifier, P p) {
         return (Jcl.Identifier) super.visitIdentifier(identifier, p);
+    }
+
+    @Override
+    public Jcl.IncludeStatement visitIncludeStatement(Jcl.IncludeStatement includeStatement, P p) {
+        return (Jcl.IncludeStatement) super.visitIncludeStatement(includeStatement, p);
     }
 
     @Override
@@ -62,11 +82,6 @@ public class JclIsoVisitor<P> extends JclVisitor<P> {
     @Override
     public Jcl.JobStatement visitJobStatement(Jcl.JobStatement jobStatement, P p) {
         return (Jcl.JobStatement) super.visitJobStatement(jobStatement, p);
-    }
-
-    @Override
-    public Jcl.JclStatement visitJclStatement(Jcl.JclStatement jclStatement, P p) {
-        return (Jcl.JclStatement) super.visitJclStatement(jclStatement, p);
     }
 
     @Override

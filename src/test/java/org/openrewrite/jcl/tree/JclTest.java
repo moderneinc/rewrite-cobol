@@ -76,13 +76,4 @@ public class JclTest implements RewriteTest {
           )
         );
     }
-
-    @Test
-    void commentArea() {
-        rewriteRun(
-          jcl(
-            "//NAME JOB                                                              commentArea"
-          )
-        );
-    }
 }

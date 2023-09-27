@@ -23,12 +23,19 @@ statement
 jclStatement
     : jobStatement
     | jclLibStatement
+    | cntlStatement
+    | endcntlStatement
     | ddStatement
     | ddStreamStatement
     | execStatement
+    | exportStatement
+    | ifStatement
+    | includeStatement
+//    | notifyStatement
     | outputStatement
     | pendStatement
     | procStatement
+//    | scheduleStatement
     | setStatement
     | xmitStatement
     ;
@@ -53,6 +60,22 @@ jclLibName
     : JCL_JCLLIB jclCommentArea?
     ;
 
+cntlStatement
+    : JCL_DOUBLE_SLASH jclName? cntlName jclCommentArea?
+    ;
+
+cntlName
+    : JCL_CNTL jclCommentArea?
+    ;
+
+endcntlStatement
+    : JCL_DOUBLE_SLASH jclName? endcntlName jclCommentArea?
+    ;
+
+endcntlName
+    : JCL_ENDCNTL jclCommentArea?
+    ;
+
 ddStatement
     : JCL_DOUBLE_SLASH jclName? ddName JCL_COMMA_CHAR? parameterArgument* jclTrailingComment?
     ;
@@ -73,12 +96,56 @@ streamJclCommentArea
     : STREAM_CA_START streamText
     ;
 
+endifStatement
+    : JCL_DOUBLE_SLASH jclName? endifName jclCommentArea?
+    ;
+
+endifName
+    : JCL_ENDIF jclCommentArea?
+    ;
+
 execStatement
     : JCL_DOUBLE_SLASH jclName? execName JCL_COMMA_CHAR? parameterArgument*
     ;
 
 execName
     : JCL_EXEC jclCommentArea?
+    ;
+
+exportStatement
+    : JCL_DOUBLE_SLASH jclName? exportName JCL_COMMA_CHAR? parameterArgument*
+    ;
+
+exportName
+    : JCL_EXPORT jclCommentArea?
+    ;
+
+ifStatement
+    : JCL_DOUBLE_SLASH jclName? ifName IF_CONDITION_TEXT+ thenName statement* elseStatement? endifStatement
+    ;
+
+ifName
+    : JCL_IF
+    ;
+
+thenName
+    : IF_CONDITION_THEN jclCommentArea?
+    ;
+
+elseStatement
+    : JCL_DOUBLE_SLASH jclName? elseName statement*
+    ;
+
+elseName
+    : JCL_ELSE jclCommentArea?
+    ;
+
+includeStatement
+    : JCL_DOUBLE_SLASH jclName? includeName JCL_COMMA_CHAR? parameterArgument*
+    ;
+
+includeName
+    : JCL_INCLUDE jclCommentArea?
     ;
 
 outputStatement

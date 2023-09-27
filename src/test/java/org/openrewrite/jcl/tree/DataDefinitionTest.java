@@ -14,10 +14,19 @@ import static org.openrewrite.jcl.tree.ParserAssertions.jcl;
 
 public class DataDefinitionTest implements RewriteTest {
 
-    @Test
-    void dd() {
+    @ParameterizedTest
+    @ValueSource(
+      strings = {
+        "NAME DD",
+        "     DD",
+        "     DD                                                               commentArea",
+      }
+    )
+    void dd(String input) {
         rewriteRun(
-          jcl("//Name DD")
+          jcl(
+            "//%s".formatted(input)
+          )
         );
     }
 

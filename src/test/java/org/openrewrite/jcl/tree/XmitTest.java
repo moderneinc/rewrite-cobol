@@ -6,16 +6,27 @@
 package org.openrewrite.jcl.tree;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.openrewrite.test.RewriteTest;
 
 import static org.openrewrite.jcl.tree.ParserAssertions.jcl;
 
 public class XmitTest implements RewriteTest {
 
-    @Test
-    void exec() {
+    @ParameterizedTest
+    @ValueSource(
+      strings = {
+        "NAME XMIT",
+        "     XMIT",
+        "     XMIT                                                             commentArea"
+      }
+    )
+    void xmit(String input) {
         rewriteRun(
-          jcl("//Name XMIT")
+          jcl(
+            "//%s".formatted(input)
+          )
         );
     }
 

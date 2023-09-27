@@ -11,17 +11,17 @@ import org.openrewrite.test.RewriteTest;
 
 import static org.openrewrite.jcl.tree.ParserAssertions.jcl;
 
-public class PendTest implements RewriteTest {
+public class EndCntlTest implements RewriteTest {
 
     @ParameterizedTest
     @ValueSource(
       strings = {
-        "NAME PEND",
-        "     PEND",
-        "     PEND                                                             commentArea"
+        "NAME ENDCNTL",
+        "     ENDCNTL",
+        "     ENDCNTL                                                          commentArea"
       }
     )
-    void pend(String input) {
+    void endCntl(String input) {
         rewriteRun(
           jcl(
             "//%s".formatted(input)
