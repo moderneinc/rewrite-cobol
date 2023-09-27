@@ -200,7 +200,7 @@ parameter
     ;
 
 parameterParentheses
-    : JCL_L_PAREN_CHAR JCL_COMMA_CHAR? parameterArgument* JCL_R_PAREN_CHAR jclCommentArea?
+    : JCL_CONT? JCL_L_PAREN_CHAR JCL_COMMA_CHAR? parameterArgument* JCL_R_PAREN_CHAR jclCommentArea?
     ;
 
 parameterAssignment

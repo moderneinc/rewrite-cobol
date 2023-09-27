@@ -207,7 +207,7 @@ public class JclVisitor<P> extends TreeVisitor<Jcl, P> {
     public <T extends Jcl> Jcl visitParentheses(Jcl.Parentheses<T> parentheses, P p) {
         Jcl.Parentheses<T> pa = parentheses;
         pa = pa.withPrefix(visitSpace(pa.getPrefix(), Space.Location.PARENTHESES_PREFIX, p));
-        pa = pa.getPadding().withTrees(ListUtils.map(pa.getPadding().getTrees(), t -> visitRightPadded(t, JclRightPadded.Location.PARENTHESES, p)));
+        pa = pa.getPadding().withTrees(visitContainer(pa.getPadding().getTrees(), JclContainer.Location.PARENTHESES, p));
         pa = pa.withMarkers(visitMarkers(pa.getMarkers(), p));
         return pa;
     }

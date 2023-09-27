@@ -44,7 +44,8 @@ public class ContinuationTest implements RewriteTest {
             //Name DD DSNAME=DS4,                                                   commentArea
             //        UNIT=3380,                                                    commentArea
             //        VOL=SER=111112         ,                                      commentArea
-            //        DISP=(NEW,KEEP),SPACE=(TRK,(5,1,2))                           commentArea
+            //        DISP=(NEW,KEEP),SPACE=(TRK,                                   commentArea
+            //                              (5,1,2))                                commentArea
             """
           )
         );

@@ -509,22 +509,28 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
     public Jcl visitParameterParentheses(JCLParser.ParameterParenthesesContext ctx) {
         Space prefix = whitespace();
         Markers markers = Markers.EMPTY;
-        skip("(");
+
+        Markers container = Markers.EMPTY;
+        if (ctx.JCL_CONT() != null) {
+            skip("//");
+            container = container.addIfAbsent(new Continuation(randomId()));
+        }
+        Space before = sourceBefore("(");
         List<JclRightPadded<Jcl>> padded = new ArrayList<>(ctx.parameterArgument().size());
         if (ctx.JCL_COMMA_CHAR() != null) {
             skip(",");
-            markers = markers.addIfAbsent(new OmitFirstParam(randomId()));
+            container = container.addIfAbsent(new OmitFirstParam(randomId()));
         }
 
         for (int i = 0; i < ctx.parameterArgument().size(); i++) {
             JCLParser.ParameterArgumentContext parameterArgument = ctx.parameterArgument().get(i);
             Jcl tree = visit(parameterArgument.parameter());
             Marker marker = null;
+            JclRightPadded<Jcl> p = padRight(tree, i < ctx.parameterArgument().size() - 1 ?
+                    sourceBefore(",") : sourceBefore(")"));
             if (parameterArgument.jclCommentArea() != null) {
                 marker = mapCommentArea(parameterArgument.jclCommentArea());
             }
-            JclRightPadded<Jcl> p = padRight(tree, i < ctx.parameterArgument().size() - 1 ?
-                    sourceBefore(",") : sourceBefore(")"));
             padded.add(marker == null ? p : p.withMarkers(p.getMarkers().addIfAbsent(marker)));
         }
         if (ctx.jclCommentArea() != null) {
@@ -534,7 +540,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
                 randomId(),
                 prefix,
                 markers,
-                padded
+                JclContainer.build(before, padded, container)
         );
     }
 

@@ -1012,14 +1012,14 @@ public interface Jcl extends Tree {
         @Getter
         Markers markers;
 
-        List<JclRightPadded<J2>> trees;
+        JclContainer<J2> trees;
 
         public List<J2> getTrees() {
-            return JclRightPadded.getElements(trees);
+            return trees.getElements();
         }
 
         Parentheses<J2> withTrees(List<J2> trees) {
-            return getPadding().withTrees(JclRightPadded.withElements(this.trees, trees));
+            return getPadding().withTrees(JclContainer.withElements(this.trees, trees));
         }
 
         @Override
@@ -1046,11 +1046,11 @@ public interface Jcl extends Tree {
         public static class Padding<J2 extends Jcl> {
             private final Parentheses<J2> t;
 
-            public List<JclRightPadded<J2>> getTrees() {
+            public JclContainer<J2> getTrees() {
                 return t.trees;
             }
 
-            public Parentheses<J2> withTrees(List<JclRightPadded<J2>> trees) {
+            public Parentheses<J2> withTrees(JclContainer<J2> trees) {
                 return t.trees == trees ? t : new Parentheses<>(t.id, t.prefix, t.markers, trees);
             }
         }

@@ -88,7 +88,8 @@ public class JclContainer<T> {
 
 
     public enum Location {
-        PARAMETERS(Space.Location.PARAMETERS, JclRightPadded.Location.PARAMETERS);
+        PARAMETERS(Space.Location.PARAMETERS, JclRightPadded.Location.PARAMETERS),
+        PARENTHESES(Space.Location.PARENTHESES, JclRightPadded.Location.PARENTHESES);
 
         private final Space.Location beforeLocation;
         private final JclRightPadded.Location elementLocation;

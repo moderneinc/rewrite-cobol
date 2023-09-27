@@ -237,12 +237,7 @@ public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
     @Override
     public <T extends Jcl> Jcl visitParentheses(Jcl.Parentheses<T> parentheses, PrintOutputCapture<P> p) {
         beforeSyntax(parentheses, Space.Location.PARENTHESES_PREFIX, p);
-        p.append("(");
-        if (parentheses.getMarkers().findFirst(OmitFirstParam.class).isPresent()) {
-            p.append(",");
-        }
-        visitRightPadded(parentheses.getPadding().getTrees(), JclRightPadded.Location.PARENTHESES, ",", p);
-        p.append(")");
+        visitContainer("(", parentheses.getPadding().getTrees(), JclContainer.Location.PARENTHESES, ",", ")", p);
         afterSyntax(parentheses, p);
         return parentheses;
     }
