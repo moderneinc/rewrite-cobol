@@ -70,11 +70,6 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
 
     @Override
     public Jcl.CompilationUnit visitCompilationUnit(JCLParser.CompilationUnitContext ctx) {
-        List<Statement> statements = new ArrayList<>(ctx.statement().size());
-        for (JCLParser.StatementContext statement : ctx.statement()) {
-            statements.add((Statement) visitStatement(statement));
-        }
-
         return new Jcl.CompilationUnit(
                 randomId(),
                 path,
@@ -84,7 +79,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
                 charset.name(),
                 charsetBomMarked,
                 null,
-                statements,
+                createStatements(ctx.statement()),
                 Space.build(source.substring(cursor))
         );
     }
@@ -201,15 +196,24 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
     }
 
     @Override
-    public Jcl visitExecStatement(JCLParser.ExecStatementContext ctx) {
-        return new Jcl.ExecStatement(
+    public Jcl visitElseStatement(JCLParser.ElseStatementContext ctx) {
+        return new Jcl.IfStatement.ElseStatement(
                 randomId(),
                 sourceBefore("//"),
                 Markers.EMPTY,
                 visitNullable(ctx.jclName()),
-                (Name) visit(ctx.execName()),
-                createParameters(ctx.JCL_COMMA_CHAR(), ctx.parameterArgument())
+                (Name) visit(ctx.elseName()),
+                createStatements(ctx.statement())
         );
+    }
+
+    @Override
+    public Jcl visitElseName(JCLParser.ElseNameContext ctx) {
+        Jcl.Identifier id = createIdentifier(ctx.JCL_ELSE().getText());
+        if (ctx.jclCommentArea() != null) {
+            id = id.withMarkers(id.getMarkers().addIfAbsent(mapCommentArea(ctx.jclCommentArea())));
+        }
+        return id;
     }
 
     @Override
@@ -237,6 +241,38 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
     }
 
     @Override
+    public Jcl visitEndifStatement(JCLParser.EndifStatementContext ctx) {
+        return new Jcl.IfStatement.EndIfStatement(
+                randomId(),
+                sourceBefore("//"),
+                Markers.EMPTY,
+                visitNullable(ctx.jclName()),
+                (Name) visit(ctx.endifName())
+        );
+    }
+
+    @Override
+    public Jcl visitEndifName(JCLParser.EndifNameContext ctx) {
+        Jcl.Identifier id = createIdentifier(ctx.JCL_ENDIF().getText());
+        if (ctx.jclCommentArea() != null) {
+            id = id.withMarkers(id.getMarkers().addIfAbsent(mapCommentArea(ctx.jclCommentArea())));
+        }
+        return id;
+    }
+
+    @Override
+    public Jcl visitExecStatement(JCLParser.ExecStatementContext ctx) {
+        return new Jcl.ExecStatement(
+                randomId(),
+                sourceBefore("//"),
+                Markers.EMPTY,
+                visitNullable(ctx.jclName()),
+                (Name) visit(ctx.execName()),
+                createParameters(ctx.JCL_COMMA_CHAR(), ctx.parameterArgument())
+        );
+    }
+
+    @Override
     public Jcl visitExecName(JCLParser.ExecNameContext ctx) {
         Jcl.Identifier id = createIdentifier(ctx.JCL_EXEC().getText());
         if (ctx.jclCommentArea() != null) {
@@ -260,6 +296,48 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
     @Override
     public Jcl visitExportName(JCLParser.ExportNameContext ctx) {
         Jcl.Identifier id = createIdentifier(ctx.JCL_EXPORT().getText());
+        if (ctx.jclCommentArea() != null) {
+            id = id.withMarkers(id.getMarkers().addIfAbsent(mapCommentArea(ctx.jclCommentArea())));
+        }
+        return id;
+    }
+
+    @Override
+    public Jcl visitIfStatement(JCLParser.IfStatementContext ctx) {
+        Space prefix = sourceBefore("//");
+        Name step = visitNullable(ctx.jclName());
+        Name name = (Name) visit(ctx.ifName());
+        List<Name> condition = new ArrayList<>(ctx.IF_CONDITION_TEXT().size());
+        for (TerminalNode conditionText : ctx.IF_CONDITION_TEXT()) {
+            condition.add((Name) visit(conditionText));
+        }
+
+        return new Jcl.IfStatement(
+                randomId(),
+                prefix,
+                Markers.EMPTY,
+                step,
+                name,
+                condition,
+                (Name) visit(ctx.thenName()),
+                createStatements(ctx.statement()),
+                visitNullable(ctx.elseStatement()),
+                (Jcl.IfStatement.EndIfStatement) visit(ctx.endifStatement())
+        );
+    }
+
+    @Override
+    public Jcl visitIfName(JCLParser.IfNameContext ctx) {
+        Jcl.Identifier id = createIdentifier(ctx.JCL_IF().getText());
+        if (ctx.jclCommentArea() != null) {
+            id = id.withMarkers(id.getMarkers().addIfAbsent(mapCommentArea(ctx.jclCommentArea())));
+        }
+        return id;
+    }
+
+    @Override
+    public Jcl visitThenName(JCLParser.ThenNameContext ctx) {
+        Jcl.Identifier id = createIdentifier(ctx.IF_CONDITION_THEN().getText());
         if (ctx.jclCommentArea() != null) {
             id = id.withMarkers(id.getMarkers().addIfAbsent(mapCommentArea(ctx.jclCommentArea())));
         }
@@ -648,6 +726,14 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
 
     private final Function<ParseTree, Space> commaDelim = ignored -> sourceBefore(",");
     private final Function<ParseTree, Space> noDelim = ignored -> EMPTY;
+
+    private List<Statement> createStatements(List<JCLParser.StatementContext> statements) {
+        List<Statement> converted = new ArrayList<>(statements.size());
+        for (JCLParser.StatementContext statement : statements) {
+            converted.add((Statement) visitStatement(statement));
+        }
+        return converted;
+    }
 
     private <J2 extends Jcl> List<JclRightPadded<J2>> convertAll(List<? extends ParserRuleContext> elements,
                                                                  Function<ParseTree, Space> innerSuffix,

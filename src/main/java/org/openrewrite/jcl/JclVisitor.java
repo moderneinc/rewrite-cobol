@@ -72,9 +72,28 @@ public class JclVisitor<P> extends TreeVisitor<Jcl, P> {
         return d;
     }
 
+    public Jcl visitElseStatement(Jcl.IfStatement.ElseStatement elseStatement, P p) {
+        Jcl.IfStatement.ElseStatement e = elseStatement;
+        e = e.withPrefix(visitSpace(e.getPrefix(), Space.Location.ELSE_STATEMENT_PREFIX, p));
+        e = e.withMarkers(visitMarkers(e.getMarkers(), p));
+        e = e.withStep(visitAndCast(e.getStep(), p));
+        e = e.withName(visitAndCast(e.getName(), p));
+        e = e.withStatements(ListUtils.map(e.getStatements(), s -> visitAndCast(s, p)));
+        return e;
+    }
+
     public Jcl visitEndCntlStatement(Jcl.EndCntlStatement endCntlStatement, P p) {
         Jcl.EndCntlStatement e = endCntlStatement;
         e = e.withPrefix(visitSpace(e.getPrefix(), Space.Location.END_CNTL_STATEMENT_PREFIX, p));
+        e = e.withMarkers(visitMarkers(e.getMarkers(), p));
+        e = e.withStep(visitAndCast(e.getStep(), p));
+        e = e.withName(visitAndCast(e.getName(), p));
+        return e;
+    }
+
+    public Jcl visitEndIfStatement(Jcl.IfStatement.EndIfStatement endIfStatement, P p) {
+        Jcl.IfStatement.EndIfStatement e = endIfStatement;
+        e = e.withPrefix(visitSpace(e.getPrefix(), Space.Location.END_IF_STATEMENT_PREFIX, p));
         e = e.withMarkers(visitMarkers(e.getMarkers(), p));
         e = e.withStep(visitAndCast(e.getStep(), p));
         e = e.withName(visitAndCast(e.getName(), p));
@@ -105,6 +124,20 @@ public class JclVisitor<P> extends TreeVisitor<Jcl, P> {
         Jcl.Identifier i = identifier;
         i = i.withPrefix(visitSpace(i.getPrefix(), Space.Location.IDENTIFIER_PREFIX, p));
         i = i.withMarkers(visitMarkers(i.getMarkers(), p));
+        return i;
+    }
+
+    public Jcl visitIfStatement(Jcl.IfStatement ifStatement, P p) {
+        Jcl.IfStatement i = ifStatement;
+        i = i.withPrefix(visitSpace(i.getPrefix(), Space.Location.IF_STATEMENT_PREFIX, p));
+        i = i.withMarkers(visitMarkers(i.getMarkers(), p));
+        i = i.withStep(visitAndCast(i.getStep(), p));
+        i = i.withName(visitAndCast(i.getName(), p));
+        i = i.withCondition(ListUtils.map(i.getCondition(), c -> visitAndCast(c, p)));
+        i = i.withThenWord(visitAndCast(i.getThenWord(), p));
+        i = i.withStatements(ListUtils.map(i.getStatements(), s -> visitAndCast(s, p)));
+        i = i.withElseStatement(visitAndCast(i.getElseStatement(), p));
+        i = i.withEndIfStatement(visitAndCast(i.getEndIfStatement(), p));
         return i;
     }
 

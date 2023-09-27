@@ -96,14 +96,6 @@ streamJclCommentArea
     : STREAM_CA_START streamText
     ;
 
-endifStatement
-    : JCL_DOUBLE_SLASH jclName? endifName jclCommentArea?
-    ;
-
-endifName
-    : JCL_ENDIF jclCommentArea?
-    ;
-
 execStatement
     : JCL_DOUBLE_SLASH jclName? execName JCL_COMMA_CHAR? parameterArgument*
     ;
@@ -125,7 +117,7 @@ ifStatement
     ;
 
 ifName
-    : JCL_IF
+    : JCL_IF jclCommentArea?
     ;
 
 thenName
@@ -138,6 +130,14 @@ elseStatement
 
 elseName
     : JCL_ELSE jclCommentArea?
+    ;
+
+endifStatement
+    : JCL_DOUBLE_SLASH jclName? endifName jclCommentArea?
+    ;
+
+endifName
+    : JCL_ENDIF jclCommentArea?
     ;
 
 includeStatement

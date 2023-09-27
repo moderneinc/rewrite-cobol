@@ -541,154 +541,6 @@ public interface Jcl extends Tree {
         }
     }
 
-    @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
-    @RequiredArgsConstructor
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    class JclLibStatement implements Jcl, Statement {
-        @Nullable
-        @NonFinal
-        transient WeakReference<JclLibStatement.Padding> padding;
-
-        @With
-        @EqualsAndHashCode.Include
-        @Getter
-        UUID id;
-
-        @With
-        @Getter
-        Space prefix;
-
-        @With
-        @Getter
-        Markers markers;
-
-        @With
-        @Getter
-        Name step;
-
-        @With
-        @Getter
-        Name name;
-
-        JclContainer<Parameter> parameters;
-
-        public List<Parameter> getParameters() {
-            return parameters.getElements();
-        }
-
-        public JclLibStatement withParameters(List<Parameter> parameters) {
-            return getPadding().withParameters(requireNonNull(JclContainer.withElementsNullable(this.parameters, parameters)));
-        }
-
-        @Override
-        public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
-            return v.visitJclLibStatement(this, p);
-        }
-
-        public JclLibStatement.Padding getPadding() {
-            JclLibStatement.Padding p;
-            if (this.padding == null) {
-                p = new JclLibStatement.Padding(this);
-                this.padding = new WeakReference<>(p);
-            } else {
-                p = this.padding.get();
-                if (p == null || p.t != this) {
-                    p = new JclLibStatement.Padding(this);
-                    this.padding = new WeakReference<>(p);
-                }
-            }
-            return p;
-        }
-
-        @RequiredArgsConstructor
-        public static class Padding {
-            private final JclLibStatement t;
-
-            public JclContainer<Parameter> getParameters() {
-                return t.parameters;
-            }
-
-            public JclLibStatement withParameters(JclContainer<Parameter> parameters) {
-                return t.parameters == parameters ? t : new JclLibStatement(t.id, t.prefix, t.markers, t.step, t.name, parameters);
-            }
-        }
-    }
-
-    @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
-    @RequiredArgsConstructor
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    class JobStatement implements Jcl, Statement {
-        @Nullable
-        @NonFinal
-        transient WeakReference<JobStatement.Padding> padding;
-
-        @With
-        @EqualsAndHashCode.Include
-        @Getter
-        UUID id;
-
-        @With
-        @Getter
-        Space prefix;
-
-        @With
-        @Getter
-        Markers markers;
-
-        @With
-        @Getter
-        Name step;
-
-        @With
-        @Getter
-        Name name;
-
-        JclContainer<Parameter> parameters;
-
-        public List<Parameter> getParameters() {
-            return parameters.getElements();
-        }
-
-        public JobStatement withParameters(List<Parameter> parameters) {
-            return getPadding().withParameters(requireNonNull(JclContainer.withElementsNullable(this.parameters, parameters)));
-        }
-
-        @Override
-        public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
-            return v.visitJobStatement(this, p);
-        }
-
-        public JobStatement.Padding getPadding() {
-            JobStatement.Padding p;
-            if (this.padding == null) {
-                p = new JobStatement.Padding(this);
-                this.padding = new WeakReference<>(p);
-            } else {
-                p = this.padding.get();
-                if (p == null || p.t != this) {
-                    p = new JobStatement.Padding(this);
-                    this.padding = new WeakReference<>(p);
-                }
-            }
-            return p;
-        }
-
-        @RequiredArgsConstructor
-        public static class Padding {
-            private final JobStatement t;
-
-            public JclContainer<Parameter> getParameters() {
-                return t.parameters;
-            }
-
-            public JobStatement withParameters(JclContainer<Parameter> parameters) {
-                return t.parameters == parameters ? t : new JobStatement(t.id, t.prefix, t.markers, t.step, t.name, parameters);
-            }
-        }
-    }
-
     @Value
     @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
@@ -708,6 +560,73 @@ public interface Jcl extends Tree {
         @Override
         public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
             return v.visitIdentifier(this, p);
+        }
+    }
+
+    @Value
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+    @With
+    class IfStatement implements Jcl, Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
+
+        Space prefix;
+        Markers markers;
+        Name step;
+        Name name;
+        List<Name> condition;
+        Name thenWord;
+        List<Statement> statements;
+
+        @Nullable
+        ElseStatement elseStatement;
+
+        EndIfStatement endIfStatement;
+
+        @Override
+        public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
+            return v.visitIfStatement(this, p);
+        }
+
+        @Value
+        @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+        @With
+        public static class ElseStatement implements Jcl, Statement {
+
+            @EqualsAndHashCode.Include
+            UUID id;
+
+            Space prefix;
+            Markers markers;
+            Name step;
+            Name name;
+
+            List<Statement> statements;
+
+            @Override
+            public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
+                return v.visitElseStatement(this, p);
+            }
+        }
+
+        @Value
+        @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+        @With
+        public static class EndIfStatement implements Jcl, Statement {
+
+            @EqualsAndHashCode.Include
+            UUID id;
+
+            Space prefix;
+            Markers markers;
+            Name step;
+            Name name;
+
+            @Override
+            public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
+                return v.visitEndIfStatement(this, p);
+            }
         }
     }
 
@@ -807,6 +726,154 @@ public interface Jcl extends Tree {
         @Override
         public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
             return v.visitJclName(this, p);
+        }
+    }
+
+    @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+    @RequiredArgsConstructor
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    class JobStatement implements Jcl, Statement {
+        @Nullable
+        @NonFinal
+        transient WeakReference<JobStatement.Padding> padding;
+
+        @With
+        @EqualsAndHashCode.Include
+        @Getter
+        UUID id;
+
+        @With
+        @Getter
+        Space prefix;
+
+        @With
+        @Getter
+        Markers markers;
+
+        @With
+        @Getter
+        Name step;
+
+        @With
+        @Getter
+        Name name;
+
+        JclContainer<Parameter> parameters;
+
+        public List<Parameter> getParameters() {
+            return parameters.getElements();
+        }
+
+        public JobStatement withParameters(List<Parameter> parameters) {
+            return getPadding().withParameters(requireNonNull(JclContainer.withElementsNullable(this.parameters, parameters)));
+        }
+
+        @Override
+        public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
+            return v.visitJobStatement(this, p);
+        }
+
+        public JobStatement.Padding getPadding() {
+            JobStatement.Padding p;
+            if (this.padding == null) {
+                p = new JobStatement.Padding(this);
+                this.padding = new WeakReference<>(p);
+            } else {
+                p = this.padding.get();
+                if (p == null || p.t != this) {
+                    p = new JobStatement.Padding(this);
+                    this.padding = new WeakReference<>(p);
+                }
+            }
+            return p;
+        }
+
+        @RequiredArgsConstructor
+        public static class Padding {
+            private final JobStatement t;
+
+            public JclContainer<Parameter> getParameters() {
+                return t.parameters;
+            }
+
+            public JobStatement withParameters(JclContainer<Parameter> parameters) {
+                return t.parameters == parameters ? t : new JobStatement(t.id, t.prefix, t.markers, t.step, t.name, parameters);
+            }
+        }
+    }
+
+    @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+    @RequiredArgsConstructor
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    class JclLibStatement implements Jcl, Statement {
+        @Nullable
+        @NonFinal
+        transient WeakReference<JclLibStatement.Padding> padding;
+
+        @With
+        @EqualsAndHashCode.Include
+        @Getter
+        UUID id;
+
+        @With
+        @Getter
+        Space prefix;
+
+        @With
+        @Getter
+        Markers markers;
+
+        @With
+        @Getter
+        Name step;
+
+        @With
+        @Getter
+        Name name;
+
+        JclContainer<Parameter> parameters;
+
+        public List<Parameter> getParameters() {
+            return parameters.getElements();
+        }
+
+        public JclLibStatement withParameters(List<Parameter> parameters) {
+            return getPadding().withParameters(requireNonNull(JclContainer.withElementsNullable(this.parameters, parameters)));
+        }
+
+        @Override
+        public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
+            return v.visitJclLibStatement(this, p);
+        }
+
+        public JclLibStatement.Padding getPadding() {
+            JclLibStatement.Padding p;
+            if (this.padding == null) {
+                p = new JclLibStatement.Padding(this);
+                this.padding = new WeakReference<>(p);
+            } else {
+                p = this.padding.get();
+                if (p == null || p.t != this) {
+                    p = new JclLibStatement.Padding(this);
+                    this.padding = new WeakReference<>(p);
+                }
+            }
+            return p;
+        }
+
+        @RequiredArgsConstructor
+        public static class Padding {
+            private final JclLibStatement t;
+
+            public JclContainer<Parameter> getParameters() {
+                return t.parameters;
+            }
+
+            public JclLibStatement withParameters(JclContainer<Parameter> parameters) {
+                return t.parameters == parameters ? t : new JclLibStatement(t.id, t.prefix, t.markers, t.step, t.name, parameters);
+            }
         }
     }
 

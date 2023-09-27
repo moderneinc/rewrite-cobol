@@ -45,8 +45,18 @@ public class JclIsoVisitor<P> extends JclVisitor<P> {
     }
 
     @Override
+    public Jcl.IfStatement.ElseStatement visitElseStatement(Jcl.IfStatement.ElseStatement elseStatement, P p) {
+        return (Jcl.IfStatement.ElseStatement) super.visitElseStatement(elseStatement, p);
+    }
+
+    @Override
     public Jcl.EndCntlStatement visitEndCntlStatement(Jcl.EndCntlStatement endCntlStatement, P p) {
         return (Jcl.EndCntlStatement) super.visitEndCntlStatement(endCntlStatement, p);
+    }
+
+    @Override
+    public Jcl.IfStatement.EndIfStatement visitEndIfStatement(Jcl.IfStatement.EndIfStatement endIfStatement, P p) {
+        return (Jcl.IfStatement.EndIfStatement) super.visitEndIfStatement(endIfStatement, p);
     }
 
     @Override
@@ -62,6 +72,11 @@ public class JclIsoVisitor<P> extends JclVisitor<P> {
     @Override
     public Jcl.Identifier visitIdentifier(Jcl.Identifier identifier, P p) {
         return (Jcl.Identifier) super.visitIdentifier(identifier, p);
+    }
+
+    @Override
+    public Jcl.IfStatement visitIfStatement(Jcl.IfStatement ifStatement, P p) {
+        return (Jcl.IfStatement) super.visitIfStatement(ifStatement, p);
     }
 
     @Override

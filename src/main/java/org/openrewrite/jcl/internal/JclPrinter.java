@@ -90,6 +90,17 @@ public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
     }
 
     @Override
+    public Jcl visitElseStatement(Jcl.IfStatement.ElseStatement elseStatement, PrintOutputCapture<P> p) {
+        beforeSyntax(elseStatement, Space.Location.ELSE_STATEMENT_PREFIX, p);
+        p.append("//");
+        visit(elseStatement.getStep(), p);
+        visit(elseStatement.getName(), p);
+        visit(elseStatement.getStatements(), p);
+        afterSyntax(elseStatement, p);
+        return elseStatement;
+    }
+
+    @Override
     public Jcl visitEndCntlStatement(Jcl.EndCntlStatement endCntlStatement, PrintOutputCapture<P> p) {
         beforeSyntax(endCntlStatement, Space.Location.END_CNTL_STATEMENT_PREFIX, p);
         p.append("//");
@@ -97,6 +108,16 @@ public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
         visit(endCntlStatement.getName(), p);
         afterSyntax(endCntlStatement, p);
         return endCntlStatement;
+    }
+
+    @Override
+    public Jcl visitEndIfStatement(Jcl.IfStatement.EndIfStatement endIfStatement, PrintOutputCapture<P> p) {
+        beforeSyntax(endIfStatement, Space.Location.END_IF_STATEMENT_PREFIX, p);
+        p.append("//");
+        visit(endIfStatement.getStep(), p);
+        visit(endIfStatement.getName(), p);
+        afterSyntax(endIfStatement, p);
+        return endIfStatement;
     }
 
     @Override
@@ -127,6 +148,21 @@ public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
         p.append(identifier.getSimpleName());
         afterSyntax(identifier, p);
         return identifier;
+    }
+
+    @Override
+    public Jcl visitIfStatement(Jcl.IfStatement ifStatement, PrintOutputCapture<P> p) {
+        beforeSyntax(ifStatement, Space.Location.IF_STATEMENT_PREFIX, p);
+        p.append("//");
+        visit(ifStatement.getStep(), p);
+        visit(ifStatement.getName(), p);
+        visit(ifStatement.getCondition(), p);
+        visit(ifStatement.getThenWord(), p);
+        visit(ifStatement.getStatements(), p);
+        visit(ifStatement.getElseStatement(), p);
+        visit(ifStatement.getEndIfStatement(), p);
+        afterSyntax(ifStatement, p);
+        return ifStatement;
     }
 
     @Override
