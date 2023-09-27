@@ -217,6 +217,20 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
     }
 
     @Override
+    public Jcl visitEmptyStatement(JCLParser.EmptyStatementContext ctx) {
+        Space prefix = sourceBefore("//");
+        Markers markers = Markers.EMPTY;
+        if (ctx.jclCommentArea() != null) {
+            markers = markers.addIfAbsent(mapCommentArea(ctx.jclCommentArea()));
+        }
+        return new Jcl.EmptyStatement(
+                randomId(),
+                prefix,
+                markers
+        );
+    }
+
+    @Override
     public Jcl visitEndcntlStatement(JCLParser.EndcntlStatementContext ctx) {
         Jcl.CntlStatement cntl = new Jcl.CntlStatement(
                 randomId(),

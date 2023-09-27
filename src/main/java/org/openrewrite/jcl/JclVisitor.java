@@ -82,6 +82,13 @@ public class JclVisitor<P> extends TreeVisitor<Jcl, P> {
         return e;
     }
 
+    public Jcl visitEmptyStatement(Jcl.EmptyStatement emptyStatement, P p) {
+        Jcl.EmptyStatement e = emptyStatement;
+        e = e.withPrefix(visitSpace(e.getPrefix(), Space.Location.EMPTY_STATEMENT_PREFIX, p));
+        e = e.withMarkers(visitMarkers(e.getMarkers(), p));
+        return e;
+    }
+
     public Jcl visitEndCntlStatement(Jcl.EndCntlStatement endCntlStatement, P p) {
         Jcl.EndCntlStatement e = endCntlStatement;
         e = e.withPrefix(visitSpace(e.getPrefix(), Space.Location.END_CNTL_STATEMENT_PREFIX, p));

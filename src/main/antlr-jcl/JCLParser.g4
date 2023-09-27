@@ -38,6 +38,7 @@ jclStatement
 //    | scheduleStatement
     | setStatement
     | xmitStatement
+    | emptyStatement
     ;
 
 jobStatement
@@ -188,6 +189,10 @@ xmitName
     : JCL_XMIT jclCommentArea?
     ;
 
+emptyStatement
+    : JCL_DOUBLE_SLASH jclCommentArea?
+    ;
+
 parameter
     : name jclTrailingComment?
     | parameterAssignment jclTrailingComment?
@@ -195,7 +200,7 @@ parameter
     ;
 
 parameterParentheses
-    : JCL_L_PAREN_CHAR JCL_COMMA_CHAR? parameterArgument* JCL_R_PAREN_CHAR  jclCommentArea?
+    : JCL_L_PAREN_CHAR JCL_COMMA_CHAR? parameterArgument* JCL_R_PAREN_CHAR jclCommentArea?
     ;
 
 parameterAssignment
@@ -207,11 +212,11 @@ name
     ;
 
 jclWord
-    : JCL_CONT? (JCL_STRINGLITERAL | jclName)  jclCommentArea?
+    : JCL_CONT? (JCL_STRINGLITERAL | jclName) jclCommentArea?
     ;
 
 jclName
-    : JCL_CONT? (JCL_NAME_FIELD | JCL_PARAMETER | jclKeyword)  jclCommentArea?
+    : JCL_CONT? (JCL_NAME_FIELD | JCL_PARAMETER | jclKeyword) jclCommentArea?
     ;
 
 jclKeyword

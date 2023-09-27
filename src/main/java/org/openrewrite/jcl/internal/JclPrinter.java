@@ -101,6 +101,14 @@ public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
     }
 
     @Override
+    public Jcl visitEmptyStatement(Jcl.EmptyStatement emptyStatement, PrintOutputCapture<P> p) {
+        beforeSyntax(emptyStatement, Space.Location.EMPTY_STATEMENT_PREFIX, p);
+        p.append("//");
+        afterSyntax(emptyStatement, p);
+        return emptyStatement;
+    }
+
+    @Override
     public Jcl visitEndCntlStatement(Jcl.EndCntlStatement endCntlStatement, PrintOutputCapture<P> p) {
         beforeSyntax(endCntlStatement, Space.Location.END_CNTL_STATEMENT_PREFIX, p);
         p.append("//");

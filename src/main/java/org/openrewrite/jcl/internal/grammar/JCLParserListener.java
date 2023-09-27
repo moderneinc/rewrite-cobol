@@ -183,26 +183,6 @@ public interface JCLParserListener extends ParseTreeListener {
 	 */
 	void exitStreamJclCommentArea(JCLParser.StreamJclCommentAreaContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link JCLParser#endifStatement}.
-	 * @param ctx the parse tree
-	 */
-	void enterEndifStatement(JCLParser.EndifStatementContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link JCLParser#endifStatement}.
-	 * @param ctx the parse tree
-	 */
-	void exitEndifStatement(JCLParser.EndifStatementContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link JCLParser#endifName}.
-	 * @param ctx the parse tree
-	 */
-	void enterEndifName(JCLParser.EndifNameContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link JCLParser#endifName}.
-	 * @param ctx the parse tree
-	 */
-	void exitEndifName(JCLParser.EndifNameContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link JCLParser#execStatement}.
 	 * @param ctx the parse tree
 	 */
@@ -292,6 +272,26 @@ public interface JCLParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitElseName(JCLParser.ElseNameContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link JCLParser#endifStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterEndifStatement(JCLParser.EndifStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JCLParser#endifStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitEndifStatement(JCLParser.EndifStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link JCLParser#endifName}.
+	 * @param ctx the parse tree
+	 */
+	void enterEndifName(JCLParser.EndifNameContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JCLParser#endifName}.
+	 * @param ctx the parse tree
+	 */
+	void exitEndifName(JCLParser.EndifNameContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link JCLParser#includeStatement}.
 	 * @param ctx the parse tree
@@ -412,6 +412,16 @@ public interface JCLParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitXmitName(JCLParser.XmitNameContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link JCLParser#emptyStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterEmptyStatement(JCLParser.EmptyStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JCLParser#emptyStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitEmptyStatement(JCLParser.EmptyStatementContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link JCLParser#parameter}.
 	 * @param ctx the parse tree

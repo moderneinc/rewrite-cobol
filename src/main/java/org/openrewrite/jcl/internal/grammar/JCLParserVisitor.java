@@ -118,18 +118,6 @@ public interface JCLParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStreamJclCommentArea(JCLParser.StreamJclCommentAreaContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link JCLParser#endifStatement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitEndifStatement(JCLParser.EndifStatementContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link JCLParser#endifName}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitEndifName(JCLParser.EndifNameContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link JCLParser#execStatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -183,6 +171,18 @@ public interface JCLParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitElseName(JCLParser.ElseNameContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JCLParser#endifStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEndifStatement(JCLParser.EndifStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JCLParser#endifName}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEndifName(JCLParser.EndifNameContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link JCLParser#includeStatement}.
 	 * @param ctx the parse tree
@@ -255,6 +255,12 @@ public interface JCLParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitXmitName(JCLParser.XmitNameContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JCLParser#emptyStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEmptyStatement(JCLParser.EmptyStatementContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link JCLParser#parameter}.
 	 * @param ctx the parse tree

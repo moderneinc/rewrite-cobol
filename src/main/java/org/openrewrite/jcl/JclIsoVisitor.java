@@ -50,6 +50,11 @@ public class JclIsoVisitor<P> extends JclVisitor<P> {
     }
 
     @Override
+    public Jcl.EmptyStatement visitEmptyStatement(Jcl.EmptyStatement emptyStatement, P p) {
+        return (Jcl.EmptyStatement) super.visitEmptyStatement(emptyStatement, p);
+    }
+
+    @Override
     public Jcl.EndCntlStatement visitEndCntlStatement(Jcl.EndCntlStatement endCntlStatement, P p) {
         return (Jcl.EndCntlStatement) super.visitEndCntlStatement(endCntlStatement, p);
     }

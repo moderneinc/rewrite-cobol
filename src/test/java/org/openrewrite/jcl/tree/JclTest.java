@@ -6,6 +6,8 @@
 package org.openrewrite.jcl.tree;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.openrewrite.test.RewriteTest;
 
 import static org.openrewrite.jcl.tree.ParserAssertions.jcl;
@@ -73,6 +75,21 @@ public class JclTest implements RewriteTest {
             //ADD1 OUTPUT COPIES=%SYSUID
             //PS1.DSB DD DISP=SHR,DSN=&NAME..&NAME..OBJECT(&MBR)
             """
+          )
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(
+        strings = {
+            "",
+            "                                                                      commentArea"
+        }
+    )
+    void emptyStatement(String input) {
+        rewriteRun(
+          jcl(
+            "//%s".formatted(input)
           )
         );
     }
