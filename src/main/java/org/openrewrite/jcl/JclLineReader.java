@@ -1,4 +1,5 @@
 /*
+
  * For commercial customers of Moderne Inc., this repository is licensed per the terms of our contract.
  * For everyone else, this is licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International.
  * See: https://creativecommons.org/licenses/by-nc-sa/4.0/
@@ -53,20 +54,22 @@ public class JclLineReader {
                 jclLineContext = getLineContext(line);
             } else if (lineType == LineType.JCL_STATEMENT) {
                 p.append("^^JCL_STATEMENT^^");
-                jclLineContext = getLineContext(line);
                 // Trailing comments may exist after every JCL statement, but we've only seen them after DD statements.
-                if (jclLineContext == JclLineContext.STREAM) {
+                if (line.contains(" DD ")) {
                     // Check for trailing comment.
                     int i = 0;
                     boolean inDD = false;
-                    int asteriskCount = 0;
+                    char prev = '~';
                     for (; i < line.length(); i++) {
                         char c = line.charAt(i);
+                        if (Character.isWhitespace(c)) {
+                            continue;
+                        }
+
                         if (inDD) {
-                            if (c == '*') {
-                                asteriskCount++;
-                            }
-                            if (asteriskCount == 2) {
+                            if (c == '*' && (prev != '~' && prev != '=') && i + 1 < line.length() && line.charAt(i + 1) != '.') {
+                                trailingComment = line.substring(i);
+                                line = line.substring(0, i);
                                 break;
                             }
                         }
@@ -75,13 +78,13 @@ public class JclLineReader {
                                 (line.charAt(i - 2) == ' ' || line.charAt(i - 2) == '\t') &&
                                 i + 1 < line.length() && (line.charAt(i + 1) == ' ' || line.charAt(i + 1) == '\t')) {
                             inDD = true;
+                            prev = '~';
+                            continue;
                         }
-                    }
-                    if (asteriskCount == 2) {
-                        trailingComment = line.substring(i);
-                        line = line.substring(0, i);
+                        prev = c;
                     }
                 }
+                jclLineContext = getLineContext(line);
             } else if (lineType == LineType.COMMENT) {
                 p.append("^^COMMENT^^");
                 jclLineContext = null;

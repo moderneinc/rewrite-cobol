@@ -40,6 +40,12 @@ public interface JCLParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitJobStatement(JCLParser.JobStatementContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link JCLParser#jclComma}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitJclComma(JCLParser.JclCommaContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link JCLParser#parameterArgument}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

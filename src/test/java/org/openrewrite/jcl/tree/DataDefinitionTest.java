@@ -182,4 +182,23 @@ public class DataDefinitionTest implements RewriteTest {
         );
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {
+        """
+          //Name DD DSNAME=DS4,           *trailing comment                       commentArea
+          //        DISP=(NEW,KEEP),
+          //        SPACE=(TRK,(5,1,2))
+          """,
+        """
+          //Name DD DSNAME=DS4,DISP=(NEW,KEEP)  *trailing comment                 commentArea
+          """,
+      }
+    )
+    void trailingComments(String input) {
+        rewriteRun(
+          jcl(
+            "%s".formatted(input)
+          )
+        );
+    }
 }

@@ -366,6 +366,11 @@ public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
             if (i < nodes.size() - 1) {
                 p.append(suffixBetween);
             }
+            Optional<TrailingComment> trailingComment = node.getMarkers().findFirst(TrailingComment.class);
+            if (trailingComment.isPresent()) {
+                visitSpace(trailingComment.get().getPrefix(), Space.Location.TRAILING_COMMENT_PREFIX, p);
+                p.append(trailingComment.get().getComment());
+            }
             Optional<CommentArea> commentArea = node.getMarkers().findFirst(CommentArea.class);
             if (commentArea.isPresent()) {
                 visitSpace(commentArea.get().getPrefix(), Space.Location.COMMENT_AREA_PREFIX, p);

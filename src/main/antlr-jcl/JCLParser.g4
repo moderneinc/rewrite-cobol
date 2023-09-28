@@ -42,11 +42,17 @@ jclStatement
     ;
 
 jobStatement
-    : JCL_DOUBLE_SLASH jclName? jobName JCL_COMMA_CHAR? parameterArgument*
+    : JCL_DOUBLE_SLASH jclName? jobName jclComma? parameterArgument*
+    ;
+
+// In JCL, a comma represent a continuation characte for parameters.
+// So it may be followed by a trailing comment or a jcl comment area.
+jclComma
+    : JCL_COMMA_CHAR jclTrailingComment? jclCommentArea?
     ;
 
 parameterArgument
-    : parameter JCL_COMMA_CHAR? jclCommentArea?
+    : parameter jclComma?
     ;
 
 jobName
@@ -54,7 +60,7 @@ jobName
     ;
 
 jclLibStatement
-    : JCL_DOUBLE_SLASH jclName? jclLibName JCL_COMMA_CHAR? parameterArgument*
+    : JCL_DOUBLE_SLASH jclName? jclLibName jclComma? parameterArgument*
     ;
 
 jclLibName
@@ -78,7 +84,7 @@ endcntlName
     ;
 
 ddStatement
-    : JCL_DOUBLE_SLASH jclName? ddName JCL_COMMA_CHAR? parameterArgument* jclTrailingComment?
+    : JCL_DOUBLE_SLASH jclName? ddName jclComma? parameterArgument* jclTrailingComment?
     ;
 
 ddStreamStatement
@@ -98,7 +104,7 @@ streamJclCommentArea
     ;
 
 execStatement
-    : JCL_DOUBLE_SLASH jclName? execName JCL_COMMA_CHAR? parameterArgument*
+    : JCL_DOUBLE_SLASH jclName? execName jclComma? parameterArgument*
     ;
 
 execName
@@ -106,7 +112,7 @@ execName
     ;
 
 exportStatement
-    : JCL_DOUBLE_SLASH jclName? exportName JCL_COMMA_CHAR? parameterArgument*
+    : JCL_DOUBLE_SLASH jclName? exportName jclComma? parameterArgument*
     ;
 
 exportName
@@ -142,7 +148,7 @@ endifName
     ;
 
 includeStatement
-    : JCL_DOUBLE_SLASH jclName? includeName JCL_COMMA_CHAR? parameterArgument*
+    : JCL_DOUBLE_SLASH jclName? includeName jclComma? parameterArgument*
     ;
 
 includeName
@@ -150,7 +156,7 @@ includeName
     ;
 
 outputStatement
-    : JCL_DOUBLE_SLASH jclName? outputName JCL_COMMA_CHAR? parameterArgument*
+    : JCL_DOUBLE_SLASH jclName? outputName jclComma? parameterArgument*
     ;
 
 outputName
@@ -166,7 +172,7 @@ pendName
     ;
 
 procStatement
-    : JCL_DOUBLE_SLASH jclName? procName JCL_COMMA_CHAR? parameterArgument*
+    : JCL_DOUBLE_SLASH jclName? procName jclComma? parameterArgument*
     ;
 
 procName
@@ -174,7 +180,7 @@ procName
     ;
 
 setStatement
-    : JCL_DOUBLE_SLASH jclName? setName JCL_COMMA_CHAR? parameterArgument*
+    : JCL_DOUBLE_SLASH jclName? setName jclComma? parameterArgument*
     ;
 
 setName
@@ -182,7 +188,7 @@ setName
     ;
 
 xmitStatement
-    : JCL_DOUBLE_SLASH jclName? xmitName JCL_COMMA_CHAR? parameterArgument*
+    : JCL_DOUBLE_SLASH jclName? xmitName jclComma? parameterArgument*
     ;
 
 xmitName
@@ -194,13 +200,13 @@ emptyStatement
     ;
 
 parameter
-    : name jclTrailingComment?
-    | parameterAssignment jclTrailingComment?
-    | parameterParentheses jclTrailingComment?
+    : name jclTrailingComment? commentCommentArea?
+    | parameterAssignment jclTrailingComment? commentCommentArea?
+    | parameterParentheses jclTrailingComment? commentCommentArea?
     ;
 
 parameterParentheses
-    : JCL_CONT? JCL_L_PAREN_CHAR JCL_COMMA_CHAR? parameterArgument* JCL_R_PAREN_CHAR jclCommentArea?
+    : JCL_CONT? JCL_L_PAREN_CHAR jclComma? parameterArgument* JCL_R_PAREN_CHAR jclCommentArea?
     ;
 
 parameterAssignment
