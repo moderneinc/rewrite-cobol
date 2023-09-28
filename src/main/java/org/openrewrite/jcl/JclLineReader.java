@@ -11,6 +11,8 @@ import lombok.Getter;
 import java.util.*;
 
 public class JclLineReader {
+    private static final Set<String> JCL_STATEMENT_NAMES = new HashSet<>(Arrays.asList("JOB", "JCLLIB", "CNTL", "ENDCNTL",
+            "DD", "EXEC", "EXPORT", "IF", "INCLUDE", "NOTIFY", "OUTPUT", "PEND", "PROC", "SCHEDULE", "SET", "XMIT"));
 
     public static String readLines(String source) {
         StringBuilder p = new StringBuilder();
@@ -136,7 +138,8 @@ public class JclLineReader {
         } else if (c0 == '/' && c1 == '/' && c2 == '*') {
             return LineType.JES3;
         } else if (c0 == '/' && c1 == '/') {
-            return  c2 == ' ' || c2 == '\t' ? LineType.JCL : LineType.JCL_STATEMENT;
+            String[] words = line.split("\\s+");
+            return words.length >=2 && JCL_STATEMENT_NAMES.contains(words[1]) ? LineType.JCL_STATEMENT : LineType.JCL;
         } else if (c0 == '/' && c1 == '*') {
             return LineType.JES2;
         }

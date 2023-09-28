@@ -491,6 +491,9 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
                 jcl = jcl.withMarkers(jcl.getMarkers().addIfAbsent(marker));
             }
         }
+        if (ctx.commentCommentArea() != null) {
+            jcl = jcl.withMarkers(jcl.getMarkers().addIfAbsent(mapCommentArea(ctx.commentCommentArea())));
+        }
         return jcl;
     }
 

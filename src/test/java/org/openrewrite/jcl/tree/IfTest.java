@@ -5,6 +5,7 @@
  */
 package org.openrewrite.jcl.tree;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.openrewrite.test.RewriteTest;
@@ -69,6 +70,25 @@ public class IfTest implements RewriteTest {
               //Name EXPORT DSNAME='3400-6'
               //%s
               """.formatted(input)
+          )
+        );
+    }
+
+
+    @Test
+    void multipleIfs() {
+        rewriteRun(
+          jcl(
+            """
+              //Name IF (1 EQ 1) THEN                                                 commentArea
+              //Name IF (1 EQ 1) THEN                                                 commentArea
+              //Name EXPORT DSNAME='3400-6'                                           commentArea
+              //* comment                                                             commentArea
+              // ENDIF                                                                commentArea
+              //* comment                                                             commentArea
+              // ENDIF                                                                commentArea
+              //                                                                      commentArea
+              """
           )
         );
     }
