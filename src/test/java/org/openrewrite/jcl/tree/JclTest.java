@@ -93,4 +93,16 @@ public class JclTest implements RewriteTest {
           )
         );
     }
+
+    @Test
+    void unicodeCharacters() {
+        rewriteRun(
+          jcl(
+            """
+            //ADD1 OUTPUT COPIES='ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÖØÙÚÛÜÝ'
+            //ADD1 OUTPUT COPIES='àáâãäåæçèéêëìíîïðñòóôöøùúûüý'
+            """
+          )
+        );
+    }
 }
