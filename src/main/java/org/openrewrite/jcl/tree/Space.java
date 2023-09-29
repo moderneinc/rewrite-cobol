@@ -10,10 +10,11 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.EqualsAndHashCode;
 import org.openrewrite.internal.lang.Nullable;
+import org.openrewrite.marker.Markers;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.*;
+
+import static java.util.Collections.emptyList;
 
 /**
  * JCL white space.
@@ -21,7 +22,10 @@ import java.util.WeakHashMap;
 @EqualsAndHashCode
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@ref")
 public class Space {
-    public static final Space EMPTY = new Space("");
+    public static final Space EMPTY = new Space("", emptyList());
+    public static final Space SINGLE_SPACE = new Space(" ", emptyList());
+
+    private final List<Comment> comments;
 
     @Nullable
     private final String whitespace;
@@ -33,21 +37,28 @@ public class Space {
      */
     private static final Map<String, Space> flyweights = Collections.synchronizedMap(new WeakHashMap<>());
 
-    private Space(@Nullable String whitespace) {
+    private Space(@Nullable String whitespace, List<Comment> comments) {
+        this.comments = comments;
         this.whitespace = whitespace == null || whitespace.isEmpty() ? null : whitespace;
     }
 
     @JsonCreator
-    public static Space build(@Nullable String whitespace) {
-        if (whitespace == null || whitespace.isEmpty()) {
-            return Space.EMPTY;
-        } else if (whitespace.length() <= 100) {
-            return flyweights.computeIfAbsent(whitespace, k -> new Space(whitespace));
+    public static Space build(@Nullable String whitespace, List<Comment> comments) {
+        if (comments.isEmpty()) {
+            if (whitespace == null || whitespace.isEmpty()) {
+                return Space.EMPTY;
+            } else if (whitespace.length() <= 100) {
+                //noinspection StringOperationCanBeSimplified
+                return flyweights.computeIfAbsent(whitespace, k -> new Space(new String(whitespace), comments));
+            }
         }
-        return new Space(whitespace);
+        return new Space(whitespace, comments);
     }
 
     public String getIndent() {
+        if (!comments.isEmpty()) {
+            return getWhitespaceIndent(comments.get(comments.size() - 1).getSuffix());
+        }
         return getWhitespaceIndent(whitespace);
     }
 
@@ -64,20 +75,34 @@ public class Space {
         return whitespace;
     }
 
+    public List<Comment> getComments() {
+        return comments;
+    }
+
     public String getWhitespace() {
         return whitespace == null ? "" : whitespace;
     }
 
-
-    public Space withWhitespace(String whitespace) {
-        if (whitespace.isEmpty()) {
-            return Space.EMPTY;
-        }
-
-        if (this.whitespace == null || whitespace.equals(this.whitespace)) {
+    public Space withComments(List<Comment> comments) {
+        if (comments == this.comments) {
             return this;
         }
-        return build(whitespace);
+        if (comments.isEmpty() && (whitespace == null || whitespace.isEmpty())) {
+            return Space.EMPTY;
+        }
+        return build(whitespace, comments);
+    }
+
+    public Space withWhitespace(String whitespace) {
+        if (comments.isEmpty() && whitespace.isEmpty()) {
+            return Space.EMPTY;
+        } else if (comments.isEmpty() && " ".equals(whitespace)) {
+            return SINGLE_SPACE;
+        }
+        if ((whitespace.isEmpty() && this.whitespace == null) || whitespace.equals(this.whitespace)) {
+            return this;
+        }
+        return build(whitespace, comments);
     }
 
     public boolean isEmpty() {
@@ -115,6 +140,82 @@ public class Space {
         }
 
         return "Space(whitespace='" + printedWs + "')";
+    }
+
+    public static Space format(String formatting, int beginIndex, int toIndex) {
+        if (beginIndex == toIndex) {
+            return Space.EMPTY;
+        } else if (toIndex == beginIndex + 1 && ' ' == formatting.charAt(beginIndex)) {
+            return Space.SINGLE_SPACE;
+        } else {
+            rangeCheck(formatting.length(), beginIndex, toIndex);
+        }
+
+        StringBuilder prefix = new StringBuilder();
+        StringBuilder comment = new StringBuilder();
+        List<Comment> comments = new ArrayList<>(1);
+
+        boolean inSingleLineComment = false;
+
+        int i = beginIndex;
+        for (; i < toIndex; i++) {
+            char c = formatting.charAt(i);
+            switch (c) {
+                case '/':
+                    if (i + 3 <= toIndex) {
+                        if (formatting.charAt(i + 1) == '/' && formatting.charAt(i + 2) == '*') {
+                            if (i + 3 == toIndex) {
+                                comments.add(new TextComment("", prefix.toString(), Markers.EMPTY));
+                                prefix.setLength(0);
+                                comment.setLength(0);
+                                i += 2;
+                            } else if (formatting.charAt(i + 3) == ' ' || formatting.charAt(i + 3) == '\n') {
+                                inSingleLineComment = true;
+                                i += 2;
+                            }
+                        }
+                    }
+                    break;
+                case '\r':
+                case '\n':
+                    if (inSingleLineComment) {
+                        inSingleLineComment = false;
+                        comments.add(new TextComment(comment.toString(), prefix.toString(), Markers.EMPTY));
+                        prefix.setLength(0);
+                        comment.setLength(0);
+                        prefix.append(c);
+                    } else {
+                        prefix.append(c);
+                    }
+                    break;
+                default:
+                    if (inSingleLineComment) {
+                        comment.append(c);
+                    } else {
+                        prefix.append(c);
+                    }
+            }
+        }
+        // If a file ends with a single-line comment there may be no terminating newline
+        if (comment.length() > 0) {
+            comments.add(new TextComment(comment.toString(), prefix.toString(), Markers.EMPTY));
+            prefix.setLength(0);
+        }
+
+        // Shift the whitespace on each comment forward to be a suffix of the comment before it, and the
+        // whitespace on the first comment to be the whitespace of the tree element. The remaining prefix is the suffix
+        // of the last comment.
+        String whitespace = prefix.toString();
+        if (!comments.isEmpty()) {
+            for (i = comments.size() - 1; i >= 0; i--) {
+                Comment c = comments.get(i);
+                String next = c.getSuffix();
+                comments.set(i, c.withSuffix(whitespace));
+                whitespace = next;
+            }
+        }
+
+        return build(whitespace, comments);
     }
 
     public enum Location {
@@ -158,5 +259,18 @@ public class Space {
         TRAILING_COMMENT_PREFIX,
         WORD_PREFIX,
         XMIT_STATEMENT_PREFIX
+    }
+
+    static void rangeCheck(int arrayLength, int fromIndex, int toIndex) {
+        if (fromIndex > toIndex) {
+            throw new IllegalArgumentException(
+                    "fromIndex(" + fromIndex + ") > toIndex(" + toIndex + ")");
+        }
+        if (fromIndex < 0) {
+            throw new StringIndexOutOfBoundsException(fromIndex);
+        }
+        if (toIndex > arrayLength) {
+            throw new StringIndexOutOfBoundsException(toIndex);
+        }
     }
 }

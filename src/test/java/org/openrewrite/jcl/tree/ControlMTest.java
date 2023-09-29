@@ -35,4 +35,21 @@ public class ControlMTest implements RewriteTest {
           )
         );
     }
+
+    @Test
+    void commentsAndCmBetweenParameters() {
+        rewriteRun(
+          jcl(
+            """
+              //Name DD DSNAME=DS4,
+              //* CM allows code to be inject into comments.
+              //* %%VALUE=DSNAME
+              // DISP=(NEW,KEEP),
+              %%VALUE=DISP
+              // DISP=(OLD,DELETE)
+              //* CM condition changes the parameter in the JCL file.
+              """
+          )
+        );
+    }
 }

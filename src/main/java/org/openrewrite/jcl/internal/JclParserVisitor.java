@@ -81,24 +81,27 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
                 charsetBomMarked,
                 null,
                 createStatements(ctx.statement()),
-                Space.build(source.substring(cursor))
+                Space.format(source, cursor, source.length())
+        );
+    }
+
+    @Override
+    public Jcl visitComment(JCLParser.CommentContext ctx) {
+        return new Jcl.Comment(
+                randomId(),
+                whitespace(),
+                Markers.EMPTY,
+                convertAllList(ctx.commentWord())
         );
     }
 
     @Override
     public Jcl visitCommentWord(JCLParser.CommentWordContext ctx) {
-        Space prefix = whitespace();
-        Markers markers = Markers.EMPTY;
         Jcl.Word word = visit(ctx.COMMENT_TEXT(), ctx.COMMENT_STRINGLITERAL());
         if (ctx.commentCommentArea() != null) {
-            markers = markers.addIfAbsent(mapCommentArea(ctx.commentCommentArea()));
+            word = word.withMarkers(word.getMarkers().addIfAbsent(mapCommentArea(ctx.commentCommentArea())));
         }
-        return new Jcl.Comment(
-                randomId(),
-                prefix,
-                markers,
-                word
-        );
+        return word;
     }
 
     @Override
@@ -548,6 +551,16 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
     }
 
     @Override
+    public Jcl visitParameterArgument(JCLParser.ParameterArgumentContext ctx) {
+        Jcl jcl = visit(ctx.parameter(), ctx.controlM());
+        if (ctx.jclComma() != null) {
+            skip(",");
+            jcl = jcl.withMarkers(jcl.getMarkers().addIfAbsent(new TrailingComma(randomId())));
+        }
+        return jcl;
+    }
+
+    @Override
     public Jcl visitParameterAssignment(JCLParser.ParameterAssignmentContext ctx) {
         return new Jcl.Assignment(
                 randomId(),
@@ -908,23 +921,35 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
     }
 
     private Space whitespace() {
-        int endIndex = indexOfNextNonWhitespace(cursor, source);
-        String prefix = source.substring(cursor, endIndex);
-        cursor += prefix.length();
-        return Space.build(prefix);
+        int nextNonWhitespace = indexOfNextNonWhitespace(cursor, source);
+        Space space = Space.format(source, cursor, nextNonWhitespace);
+        cursor = nextNonWhitespace;
+        return space;
     }
 
     private Space sourceBefore(String untilDelim) {
         Space prefix = whitespace();
         skip(untilDelim);
-        return Space.build(prefix.getWhitespace());
+        return prefix;
     }
 
     public static int indexOfNextNonWhitespace(int cursor, String source) {
         int delimIndex = cursor;
+        boolean inComment = false;
         for (; delimIndex < source.length(); delimIndex++) {
+            if (inComment && source.charAt(delimIndex) == '\n') {
+                inComment = false;
+            }
             if (!Character.isWhitespace(source.charAt(delimIndex))) {
-                break;
+                if (source.charAt(delimIndex) == '/' &&
+                        delimIndex + 3 < source.length() &&
+                        source.charAt(delimIndex + 1) == '/' &&
+                        source.charAt(delimIndex + 2) == '*' &&
+                        (source.charAt(delimIndex + 3) == ' ' || source.charAt(delimIndex + 3) == '\n') ) {
+                        inComment = true;
+                } else if (!inComment) {
+                    break;
+                }
             }
         }
         return delimIndex;

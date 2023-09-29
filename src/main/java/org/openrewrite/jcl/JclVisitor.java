@@ -47,7 +47,7 @@ public class JclVisitor<P> extends TreeVisitor<Jcl, P> {
         Jcl.Comment c = comment;
         c = c.withPrefix(visitSpace(c.getPrefix(), Space.Location.COMMENT_PREFIX, p));
         c = c.withMarkers(visitMarkers(c.getMarkers(), p));
-        c = c.withWord(visitAndCast(c.getWord(), p));
+        c = c.withWords(ListUtils.map(c.getWords(), w -> visitAndCast(w, p)));
         return c;
     }
 

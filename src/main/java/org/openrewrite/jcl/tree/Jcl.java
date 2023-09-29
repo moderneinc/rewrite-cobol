@@ -176,7 +176,7 @@ public interface Jcl extends Tree {
 
         Space prefix;
         Markers markers;
-        Word word;
+        List<Jcl> words;
 
         @Override
         public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {

@@ -42,7 +42,7 @@ public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
     @Override
     public Jcl visitComment(Jcl.Comment comment, PrintOutputCapture<P> p) {
         beforeSyntax(comment, Space.Location.COMMENT_PREFIX, p);
-        visit(comment.getWord(), p);
+        visit(comment.getWords(), p);
         afterSyntax(comment, p);
         return comment;
     }
@@ -348,6 +348,13 @@ public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
     @Override
     public Space visitSpace(Space space, Space.Location location, PrintOutputCapture<P> p) {
         p.append(space.getWhitespace());
+        List<Comment> comments = space.getComments();
+        for (int i = 0; i < comments.size(); i++) {
+            Comment comment = comments.get(i);
+            visitMarkers(comment.getMarkers(), p);
+            comment.printComment(getCursor(), p);
+            p.append(comment.getSuffix());
+        }
         return space;
     }
 
@@ -391,7 +398,7 @@ public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
             visit(node.getElement(), p);
             visitSpace(node.getAfter(), location.getAfterLocation(), p);
             visitMarkers(node.getMarkers(), p);
-            if (i < nodes.size() - 1) {
+            if (i < nodes.size() - 1 && !(node.getElement() instanceof Jcl.ControlM || node.getElement() instanceof Jcl.Comment)) {
                 p.append(suffixBetween);
             }
             for (Marker marker : node.getMarkers().getMarkers()) {

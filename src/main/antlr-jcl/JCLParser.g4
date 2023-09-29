@@ -16,7 +16,6 @@ statement
     | jes2
     | jes3
     | controlM
-    | comment
     | unknown
     ;
 
@@ -309,7 +308,7 @@ controlMCommentArea
     ;
 
 comment
-    : commentWord
+    : commentWord+
     ;
 
 commentWord
