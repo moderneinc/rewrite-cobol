@@ -224,6 +224,7 @@ jclWord
 
 jclName
     : JCL_CONT? (JCL_NAME_FIELD | JCL_PARAMETER | jclKeyword) jclCommentArea?
+    | JCL_STEP_NAME
     ;
 
 jclKeyword

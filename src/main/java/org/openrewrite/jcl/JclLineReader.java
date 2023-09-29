@@ -59,6 +59,14 @@ public class JclLineReader {
             } else if (lineType == LineType.JCL_STATEMENT) {
                 p.append("^^JCL_STATEMENT^^");
                 String[] words = line.split("\\s+");
+                String stepName = words[0].substring(2);
+                if (!stepName.isEmpty()) {
+                    p.append("//");
+                    p.append("^^STEP_NAME_START^^");
+                    p.append(stepName);
+                    p.append("^^STEP_NAME_END^^");
+                    line = line.substring(words[0].length());
+                }
                 // Check for trailing comment.
                 int i = line.indexOf(words[1]) + words[1].length();
                 char prev = '~';

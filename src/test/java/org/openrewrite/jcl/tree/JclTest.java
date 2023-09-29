@@ -95,6 +95,17 @@ public class JclTest implements RewriteTest {
     }
 
     @Test
+    void leadingKeyword() {
+        rewriteRun(
+          jcl(
+            """
+            //JCLLIB DD DSN=NAME1,DISP=NAME2
+            """
+          )
+        );
+    }
+
+    @Test
     void unicodeCharacters() {
         rewriteRun(
           jcl(
