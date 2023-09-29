@@ -194,8 +194,8 @@ public class JclLineReaderTest {
     @Test
     void commentArea() {
         assertThat(JclLineReader
-          .readLines("//NAME                                                                  commentArea"))
-          .isEqualTo("^^JCL_STATEMENT^^//NAME                                                                  ^^CA_START^^commentArea");
+          .readLines("//                                                                      commentArea"))
+          .isEqualTo("^^JCL^^//                                                                      ^^CA_START^^commentArea");
     }
 
     @ParameterizedTest

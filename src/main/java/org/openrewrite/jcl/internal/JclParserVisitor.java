@@ -523,6 +523,14 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
         if (ctx.jclComma() != null) {
             skip(",");
             container = container.addIfAbsent(new OmitFirstParam(randomId()));
+            if (ctx.jclComma().jclTrailingComment() != null) {
+                for (Marker marker : mapTrailingComment(ctx.jclComma().jclTrailingComment())) {
+                    container = container.addIfAbsent(marker);
+                }
+            }
+            if (ctx.jclComma().jclCommentArea() != null) {
+                container = container.addIfAbsent(mapCommentArea(ctx.jclComma().jclCommentArea()));
+            }
         }
 
         for (int i = 0; i < ctx.parameterArgument().size(); i++) {

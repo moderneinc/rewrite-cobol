@@ -56,35 +56,23 @@ public class JclLineReader {
                 jclLineContext = getLineContext(line);
             } else if (lineType == LineType.JCL_STATEMENT) {
                 p.append("^^JCL_STATEMENT^^");
-                // Trailing comments may exist after every JCL statement, but we've only seen them after DD statements.
-                if (line.contains(" DD ")) {
-                    // Check for trailing comment.
-                    int i = 0;
-                    boolean inDD = false;
-                    char prev = '~';
-                    for (; i < line.length(); i++) {
-                        char c = line.charAt(i);
-                        if (Character.isWhitespace(c)) {
-                            continue;
-                        }
-
-                        if (inDD) {
-                            if (c == '*' && (prev != '~' && prev != '=') && i + 1 < line.length() && line.charAt(i + 1) != '.') {
-                                trailingComment = line.substring(i);
-                                line = line.substring(0, i);
-                                break;
-                            }
-                        }
-                        if (c == 'D' && i - 2 > 0 &&
-                                line.charAt(i - 1) == 'D' &&
-                                (line.charAt(i - 2) == ' ' || line.charAt(i - 2) == '\t') &&
-                                i + 1 < line.length() && (line.charAt(i + 1) == ' ' || line.charAt(i + 1) == '\t')) {
-                            inDD = true;
-                            prev = '~';
-                            continue;
-                        }
-                        prev = c;
+                String[] words = line.split("\\s+");
+                // Check for trailing comment.
+                int i = line.indexOf(words[1]) + words[1].length();
+                char prev = '~';
+                for (; i < line.length(); i++) {
+                    char c = line.charAt(i);
+                    if (Character.isWhitespace(c)) {
+                        continue;
                     }
+
+                    if (c == '*' && (prev != '~' && prev != '=') && i + 1 < line.length() && line.charAt(i + 1) != '.') {
+                        trailingComment = line.substring(i);
+                        line = line.substring(0, i);
+                        break;
+                    }
+
+                    prev = c;
                 }
                 jclLineContext = getLineContext(line);
             } else if (lineType == LineType.COMMENT) {

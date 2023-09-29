@@ -71,4 +71,24 @@ public class ExecTest implements RewriteTest {
           jcl("//Name EXEC PROC=WRIT35")
         );
     }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+      """
+        //Name EXEC DSNAME=DS4,           *trailing comment                     commentArea
+        //        DISP=(NEW,KEEP),
+        //        SPACE=(TRK,(5,1,2))
+        """,
+      """
+        //Name EXEC DSNAME=DS4,DISP=(NEW,KEEP)  *trailing comment               commentArea
+        """,
+      }
+    )
+    void trailingComments(String input) {
+        rewriteRun(
+          jcl(
+            "%s".formatted(input)
+          )
+        );
+    }
 }
