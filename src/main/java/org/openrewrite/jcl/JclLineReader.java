@@ -19,6 +19,8 @@ public class JclLineReader {
 
         int cursor = 0;
         JclLineContext jclLineContext = JclLineContext.NORM;
+        JclLineContext prevLineContext = JclLineContext.NORM;
+        boolean inCmIf = false;
         Scanner scanner = new Scanner(source);
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
@@ -48,7 +50,7 @@ public class JclLineReader {
                 }
                 jclLineContext = getLineContext(line);
             } else if (lineType == LineType.JCL) {
-                if (jclLineContext == JclLineContext.CONT) {
+                if (jclLineContext == JclLineContext.CONT || inCmIf && prevLineContext == JclLineContext.CONT) {
                     p.append("^^JCL_CONT^^");
                 } else {
                     p.append("^^JCL^^");
@@ -77,16 +79,27 @@ public class JclLineReader {
                 jclLineContext = getLineContext(line);
             } else if (lineType == LineType.COMMENT) {
                 p.append("^^COMMENT^^");
-                jclLineContext = null;
+                if (jclLineContext != JclLineContext.CONT) {
+                    jclLineContext = null;
+                }
             } else {
                 if (line.trim().startsWith("%%")) {
                     p.append("^^CM^^");
-                    jclLineContext = null;
+                    if (line.trim().startsWith("%%IF")) {
+                        inCmIf = true;
+                        prevLineContext = jclLineContext;
+                    } else if (inCmIf && line.trim().startsWith("%%ENDIF")) {
+                        inCmIf = false;
+                        prevLineContext = JclLineContext.NORM;
+                        jclLineContext = getLineContext(line);
+                    }
                 } else if (jclLineContext == JclLineContext.STREAM) {
                     p.append("^^STREAM^^");
                 } else {
                     p.append("^^UNKNOWN^^");
-                    jclLineContext = null;
+                    if (jclLineContext != JclLineContext.CONT) {
+                        jclLineContext = null;
+                    }
                 }
             }
 
@@ -152,7 +165,7 @@ public class JclLineReader {
     }
 
     private enum JclLineContext {
-        NORM, CONT, STREAM
+        NORM, CONT, STREAM, CM_CONT
     }
 
     private static JclLineContext getLineContext(String line) {

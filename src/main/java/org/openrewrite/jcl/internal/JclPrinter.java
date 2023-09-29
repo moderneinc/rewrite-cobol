@@ -15,7 +15,6 @@ import org.openrewrite.marker.Marker;
 import org.openrewrite.marker.Markers;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.UnaryOperator;
 
 public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
@@ -51,9 +50,38 @@ public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
     @Override
     public Jcl visitControlM(Jcl.ControlM controlM, PrintOutputCapture<P> p) {
         beforeSyntax(controlM, Space.Location.CONTROL_M_PREFIX, p);
-        visit(controlM.getWord(), p);
+        visit(controlM.getWords(), p);
         afterSyntax(controlM, p);
         return controlM;
+    }
+
+    @Override
+    public Jcl visitControlMIf(Jcl.ControlMIf cmIf, PrintOutputCapture<P> p) {
+        beforeSyntax(cmIf, Space.Location.CONTROL_M_IF_PREFIX, p);
+        p.append("%%IF");
+        visit(cmIf.getCondition(), p);
+        visit(cmIf.getStatements(), p);
+        visit(cmIf.getElseStatement(), p);
+        visit(cmIf.getEndIfStatement(), p);
+        afterSyntax(cmIf, p);
+        return cmIf;
+    }
+
+    @Override
+    public Jcl visitControlMElse(Jcl.ControlMIf.Else cmElse, PrintOutputCapture<P> p) {
+        beforeSyntax(cmElse, Space.Location.CONTROL_M_ELSE_PREFIX, p);
+        p.append("%%ELSE");
+        visit(cmElse.getStatements(), p);
+        afterSyntax(cmElse, p);
+        return cmElse;
+    }
+
+    @Override
+    public Jcl visitControlMEndIf(Jcl.ControlMIf.EndIf cmEndif, PrintOutputCapture<P> p) {
+        beforeSyntax(cmEndif, Space.Location.CONTROL_M_ENDIF_PREFIX, p);
+        p.append("%%ENDIF");
+        afterSyntax(cmEndif, p);
+        return cmEndif;
     }
 
     @Override

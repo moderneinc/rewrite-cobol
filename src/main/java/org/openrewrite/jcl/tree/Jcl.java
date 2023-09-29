@@ -194,11 +194,71 @@ public interface Jcl extends Tree {
 
         Space prefix;
         Markers markers;
-        Word word;
+        List<Word> words;
 
         @Override
         public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
             return v.visitControlM(this, p);
+        }
+    }
+
+    @Value
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+    @With
+    class ControlMIf implements Jcl, Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
+
+        Space prefix;
+        Markers markers;
+        List<Jcl> condition;
+        List<Jcl> statements;
+
+        @Nullable
+        ControlMIf.Else elseStatement;
+
+        ControlMIf.EndIf endIfStatement;
+
+        @Override
+        public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
+            return v.visitControlMIf(this, p);
+        }
+
+        @Value
+        @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+        @With
+        public static class Else implements Jcl, Statement {
+
+            @EqualsAndHashCode.Include
+            UUID id;
+
+            Space prefix;
+            Markers markers;
+
+            List<Jcl> statements;
+
+            @Override
+            public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
+                return v.visitControlMElse(this, p);
+            }
+        }
+
+        @Value
+        @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+        @With
+        public static class EndIf implements Jcl, Statement {
+
+            @EqualsAndHashCode.Include
+            UUID id;
+
+            Space prefix;
+            Markers markers;
+
+            @Override
+            public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
+                return v.visitControlMEndIf(this, p);
+            }
         }
     }
 

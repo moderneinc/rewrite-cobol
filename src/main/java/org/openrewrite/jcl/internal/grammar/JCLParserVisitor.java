@@ -364,6 +364,30 @@ public interface JCLParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitControlM(JCLParser.ControlMContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link JCLParser#cmIf}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCmIf(JCLParser.CmIfContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JCLParser#cmCondition}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCmCondition(JCLParser.CmConditionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JCLParser#cmElse}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCmElse(JCLParser.CmElseContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JCLParser#cmEndIf}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCmEndIf(JCLParser.CmEndIfContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link JCLParser#controlMWord}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

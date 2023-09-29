@@ -53,6 +53,7 @@ jclComma
 
 parameterArgument
     : parameter jclComma?
+    | controlM
     ;
 
 jobName
@@ -275,7 +276,24 @@ jes3CommentArea
     ;
 
 controlM
-    : controlMWord
+    : cmIf
+    | controlMWord+
+    ;
+
+cmIf
+    : CM_IF cmCondition+ (statement | parameter)+ cmElse? cmEndIf
+    ;
+
+cmCondition
+    : (CM_IF_CONDITION_TEXT | CM_IF_CONDITION_STRINGLITERAL)
+    ;
+
+cmElse
+    : CM_ELSE (statement | parameter)+
+    ;
+
+cmEndIf
+    : CM_ENDIF
     ;
 
 controlMWord

@@ -20,6 +20,7 @@ import org.openrewrite.marker.Markers;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
 
@@ -101,19 +102,63 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
     }
 
     @Override
+    public Jcl visitControlM(JCLParser.ControlMContext ctx) {
+        if (ctx.cmIf() != null) {
+            return visit(ctx.cmIf());
+        } else {
+            Space prefix = whitespace();
+            List<Jcl.Word> words = new ArrayList<>(ctx.controlMWord().size());
+            for (JCLParser.ControlMWordContext controlMWord : ctx.controlMWord()) {
+                words.add((Jcl.Word) visit(controlMWord));
+            }
+            return new Jcl.ControlM(
+                    randomId(),
+                    prefix,
+                    Markers.EMPTY,
+                    words
+            );
+        }
+    }
+
+    @Override
+    public Jcl visitCmIf(JCLParser.CmIfContext ctx) {
+        return new Jcl.ControlMIf(
+                randomId(),
+                sourceBefore("%%IF"),
+                Markers.EMPTY,
+                convertAllList(ctx.cmCondition()),
+                convertAllList(ctx.statement(), ctx.parameter()),
+                visitNullable(ctx.cmElse()),
+                (Jcl.ControlMIf.EndIf) visit(ctx.cmEndIf())
+        );
+    }
+
+    @Override
+    public Jcl visitCmElse(JCLParser.CmElseContext ctx) {
+        return new Jcl.ControlMIf.Else(
+                randomId(),
+                sourceBefore("%%ELSE"),
+                Markers.EMPTY,
+                convertAllList(ctx.statement(), ctx.parameter())
+        );
+    }
+
+    @Override
+    public Jcl visitCmEndIf(JCLParser.CmEndIfContext ctx) {
+        return new Jcl.ControlMIf.EndIf(
+                randomId(),
+                sourceBefore("%%ENDIF"),
+                Markers.EMPTY
+        );
+    }
+
+    @Override
     public Jcl visitControlMWord(JCLParser.ControlMWordContext ctx) {
-        Space prefix = whitespace();
-        Markers markers = Markers.EMPTY;
         Jcl.Word word = visit(ctx.CM_TEXT(), ctx.CM_STRINGLITERAL());
         if (ctx.controlMCommentArea() != null) {
-            markers = markers.addIfAbsent(mapCommentArea(ctx.controlMCommentArea()));
+            word = word.withMarkers(word.getMarkers().addIfAbsent(mapCommentArea(ctx.controlMCommentArea())));
         }
-        return new Jcl.ControlM(
-                randomId(),
-                prefix,
-                markers,
-                word
-        );
+        return word;
     }
 
     @Override
@@ -536,7 +581,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
         // JCL parens may contain both leading and trailing comments, so we need to track them separately.
         for (int i = 0; i < ctx.parameterArgument().size(); i++) {
             JCLParser.ParameterArgumentContext parameterArgument = ctx.parameterArgument().get(i);
-            Jcl tree = visit(parameterArgument.parameter());
+            Jcl tree = visit(parameterArgument.parameter(), parameterArgument.controlM());
             Marker marker = null;
             Space after;
             if (i < ctx.parameterArgument().size() - 1) {
@@ -793,6 +838,26 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
         return converted;
     }
 
+    @SafeVarargs
+    private final List<Jcl> convertAllList(List<? extends ParseTree>... trees) {
+        List<ParseTree> parseTrees = new ArrayList<>();
+        for (List<? extends ParseTree> tree : trees) {
+            for (ParseTree it : tree) {
+                if (it != null) {
+                    parseTrees.add(it);
+                }
+            }
+        }
+        parseTrees.sort(Comparator.comparingInt(it -> it instanceof TerminalNode ? ((TerminalNode) it).getSymbol().getStartIndex() :
+                ((ParserRuleContext) it).getStart().getStartIndex()));
+
+        List<Jcl> parsed = new ArrayList<>();
+        for (ParseTree pt : parseTrees) {
+            parsed.add(visit(pt));
+        }
+        return parsed.isEmpty() ? emptyList() : parsed;
+    }
+
     private <J2 extends Jcl> List<JclRightPadded<J2>> convertAll(List<? extends ParserRuleContext> elements,
                                                                  Function<ParseTree, Space> innerSuffix,
                                                                  Function<ParseTree, Space> suffix) {
@@ -805,8 +870,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
             ParseTree element = elements.get(i);
             if (element instanceof JCLParser.ParameterArgumentContext) {
                 JCLParser.ParameterArgumentContext p = (JCLParser.ParameterArgumentContext) element;
-                //noinspection unchecked
-                J2 j = (J2) visit(p.parameter());
+                J2 j = visit(p.parameter(), p.controlM());
                 Space after = i == elements.size() - 1 ? suffix.apply(element) : innerSuffix.apply(element);
                 Markers markers = Markers.EMPTY;
                 if (p.jclComma() != null) {

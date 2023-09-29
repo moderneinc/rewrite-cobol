@@ -255,7 +255,33 @@ public class JclVisitor<P> extends TreeVisitor<Jcl, P> {
         Jcl.ControlM c = controlM;
         c = c.withPrefix(visitSpace(c.getPrefix(), Space.Location.CONTROL_M_PREFIX, p));
         c = c.withMarkers(visitMarkers(c.getMarkers(), p));
-        c = c.withWord(visitAndCast(c.getWord(), p));
+        c = c.withWords(ListUtils.map(c.getWords(), w -> visitAndCast(w, p)));
+        return c;
+    }
+
+    public Jcl visitControlMIf(Jcl.ControlMIf cmIf, P p) {
+        Jcl.ControlMIf c = cmIf;
+        c = c.withPrefix(visitSpace(c.getPrefix(), Space.Location.CONTROL_M_IF_PREFIX, p));
+        c = c.withMarkers(visitMarkers(c.getMarkers(), p));
+        c = c.withCondition(ListUtils.map(c.getCondition(), w -> visitAndCast(w, p)));
+        c = c.withStatements(ListUtils.map(c.getStatements(), w -> visitAndCast(w, p)));
+        c = c.withElseStatement(visitAndCast(c.getElseStatement(), p));
+        c = c.withEndIfStatement(visitAndCast(c.getEndIfStatement(), p));
+        return c;
+    }
+
+    public Jcl visitControlMElse(Jcl.ControlMIf.Else cmElse, P p) {
+        Jcl.ControlMIf.Else c = cmElse;
+        c = c.withPrefix(visitSpace(c.getPrefix(), Space.Location.CONTROL_M_IF_PREFIX, p));
+        c = c.withMarkers(visitMarkers(c.getMarkers(), p));
+        c = c.withStatements(ListUtils.map(c.getStatements(), w -> visitAndCast(w, p)));
+        return c;
+    }
+
+    public Jcl visitControlMEndIf(Jcl.ControlMIf.EndIf cmEndif, P p) {
+        Jcl.ControlMIf.EndIf c = cmEndif;
+        c = c.withPrefix(visitSpace(c.getPrefix(), Space.Location.CONTROL_M_ENDIF_PREFIX, p));
+        c = c.withMarkers(visitMarkers(c.getMarkers(), p));
         return c;
     }
 

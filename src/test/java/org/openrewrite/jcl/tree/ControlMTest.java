@@ -18,4 +18,21 @@ public class ControlMTest implements RewriteTest {
           jcl("%%LIBSYM NAME.FIELD %%MEMSYM NAME.FIELD")
         );
     }
+
+    @Test
+    void conditionalParameter() {
+        rewriteRun(
+          jcl(
+            """
+              //Name DD DSNAME=DS4,
+              %%IF (1 EQ 1) THEN
+              // DISP=(NEW,KEEP)
+              %%ELSE
+              // DISP=(OLD,DELETE)
+              %%ENDIF
+              //* CM condition changes the parameter in the JCL file.
+              """
+          )
+        );
+    }
 }

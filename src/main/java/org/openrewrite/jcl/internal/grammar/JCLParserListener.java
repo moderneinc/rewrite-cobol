@@ -593,6 +593,46 @@ public interface JCLParserListener extends ParseTreeListener {
 	 */
 	void exitControlM(JCLParser.ControlMContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link JCLParser#cmIf}.
+	 * @param ctx the parse tree
+	 */
+	void enterCmIf(JCLParser.CmIfContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JCLParser#cmIf}.
+	 * @param ctx the parse tree
+	 */
+	void exitCmIf(JCLParser.CmIfContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link JCLParser#cmCondition}.
+	 * @param ctx the parse tree
+	 */
+	void enterCmCondition(JCLParser.CmConditionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JCLParser#cmCondition}.
+	 * @param ctx the parse tree
+	 */
+	void exitCmCondition(JCLParser.CmConditionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link JCLParser#cmElse}.
+	 * @param ctx the parse tree
+	 */
+	void enterCmElse(JCLParser.CmElseContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JCLParser#cmElse}.
+	 * @param ctx the parse tree
+	 */
+	void exitCmElse(JCLParser.CmElseContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link JCLParser#cmEndIf}.
+	 * @param ctx the parse tree
+	 */
+	void enterCmEndIf(JCLParser.CmEndIfContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JCLParser#cmEndIf}.
+	 * @param ctx the parse tree
+	 */
+	void exitCmEndIf(JCLParser.CmEndIfContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link JCLParser#controlMWord}.
 	 * @param ctx the parse tree
 	 */
