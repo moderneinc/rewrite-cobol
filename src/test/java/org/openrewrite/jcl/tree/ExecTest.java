@@ -79,9 +79,8 @@ public class ExecTest implements RewriteTest {
         //        DISP=(NEW,KEEP),
         //        SPACE=(TRK,(5,1,2))
         """,
-      """
-        //Name EXEC DSNAME=DS4,DISP=(NEW,KEEP)  *trailing comment               commentArea
-        """,
+      "//Name EXEC DSNAME=DS4,DISP=(NEW,KEEP)  *trailing comment               commentArea",
+      "//Name EXEC DSNAME=DS4,DISP=(NEW,KEEP)                                 *",
       }
     )
     void trailingComments(String input) {

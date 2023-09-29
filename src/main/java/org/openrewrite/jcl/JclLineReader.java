@@ -66,7 +66,7 @@ public class JclLineReader {
                         continue;
                     }
 
-                    if (c == '*' && (prev != '~' && prev != '=') && i + 1 < line.length() && line.charAt(i + 1) != '.') {
+                    if (c == '*' && (prev != '~' && prev != '=') && (i + 1 == line.length() || i + 1 < line.length() && line.charAt(i + 1) != '.')) {
                         trailingComment = line.substring(i);
                         line = line.substring(0, i);
                         break;
