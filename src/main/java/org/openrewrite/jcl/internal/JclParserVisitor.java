@@ -937,7 +937,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
         int delimIndex = cursor;
         boolean inComment = false;
         for (; delimIndex < source.length(); delimIndex++) {
-            if (inComment && source.charAt(delimIndex) == '\n') {
+            if (inComment && (source.charAt(delimIndex) == '\r' || source.charAt(delimIndex) == '\n')) {
                 inComment = false;
             }
             if (!Character.isWhitespace(source.charAt(delimIndex))) {
@@ -945,7 +945,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
                         delimIndex + 3 < source.length() &&
                         source.charAt(delimIndex + 1) == '/' &&
                         source.charAt(delimIndex + 2) == '*' &&
-                        (source.charAt(delimIndex + 3) == ' ' || source.charAt(delimIndex + 3) == '\n') ) {
+                        (source.charAt(delimIndex + 3) == ' ' || source.charAt(delimIndex) == '\r' || source.charAt(delimIndex + 3) == '\n') ) {
                         inComment = true;
                 } else if (!inComment) {
                     break;

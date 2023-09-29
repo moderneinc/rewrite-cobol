@@ -56,4 +56,15 @@ public class CommentStatementTest implements RewriteTest {
           )
         );
     }
+
+    @Test
+    void crlf() {
+        rewriteRun(
+          jcl("" +
+              "//*\r\n" +
+              "//*                                                                     commentArea\r\n" +
+              "//*"
+          )
+        );
+    }
 }

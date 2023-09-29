@@ -169,7 +169,7 @@ public class Space {
                                 prefix.setLength(0);
                                 comment.setLength(0);
                                 i += 2;
-                            } else if (formatting.charAt(i + 3) == ' ' || formatting.charAt(i + 3) == '\n') {
+                            } else if (formatting.charAt(i + 3) == ' ' || formatting.charAt(i + 3) == '\r' || formatting.charAt(i + 3) == '\n') {
                                 inSingleLineComment = true;
                                 i += 2;
                             }
