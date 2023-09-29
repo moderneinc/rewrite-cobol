@@ -945,7 +945,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
                         delimIndex + 3 < source.length() &&
                         source.charAt(delimIndex + 1) == '/' &&
                         source.charAt(delimIndex + 2) == '*' &&
-                        (source.charAt(delimIndex + 3) == ' ' || source.charAt(delimIndex) == '\r' || source.charAt(delimIndex + 3) == '\n') ) {
+                        (source.charAt(delimIndex + 3) == ' ' || source.charAt(delimIndex+ 3) == '\r' || source.charAt(delimIndex + 3) == '\n') ) {
                         inComment = true;
                 } else if (!inComment) {
                     break;

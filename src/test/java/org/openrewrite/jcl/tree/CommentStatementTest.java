@@ -60,10 +60,12 @@ public class CommentStatementTest implements RewriteTest {
     @Test
     void crlf() {
         rewriteRun(
-          jcl("" +
+          jcl("//*\r\n" +
               "//*\r\n" +
-              "//*                                                                     commentArea\r\n" +
-              "//*"
+              "//Name JCLLIB ORDER=NAME\r\n" +
+              "//*\r\n" +
+              "// SET NAME=%%OTHER\r\n" +
+              "//*\r\n"
           )
         );
     }

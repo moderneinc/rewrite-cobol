@@ -398,7 +398,9 @@ public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
             visit(node.getElement(), p);
             visitSpace(node.getAfter(), location.getAfterLocation(), p);
             visitMarkers(node.getMarkers(), p);
-            if (i < nodes.size() - 1 && !(node.getElement() instanceof Jcl.ControlM || node.getElement() instanceof Jcl.Comment)) {
+            if (i < nodes.size() - 1 &&
+                    !(node.getElement() instanceof Jcl.ControlM || node.getElement() instanceof Jcl.Comment) && i + 1 < nodes.size() &&
+                    !(nodes.get(i + 1).getElement() instanceof Jcl.ControlM || nodes.get(i + 1).getElement() instanceof Jcl.Comment)) {
                 p.append(suffixBetween);
             }
             for (Marker marker : node.getMarkers().getMarkers()) {

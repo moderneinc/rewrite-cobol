@@ -52,4 +52,18 @@ public class ControlMTest implements RewriteTest {
           )
         );
     }
+
+    @Test
+    void cmAfterJclStatement() {
+        rewriteRun(
+          jcl(
+            """
+              //Name DD DSNAME=DS4
+              //*
+              %%VALUE=DISP %%NAME2 %%NAME3
+              //Name DD DSNAME=DS4
+              """
+          )
+        );
+    }
 }
