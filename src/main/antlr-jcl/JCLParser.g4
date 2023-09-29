@@ -42,7 +42,7 @@ jclStatement
     ;
 
 jobStatement
-    : JCL_DOUBLE_SLASH jclName? jobName jclComma? parameterArgument*
+    : JCL_DOUBLE_SLASH (jclName | jclStepName)? jobName jclComma? parameterArgument*
     ;
 
 // In JCL, a comma represent a continuation characte for parameters.
@@ -61,7 +61,7 @@ jobName
     ;
 
 jclLibStatement
-    : JCL_DOUBLE_SLASH jclName? jclLibName jclComma? parameterArgument*
+    : JCL_DOUBLE_SLASH (jclName | jclStepName)? jclLibName jclComma? parameterArgument*
     ;
 
 jclLibName
@@ -69,7 +69,7 @@ jclLibName
     ;
 
 cntlStatement
-    : JCL_DOUBLE_SLASH jclName? cntlName jclCommentArea?
+    : JCL_DOUBLE_SLASH (jclName | jclStepName)? cntlName jclCommentArea?
     ;
 
 cntlName
@@ -77,7 +77,7 @@ cntlName
     ;
 
 endcntlStatement
-    : JCL_DOUBLE_SLASH jclName? endcntlName jclCommentArea?
+    : JCL_DOUBLE_SLASH (jclName | jclStepName)? endcntlName jclCommentArea?
     ;
 
 endcntlName
@@ -85,11 +85,11 @@ endcntlName
     ;
 
 ddStatement
-    : JCL_DOUBLE_SLASH jclName? ddName jclComma? parameterArgument* jclTrailingComment?
+    : JCL_DOUBLE_SLASH (jclName | jclStepName)? ddName jclComma? parameterArgument* jclTrailingComment?
     ;
 
 ddStreamStatement
-    : JCL_DOUBLE_SLASH jclName? ddName parameter streamText* jclTrailingComment?
+    : JCL_DOUBLE_SLASH (jclName | jclStepName)? ddName parameter streamText* jclTrailingComment?
     ;
 
 ddName
@@ -105,7 +105,7 @@ streamJclCommentArea
     ;
 
 execStatement
-    : JCL_DOUBLE_SLASH jclName? execName jclComma? parameterArgument*
+    : JCL_DOUBLE_SLASH (jclName | jclStepName)? execName jclComma? parameterArgument*
     ;
 
 execName
@@ -113,7 +113,7 @@ execName
     ;
 
 exportStatement
-    : JCL_DOUBLE_SLASH jclName? exportName jclComma? parameterArgument*
+    : JCL_DOUBLE_SLASH (jclName | jclStepName)? exportName jclComma? parameterArgument*
     ;
 
 exportName
@@ -121,7 +121,7 @@ exportName
     ;
 
 ifStatement
-    : JCL_DOUBLE_SLASH jclName? ifName IF_CONDITION_TEXT+ thenName statement* elseStatement? endifStatement
+    : JCL_DOUBLE_SLASH (jclName | jclStepName)? ifName IF_CONDITION_TEXT+ thenName statement* elseStatement? endifStatement
     ;
 
 ifName
@@ -133,7 +133,7 @@ thenName
     ;
 
 elseStatement
-    : JCL_DOUBLE_SLASH jclName? elseName statement*
+    : JCL_DOUBLE_SLASH (jclName | jclStepName)? elseName statement*
     ;
 
 elseName
@@ -141,7 +141,7 @@ elseName
     ;
 
 endifStatement
-    : JCL_DOUBLE_SLASH jclName? endifName jclCommentArea?
+    : JCL_DOUBLE_SLASH (jclName | jclStepName)? endifName jclCommentArea?
     ;
 
 endifName
@@ -149,7 +149,7 @@ endifName
     ;
 
 includeStatement
-    : JCL_DOUBLE_SLASH jclName? includeName jclComma? parameterArgument*
+    : JCL_DOUBLE_SLASH (jclName | jclStepName)? includeName jclComma? parameterArgument*
     ;
 
 includeName
@@ -157,7 +157,7 @@ includeName
     ;
 
 outputStatement
-    : JCL_DOUBLE_SLASH jclName? outputName jclComma? parameterArgument*
+    : JCL_DOUBLE_SLASH (jclName | jclStepName)? outputName jclComma? parameterArgument*
     ;
 
 outputName
@@ -165,7 +165,7 @@ outputName
     ;
 
 pendStatement
-    : JCL_DOUBLE_SLASH jclName? pendName
+    : JCL_DOUBLE_SLASH (jclName | jclStepName)? pendName
     ;
 
 pendName
@@ -173,7 +173,7 @@ pendName
     ;
 
 procStatement
-    : JCL_DOUBLE_SLASH jclName? procName jclComma? parameterArgument*
+    : JCL_DOUBLE_SLASH (jclName | jclStepName)? procName jclComma? parameterArgument*
     ;
 
 procName
@@ -181,7 +181,7 @@ procName
     ;
 
 setStatement
-    : JCL_DOUBLE_SLASH jclName? setName jclComma? parameterArgument*
+    : JCL_DOUBLE_SLASH (jclName | jclStepName)? setName jclComma? parameterArgument*
     ;
 
 setName
@@ -189,7 +189,7 @@ setName
     ;
 
 xmitStatement
-    : JCL_DOUBLE_SLASH jclName? xmitName jclComma? parameterArgument*
+    : JCL_DOUBLE_SLASH (jclName | jclStepName)? xmitName jclComma? parameterArgument*
     ;
 
 xmitName
@@ -224,7 +224,6 @@ jclWord
 
 jclName
     : JCL_CONT? (JCL_NAME_FIELD | JCL_PARAMETER | jclKeyword) jclCommentArea?
-    | jclStepName
     ;
 
 jclStepName

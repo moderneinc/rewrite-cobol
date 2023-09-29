@@ -33,6 +33,7 @@ public class JclLineReader {
                 line = line.substring(0, 72);
             }
 
+            String stepName = "";
             if (lineType == LineType.JES2) {
                 if (jclLineContext == JclLineContext.STREAM) {
                     p.append("^^STREAM_END^^");
@@ -59,14 +60,7 @@ public class JclLineReader {
             } else if (lineType == LineType.JCL_STATEMENT) {
                 p.append("^^JCL_STATEMENT^^");
                 String[] words = line.split("\\s+");
-                String stepName = words[0].substring(2);
-                if (!stepName.isEmpty()) {
-                    p.append("//");
-                    p.append("^^STEP_NAME_START^^");
-                    p.append(stepName);
-                    p.append("^^STEP_NAME_END^^");
-                    line = line.substring(words[0].length());
-                }
+                stepName = words[0].substring(2);
                 // Check for trailing comment.
                 int i = line.indexOf(words[1]) + words[1].length();
                 char prev = '~';
@@ -111,6 +105,14 @@ public class JclLineReader {
                 }
             }
 
+            if (!stepName.isEmpty()) {
+                p.append("//");
+                p.append("^^STEP_NAME_START^^");
+                p.append(stepName);
+                p.append("^^STEP_NAME_END^^");
+                line = line.substring(2 + stepName.length());
+                cursor += 2 + stepName.length();
+            }
             p.append(line);
             if (trailingComment != null) {
                 p.append("^^TC_START^^");

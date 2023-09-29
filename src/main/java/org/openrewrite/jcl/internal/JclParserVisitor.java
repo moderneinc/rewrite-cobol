@@ -167,7 +167,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
                 randomId(),
                 sourceBefore("//"),
                 Markers.EMPTY,
-                visitNullable(ctx.jclName()),
+                ctx.jclStepName() != null ? (Name) visit(ctx.jclStepName()) : visitNullable(ctx.jclName()),
                 (Name) visit(ctx.cntlName())
         );
         if (ctx.jclCommentArea() != null) {
@@ -191,7 +191,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
                 randomId(),
                 sourceBefore("//"),
                 Markers.EMPTY,
-                visitNullable(ctx.jclName()),
+                ctx.jclStepName() != null ? (Name) visit(ctx.jclStepName()) : visitNullable(ctx.jclName()),
                 (Name) visit(ctx.ddName()),
                 createParameters(ctx.jclComma(), ctx.parameterArgument())
         );
@@ -218,7 +218,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
                 randomId(),
                 sourceBefore("//"),
                 Markers.EMPTY,
-                visitNullable(ctx.jclName()),
+                ctx.jclStepName() != null ? (Name) visit(ctx.jclStepName()) : visitNullable(ctx.jclName()),
                 (Name) visit(ctx.ddName()),
                 (Name) visit(ctx.parameter()),
                 convertAll(ctx.streamText(), noDelim, noDelim)
@@ -246,7 +246,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
                 randomId(),
                 sourceBefore("//"),
                 Markers.EMPTY,
-                visitNullable(ctx.jclName()),
+                ctx.jclStepName() != null ? (Name) visit(ctx.jclStepName()) : visitNullable(ctx.jclName()),
                 (Name) visit(ctx.elseName()),
                 createStatements(ctx.statement())
         );
@@ -281,7 +281,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
                 randomId(),
                 sourceBefore("//"),
                 Markers.EMPTY,
-                visitNullable(ctx.jclName()),
+                ctx.jclStepName() != null ? (Name) visit(ctx.jclStepName()) : visitNullable(ctx.jclName()),
                 (Name) visit(ctx.endcntlName())
         );
         if (ctx.jclCommentArea() != null) {
@@ -305,7 +305,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
                 randomId(),
                 sourceBefore("//"),
                 Markers.EMPTY,
-                visitNullable(ctx.jclName()),
+                ctx.jclStepName() != null ? (Name) visit(ctx.jclStepName()) : visitNullable(ctx.jclName()),
                 (Name) visit(ctx.endifName())
         );
     }
@@ -325,7 +325,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
                 randomId(),
                 sourceBefore("//"),
                 Markers.EMPTY,
-                visitNullable(ctx.jclName()),
+                ctx.jclStepName() != null ? (Name) visit(ctx.jclStepName()) : visitNullable(ctx.jclName()),
                 (Name) visit(ctx.execName()),
                 createParameters(ctx.jclComma(), ctx.parameterArgument())
         );
@@ -346,7 +346,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
                 randomId(),
                 sourceBefore("//"),
                 Markers.EMPTY,
-                visitNullable(ctx.jclName()),
+                ctx.jclStepName() != null ? (Name) visit(ctx.jclStepName()) : visitNullable(ctx.jclName()),
                 (Name) visit(ctx.exportName()),
                 createParameters(ctx.jclComma(), ctx.parameterArgument())
         );
@@ -364,7 +364,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
     @Override
     public Jcl visitIfStatement(JCLParser.IfStatementContext ctx) {
         Space prefix = sourceBefore("//");
-        Name step = visitNullable(ctx.jclName());
+        Name step = ctx.jclStepName() != null ? (Name) visit(ctx.jclStepName()) : visitNullable(ctx.jclName());
         Name name = (Name) visit(ctx.ifName());
         List<Name> condition = new ArrayList<>(ctx.IF_CONDITION_TEXT().size());
         for (TerminalNode conditionText : ctx.IF_CONDITION_TEXT()) {
@@ -409,7 +409,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
                 randomId(),
                 sourceBefore("//"),
                 Markers.EMPTY,
-                visitNullable(ctx.jclName()),
+                ctx.jclStepName() != null ? (Name) visit(ctx.jclStepName()) : visitNullable(ctx.jclName()),
                 (Name) visit(ctx.includeName()),
                 createParameters(ctx.jclComma(), ctx.parameterArgument())
         );
@@ -426,10 +426,6 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
 
     @Override
     public Jcl visitJclName(JCLParser.JclNameContext ctx) {
-        if (ctx.jclStepName() != null) {
-            return visit(ctx.jclStepName());
-        }
-
         if (ctx.JCL_CONT() != null) {
             skip("//");
         }
@@ -454,7 +450,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
                 randomId(),
                 sourceBefore("//"),
                 Markers.EMPTY,
-                visitNullable(ctx.jclName()),
+                ctx.jclStepName() != null ? (Name) visit(ctx.jclStepName()) : visitNullable(ctx.jclName()),
                 (Name) visit(ctx.jclLibName()),
                 createParameters(ctx.jclComma(), ctx.parameterArgument())
         );
@@ -490,7 +486,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
                 randomId(),
                 sourceBefore("//"),
                 Markers.EMPTY,
-                visitNullable(ctx.jclName()),
+                ctx.jclStepName() != null ? (Name) visit(ctx.jclStepName()) : visitNullable(ctx.jclName()),
                 (Name) visit(ctx.jobName()),
                 createParameters(ctx.jclComma(), ctx.parameterArgument())
         );
@@ -522,7 +518,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
                 randomId(),
                 sourceBefore("//"),
                 Markers.EMPTY,
-                visitNullable(ctx.jclName()),
+                ctx.jclStepName() != null ? (Name) visit(ctx.jclStepName()) : visitNullable(ctx.jclName()),
                 (Name) visit(ctx.outputName()),
                 createParameters(ctx.jclComma(), ctx.parameterArgument())
         );
@@ -642,7 +638,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
                 randomId(),
                 sourceBefore("//"),
                 Markers.EMPTY,
-                visitNullable(ctx.jclName()),
+                ctx.jclStepName() != null ? (Name) visit(ctx.jclStepName()) : visitNullable(ctx.jclName()),
                 (Name) visit(ctx.pendName())
         );
     }
@@ -662,7 +658,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
                 randomId(),
                 sourceBefore("//"),
                 Markers.EMPTY,
-                visitNullable(ctx.jclName()),
+                ctx.jclStepName() != null ? (Name) visit(ctx.jclStepName()) : visitNullable(ctx.jclName()),
                 (Name) visit(ctx.procName()),
                 createParameters(ctx.jclComma(), ctx.parameterArgument())
         );
@@ -683,7 +679,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
                 randomId(),
                 sourceBefore("//"),
                 Markers.EMPTY,
-                visitNullable(ctx.jclName()),
+                ctx.jclStepName() != null ? (Name) visit(ctx.jclStepName()) : visitNullable(ctx.jclName()),
                 (Name) visit(ctx.setName()),
                 createParameters(ctx.jclComma(), ctx.parameterArgument())
         );
@@ -704,7 +700,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
                 randomId(),
                 sourceBefore("//"),
                 Markers.EMPTY,
-                visitNullable(ctx.jclName()),
+                ctx.jclStepName() != null ? (Name) visit(ctx.jclStepName()) : visitNullable(ctx.jclName()),
                 (Name) visit(ctx.xmitName()),
                 createParameters(ctx.jclComma(), ctx.parameterArgument())
         );
