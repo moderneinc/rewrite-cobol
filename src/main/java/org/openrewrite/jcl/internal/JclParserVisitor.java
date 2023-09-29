@@ -533,22 +533,42 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
             }
         }
 
+        // JCL parens may contain both leading and trailing comments, so we need to track them separately.
         for (int i = 0; i < ctx.parameterArgument().size(); i++) {
             JCLParser.ParameterArgumentContext parameterArgument = ctx.parameterArgument().get(i);
             Jcl tree = visit(parameterArgument.parameter());
             Marker marker = null;
-            JclRightPadded<Jcl> p = padRight(tree, i < ctx.parameterArgument().size() - 1 ?
-                    sourceBefore(",") : sourceBefore(")"));
-            if (parameterArgument.jclComma() != null) {
-                if (parameterArgument.jclComma().jclTrailingComment() != null) {
-                    for (Marker m : mapTrailingComment(parameterArgument.jclComma().jclTrailingComment())) {
-                        markers = markers.addIfAbsent(m);
+            Space after;
+            if (i < ctx.parameterArgument().size() - 1) {
+                after = sourceBefore(",");
+                if (parameterArgument.jclComma() != null) {
+                    if (parameterArgument.jclComma().jclTrailingComment() != null) {
+                        for (Marker m : mapTrailingComment(parameterArgument.jclComma().jclTrailingComment())) {
+                            markers = markers.addIfAbsent(m);
+                        }
+                    }
+                    if (parameterArgument.jclComma().jclCommentArea() != null) {
+                        marker = mapCommentArea(parameterArgument.jclComma().jclCommentArea());
                     }
                 }
-                if (parameterArgument.jclComma().jclCommentArea() != null) {
-                    marker = mapCommentArea(parameterArgument.jclComma().jclCommentArea());
+            } else {
+                if (parameterArgument.jclComma() != null) {
+                    skip(",");
+                    tree = tree.withMarkers(tree.getMarkers().addIfAbsent(new TrailingComma(randomId())));
+                    if (parameterArgument.jclComma() != null) {
+                        if (parameterArgument.jclComma().jclTrailingComment() != null) {
+                            for (Marker m : mapTrailingComment(parameterArgument.jclComma().jclTrailingComment())) {
+                                tree = tree.withMarkers(tree.getMarkers().addIfAbsent(m));
+                            }
+                        }
+                        if (parameterArgument.jclComma().jclCommentArea() != null) {
+                            tree = tree.withMarkers(tree.getMarkers().addIfAbsent(mapCommentArea(parameterArgument.jclComma().jclCommentArea())));
+                        }
+                    }
                 }
+                after = sourceBefore(")");
             }
+            JclRightPadded<Jcl> p = padRight(tree, after);
             padded.add(marker == null ? p : p.withMarkers(p.getMarkers().addIfAbsent(marker)));
         }
         if (ctx.jclCommentArea() != null) {

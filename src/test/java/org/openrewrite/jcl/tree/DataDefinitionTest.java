@@ -186,8 +186,9 @@ public class DataDefinitionTest implements RewriteTest {
     @ValueSource(strings = {
         """
           //Name DD DSNAME=DS4,           *trailing comment                       commentArea
-          //        DISP=(NEW,KEEP),
-          //        SPACE=(TRK,(5,1,2))
+          //        DISP=(NEW,KEEP),                                              commentArea
+          //        SPACE=(CYC,(1,1),),                                           commentArea
+          //        DCB=(A=FB,B=80,C=0)                                           commentArea
           """,
         """
           //Name DD DSNAME=DS4,DISP=(NEW,KEEP)  *trailing comment                 commentArea

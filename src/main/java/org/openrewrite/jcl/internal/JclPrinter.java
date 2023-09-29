@@ -366,15 +366,18 @@ public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
             if (i < nodes.size() - 1) {
                 p.append(suffixBetween);
             }
-            Optional<TrailingComment> trailingComment = node.getMarkers().findFirst(TrailingComment.class);
-            if (trailingComment.isPresent()) {
-                visitSpace(trailingComment.get().getPrefix(), Space.Location.TRAILING_COMMENT_PREFIX, p);
-                p.append(trailingComment.get().getComment());
-            }
-            Optional<CommentArea> commentArea = node.getMarkers().findFirst(CommentArea.class);
-            if (commentArea.isPresent()) {
-                visitSpace(commentArea.get().getPrefix(), Space.Location.COMMENT_AREA_PREFIX, p);
-                p.append(commentArea.get().getComment());
+            for (Marker marker : node.getMarkers().getMarkers()) {
+                if (marker instanceof TrailingComma) {
+                    p.append(",");
+                } else if (marker instanceof TrailingComment) {
+                    TrailingComment tc = (TrailingComment) marker;
+                    visitSpace(tc.getPrefix(), Space.Location.TRAILING_COMMENT_PREFIX, p);
+                    p.append(tc.getComment());
+                } else if (marker instanceof CommentArea) {
+                    CommentArea ca = (CommentArea) marker;
+                    visitSpace(ca.getPrefix(), Space.Location.COMMENT_AREA_PREFIX, p);
+                    p.append(ca.getComment());
+                }
             }
         }
     }
@@ -405,7 +408,9 @@ public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
 
     protected void afterSyntax(Markers markers, PrintOutputCapture<P> p) {
         for (Marker marker : markers.getMarkers()) {
-            if (marker instanceof TrailingComment) {
+            if (marker instanceof TrailingComma) {
+                p.append(",");
+            } else if (marker instanceof TrailingComment) {
                 TrailingComment tc = (TrailingComment) marker;
                 visitSpace(tc.getPrefix(), Space.Location.TRAILING_COMMENT_PREFIX, p);
                 p.append(tc.getComment());
