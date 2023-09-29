@@ -304,6 +304,12 @@ public interface JCLParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitJclName(JCLParser.JclNameContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link JCLParser#jclStepName}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitJclStepName(JCLParser.JclStepNameContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link JCLParser#jclKeyword}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

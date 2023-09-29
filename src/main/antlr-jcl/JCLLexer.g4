@@ -39,7 +39,7 @@ JCL_WS : WS -> type(WS), channel(HIDDEN);
 JCL_EOL : EOL -> type(EOL), channel(HIDDEN), popMode;
 
 JCL_IF : 'IF' -> pushMode(IF_CONDITION);
-JCL_STEP_START : '^^STEP_NAME_START^^' -> skip, pushMode(INSIDE_JCL_NAME);
+JCL_STEP_START : '^^STEP_NAME_START^^' -> pushMode(INSIDE_JCL_NAME);
 JCL_TC_START : '^^TC_START^^' -> pushMode(INSIDE_TRAILING_COMMENT);
 JCL_CA_START : CA_START;
 
@@ -304,7 +304,7 @@ JCL_NAME_FIELD : JCL_NAME_CHAR ((JCL_PERIOD_CHAR JCL_NAME_CHAR)+)?;
 JCL_NAME_CHAR : (([a-zA-Z0-9$#_@&%.+-] | '\u00C0'..'\u00D6' | '\u00D8'..'\u00F6' | '\u00F8'..'\u03FF')+ | JCL_ASTERISK_CHAR);
 
 mode INSIDE_JCL_NAME;
-JCL_STEP_END : '^^STEP_NAME_END^^' -> skip, popMode;
+JCL_STEP_END : '^^STEP_NAME_END^^' -> popMode;
 JCL_STEP_NAME : TEXT;
 
 mode CM_IF_CONDITION;

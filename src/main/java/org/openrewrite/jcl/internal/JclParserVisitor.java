@@ -426,6 +426,10 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
 
     @Override
     public Jcl visitJclName(JCLParser.JclNameContext ctx) {
+        if (ctx.jclStepName() != null) {
+            return visit(ctx.jclStepName());
+        }
+
         if (ctx.JCL_CONT() != null) {
             skip("//");
         }
@@ -437,6 +441,11 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
             jcl = jcl.withMarkers(jcl.getMarkers().addIfAbsent(mapCommentArea(ctx.jclCommentArea())));
         }
         return jcl;
+    }
+
+    @Override
+    public Jcl visitJclStepName(JCLParser.JclStepNameContext ctx) {
+        return visit(ctx.JCL_STEP_NAME());
     }
 
     @Override
