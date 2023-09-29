@@ -7,7 +7,7 @@ lexer grammar JCLLexer;
 
 UTF_8_BOM : '\uFEFF' -> skip;
 
-WS : [ \t\f;]+ -> channel(HIDDEN);
+WS : [ \t\f]+ -> channel(HIDDEN);
 EOL : (CR? LF | FORM_FEED) -> channel(HIDDEN);
 
 JCL_STATEMENT : ('^^JCL_STATEMENT^^' | '^^JCL^^') -> skip, pushMode(INSIDE_JCL);
