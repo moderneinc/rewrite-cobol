@@ -8,7 +8,6 @@ package org.openrewrite.jcl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -203,6 +202,11 @@ public class JclLineReaderTest {
       "//* Line comment:^^COMMENT^^//* Line comment",
       "//**********************************************************************:^^COMMENT^^//**********************************************************************",
       "//********************************************************************* commentArea:^^COMMENT^^//********************************************************************* ^^CA_START^^commentArea",
+      "//*=:^^COMMENT^^//*=",
+      "//*-:^^COMMENT^^//*-",
+      "//*/:^^COMMENT^^//*/",
+      "//*~:^^COMMENT^^//*~",
+      "//*:^^COMMENT^^//*",
     }, delimiter = ':')
     void comments(String before, String after) {
         assertThat(JclLineReader
