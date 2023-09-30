@@ -381,8 +381,8 @@ COMMENT_EOL : EOL -> type(EOL), channel(HIDDEN), popMode;
 
 COMMENT_CA_START : CA_START -> type(CA_START), channel(HIDDEN);
 
-COMMENT_STRINGLITERAL : STRINGLITERAL -> channel(HIDDEN);
-COMMENT_TEXT : TEXT -> channel(HIDDEN);
+COMMENT_STRINGLITERAL : STRINGLITERAL -> skip;
+COMMENT_TEXT : TEXT -> skip;
 
 mode INSIDE_UNKNOWN;
 // JCL whitespace rules do not apply.

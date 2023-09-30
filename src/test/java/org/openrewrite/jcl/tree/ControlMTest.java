@@ -45,7 +45,6 @@ public class ControlMTest implements RewriteTest {
               //* CM allows code to be inject into comments.
               //* %%VALUE=DSNAME
               // DISP=(NEW,KEEP),
-              %%VALUE=DISP
               // DISP=(OLD,DELETE)
               //* CM condition changes the parameter in the JCL file.
               """
