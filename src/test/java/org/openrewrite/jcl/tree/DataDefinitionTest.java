@@ -6,16 +6,27 @@
 package org.openrewrite.jcl.tree;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.openrewrite.test.RewriteTest;
 
 import static org.openrewrite.jcl.tree.ParserAssertions.jcl;
 
 public class DataDefinitionTest implements RewriteTest {
 
-    @Test
-    void dd() {
+    @ParameterizedTest
+    @ValueSource(
+      strings = {
+        "NAME DD",
+        "     DD",
+        "     DD                                                               commentArea",
+      }
+    )
+    void dd(String input) {
         rewriteRun(
-          jcl("//Name DD")
+          jcl(
+            "//%s".formatted(input)
+          )
         );
     }
 
@@ -84,6 +95,7 @@ public class DataDefinitionTest implements RewriteTest {
                  FIELDS=(ABC=XYZ)
                REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(4,5,6),
                  FIELDS=(ABC=XYZ)
+              /*
               """
           )
         );
@@ -103,7 +115,39 @@ public class DataDefinitionTest implements RewriteTest {
     }
 
     @Test
+    void commentAreaOnDDStream() {
+        rewriteRun(
+          jcl(
+            """
+              //OBJECT DD *    * Why is this possible?                                commentArea
+                REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(1,2,3),                           commentArea
+                 FIELDS=(ABC=XYZ)                                                     commentArea
+                REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(4,5,6),                           commentArea
+                 FIELDS=(ABC=XYZ)                                                     commentArea
+              /*
+              """
+          )
+        );
+    }
+
+    @Test
     void trailingCommentAndCommentArea() {
+        rewriteRun(
+          jcl(
+            """
+              //OBJECT DD *    * Why is this possible?                                commentArea
+                REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(1,2,3),                           commentArea
+                 FIELDS=(ABC=XYZ)                                                     commentArea
+                REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(4,5,6),                           commentArea
+                 FIELDS=(ABC=XYZ)                                                     commentArea
+              /*
+              """
+          )
+        );
+    }
+
+    @Test
+    void commentAreaAfterStreamEnd() {
         rewriteRun(
           jcl(
             """
@@ -112,7 +156,52 @@ public class DataDefinitionTest implements RewriteTest {
                  FIELDS=(ABC=XYZ)
                 REPL DBN=%%NAME.FIELD,SEG=NAME,KEY=(4,5,6),
                  FIELDS=(ABC=XYZ)
+              /*                                                                      commentArea
               """
+          )
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+      "SYSUID",
+      "%SYSUID",
+      "%NAME..%OTHERNAME",
+      "OBJECT(&MBR)",
+      "(NAME-PART,EQ,C'OTHER')",
+      "LIST AGGREGATE(%%NAME) - OUTDATASET(%%OTHERNAME)"
+    })
+    void ddNames(String input) {
+        rewriteRun(
+          jcl(
+            """
+            //JOB1 DD *
+              %s
+            """.formatted(input)
+          )
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+        """
+          //Name DD DSNAME=DS4,           *trailing comment                       commentArea
+          //        DISP=(NEW,KEEP),                                              commentArea
+          //        SPACE=(CYC,(1,1),),                                           commentArea
+          //        DCB=(A=FB,B=80,C=0)                                           commentArea
+          """,
+        """
+          //Name DD DSNAME=DS4,DISP=(NEW,KEEP)  *trailing comment                 commentArea
+          """,
+        """
+          //Name DD DSNAME=DS4,DISP=(NEW,KEEP)  <=trailing comment                 commentArea
+          """,
+      }
+    )
+    void trailingComments(String input) {
+        rewriteRun(
+          jcl(
+            "%s".formatted(input)
           )
         );
     }

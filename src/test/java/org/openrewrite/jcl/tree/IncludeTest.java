@@ -5,27 +5,34 @@
  */
 package org.openrewrite.jcl.tree;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.openrewrite.test.RewriteTest;
 
 import static org.openrewrite.jcl.tree.ParserAssertions.jcl;
 
-public class PendTest implements RewriteTest {
-
+public class IncludeTest implements RewriteTest {
     @ParameterizedTest
     @ValueSource(
       strings = {
-        "NAME PEND",
-        "     PEND",
-        "     PEND                                                             commentArea"
+        "NAME INCLUDE",
+        "     INCLUDE",
+        "     INCLUDE                                                          commentArea"
       }
     )
-    void pend(String input) {
+    void include(String input) {
         rewriteRun(
           jcl(
             "//%s".formatted(input)
           )
+        );
+    }
+
+    @Test
+    void member() {
+        rewriteRun(
+          jcl("//Name INCLUDE MEMBER=ALPHA.PGM")
         );
     }
 }

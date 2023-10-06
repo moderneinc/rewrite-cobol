@@ -6,6 +6,8 @@
 package org.openrewrite.jcl.tree;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.openrewrite.test.RewriteTest;
 
 import static org.openrewrite.jcl.tree.ParserAssertions.jcl;
@@ -65,10 +67,63 @@ public class JclTest implements RewriteTest {
     }
 
     @Test
-    void commentArea() {
+    void variableRef() {
         rewriteRun(
           jcl(
-            "//NAME                                                                  commentArea"
+            """
+            //JOB1 JOB
+            //ADD1 OUTPUT COPIES=%SYSUID
+            //PS1.DSB DD DISP=SHR,DSN=&NAME..&NAME..OBJECT(&MBR)
+            """
+          )
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(
+        strings = {
+            "",
+            "                                                                      commentArea"
+        }
+    )
+    void emptyStatement(String input) {
+        rewriteRun(
+          jcl(
+            "//%s".formatted(input)
+          )
+        );
+    }
+
+    @Test
+    void emptyParameters() {
+        rewriteRun(
+          jcl(
+            """
+            //Name DD PARM=(IFP,%%BD,,,,,,%%NAME)
+            """
+          )
+        );
+    }
+
+    @Test
+    void leadingKeyword() {
+        rewriteRun(
+          jcl(
+            """
+            //JCLLIB DD DSN=NAME1,DISP=NAME2
+            """
+          )
+        );
+    }
+
+    @Test
+    void unicodeCharacters() {
+        rewriteRun(
+          jcl(
+            """
+            //ADD1 OUTPUT COPIES='ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÖØÙÚÛÜÝ'
+            //ADD1 OUTPUT COPIES='àáâãäåæçèéêëìíîïðñòóôöøùúûüý'
+            """
           )
         );
     }

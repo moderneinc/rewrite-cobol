@@ -10,6 +10,8 @@ import lombok.Getter;
 import java.util.*;
 
 public class JclLineReader {
+    private static final Set<String> JCL_STATEMENT_NAMES = new HashSet<>(Arrays.asList("JOB", "JCLLIB", "CNTL", "ENDCNTL",
+            "DD", "EXEC", "EXPORT", "IF", "INCLUDE", "NOTIFY", "OUTPUT", "PEND", "PROC", "SCHEDULE", "SET", "XMIT"));
 
     public static String readLines(String source) {
         StringBuilder p = new StringBuilder();
@@ -81,9 +83,12 @@ public class JclLineReader {
                         line = line.substring(0, i);
                     }
                 }
+                jclLineContext = getLineContext(line);
             } else if (lineType == LineType.COMMENT) {
                 p.append("^^COMMENT^^");
-                jclLineContext = null;
+                if (jclLineContext != JclLineContext.CONT) {
+                    jclLineContext = null;
+                }
             } else {
                 if (line.trim().startsWith("%%")) {
                     p.append("^^CM^^");
@@ -92,7 +97,9 @@ public class JclLineReader {
                     p.append("^^STREAM^^");
                 } else {
                     p.append("^^UNKNOWN^^");
-                    jclLineContext = null;
+                    if (jclLineContext != JclLineContext.CONT) {
+                        jclLineContext = null;
+                    }
                 }
             }
 
@@ -127,12 +134,13 @@ public class JclLineReader {
         char c2 = line.length() > 2 ? line.charAt(2) : '~';
         char c3 = line.length() > 3 ? line.charAt(3) : '~';
 
-        if (c0 == '/' && c1 == '/' && c2 == '*' && (c3 == ' ' || c3 == '~' || c3 == '*')) {
+        if (c0 == '/' && c1 == '/' && c2 == '*' && (c3 == ' ' || c3 == '~' || c3 == '*' || c3 == '=' || c3 == '-' || c3 == '/' || c3 == '\r' || c3 == '\n')) {
             return LineType.COMMENT;
         } else if (c0 == '/' && c1 == '/' && c2 == '*') {
             return LineType.JES3;
         } else if (c0 == '/' && c1 == '/') {
-            return  c2 == ' ' || c2 == '\t' ? LineType.JCL : LineType.JCL_STATEMENT;
+            String[] words = line.split("\\s+");
+            return words.length >=2 && JCL_STATEMENT_NAMES.contains(words[1]) ? LineType.JCL_STATEMENT : LineType.JCL;
         } else if (c0 == '/' && c1 == '*') {
             return LineType.JES2;
         }
@@ -157,7 +165,7 @@ public class JclLineReader {
     }
 
     private enum JclLineContext {
-        NORM, CONT, STREAM
+        NORM, CONT, STREAM, CM_CONT
     }
 
     private static JclLineContext getLineContext(String line) {

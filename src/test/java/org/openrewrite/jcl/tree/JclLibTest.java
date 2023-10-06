@@ -12,17 +12,17 @@ import org.openrewrite.test.RewriteTest;
 
 import static org.openrewrite.jcl.tree.ParserAssertions.jcl;
 
-public class JobTest implements RewriteTest {
+public class JclLibTest implements RewriteTest {
 
     @ParameterizedTest
     @ValueSource(
       strings = {
-        "NAME JOB",
-        "     JOB",
-        "     JOB                                                              commentArea"
+        "NAME JCLLIB",
+        "     JCLLIB",
+        "     JCLLIB                                                           commentArea"
       }
     )
-    void job(String input) {
+    void jclLib(String input) {
         rewriteRun(
           jcl(
             "//%s".formatted(input)
@@ -34,6 +34,13 @@ public class JobTest implements RewriteTest {
     void parameterLiteral() {
         rewriteRun(
           jcl("//Name JOB 'name'")
+        );
+    }
+
+    @Test
+    void orderParam() {
+        rewriteRun(
+          jcl("//Name JCLLIB ORDER=SYS1.PROCLIB")
         );
     }
 

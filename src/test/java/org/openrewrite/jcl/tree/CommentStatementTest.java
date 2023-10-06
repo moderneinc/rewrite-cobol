@@ -44,6 +44,15 @@ public class CommentStatementTest implements RewriteTest {
             """)
         );
     }
+    @Test
+    void slashes() {
+        rewriteRun(
+          jcl("""
+              //* FOO/BAR/BUZ
+              """
+          )
+        );
+    }
 
     @Test
     void emptyCommentWithCommentArea() {
@@ -53,6 +62,37 @@ public class CommentStatementTest implements RewriteTest {
               //*                                                                     commentArea
               //*
               """
+          )
+        );
+    }
+
+    @Test
+    void lineComments() {
+        rewriteRun(
+          jcl("""
+              //*====================================================================*
+              //*                                                                    *
+              //*====================================================================*
+              //*
+              //**********************************************************************
+              //* C2                                                                 *
+              //**********************************************************************
+              //NAME EXEC PGM=IEFBR14
+              //JOB DD DSN=&&NAME,DISP=(NEW,PASS),UNIT=SYSDA,SPACE=(TRK,(1,1))
+              """
+          )
+        );
+    }
+
+    @Test
+    void crlf() {
+        rewriteRun(
+          jcl("//*\r\n" +
+              "//*\r\n" +
+              "//Name JCLLIB ORDER=NAME\r\n" +
+              "//*\r\n" +
+              "// SET NAME=%%OTHER\r\n" +
+              "//*\r\n"
           )
         );
     }

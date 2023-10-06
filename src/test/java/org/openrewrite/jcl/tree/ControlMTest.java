@@ -18,4 +18,52 @@ public class ControlMTest implements RewriteTest {
           jcl("%%LIBSYM NAME.FIELD %%MEMSYM NAME.FIELD")
         );
     }
+
+    @Test
+    void conditionalParameter() {
+        rewriteRun(
+          jcl(
+            """
+              //Name DD DSNAME=DS4,
+              %%IF (1 EQ 1) THEN
+              // DISP=(NEW,KEEP)
+              %%ELSE
+              // DISP=(OLD,DELETE)
+              %%ENDIF
+              //* CM condition changes the parameter in the JCL file.
+              """
+          )
+        );
+    }
+
+    @Test
+    void commentsAndCmBetweenParameters() {
+        rewriteRun(
+          jcl(
+            """
+              //Name DD DSNAME=DS4,
+              //* CM allows code to be inject into comments.
+              //* %%VALUE=DSNAME
+              // DISP=(NEW,KEEP),
+              %%VALUE=DISP
+              // DISP=(OLD,DELETE)
+              //* CM condition changes the parameter in the JCL file.
+              """
+          )
+        );
+    }
+
+    @Test
+    void cmAfterJclStatement() {
+        rewriteRun(
+          jcl(
+            """
+              //Name DD DSNAME=DS4
+              //*
+              %%VALUE=DISP %%NAME2 %%NAME3
+              //Name DD DSNAME=DS4
+              """
+          )
+        );
+    }
 }

@@ -8,7 +8,6 @@ package org.openrewrite.jcl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -22,11 +21,69 @@ public class JclLineReaderTest {
     }
 
     @Test
+    void controlMIfConditions() {
+        assertThat(JclLineReader
+          .readLines(
+            """
+              //*
+              //* Normal CM
+              %%IF (1 EQ 1) THEN
+              //JOB1 JOB
+              %%ELSE
+              //JOB1 JOB
+              %%ENDIF
+              //*
+              //* CM in comments
+              //* %%IF (1 EQ 1) THEN
+              //JOB1 JOB
+              //* %%ELSE
+              //JOB1 JOB
+              //* %%ENDIF
+              //*
+              //* Mixed in and out of comments
+              //* %%IF (1 EQ 1) THEN
+              //JOB1 JOB
+              %%ENDIF
+              """))
+          .isEqualTo(
+            """
+              ^^COMMENT^^//*
+              ^^COMMENT^^//* Normal CM
+              ^^CM^^%%IF (1 EQ 1) THEN
+              ^^JCL_STATEMENT^^//JOB1 JOB
+              ^^CM^^%%ELSE
+              ^^JCL_STATEMENT^^//JOB1 JOB
+              ^^CM^^%%ENDIF
+              ^^COMMENT^^//*
+              ^^COMMENT^^//* CM in comments
+              ^^COMMENT^^//* %%IF (1 EQ 1) THEN
+              ^^JCL_STATEMENT^^//JOB1 JOB
+              ^^COMMENT^^//* %%ELSE
+              ^^JCL_STATEMENT^^//JOB1 JOB
+              ^^COMMENT^^//* %%ENDIF
+              ^^COMMENT^^//*
+              ^^COMMENT^^//* Mixed in and out of comments
+              ^^COMMENT^^//* %%IF (1 EQ 1) THEN
+              ^^JCL_STATEMENT^^//JOB1 JOB
+              ^^CM^^%%ENDIF
+              """
+          );
+    }
+
+    @Test
     void jcl() {
         assertThat(JclLineReader
           .readLines("//JOB1 JOB ,'H.H. MORRILL'"))
           .isEqualTo("^^JCL_STATEMENT^^//JOB1 JOB ,'H.H. MORRILL'");
     }
+
+    @Test
+    void stringLiteral() {
+        assertThat(JclLineReader
+          .readLines("//JOB1 DD DNS='*****'"))
+          .isEqualTo("^^JCL_STATEMENT^^//JOB1 DD DNS='*****'");
+    }
+
 
     @Test
     void jclContinuation() {
@@ -194,8 +251,8 @@ public class JclLineReaderTest {
     @Test
     void commentArea() {
         assertThat(JclLineReader
-          .readLines("//NAME                                                                  commentArea"))
-          .isEqualTo("^^JCL_STATEMENT^^//NAME                                                                  ^^CA_START^^commentArea");
+          .readLines("//                                                                      commentArea"))
+          .isEqualTo("^^JCL^^//                                                                      ^^CA_START^^commentArea");
     }
 
     @ParameterizedTest
@@ -203,6 +260,11 @@ public class JclLineReaderTest {
       "//* Line comment:^^COMMENT^^//* Line comment",
       "//**********************************************************************:^^COMMENT^^//**********************************************************************",
       "//********************************************************************* commentArea:^^COMMENT^^//********************************************************************* ^^CA_START^^commentArea",
+      "//*=:^^COMMENT^^//*=",
+      "//*-:^^COMMENT^^//*-",
+      "//*/:^^COMMENT^^//*/",
+      "//*~:^^COMMENT^^//*~",
+      "//*:^^COMMENT^^//*",
     }, delimiter = ':')
     void comments(String before, String after) {
         assertThat(JclLineReader
