@@ -29,7 +29,7 @@ public class CopybookAssertions {
         SourceSpec<CobolPreprocessor.Copybook> copybook = new SourceSpec<>(CobolPreprocessor.Copybook.class, null,
                 CopybookParser.builder(),
                 before,
-                SourceSpec.EachResult.noop,
+                SourceSpec.ValidateSource.noop,
                 CopybookAssertions::customizeExecutionContext);
         acceptSpec(spec, copybook);
         return copybook;
@@ -45,7 +45,7 @@ public class CopybookAssertions {
         SourceSpec<CobolPreprocessor.Copybook> copybook = new SourceSpec<>(CobolPreprocessor.Copybook.class, null,
                 CopybookParser.builder(),
                 before,
-                SourceSpec.EachResult.noop,
+                SourceSpec.ValidateSource.noop,
                 CopybookAssertions::customizeExecutionContext).after(s -> after);
         acceptSpec(spec, copybook);
         return copybook;

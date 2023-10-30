@@ -32,7 +32,7 @@ public class ParserAssertions {
     public static SourceSpecs jcl(@Nullable String before, Consumer<SourceSpec<Jcl.CompilationUnit>> spec) {
         SourceSpec<Jcl.CompilationUnit> jcl = new SourceSpec<>(
                 Jcl.CompilationUnit.class, null, JclParser.builder(), before,
-                SourceSpec.EachResult.noop,
+                SourceSpec.ValidateSource.noop,
                 ParserAssertions::customizeExecutionContext);
         acceptSpec(spec, jcl);
         return jcl;
@@ -47,7 +47,7 @@ public class ParserAssertions {
                                   Consumer<SourceSpec<Jcl.CompilationUnit>> spec) {
         SourceSpec<Jcl.CompilationUnit> jcl = new SourceSpec<>(
                 Jcl.CompilationUnit.class, null, JclParser.builder(), before,
-                SourceSpec.EachResult.noop,
+                SourceSpec.ValidateSource.noop,
                 ParserAssertions::customizeExecutionContext).after(s -> after);
         acceptSpec(spec, jcl);
         return jcl;

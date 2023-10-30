@@ -32,7 +32,7 @@ public class ParserAssertions {
     public static SourceSpecs controlM(@Nullable String before, Consumer<SourceSpec<ControlM.CompilationUnit>> spec) {
         SourceSpec<ControlM.CompilationUnit> controlM = new SourceSpec<>(
                 ControlM.CompilationUnit.class, null, ControlMParser.builder(), before,
-                SourceSpec.EachResult.noop,
+                SourceSpec.ValidateSource.noop,
                 ParserAssertions::customizeExecutionContext);
         acceptSpec(spec, controlM);
         return controlM;

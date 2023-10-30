@@ -42,7 +42,7 @@ public class Assertions {
                 CobolPreprocessor.CompilationUnit.class, null,
                 CobolPreprocessorParser.builder().copybooks(getCopybookSources()),
                 before,
-                SourceSpec.EachResult.noop,
+                SourceSpec.ValidateSource.noop,
                 Assertions::customizeExecutionContext);
         acceptPreprocessorSpec(spec, cobol);
         return cobol;
@@ -58,7 +58,7 @@ public class Assertions {
         SourceSpec<CobolPreprocessor.CompilationUnit> cobol = new SourceSpec<>(CobolPreprocessor.CompilationUnit.class, null,
                 CobolPreprocessorParser.builder(),
                 before,
-                SourceSpec.EachResult.noop,
+                SourceSpec.ValidateSource.noop,
                 Assertions::customizeExecutionContext).after(s -> after);
         acceptPreprocessorSpec(spec, cobol);
         return cobol;
@@ -93,7 +93,7 @@ public class Assertions {
                 CobolPreprocessor.Copybook.class, null,
                 CopybookParser.builder(),
                 before,
-                SourceSpec.EachResult.noop,
+                SourceSpec.ValidateSource.noop,
                 Assertions::customizeExecutionContext);
         acceptCopybookSpec(spec, cobol);
         return cobol;
@@ -109,7 +109,7 @@ public class Assertions {
         SourceSpec<CobolPreprocessor.Copybook> cobol = new SourceSpec<>(CobolPreprocessor.Copybook.class, null,
                 CopybookParser.builder(),
                 before,
-                SourceSpec.EachResult.noop,
+                SourceSpec.ValidateSource.noop,
                 Assertions::customizeExecutionContext).after(s -> after);
         acceptCopybookSpec(spec, cobol);
         return cobol;
@@ -145,7 +145,7 @@ public class Assertions {
                 Cobol.CompilationUnit.class, null,
                 CobolParser.builder().copybooks(copybooks),
                 before,
-                SourceSpec.EachResult.noop,
+                SourceSpec.ValidateSource.noop,
                 Assertions::customizeExecutionContext);
         acceptSpec(spec, cobol);
         return cobol;
@@ -164,7 +164,7 @@ public class Assertions {
                         null,
                         CobolParser.builder().copybooks(copybooks),
                         before,
-                        SourceSpec.EachResult.noop,
+                        SourceSpec.ValidateSource.noop,
                         Assertions::customizeExecutionContext).after(s -> after);
         acceptSpec(spec, cobol);
         return cobol;
@@ -186,7 +186,7 @@ public class Assertions {
                 Cobol.CompilationUnit.class, null,
                 CobolParser.builder().copybooks(copybooks),
                 before,
-                SourceSpec.EachResult.noop,
+                SourceSpec.ValidateSource.noop,
                 Assertions::customizeExecutionContext);
         isFullyParsed().andThen(isPostProcessedLst(after)).andThen(spec).accept(cobol);
         return cobol;
