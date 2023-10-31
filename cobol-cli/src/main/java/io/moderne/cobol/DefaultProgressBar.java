@@ -5,8 +5,8 @@ import org.fusesource.jansi.*;
 import org.fusesource.jansi.io.AnsiOutputStream;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
-import org.openrewrite.ProgressBar;
 import org.openrewrite.internal.lang.Nullable;
+import org.openrewrite.polyglot.ProgressBar;
 import picocli.CommandLine;
 
 import java.io.ByteArrayOutputStream;

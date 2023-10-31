@@ -15,6 +15,8 @@ import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
 import org.openrewrite.controlm.ControlMParser;
 import org.openrewrite.marker.LstProvenance;
+import org.openrewrite.polyglot.OmniParser;
+import org.openrewrite.polyglot.ProgressBar;
 import org.openrewrite.text.PlainTextParser;
 import org.openrewrite.tree.ParsingEventListener;
 import org.openrewrite.tree.ParsingExecutionContextView;
@@ -68,7 +70,7 @@ public class Build implements Callable<Integer> {
         TreeSerializer serializer = TreeSerializer.builder().build();
 
         CopybookParser copybookParser = CopybookParser.builder().build();
-        List<Path> copybookSources = OmniParser.builder().parsers(copybookParser).build().acceptedPaths(
+        List<Path> copybookSources = OmniParser.builder(copybookParser).build().acceptedPaths(
                 listRepositoryOptions.getPath());
 
         List<SourceFile> copybooks;
@@ -111,7 +113,7 @@ public class Build implements Callable<Integer> {
                 CobolParser cobolParser = CobolParser.builder().copybooks(copybooks)
                         .timeout(Duration.ofSeconds(timeoutSeconds))
                         .build();
-                List<Path> cobolSources = OmniParser.builder().parsers(cobolParser)
+                List<Path> cobolSources = OmniParser.builder(cobolParser)
                         .exclusions(copybooks.stream().map(SourceFile::getSourcePath).toList())
                         .build()
                         .acceptedPaths(repository.getRootDir());
@@ -145,7 +147,7 @@ public class Build implements Callable<Integer> {
 
             try (ProgressBar progressBar = DefaultProgressBar.builder(spec).build()) {
                 ControlMParser controlMParser = ControlMParser.builder().build();
-                List<Path> controlMSources = OmniParser.builder().parsers(controlMParser)
+                List<Path> controlMSources = OmniParser.builder(controlMParser)
                         .exclusions(alreadyParsed)
                         .build()
                         .acceptedPaths(repository.getRootDir());
@@ -166,8 +168,7 @@ public class Build implements Callable<Integer> {
                         .a(" Parsing files related to other mainframe technologies.")
                         .toString());
 
-                OmniParser parser = OmniParser.builder()
-                        .parsers(PlainTextParser.builder().build())
+                OmniParser parser = OmniParser.builder(PlainTextParser.builder().build())
                         .exclusions(alreadyParsed)
                         .onParse(progressBar::setMax)
                         .build();

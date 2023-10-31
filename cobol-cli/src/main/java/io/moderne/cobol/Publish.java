@@ -3,8 +3,8 @@ package io.moderne.cobol;
 import io.moderne.cobol.internal.FatalException;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import org.openrewrite.ProgressBar;
 import org.openrewrite.internal.StringUtils;
+import org.openrewrite.polyglot.ProgressBar;
 import picocli.CommandLine;
 
 import java.util.List;

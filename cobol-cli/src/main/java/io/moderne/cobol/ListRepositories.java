@@ -3,9 +3,9 @@ package io.moderne.cobol;
 import io.moderne.cobol.internal.FatalException;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import org.openrewrite.ProgressBar;
 import org.openrewrite.marker.GitProvenance;
 import org.openrewrite.marker.ci.BuildEnvironment;
+import org.openrewrite.polyglot.ProgressBar;
 import picocli.CommandLine;
 
 import java.io.IOException;
