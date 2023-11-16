@@ -32,3 +32,5 @@ jobs:
       gcr_key: ${{ secrets.GCR_KEY }}
       ast_publish_username: ${{ secrets.AST_PUBLISH_USERNAME }}
       ast_publish_password: ${{ secrets.AST_PUBLISH_PASSWORD }}
+      moderne_artifactory_username: ${{ secrets.moderne_artifactory_username }}
+      moderne_artifactory_password: ${{ secrets.moderne_artifactory_password }}
