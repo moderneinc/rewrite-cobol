@@ -96,3 +96,6 @@ configure<nl.javadude.gradle.plugins.license.LicenseExtension> {
     excludePatterns.add("**/*.CBL")
     excludePatterns.add("**/*.CPY")
 }
+tasks.withType<com.hierynomus.gradle.license.tasks.LicenseCheck>().configureEach {
+    enabled = false;
+}

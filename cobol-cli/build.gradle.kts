@@ -16,8 +16,8 @@ repositories {
         url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
     }
     mavenCentral()
-    val astPublishUsername = project.properties["ast.publish.username"] as String? ?: System.getenv("AST_PUBLISH_USERNAME")
-    val astPublishPassword = project.properties["ast.publish.password"] as String? ?: System.getenv("AST_PUBLISH_PASSWORD")
+    val astPublishUsername = project.properties["moderne.artifactory.username"] as String? ?: project.properties["ast.publish.username"] as String? ?: System.getenv("AST_PUBLISH_USERNAME")
+    val astPublishPassword = project.properties["moderne.artifactory.password"] as String? ?: project.properties["ast.publish.password"] as String? ?: System.getenv("AST_PUBLISH_PASSWORD")
     if (astPublishUsername != null && astPublishPassword != null) {
         maven {
             name = "ModerneArtifactory"
@@ -43,7 +43,7 @@ dependencies {
     compileOnly("org.projectlombok:lombok:latest.release")
     annotationProcessor("org.projectlombok:lombok:latest.release")
 
-    compileOnly("io.moderne:moderne-ast-write:latest.release")
+    compileOnly("io.moderne:moderne-ast-write:latest.release:obfuscated")
     "astWrite"("io.moderne:moderne-ast-write:latest.release:obfuscated")
 
     implementation("info.picocli:picocli:latest.release")
@@ -58,7 +58,7 @@ dependencies {
     implementation("org.openrewrite.recipe:rewrite-all:latest.integration")
     implementation(rootProject)
 
-    testRuntimeOnly("io.moderne:moderne-ast-write:latest.release")
+    testRuntimeOnly("io.moderne:moderne-ast-write:latest.release:obfuscated")
 }
 
 tasks.withType<Javadoc> {
