@@ -135,7 +135,9 @@ public class FindCopybook extends Recipe {
                                 CobolPreprocessor.CopyStatement updated = copyStatement.withCopySource(copyStatement.getCopySource().withName(
                                         SearchResult.found(copyStatement.getCopySource().getName(), null)));
                                 if (updated.getCopybook() != null) {
-                                    updated = updated.withCopybook(updated.getCopybook().withLst(ListUtils.map(updated.getCopybook().getLst(), l -> preprocessorVisitor.visit(l, ctx, getCursor()))));
+                                    CobolPreprocessor.Copybook newCopyBook = (CobolPreprocessor.Copybook) preprocessorVisitor
+                                            .visit(updated.getCopybook(), ctx, getCursor().getParentTreeCursor());
+                                    updated = updated.withCopybook(newCopyBook);
                                 }
                                 boolean copySourceResolved = updated.getCopybook() != null;
                                 copybookSource.insertRow(ctx,
@@ -163,7 +165,9 @@ public class FindCopybook extends Recipe {
                             if (copybookName == null || copybookName.isEmpty() || copybookName.equals(includeStatement.getCopySource().getCobolWord().getWord())) {
                                 CobolPreprocessor.ExecSqlIncludeStatement updated = includeStatement.withCopySource(SearchResult.found(includeStatement.getCopySource(), null));
                                 if (updated.getCopybook() != null) {
-                                    updated = updated.withCopybook(updated.getCopybook().withLst(ListUtils.map(updated.getCopybook().getLst(), l -> preprocessorVisitor.visit(l, ctx, getCursor()))));
+                                    CobolPreprocessor.Copybook newCopyBook = (CobolPreprocessor.Copybook) preprocessorVisitor
+                                            .visit(updated.getCopybook(), ctx, getCursor().getParentTreeCursor());
+                                    updated = updated.withCopybook(newCopyBook);
                                 }
                                 boolean copySourceResolved = updated.getCopybook() != null;
                                 copybookSource.insertRow(ctx,
