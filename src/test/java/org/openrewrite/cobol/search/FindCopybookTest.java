@@ -22,7 +22,7 @@ import static org.openrewrite.cobol.Assertions.cobol;
 import static org.openrewrite.cobol.table.CopybookSource.ResolutionStatus.MISSING_SOURCE;
 import static org.openrewrite.cobol.table.CopybookSource.ResolutionStatus.RESOLVED;
 
-public class FindCopybookTest extends CobolTest {
+class FindCopybookTest extends CobolTest {
 
     @Override
     public void defaults(RecipeSpec spec) {
