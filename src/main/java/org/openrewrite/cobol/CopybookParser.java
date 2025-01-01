@@ -63,7 +63,8 @@ public class CopybookParser implements Parser {
                     null,
                     null,
                     sourceStr,
-                    emptyList()
+                    emptyList(),
+            null
             );
 
             String prepareSource = new CobolLineReader().readLines(sourceStr, cobolDialect);
