@@ -69,7 +69,7 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:latest.release")
     implementation(platform("org.openrewrite:rewrite-bom:${latest}"))
     implementation("org.openrewrite:rewrite-core")
-    implementation("org.antlr:antlr4:4.11.1")
+    implementation("org.antlr:antlr4:4.13.2")
     implementation("io.micrometer:micrometer-core:1.9.+")
     implementation("io.github.classgraph:classgraph:latest.release")
     runtimeOnly("org.openrewrite.tools:java-object-diff:latest.release")
