@@ -2,6 +2,7 @@ plugins {
     id("org.openrewrite.build.root") version("latest.release")
     id("org.openrewrite.build.language-library") version("latest.release")
     id("com.netflix.nebula.integtest-standalone") version "10.1.5"
+    id("org.openrewrite.build.moderne-proprietary-license") version "latest.release"
 }
 
 group = "org.openrewrite"
