@@ -65,7 +65,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void continuationVariant1() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000000* The continuation tests assert a literal was not split into      000000000
                   * multiple tokens.                                                000000000
                    IDENTIFICATION DIVISION.                                         000000000
@@ -88,7 +89,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void continuationVariant2() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000000* The continuation tests assert a literal was not split into      000000000
                   * multiple tokens.                                                000000000
                    IDENTIFICATION DIVISION.                                         000000000
@@ -110,7 +112,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void continuationVariant3() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000000* The continuation tests assert a literal was not split into      000000000
                   * multiple tokens.                                                000000000
                    IDENTIFICATION DIVISION.                                         000000000
@@ -132,7 +135,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void continuationVariant4() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000100 IDENTIFICATION DIVISION.                                         000000000
                    PROGRAM-ID.                                                      000000000
                        CM101M.                                                      000000000
@@ -154,7 +158,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void continuationVariant5() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000100 IDENTIFICATION DIVISION.                                         000000000
                    PROGRAM-ID.                                                      000000000
                        CM101M.                                                      000000000
@@ -176,7 +181,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void continuationVariant7() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000100 IDENTIFICATION DIVISION.                                         000000000
                    PROGRAM-ID.                                                      000000000
                        CM101M.                                                      000000000
@@ -198,7 +204,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void continuationVariant8() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000100 IDENTIFICATION DIVISION.                                         00000000
                    PROGRAM-ID.                                                      00000000
                        CM101M.                                                      00000000
@@ -606,7 +613,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void multiplyStatement() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.1
             000002 PROGRAM-ID. MULTIPLYTEST.                                        C_AREA.2
             000003 PROCEDURE DIVISION.                                              C_AREA.3
@@ -619,7 +627,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void openStatement() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.1
             000002 PROGRAM-ID. OPENTEST.                                            C_AREA.2
             000003 PROCEDURE DIVISION.                                              C_AREA.3
@@ -634,7 +643,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void performStatement() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.1
             000002 PROGRAM-ID. PARSERTEST.                                          C_AREA.2
             000003 PROCEDURE DIVISION.                                              C_AREA.3
@@ -647,7 +657,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void readStatement() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.1
             000002 PROGRAM-ID. READTEST.                                            C_AREA.2
             000003 PROCEDURE DIVISION.                                              C_AREA.3
@@ -660,7 +671,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void receiveStatement() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.1
             000002 PROGRAM-ID. MERGETEST.                                           C_AREA.2
             000003 PROCEDURE DIVISION.                                              C_AREA.3
@@ -674,7 +686,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void fileSection() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID.                                                      C_AREA.02
             000003     IC109A.                                                      C_AREA.03
@@ -707,7 +720,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void linkageSection() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002     PROGRAM-ID.                                                  C_AREA.02
             000003         IC109A.                                                  C_AREA.03
@@ -734,7 +748,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void localStorageSection() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. LocalStorage.                                        C_AREA.02
             000003 DATA DIVISION.                                                   C_AREA.03
@@ -748,7 +763,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void dataBaseSection() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. DBSection.                                           C_AREA.02
             000003 DATA DIVISION.                                                   C_AREA.03
@@ -762,7 +778,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void screenSection() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. DBSection.                                           C_AREA.02
             000003 DATA DIVISION.                                                   C_AREA.03
@@ -804,7 +821,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void reverseVideo() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. DBSection.                                           C_AREA.02
             000003 DATA DIVISION.                                                   C_AREA.03
@@ -818,7 +836,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void acceptStatement() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. acceptStatement.                                     C_AREA.02
             000003 PROCEDURE DIVISION.                                              C_AREA.03
@@ -835,7 +854,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void alterStatement() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION .                                        C_AREA.01
             000002 PROGRAM-ID . HELLO-WORLD .                                       C_AREA.02
             000003 PROCEDURE DIVISION .                                             C_AREA.03
@@ -849,7 +869,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void cancelStatement() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. acceptStatement.                                     C_AREA.02
             000003 PROCEDURE DIVISION.                                              C_AREA.03
@@ -865,7 +886,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void closeStatement() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. acceptStatement.                                     C_AREA.02
             000003 PROCEDURE DIVISION.                                              C_AREA.03
@@ -884,7 +906,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void rewriteStatement() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. acceptStatement.                                     C_AREA.02
             000003 PROCEDURE DIVISION.                                              C_AREA.03
@@ -898,7 +921,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void callStatement() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. acceptStatement.                                     C_AREA.02
             000003 PROCEDURE DIVISION USING GRP-01.                                 C_AREA.03
@@ -919,7 +943,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void writeStatement() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. acceptStatement.                                     C_AREA.02
             000003 PROCEDURE DIVISION USING GRP-01.                                 C_AREA.03
@@ -940,7 +965,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void computeStatement() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION .                                        C_AREA.01
             000002 PROGRAM-ID . HELLO-WORLD .                                       C_AREA.02
             000003 PROCEDURE DIVISION .                                             C_AREA.03
@@ -958,7 +984,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void divideStatement() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. acceptStatement.                                     C_AREA.02
             000003 PROCEDURE DIVISION USING GRP-01.                                 C_AREA.03
@@ -977,7 +1004,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void evaluateStatement() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. acceptStatement.                                     C_AREA.02
             000003 PROCEDURE DIVISION USING GRP-01.                                 C_AREA.03
@@ -1001,7 +1029,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void conditions() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. acceptStatement.                                     C_AREA.02
             000003 PROCEDURE DIVISION USING GRP-01.                                 C_AREA.03
@@ -1019,7 +1048,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void conditionNameSubscriptReference() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. acceptStatement.                                     C_AREA.02
             000003 PROCEDURE DIVISION.                                              C_AREA.03
@@ -1034,7 +1064,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void sendStatement() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. acceptStatement.                                     C_AREA.02
             000003 PROCEDURE DIVISION.                                              C_AREA.03
@@ -1048,7 +1079,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void tableCallTest() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. acceptStatement.                                     C_AREA.02
             000003 PROCEDURE DIVISION.                                              C_AREA.03
@@ -1064,7 +1096,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void functionCallTest() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. acceptStatement.                                     C_AREA.02
             000003 PROCEDURE DIVISION.                                              C_AREA.03
@@ -1081,7 +1114,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void relationConditions() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. acceptStatement.                                     C_AREA.02
             000003 PROCEDURE DIVISION.                                              C_AREA.03
@@ -1099,7 +1133,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void multiElementLiteral() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. acceptStatement.                                     C_AREA.02
             000003 PROCEDURE DIVISION.                                              C_AREA.03
@@ -1113,7 +1148,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void multiElementIdentifier() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. acceptStatement.                                     C_AREA.02
             000003 PROCEDURE DIVISION.                                              C_AREA.03
@@ -1127,7 +1163,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void openMultipleStatements() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. acceptStatement.                                     C_AREA.02
             000003 PROCEDURE DIVISION.                                              C_AREA.03
@@ -1148,7 +1185,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void outOfOrderOpenStatements() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. acceptStatement.                                     C_AREA.02
             000003 PROCEDURE DIVISION.                                              C_AREA.03
@@ -1163,7 +1201,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void unstringStatement() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. acceptStatement.                                     C_AREA.02
             000003 PROCEDURE DIVISION.                                              C_AREA.03
@@ -1183,7 +1222,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void terminateStatement() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. terminateStatement.                                  C_AREA.02
             000003 PROCEDURE DIVISION.                                              C_AREA.03
@@ -1197,7 +1237,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void generateStatement() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. terminateStatement.                                  C_AREA.02
             000003 PROCEDURE DIVISION.                                              C_AREA.03
@@ -1211,7 +1252,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void subtractStatement() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. subtractStatement.                                   C_AREA.02
             000003 PROCEDURE DIVISION.                                              C_AREA.03
@@ -1227,7 +1269,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void exitStatement() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. exitStatement.                                       C_AREA.02
             000003 PROCEDURE DIVISION.                                              C_AREA.03
@@ -1241,7 +1284,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void sortStatement() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. sortStatement.                                       C_AREA.02
             000003 PROCEDURE DIVISION.                                              C_AREA.03
@@ -1261,7 +1305,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void stringStatement() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. subtractStatement.                                   C_AREA.02
             000003 PROCEDURE DIVISION.                                              C_AREA.03
@@ -1278,7 +1323,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void startStatement() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. subtractStatement.                                   C_AREA.02
             000003 PROCEDURE DIVISION.                                              C_AREA.03
@@ -1294,7 +1340,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void goToStatement() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. subtractStatement.                                   C_AREA.02
             000003 PROCEDURE DIVISION.                                              C_AREA.03
@@ -1310,7 +1357,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void ifStatement() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. subtractStatement.                                   C_AREA.02
             000003 PROCEDURE DIVISION.                                              C_AREA.03
@@ -1328,7 +1376,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void initializeStatement() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. subtractStatement.                                   C_AREA.02
             000003 PROCEDURE DIVISION.                                              C_AREA.03
@@ -1344,7 +1393,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void initiateStatement() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. subtractStatement.                                   C_AREA.02
             000003 PROCEDURE DIVISION.                                              C_AREA.03
@@ -1359,7 +1409,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void dataValueInterval() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000100 IDENTIFICATION DIVISION.                                         CM1014.2
             000200 PROGRAM-ID.                                                      CM1014.2
             000300     CM101M.                                                      CM1014.2
@@ -1377,7 +1428,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void inspectStatement() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. subtractStatement.                                   C_AREA.02
             000003 PROCEDURE DIVISION.                                              C_AREA.03
@@ -1403,7 +1455,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void communicationSection() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. communicationSection.                                C_AREA.02
             000003 DATA DIVISION.                                                   C_AREA.03
@@ -1419,7 +1472,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void reportSection() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. communicationSection.                                C_AREA.02
             000003 DATA DIVISION.                                                   C_AREA.03
@@ -1434,7 +1488,8 @@ class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
     @Test
     void programLibrarySection() {
         rewriteRun(
-          preprocessor("""
+          preprocessor(
+			"""
             000001 IDENTIFICATION DIVISION.                                         C_AREA.01
             000002 PROGRAM-ID. communicationSection.                                C_AREA.02
             000003 DATA DIVISION.                                                   C_AREA.03

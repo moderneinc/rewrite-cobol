@@ -40,13 +40,15 @@ public class FindRelationshipsTest extends CobolTest {
             "",
             spec -> spec.after(s -> s).path("IC201A.CBL")
           ),
-          text("""
+          text(
+			"""
               *
               INCLUDE OBJLIB(IC201A)    MODULE FOO
               *INCLUDE OBJLIB(ABCD02)
               """,
             (spec) -> spec.path("linkeditcards/LINKEDIT1")),
-          text("""
+          text(
+			"""
             BIND PACKAGE(&PROD0.EXT) OWNER(&SBS100S) -                        \s
                QUALIFIER(&SBS100S.EXT) MEMBER(IC201A) -                      \s
                SQLERROR(NOPACKAGE) VALIDATE(BIND) FLAG(I) ISOLATION(CS) -
@@ -55,7 +57,8 @@ public class FindRelationshipsTest extends CobolTest {
                ENABLE(*)                                                \s
             """,
             (spec) -> spec.path("bindcards/BINDCARDPACKAGE")),
-          text("""
+          text(
+			"""
               BIND PLAN(LINKEDIT1) OWNER(SBS100S) -            \s
                  QUALIFIER(SBS100S) -                         \s
                  PKLIST(PROD0.*)  -                           \s
@@ -350,7 +353,8 @@ public class FindRelationshipsTest extends CobolTest {
                      LINKAGE SECTION.                                                 *
                          01  GRP-01.                                                  *
                              COPY INCEPTION.                                          *
-              """, "", spec -> spec.after(s -> s).path("COPY_IN_COPY.CBL")
+              """,
+			"", spec -> spec.after(s -> s).path("COPY_IN_COPY.CBL")
           )
         );
     }
@@ -590,7 +594,8 @@ public class FindRelationshipsTest extends CobolTest {
               | APPL FORM                                  CM   VER                         |
               | INSTREAM JCL: N                                                             |
               |                                                                             |
-              """, spec -> spec.after(s -> s).path("CTM_SCHEDULE.ctms")
+              """,
+			spec -> spec.after(s -> s).path("CTM_SCHEDULE.ctms")
           ));
     }
 }
