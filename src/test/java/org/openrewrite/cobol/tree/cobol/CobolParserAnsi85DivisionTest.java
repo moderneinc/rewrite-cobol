@@ -366,7 +366,8 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
     @Test
     void continuedWords() {
         rewriteRun(
-          cobol("""
+          cobol(
+			"""
             000100 IDENTIFICATION DIVISION.                                         00000000
                    PROGRAM-ID.                                                      00000000
                        CM101M.                                                      00000000
@@ -1093,7 +1094,8 @@ public class CobolParserAnsi85DivisionTest extends CobolTest {
     @Test
     void computeStatement() {
         rewriteRun(
-          cobol("""
+          cobol(
+			"""
             000001 IDENTIFICATION DIVISION .                                        C_AREA.01
             000002 PROGRAM-ID . HELLO-WORLD .                                       C_AREA.02
             000003 PROCEDURE DIVISION .                                             C_AREA.03

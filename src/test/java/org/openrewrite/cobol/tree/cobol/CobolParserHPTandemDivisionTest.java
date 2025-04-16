@@ -463,7 +463,8 @@ class CobolParserHPTandemDivisionTest extends CobolTest {
                FULL
                ZERO-FILL
                .
-              """)
+              """
+          )
         );
     }
 
@@ -479,7 +480,8 @@ class CobolParserHPTandemDivisionTest extends CobolTest {
                DATA DIVISION.
                SCREEN SECTION.
                01 REVERSE-VIDEO.
-              """)
+              """
+          )
         );
     }
 

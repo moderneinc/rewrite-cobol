@@ -28,7 +28,8 @@ public class CommentStatementTest implements RewriteTest {
             //* BUT IF YOU HAVE A LOT TO SAY, YOU CAN FOLLOW A
             //* COMMENT STATEMENT WITH MORE COMMENT
             //* STATEMENTS.
-            """)
+            """
+          )
         );
     }
 
@@ -41,13 +42,15 @@ public class CommentStatementTest implements RewriteTest {
             //* BUT IF YOU HAVE;  A LOT TO SAY, YOU CAN FOLLOW A
             //* COMMENT STATEMENT ; WITH MORE ; COMMENT
             //* STATEMENTS; .
-            """)
+            """
+          )
         );
     }
     @Test
     void slashes() {
         rewriteRun(
-          jcl("""
+          jcl(
+			"""
               //* FOO/BAR/BUZ
               """
           )
@@ -57,7 +60,8 @@ public class CommentStatementTest implements RewriteTest {
     @Test
     void emptyCommentWithCommentArea() {
         rewriteRun(
-          jcl("""
+          jcl(
+			"""
               //*
               //*                                                                     commentArea
               //*
@@ -69,7 +73,8 @@ public class CommentStatementTest implements RewriteTest {
     @Test
     void lineComments() {
         rewriteRun(
-          jcl("""
+          jcl(
+			"""
               //*====================================================================*
               //*                                                                    *
               //*====================================================================*
