@@ -48,7 +48,7 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                   .toList();
                 assertThat(statements.size()).isEqualTo(1);
 
-                CobolPreprocessor.CopyStatement issue38 = statements.get(0);
+                CobolPreprocessor.CopyStatement issue38 = statements.getFirst();
                 PrintOutputCapture<ExecutionContext> outputCapture =
                   new PrintOutputCapture<>(new InMemoryExecutionContext());
                 printer.visit(issue38, outputCapture);
@@ -76,7 +76,7 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                         .toList();
                 assertThat(statements.size()).isEqualTo(8);
 
-                CobolPreprocessor.CopyStatement k1fda = statements.get(0);
+                CobolPreprocessor.CopyStatement k1fda = statements.getFirst();
                 PrintOutputCapture<ExecutionContext> outputCapture =
                     new PrintOutputCapture<>(new InMemoryExecutionContext());
                 printer.visit(k1fda, outputCapture);
@@ -188,7 +188,7 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                           .toList();
                   assertThat(statements.size()).isEqualTo(3);
 
-                  CobolPreprocessor.CopyStatement k2sea = statements.get(0);
+                  CobolPreprocessor.CopyStatement k2sea = statements.getFirst();
                   PrintOutputCapture<ExecutionContext> outputCapture =
                           new PrintOutputCapture<>(new InMemoryExecutionContext());
                   printer.visit(k2sea, outputCapture);
@@ -260,7 +260,7 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                           .toList();
                   assertThat(statements.size()).isEqualTo(3);
 
-                  CobolPreprocessor.CopyStatement k3snb = statements.get(0);
+                  CobolPreprocessor.CopyStatement k3snb = statements.getFirst();
                   PrintOutputCapture<ExecutionContext> outputCapture =
                           new PrintOutputCapture<>(new InMemoryExecutionContext());
                   printer.visit(k3snb, outputCapture);
@@ -313,7 +313,7 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                           .toList();
                   assertThat(statements.size()).isEqualTo(2);
 
-                  CobolPreprocessor.CopyStatement k5sdb = statements.get(0);
+                  CobolPreprocessor.CopyStatement k5sdb = statements.getFirst();
                   PrintOutputCapture<ExecutionContext> outputCapture =
                           new PrintOutputCapture<>(new InMemoryExecutionContext());
                   printer.visit(k5sdb, outputCapture);
@@ -357,7 +357,7 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                           .toList();
                   assertThat(statements.size()).isEqualTo(9);
 
-                  CobolPreprocessor.CopyStatement kp001 = statements.get(0);
+                  CobolPreprocessor.CopyStatement kp001 = statements.getFirst();
                   PrintOutputCapture<ExecutionContext> outputCapture =
                           new PrintOutputCapture<>(new InMemoryExecutionContext());
                   printer.visit(kp001, outputCapture);
