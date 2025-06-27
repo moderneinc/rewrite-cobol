@@ -16,7 +16,6 @@ import org.openrewrite.marker.SearchResult;
 import org.openrewrite.test.RecipeSpec;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.openrewrite.cobol.Assertions.cobol;
@@ -41,7 +40,7 @@ public class FindIndicatorsTest extends CobolTest {
     @Test
     void sm206a() {
         rewriteRun(
-          spec -> spec.recipe(new CompositeRecipe(Arrays.asList(new FindIndicators("S"), new FindIndicators("Y")))),
+          spec -> spec.recipe(new CompositeRecipe(List.of(new FindIndicators("S"), new FindIndicators("Y")))),
           cobol(getNistResource("SM206A.CBL"),
             """
               000100 IDENTIFICATION DIVISION.                                         SM2064.2
