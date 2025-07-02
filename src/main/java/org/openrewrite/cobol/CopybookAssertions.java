@@ -13,7 +13,7 @@ import org.openrewrite.test.SourceSpecs;
 
 import java.util.function.Consumer;
 
-public class CopybookAssertions {
+public final class CopybookAssertions {
     private CopybookAssertions() {
     }
 

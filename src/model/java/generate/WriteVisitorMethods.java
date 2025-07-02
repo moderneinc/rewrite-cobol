@@ -40,15 +40,15 @@ public class WriteVisitorMethods extends Recipe {
 
     @Override
     public JavaVisitor<ExecutionContext> getVisitor() {
-        return new JavaVisitor<ExecutionContext>() {
+        return new JavaVisitor<>() {
             @Override
             public J visitClassDeclaration(J.ClassDeclaration classDecl, ExecutionContext ctx) {
-                switch (classDecl.getSimpleName()) {
-                    case "CobolVisitor":
-                        return writeVisitorMethods.visitNonNull(classDecl, ctx, getCursor().getParentOrThrow());
-                    case "CobolIsoVisitor":
-                        return writeIsoVisitorMethods.visitNonNull(classDecl, ctx, getCursor().getParentOrThrow());
-                }
+				if ("CobolVisitor".equals(classDecl.getSimpleName())) {
+					return writeVisitorMethods.visitNonNull(classDecl, ctx, getCursor().getParentOrThrow());
+				}
+				else if ("CobolIsoVisitor".equals(classDecl.getSimpleName())) {
+					return writeIsoVisitorMethods.visitNonNull(classDecl, ctx, getCursor().getParentOrThrow());
+				}
 
                 return classDecl;
             }
@@ -57,7 +57,7 @@ public class WriteVisitorMethods extends Recipe {
 
     JavaParser.Builder<?, ?> parser = JavaParser.fromJavaVersion().classpath(JavaParser.runtimeClasspath());
 
-    private final JavaVisitor<ExecutionContext> writeVisitorMethods = new JavaIsoVisitor<ExecutionContext>() {
+    private final JavaVisitor<ExecutionContext> writeVisitorMethods = new JavaIsoVisitor<>() {
         final JavaTemplate visitMethod = JavaTemplate.builder("" +
                 "public Cobol visit#{}(Cobol.#{} #{}, P p) {" +
                 "    Cobol.#{} #{} = #{};" +
@@ -75,7 +75,7 @@ public class WriteVisitorMethods extends Recipe {
                 String modelTypeName = modelClass.getSimpleName();
                 String paramName = modelTypeName.substring(0, 1).toLowerCase() + modelTypeName.substring(1);
                 String varName = paramName.substring(0, 1);
-                if (varName.equals("p")) {
+                if ("p".equals(varName)) {
                     varName = "pp";
                 }
 

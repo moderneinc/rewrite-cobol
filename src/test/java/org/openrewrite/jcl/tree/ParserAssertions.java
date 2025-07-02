@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ParserAssertions {
+public final class ParserAssertions {
 
     private ParserAssertions() {
     }

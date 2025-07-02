@@ -37,7 +37,7 @@ public class WriteModel extends Recipe {
 
     JavaParser.Builder<?, ?> parser = JavaParser.fromJavaVersion().classpath(JavaParser.runtimeClasspath());
 
-    JavaVisitor<ExecutionContext> writeModelClass = new JavaIsoVisitor<ExecutionContext>() {
+    JavaVisitor<ExecutionContext> writeModelClass = new JavaIsoVisitor<>() {
         final JavaTemplate valueModel = JavaTemplate.builder("" +
                 "@Value " +
                 "@EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true) " +
@@ -133,7 +133,7 @@ public class WriteModel extends Recipe {
         @Override
         public J.ClassDeclaration visitClassDeclaration(J.ClassDeclaration classDecl, ExecutionContext ctx) {
             J.ClassDeclaration c = classDecl;
-            if(FindAnnotations.find(c, "@generate.Skip").size() > 0) {
+            if(!FindAnnotations.find(c, "@generate.Skip").isEmpty()) {
                 //noinspection ConstantConditions
                 return null;
             }
@@ -255,7 +255,7 @@ public class WriteModel extends Recipe {
             }
             JavaType.FullyQualified type = TypeUtils.asFullyQualified(((J.VariableDeclarations) statement).getType());
             assert type != null;
-            return type.getClassName().contains("Padded") || type.getClassName().equals("CobolContainer");
+            return type.getClassName().contains("Padded") || "CobolContainer".equals(type.getClassName());
         }
     };
 
@@ -265,12 +265,12 @@ public class WriteModel extends Recipe {
             @Override
             public J.Block visitBlock(J.Block block, ExecutionContext ctx) {
                 Object parent = getCursor().getParentOrThrow().getValue();
-                if (!(parent instanceof J.ClassDeclaration) || !((J.ClassDeclaration) parent).getSimpleName().equals("Cobol")) {
+                if (!(parent instanceof J.ClassDeclaration) || !"Cobol".equals(((J.ClassDeclaration) parent).getSimpleName())) {
                     return block;
                 }
 
                 J.Block b = block.withStatements(ListUtils.map(block.getStatements(), s -> s instanceof J.ClassDeclaration &&
-                                                                                           !(((J.ClassDeclaration) s).getSimpleName().equals("CompilationUnit")) ? null : s));
+                                                                                           !"CompilationUnit".equals(((J.ClassDeclaration) s).getSimpleName()) ? null : s));
                 List<Statement> statements = new ArrayList<>(b.getStatements());
                 statements.addAll(ListUtils.map(modelClasses,
                         mc -> (J.ClassDeclaration) writeModelClass.visitNonNull(mc, ctx, getCursor().getParentOrThrow())));

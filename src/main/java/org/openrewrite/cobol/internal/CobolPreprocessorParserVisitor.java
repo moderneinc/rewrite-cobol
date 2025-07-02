@@ -46,7 +46,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
     private final Map<Integer, String> commentAreas = new LinkedHashMap<>();
 
     private final Set<Character> commentIndicators = new HashSet<>();
-    private int cursor = 0;
+    private int cursor;
 
     public CobolPreprocessorParserVisitor(Path path, @Nullable FileAttributes fileAttributes,
                                           String source, Charset charset, boolean charsetBomMarked, CobolDialect cobolDialect) {
@@ -932,7 +932,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
                 break;
             }
         }
-        boolean isContinued = nextIndicator != null && indicatorAreas.get(nextIndicator).equals("-");
+        boolean isContinued = nextIndicator != null && "-".equals(indicatorAreas.get(nextIndicator));
 
         Character delimiter = null;
         // Detect a continued String literal.
@@ -953,7 +953,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
 
             String current = source.substring(cursor);
             int newLinePos = current.indexOf("\n");
-            int endPos = (nextCommentArea != null && nextCommentArea < (newLinePos + cursor)) ? nextCommentArea : (newLinePos + cursor);
+            int endPos = nextCommentArea != null && nextCommentArea < (newLinePos + cursor) ? nextCommentArea : (newLinePos + cursor);
 
             current = source.substring(cursor, endPos).trim();
             isContinued = !current.startsWith(text);

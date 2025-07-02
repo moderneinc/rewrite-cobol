@@ -7,7 +7,7 @@ package org.openrewrite.cobol.internal;
 
 import java.util.*;
 
-public class HpTandem implements CobolDialect {
+public final class HpTandem implements CobolDialect {
 
     private static final HpTandem INSTANCE = new HpTandem();
 

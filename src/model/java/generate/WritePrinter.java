@@ -43,7 +43,7 @@ public class WritePrinter extends Recipe {
 
     @Override
     public JavaVisitor<ExecutionContext> getVisitor() {
-        return new JavaIsoVisitor<ExecutionContext>() {
+        return new JavaIsoVisitor<>() {
             @Override
             public J.ClassDeclaration visitClassDeclaration(J.ClassDeclaration classDecl, ExecutionContext ctx) {
                 J.ClassDeclaration c = classDecl;
@@ -74,7 +74,7 @@ public class WritePrinter extends Recipe {
                                     break;
                                 case "List":
                                     String loopVar = paramName.substring(0, 1);
-                                    if (loopVar.equals("p")) {
+                                    if ("p".equals(loopVar)) {
                                         loopVar = "pp";
                                     }
                                     String typeParam = ((J.Identifier) ((J.ParameterizedType) varDec.getTypeExpression()).getTypeParameters().get(0)).getSimpleName();

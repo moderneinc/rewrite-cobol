@@ -58,7 +58,7 @@ public class WritePaddingAccessors extends Recipe {
         public J.ClassDeclaration visitClassDeclaration(J.ClassDeclaration classDecl, ExecutionContext ctx) {
             J.ClassDeclaration c = classDecl;
 
-            if (c.getSimpleName().equals("Padding")) {
+            if ("Padding".equals(c.getSimpleName())) {
                 for (Statement statement : modelClassDeclaration.getBody().getStatements()) {
                     if (statement instanceof J.VariableDeclarations) {
                         J.VariableDeclarations varDec = (J.VariableDeclarations) statement;
@@ -122,17 +122,17 @@ public class WritePaddingAccessors extends Recipe {
         boolean isPadded(Statement statement) {
             JavaType.FullyQualified type = TypeUtils.asFullyQualified(((J.VariableDeclarations) statement).getType());
             assert type != null;
-            return type.getClassName().contains("Padded") || type.getClassName().equals("CobolContainer");
+            return type.getClassName().contains("Padded") || "CobolContainer".equals(type.getClassName());
         }
     }
 
     @Override
     public JavaVisitor<ExecutionContext> getVisitor() {
-        return new JavaIsoVisitor<ExecutionContext>() {
+        return new JavaIsoVisitor<>() {
             @Override
             public J.Block visitBlock(J.Block block, ExecutionContext ctx) {
                 Object parent = getCursor().getParentOrThrow().getValue();
-                if (!(parent instanceof J.ClassDeclaration) || !((J.ClassDeclaration) parent).getSimpleName().equals("Cobol")) {
+                if (!(parent instanceof J.ClassDeclaration) || !"Cobol".equals(((J.ClassDeclaration) parent).getSimpleName())) {
                     return block;
                 }
 

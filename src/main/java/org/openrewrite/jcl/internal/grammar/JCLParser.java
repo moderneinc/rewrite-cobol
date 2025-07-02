@@ -21,21 +21,62 @@ public class JCLParser extends Parser {
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
-	public static final int
-		UTF_8_BOM=1, WS=2, EOL=3, JCL_STATEMENT=4, JCL_STREAM=5, JES2=6, JES3=7,
-		CM=8, COMMENT=9, UNKNOWN=10, CA_START=11, STRINGLITERAL=12, TEXT=13, JCL_TC_START=14,
-		JCL_TC_STOP=15, JCL_STRINGLITERAL=16, JCL_TEXT=17, STREAM_WS=18, STREAM_STRINGLITERAL=19,
-		STREAM_TEXT=20, JES2_STRINGLITERAL=21, JES2_TEXT=22, JES3_STRINGLITERAL=23,
-		JES3_TEXT=24, CM_STRINGLITERAL=25, CM_TEXT=26, COMMENT_WS=27, COMMENT_STRINGLITERAL=28,
-		COMMENT_TEXT=29, UNKNOWN_WS=30, UNKNOWN_STRINGLITERAL=31, UNKNOWN_TEXT=32;
-	public static final int
-		RULE_compilationUnit = 0, RULE_statement = 1, RULE_jcl = 2, RULE_jclWord = 3,
-		RULE_jclCommentArea = 4, RULE_jclTrailingComment = 5, RULE_jes2 = 6, RULE_jes2Word = 7,
-		RULE_jes2CommentArea = 8, RULE_jes3 = 9, RULE_jes3Word = 10, RULE_jes3CommentArea = 11,
-		RULE_stream = 12, RULE_streamWord = 13, RULE_streamCommentArea = 14, RULE_controlM = 15,
-		RULE_controlMWord = 16, RULE_controlMCommentArea = 17, RULE_comment = 18,
-		RULE_commentWord = 19, RULE_commentCommentArea = 20, RULE_unknown = 21,
-		RULE_unknownWord = 22, RULE_unknownCommentArea = 23;
+	public static final int UTF_8_BOM = 1;
+	public static final int WS = 2;
+	public static final int EOL = 3;
+	public static final int JCL_STATEMENT = 4;
+	public static final int JCL_STREAM = 5;
+	public static final int JES2 = 6;
+	public static final int JES3 = 7;
+	public static final int CM = 8;
+	public static final int COMMENT = 9;
+	public static final int UNKNOWN = 10;
+	public static final int CA_START = 11;
+	public static final int STRINGLITERAL = 12;
+	public static final int TEXT = 13;
+	public static final int JCL_TC_START = 14;
+	public static final int JCL_TC_STOP = 15;
+	public static final int JCL_STRINGLITERAL = 16;
+	public static final int JCL_TEXT = 17;
+	public static final int STREAM_WS = 18;
+	public static final int STREAM_STRINGLITERAL = 19;
+	public static final int STREAM_TEXT = 20;
+	public static final int JES2_STRINGLITERAL = 21;
+	public static final int JES2_TEXT = 22;
+	public static final int JES3_STRINGLITERAL = 23;
+	public static final int JES3_TEXT = 24;
+	public static final int CM_STRINGLITERAL = 25;
+	public static final int CM_TEXT = 26;
+	public static final int COMMENT_WS = 27;
+	public static final int COMMENT_STRINGLITERAL = 28;
+	public static final int COMMENT_TEXT = 29;
+	public static final int UNKNOWN_WS = 30;
+	public static final int UNKNOWN_STRINGLITERAL = 31;
+	public static final int UNKNOWN_TEXT = 32;
+	public static final int RULE_compilationUnit = 0;
+	public static final int RULE_statement = 1;
+	public static final int RULE_jcl = 2;
+	public static final int RULE_jclWord = 3;
+	public static final int RULE_jclCommentArea = 4;
+	public static final int RULE_jclTrailingComment = 5;
+	public static final int RULE_jes2 = 6;
+	public static final int RULE_jes2Word = 7;
+	public static final int RULE_jes2CommentArea = 8;
+	public static final int RULE_jes3 = 9;
+	public static final int RULE_jes3Word = 10;
+	public static final int RULE_jes3CommentArea = 11;
+	public static final int RULE_stream = 12;
+	public static final int RULE_streamWord = 13;
+	public static final int RULE_streamCommentArea = 14;
+	public static final int RULE_controlM = 15;
+	public static final int RULE_controlMWord = 16;
+	public static final int RULE_controlMCommentArea = 17;
+	public static final int RULE_comment = 18;
+	public static final int RULE_commentWord = 19;
+	public static final int RULE_commentCommentArea = 20;
+	public static final int RULE_unknown = 21;
+	public static final int RULE_unknownWord = 22;
+	public static final int RULE_unknownCommentArea = 23;
 	private static String[] makeRuleNames() {
 		return new String[] {
 			"compilationUnit", "statement", "jcl", "jclWord", "jclCommentArea", "jclTrailingComment",
@@ -132,16 +173,24 @@ public class JCLParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_compilationUnit; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).enterCompilationUnit(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).enterCompilationUnit(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).exitCompilationUnit(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).exitCompilationUnit(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitCompilationUnit(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) {
+				return ((JCLParserVisitor<? extends T>) visitor).visitCompilationUnit(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -155,7 +204,7 @@ public class JCLParser extends Parser {
 			setState(51);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (((_la) & ~0x3f) == 0 && ((1L << _la) & 7381649408L) != 0) {
+			while ((_la & ~0x3f) == 0 && ((1L << _la) & 7381649408L) != 0) {
 				{
 				{
 				setState(48);
@@ -210,16 +259,24 @@ public class JCLParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_statement; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).enterStatement(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).enterStatement(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).exitStatement(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).exitStatement(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) {
+				return ((JCLParserVisitor<? extends T>) visitor).visitStatement(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -316,16 +373,24 @@ public class JCLParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_jcl; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).enterJcl(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).enterJcl(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).exitJcl(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).exitJcl(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitJcl(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) {
+				return ((JCLParserVisitor<? extends T>) visitor).visitJcl(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -335,21 +400,15 @@ public class JCLParser extends Parser {
 		try {
 			setState(67);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
-			case 1:
+			if (getInterpreter().adaptivePredict(_input, 2, _ctx) == 1) {
 				enterOuterAlt(_localctx, 1);
-				{
 				setState(65);
 				jclWord();
-				}
-				break;
-			case 2:
+			}
+			else if (getInterpreter().adaptivePredict(_input, 2, _ctx) == 2) {
 				enterOuterAlt(_localctx, 2);
-				{
 				setState(66);
 				jclTrailingComment();
-				}
-				break;
 			}
 		}
 		catch (RecognitionException re) {
@@ -376,16 +435,24 @@ public class JCLParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_jclWord; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).enterJclWord(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).enterJclWord(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).exitJclWord(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).exitJclWord(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitJclWord(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) {
+				return ((JCLParserVisitor<? extends T>) visitor).visitJclWord(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -402,20 +469,18 @@ public class JCLParser extends Parser {
 			_errHandler.recoverInline(this);
 			}
 			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				if (_input.LA(1) == Token.EOF) {
+					matchedEOF = true;
+				}
 				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(71);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,3,_ctx) ) {
-			case 1:
-				{
-				setState(70);
-				jclCommentArea();
+				if (getInterpreter().adaptivePredict(_input, 3, _ctx) == 1) {
+					setState(70);
+					jclCommentArea();
 				}
-				break;
-			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -440,16 +505,24 @@ public class JCLParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_jclCommentArea; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).enterJclCommentArea(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).enterJclCommentArea(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).exitJclCommentArea(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).exitJclCommentArea(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitJclCommentArea(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) {
+				return ((JCLParserVisitor<? extends T>) visitor).visitJclCommentArea(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -468,7 +541,9 @@ public class JCLParser extends Parser {
 			_errHandler.recoverInline(this);
 			}
 			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				if (_input.LA(1) == Token.EOF) {
+					matchedEOF = true;
+				}
 				_errHandler.reportMatch(this);
 				consume();
 			}
@@ -504,16 +579,24 @@ public class JCLParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_jclTrailingComment; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).enterJclTrailingComment(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).enterJclTrailingComment(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).exitJclTrailingComment(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).exitJclTrailingComment(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitJclTrailingComment(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) {
+				return ((JCLParserVisitor<? extends T>) visitor).visitJclTrailingComment(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -546,14 +629,10 @@ public class JCLParser extends Parser {
 			match(JCL_TC_STOP);
 			setState(86);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,5,_ctx) ) {
-			case 1:
-				{
-				setState(85);
-				jclCommentArea();
+				if (getInterpreter().adaptivePredict(_input, 5, _ctx) == 1) {
+					setState(85);
+					jclCommentArea();
 				}
-				break;
-			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -578,16 +657,24 @@ public class JCLParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_jes2; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).enterJes2(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).enterJes2(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).exitJes2(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).exitJes2(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitJes2(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) {
+				return ((JCLParserVisitor<? extends T>) visitor).visitJes2(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -625,16 +712,24 @@ public class JCLParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_jes2Word; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).enterJes2Word(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).enterJes2Word(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).exitJes2Word(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).exitJes2Word(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitJes2Word(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) {
+				return ((JCLParserVisitor<? extends T>) visitor).visitJes2Word(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -651,20 +746,18 @@ public class JCLParser extends Parser {
 			_errHandler.recoverInline(this);
 			}
 			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				if (_input.LA(1) == Token.EOF) {
+					matchedEOF = true;
+				}
 				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(92);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,6,_ctx) ) {
-			case 1:
-				{
-				setState(91);
-				jes2CommentArea();
+				if (getInterpreter().adaptivePredict(_input, 6, _ctx) == 1) {
+					setState(91);
+					jes2CommentArea();
 				}
-				break;
-			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -689,16 +782,24 @@ public class JCLParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_jes2CommentArea; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).enterJes2CommentArea(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).enterJes2CommentArea(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).exitJes2CommentArea(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).exitJes2CommentArea(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitJes2CommentArea(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) {
+				return ((JCLParserVisitor<? extends T>) visitor).visitJes2CommentArea(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -717,7 +818,9 @@ public class JCLParser extends Parser {
 			_errHandler.recoverInline(this);
 			}
 			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				if (_input.LA(1) == Token.EOF) {
+					matchedEOF = true;
+				}
 				_errHandler.reportMatch(this);
 				consume();
 			}
@@ -745,16 +848,24 @@ public class JCLParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_jes3; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).enterJes3(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).enterJes3(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).exitJes3(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).exitJes3(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitJes3(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) {
+				return ((JCLParserVisitor<? extends T>) visitor).visitJes3(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -792,16 +903,24 @@ public class JCLParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_jes3Word; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).enterJes3Word(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).enterJes3Word(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).exitJes3Word(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).exitJes3Word(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitJes3Word(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) {
+				return ((JCLParserVisitor<? extends T>) visitor).visitJes3Word(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -818,20 +937,18 @@ public class JCLParser extends Parser {
 			_errHandler.recoverInline(this);
 			}
 			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				if (_input.LA(1) == Token.EOF) {
+					matchedEOF = true;
+				}
 				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(101);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,7,_ctx) ) {
-			case 1:
-				{
-				setState(100);
-				jes3CommentArea();
+				if (getInterpreter().adaptivePredict(_input, 7, _ctx) == 1) {
+					setState(100);
+					jes3CommentArea();
 				}
-				break;
-			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -856,16 +973,24 @@ public class JCLParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_jes3CommentArea; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).enterJes3CommentArea(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).enterJes3CommentArea(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).exitJes3CommentArea(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).exitJes3CommentArea(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitJes3CommentArea(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) {
+				return ((JCLParserVisitor<? extends T>) visitor).visitJes3CommentArea(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -884,7 +1009,9 @@ public class JCLParser extends Parser {
 			_errHandler.recoverInline(this);
 			}
 			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				if (_input.LA(1) == Token.EOF) {
+					matchedEOF = true;
+				}
 				_errHandler.reportMatch(this);
 				consume();
 			}
@@ -912,16 +1039,24 @@ public class JCLParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_stream; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).enterStream(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).enterStream(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).exitStream(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).exitStream(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitStream(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) {
+				return ((JCLParserVisitor<? extends T>) visitor).visitStream(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -959,16 +1094,24 @@ public class JCLParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_streamWord; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).enterStreamWord(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).enterStreamWord(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).exitStreamWord(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).exitStreamWord(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitStreamWord(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) {
+				return ((JCLParserVisitor<? extends T>) visitor).visitStreamWord(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -985,20 +1128,18 @@ public class JCLParser extends Parser {
 			_errHandler.recoverInline(this);
 			}
 			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				if (_input.LA(1) == Token.EOF) {
+					matchedEOF = true;
+				}
 				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(110);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,8,_ctx) ) {
-			case 1:
-				{
-				setState(109);
-				streamCommentArea();
+				if (getInterpreter().adaptivePredict(_input, 8, _ctx) == 1) {
+					setState(109);
+					streamCommentArea();
 				}
-				break;
-			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -1023,16 +1164,24 @@ public class JCLParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_streamCommentArea; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).enterStreamCommentArea(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).enterStreamCommentArea(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).exitStreamCommentArea(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).exitStreamCommentArea(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitStreamCommentArea(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) {
+				return ((JCLParserVisitor<? extends T>) visitor).visitStreamCommentArea(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -1051,7 +1200,9 @@ public class JCLParser extends Parser {
 			_errHandler.recoverInline(this);
 			}
 			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				if (_input.LA(1) == Token.EOF) {
+					matchedEOF = true;
+				}
 				_errHandler.reportMatch(this);
 				consume();
 			}
@@ -1079,16 +1230,24 @@ public class JCLParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_controlM; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).enterControlM(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).enterControlM(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).exitControlM(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).exitControlM(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitControlM(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) {
+				return ((JCLParserVisitor<? extends T>) visitor).visitControlM(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -1126,16 +1285,24 @@ public class JCLParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_controlMWord; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).enterControlMWord(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).enterControlMWord(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).exitControlMWord(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).exitControlMWord(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitControlMWord(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) {
+				return ((JCLParserVisitor<? extends T>) visitor).visitControlMWord(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -1152,20 +1319,18 @@ public class JCLParser extends Parser {
 			_errHandler.recoverInline(this);
 			}
 			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				if (_input.LA(1) == Token.EOF) {
+					matchedEOF = true;
+				}
 				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(119);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,9,_ctx) ) {
-			case 1:
-				{
-				setState(118);
-				controlMCommentArea();
+				if (getInterpreter().adaptivePredict(_input, 9, _ctx) == 1) {
+					setState(118);
+					controlMCommentArea();
 				}
-				break;
-			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -1190,16 +1355,24 @@ public class JCLParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_controlMCommentArea; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).enterControlMCommentArea(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).enterControlMCommentArea(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).exitControlMCommentArea(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).exitControlMCommentArea(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitControlMCommentArea(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) {
+				return ((JCLParserVisitor<? extends T>) visitor).visitControlMCommentArea(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -1218,7 +1391,9 @@ public class JCLParser extends Parser {
 			_errHandler.recoverInline(this);
 			}
 			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				if (_input.LA(1) == Token.EOF) {
+					matchedEOF = true;
+				}
 				_errHandler.reportMatch(this);
 				consume();
 			}
@@ -1246,16 +1421,24 @@ public class JCLParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_comment; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).enterComment(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).enterComment(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).exitComment(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).exitComment(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitComment(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) {
+				return ((JCLParserVisitor<? extends T>) visitor).visitComment(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -1293,16 +1476,24 @@ public class JCLParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_commentWord; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).enterCommentWord(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).enterCommentWord(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).exitCommentWord(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).exitCommentWord(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitCommentWord(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) {
+				return ((JCLParserVisitor<? extends T>) visitor).visitCommentWord(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -1319,20 +1510,18 @@ public class JCLParser extends Parser {
 			_errHandler.recoverInline(this);
 			}
 			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				if (_input.LA(1) == Token.EOF) {
+					matchedEOF = true;
+				}
 				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(128);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,10,_ctx) ) {
-			case 1:
-				{
-				setState(127);
-				commentCommentArea();
+				if (getInterpreter().adaptivePredict(_input, 10, _ctx) == 1) {
+					setState(127);
+					commentCommentArea();
 				}
-				break;
-			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -1357,16 +1546,24 @@ public class JCLParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_commentCommentArea; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).enterCommentCommentArea(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).enterCommentCommentArea(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).exitCommentCommentArea(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).exitCommentCommentArea(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitCommentCommentArea(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) {
+				return ((JCLParserVisitor<? extends T>) visitor).visitCommentCommentArea(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -1385,7 +1582,9 @@ public class JCLParser extends Parser {
 			_errHandler.recoverInline(this);
 			}
 			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				if (_input.LA(1) == Token.EOF) {
+					matchedEOF = true;
+				}
 				_errHandler.reportMatch(this);
 				consume();
 			}
@@ -1413,16 +1612,24 @@ public class JCLParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_unknown; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).enterUnknown(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).enterUnknown(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).exitUnknown(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).exitUnknown(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitUnknown(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) {
+				return ((JCLParserVisitor<? extends T>) visitor).visitUnknown(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -1460,16 +1667,24 @@ public class JCLParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_unknownWord; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).enterUnknownWord(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).enterUnknownWord(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).exitUnknownWord(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).exitUnknownWord(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitUnknownWord(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) {
+				return ((JCLParserVisitor<? extends T>) visitor).visitUnknownWord(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -1491,20 +1706,18 @@ public class JCLParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
 				setState(137);
 				_errHandler.sync(this);
-				switch ( getInterpreter().adaptivePredict(_input,11,_ctx) ) {
-				case 1:
-					{
-					setState(136);
-					unknownCommentArea();
+					if (getInterpreter().adaptivePredict(_input, 11, _ctx) == 1) {
+						setState(136);
+						unknownCommentArea();
 					}
-					break;
-				}
 				}
 				break;
 			case CA_START:
@@ -1540,16 +1753,24 @@ public class JCLParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_unknownCommentArea; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).enterUnknownCommentArea(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).enterUnknownCommentArea(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).exitUnknownCommentArea(this);
+			if (listener instanceof JCLParserListener) {
+				((JCLParserListener) listener).exitUnknownCommentArea(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitUnknownCommentArea(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) {
+				return ((JCLParserVisitor<? extends T>) visitor).visitUnknownCommentArea(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -1568,7 +1789,9 @@ public class JCLParser extends Parser {
 			_errHandler.recoverInline(this);
 			}
 			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				if (_input.LA(1) == Token.EOF) {
+					matchedEOF = true;
+				}
 				_errHandler.reportMatch(this);
 				consume();
 			}

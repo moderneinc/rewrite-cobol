@@ -56,7 +56,7 @@ public class FindRelationships extends Recipe {
             final Set<String> seenCursorAccess = new HashSet<>();
             final Set<String> seenTableAccess = new HashSet<>();
             String sourceName = "UNKNOWN";
-            boolean isSourceName = false;
+            boolean isSourceName;
 
             @Override
             public CobolPreprocessor.CompilationUnit visitCompilationUnit(CobolPreprocessor.CompilationUnit compilationUnit, ExecutionContext executionContext) {

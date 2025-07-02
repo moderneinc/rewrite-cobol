@@ -77,7 +77,7 @@ public class Mod {
         Mod mod = new Mod();
         System.setProperty("picocli.disable.closures", "true");
 
-        if (args.length == 0 || !args[0].equals("detect")) {
+        if (args.length == 0 || !"detect".equals(args[0])) {
             drawBanner();
         }
 

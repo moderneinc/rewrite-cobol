@@ -6,7 +6,7 @@ import java.io.UncheckedIOException;
 import java.util.Properties;
 
 public class ModerneAstWrite {
-    private final static Properties properties = new Properties();
+    private static final Properties properties = new Properties();
 
     public static String getVersion() {
         if (properties.size() == 0) {

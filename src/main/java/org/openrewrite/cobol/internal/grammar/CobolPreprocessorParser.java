@@ -21,64 +21,337 @@ public class CobolPreprocessorParser extends Parser {
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
-	public static final int
-		ADATA=1, ADV=2, ALIAS=3, ANSI=4, ANY=5, APOST=6, AR=7, ARITH=8, AUTO=9,
-		AWO=10, BIN=11, BLOCK0=12, BUF=13, BUFSIZE=14, BY=15, CBL=16, CBLCARD=17,
-		CICS=18, CO=19, COBOL2=20, COBOL3=21, CODEPAGE=22, COMPAT=23, COMPILE=24,
-		COPY=25, CP=26, CPP=27, CPSM=28, CS=29, CURR=30, CURRENCY=31, DATA=32,
-		DATEPROC=33, DBCS=34, DD=35, DEBUG=36, DECK=37, DIAGTRUNC=38, DLI=39,
-		DLL=40, DP=41, DTR=42, DU=43, DUMP=44, DYN=45, DYNAM=46, EDF=47, EJECT=48,
-		EJPD=49, EN=50, ENGLISH=51, END_EXEC=52, EPILOG=53, EXCI=54, EXEC=55,
-		EXIT=56, EXP=57, EXPORTALL=58, EXTEND=59, FASTSRT=60, FEPI=61, FLAG=62,
-		FLAGSTD=63, FSRT=64, FULL=65, GDS=66, GRAPHIC=67, HOOK=68, IN=69, INCLUDE=70,
-		INTDATE=71, JA=72, JP=73, KA=74, LANG=75, LANGUAGE=76, LC=77, LEASM=78,
-		LENGTH=79, LIB=80, LILIAN=81, LIN=82, LINECOUNT=83, LINKAGE=84, LIST=85,
-		LM=86, LONGMIXED=87, LONGUPPER=88, LPARENCHAR=89, LU=90, MAP=91, MARGINS=92,
-		MAX=93, MD=94, MDECK=95, MIG=96, MIXED=97, NAME=98, NAT=99, NATIONAL=100,
-		NATLANG=101, NN=102, NO=103, NOADATA=104, NOADV=105, NOALIAS=106, NOAWO=107,
-		NOBLOCK0=108, NOC=109, NOCBLCARD=110, NOCICS=111, NOCMPR2=112, NOCOMPILE=113,
-		NOCPSM=114, NOCURR=115, NOCURRENCY=116, NOD=117, NODATEPROC=118, NODBCS=119,
-		NODE=120, NODEBUG=121, NODECK=122, NODIAGTRUNC=123, NODLL=124, NODU=125,
-		NODUMP=126, NODP=127, NODTR=128, NODYN=129, NODYNAM=130, NOEDF=131, NOEJPD=132,
-		NOEPILOG=133, NOEXIT=134, NOEXP=135, NOEXPORTALL=136, NOF=137, NOFASTSRT=138,
-		NOFEPI=139, NOFLAG=140, NOFLAGMIG=141, NOFLAGSTD=142, NOFSRT=143, NOGRAPHIC=144,
-		NOHOOK=145, NOLENGTH=146, NOLIB=147, NOLINKAGE=148, NOLIST=149, NOMAP=150,
-		NOMD=151, NOMDECK=152, NONAME=153, NONUM=154, NONUMBER=155, NOOBJ=156,
-		NOOBJECT=157, NOOFF=158, NOOFFSET=159, NOOPSEQUENCE=160, NOOPT=161, NOOPTIMIZE=162,
-		NOOPTIONS=163, NOP=164, NOPFD=165, NOPROLOG=166, NORENT=167, NOS=168,
-		NOSEP=169, NOSEPARATE=170, NOSEQ=171, NOSOURCE=172, NOSPIE=173, NOSQL=174,
-		NOSQLC=175, NOSQLCCSID=176, NOSSR=177, NOSSRANGE=178, NOSTDTRUNC=179,
-		NOSEQUENCE=180, NOTERM=181, NOTERMINAL=182, NOTEST=183, NOTHREAD=184,
-		NOTRIG=185, NOVBREF=186, NOWD=187, NOWORD=188, NOX=189, NOXREF=190, NOZWB=191,
-		NS=192, NSEQ=193, NSYMBOL=194, NUM=195, NUMBER=196, NUMPROC=197, OBJ=198,
-		OBJECT=199, OF=200, OFF=201, OFFSET=202, ON=203, OP=204, OPMARGINS=205,
-		OPSEQUENCE=206, OPT=207, OPTFILE=208, OPTIMIZE=209, OPTIONS=210, OUT=211,
-		OUTDD=212, PFD=213, PPTDBG=214, PGMN=215, PGMNAME=216, PROCESS=217, PROLOG=218,
-		QUOTE=219, RENT=220, REPLACE=221, REPLACING=222, RMODE=223, RPARENCHAR=224,
-		SEP=225, SEPARATE=226, SEQ=227, SEQUENCE=228, SHORT=229, SIZE=230, SOURCE=231,
-		SP=232, SPACE=233, SPIE=234, SQL=235, SQLC=236, SQLCCSID=237, SQLIMS=238,
-		SKIP1=239, SKIP2=240, SKIP3=241, SS=242, SSR=243, SSRANGE=244, STD=245,
-		SUPPRESS=246, SYSEIB=247, SZ=248, TERM=249, TERMINAL=250, TEST=251, THREAD=252,
-		TITLE=253, TRIG=254, TRUNC=255, UE=256, UPPER=257, VBREF=258, WD=259,
-		WORD=260, XMLPARSE=261, XMLSS=262, XOPTS=263, XP=264, XREF=265, YEARWINDOW=266,
-		YW=267, ZWB=268, C_CHAR=269, D_CHAR=270, E_CHAR=271, F_CHAR=272, H_CHAR=273,
-		I_CHAR=274, M_CHAR=275, N_CHAR=276, Q_CHAR=277, S_CHAR=278, U_CHAR=279,
-		W_CHAR=280, X_CHAR=281, COMMENTENTRYTAG=282, COMMENTTAG=283, COMMACHAR=284,
-		DOT=285, DOUBLEEQUALCHAR=286, NONNUMERICLITERAL=287, INTEGERLITERAL=288,
-		NUMERICLITERAL=289, IDENTIFIER=290, FILENAME=291, SEPARATOR=292, NEWLINE=293,
-		COMMENTENTRYLINE=294, COMMENTLINE=295, WS=296, TEXT=297;
-	public static final int
-		RULE_compilationUnit = 0, RULE_compilerOptions = 1, RULE_compilerXOpts = 2,
-		RULE_compilerOption = 3, RULE_execCicsStatement = 4, RULE_execSqlStatement = 5,
-		RULE_execSqlIncludeStatement = 6, RULE_execSqlImsStatement = 7, RULE_copyStatement = 8,
-		RULE_copySource = 9, RULE_copyLibrary = 10, RULE_replacingPhrase = 11,
-		RULE_replaceArea = 12, RULE_replaceByStatement = 13, RULE_replaceOffStatement = 14,
-		RULE_replaceClause = 15, RULE_directoryPhrase = 16, RULE_familyPhrase = 17,
-		RULE_replaceable = 18, RULE_replacement = 19, RULE_ejectStatement = 20,
-		RULE_skipStatement = 21, RULE_titleStatement = 22, RULE_pseudoText = 23,
-		RULE_charData = 24, RULE_charDataSql = 25, RULE_charDataLineNoDot = 26,
-		RULE_charDataLine = 27, RULE_subscript = 28, RULE_cobolWord = 29, RULE_literal = 30,
-		RULE_filename = 31, RULE_commentEntry = 32, RULE_charDataKeyword = 33;
+	public static final int ADATA = 1;
+	public static final int ADV = 2;
+	public static final int ALIAS = 3;
+	public static final int ANSI = 4;
+	public static final int ANY = 5;
+	public static final int APOST = 6;
+	public static final int AR = 7;
+	public static final int ARITH = 8;
+	public static final int AUTO = 9;
+	public static final int AWO = 10;
+	public static final int BIN = 11;
+	public static final int BLOCK0 = 12;
+	public static final int BUF = 13;
+	public static final int BUFSIZE = 14;
+	public static final int BY = 15;
+	public static final int CBL = 16;
+	public static final int CBLCARD = 17;
+	public static final int CICS = 18;
+	public static final int CO = 19;
+	public static final int COBOL2 = 20;
+	public static final int COBOL3 = 21;
+	public static final int CODEPAGE = 22;
+	public static final int COMPAT = 23;
+	public static final int COMPILE = 24;
+	public static final int COPY = 25;
+	public static final int CP = 26;
+	public static final int CPP = 27;
+	public static final int CPSM = 28;
+	public static final int CS = 29;
+	public static final int CURR = 30;
+	public static final int CURRENCY = 31;
+	public static final int DATA = 32;
+	public static final int DATEPROC = 33;
+	public static final int DBCS = 34;
+	public static final int DD = 35;
+	public static final int DEBUG = 36;
+	public static final int DECK = 37;
+	public static final int DIAGTRUNC = 38;
+	public static final int DLI = 39;
+	public static final int DLL = 40;
+	public static final int DP = 41;
+	public static final int DTR = 42;
+	public static final int DU = 43;
+	public static final int DUMP = 44;
+	public static final int DYN = 45;
+	public static final int DYNAM = 46;
+	public static final int EDF = 47;
+	public static final int EJECT = 48;
+	public static final int EJPD = 49;
+	public static final int EN = 50;
+	public static final int ENGLISH = 51;
+	public static final int END_EXEC = 52;
+	public static final int EPILOG = 53;
+	public static final int EXCI = 54;
+	public static final int EXEC = 55;
+	public static final int EXIT = 56;
+	public static final int EXP = 57;
+	public static final int EXPORTALL = 58;
+	public static final int EXTEND = 59;
+	public static final int FASTSRT = 60;
+	public static final int FEPI = 61;
+	public static final int FLAG = 62;
+	public static final int FLAGSTD = 63;
+	public static final int FSRT = 64;
+	public static final int FULL = 65;
+	public static final int GDS = 66;
+	public static final int GRAPHIC = 67;
+	public static final int HOOK = 68;
+	public static final int IN = 69;
+	public static final int INCLUDE = 70;
+	public static final int INTDATE = 71;
+	public static final int JA = 72;
+	public static final int JP = 73;
+	public static final int KA = 74;
+	public static final int LANG = 75;
+	public static final int LANGUAGE = 76;
+	public static final int LC = 77;
+	public static final int LEASM = 78;
+	public static final int LENGTH = 79;
+	public static final int LIB = 80;
+	public static final int LILIAN = 81;
+	public static final int LIN = 82;
+	public static final int LINECOUNT = 83;
+	public static final int LINKAGE = 84;
+	public static final int LIST = 85;
+	public static final int LM = 86;
+	public static final int LONGMIXED = 87;
+	public static final int LONGUPPER = 88;
+	public static final int LPARENCHAR = 89;
+	public static final int LU = 90;
+	public static final int MAP = 91;
+	public static final int MARGINS = 92;
+	public static final int MAX = 93;
+	public static final int MD = 94;
+	public static final int MDECK = 95;
+	public static final int MIG = 96;
+	public static final int MIXED = 97;
+	public static final int NAME = 98;
+	public static final int NAT = 99;
+	public static final int NATIONAL = 100;
+	public static final int NATLANG = 101;
+	public static final int NN = 102;
+	public static final int NO = 103;
+	public static final int NOADATA = 104;
+	public static final int NOADV = 105;
+	public static final int NOALIAS = 106;
+	public static final int NOAWO = 107;
+	public static final int NOBLOCK0 = 108;
+	public static final int NOC = 109;
+	public static final int NOCBLCARD = 110;
+	public static final int NOCICS = 111;
+	public static final int NOCMPR2 = 112;
+	public static final int NOCOMPILE = 113;
+	public static final int NOCPSM = 114;
+	public static final int NOCURR = 115;
+	public static final int NOCURRENCY = 116;
+	public static final int NOD = 117;
+	public static final int NODATEPROC = 118;
+	public static final int NODBCS = 119;
+	public static final int NODE = 120;
+	public static final int NODEBUG = 121;
+	public static final int NODECK = 122;
+	public static final int NODIAGTRUNC = 123;
+	public static final int NODLL = 124;
+	public static final int NODU = 125;
+	public static final int NODUMP = 126;
+	public static final int NODP = 127;
+	public static final int NODTR = 128;
+	public static final int NODYN = 129;
+	public static final int NODYNAM = 130;
+	public static final int NOEDF = 131;
+	public static final int NOEJPD = 132;
+	public static final int NOEPILOG = 133;
+	public static final int NOEXIT = 134;
+	public static final int NOEXP = 135;
+	public static final int NOEXPORTALL = 136;
+	public static final int NOF = 137;
+	public static final int NOFASTSRT = 138;
+	public static final int NOFEPI = 139;
+	public static final int NOFLAG = 140;
+	public static final int NOFLAGMIG = 141;
+	public static final int NOFLAGSTD = 142;
+	public static final int NOFSRT = 143;
+	public static final int NOGRAPHIC = 144;
+	public static final int NOHOOK = 145;
+	public static final int NOLENGTH = 146;
+	public static final int NOLIB = 147;
+	public static final int NOLINKAGE = 148;
+	public static final int NOLIST = 149;
+	public static final int NOMAP = 150;
+	public static final int NOMD = 151;
+	public static final int NOMDECK = 152;
+	public static final int NONAME = 153;
+	public static final int NONUM = 154;
+	public static final int NONUMBER = 155;
+	public static final int NOOBJ = 156;
+	public static final int NOOBJECT = 157;
+	public static final int NOOFF = 158;
+	public static final int NOOFFSET = 159;
+	public static final int NOOPSEQUENCE = 160;
+	public static final int NOOPT = 161;
+	public static final int NOOPTIMIZE = 162;
+	public static final int NOOPTIONS = 163;
+	public static final int NOP = 164;
+	public static final int NOPFD = 165;
+	public static final int NOPROLOG = 166;
+	public static final int NORENT = 167;
+	public static final int NOS = 168;
+	public static final int NOSEP = 169;
+	public static final int NOSEPARATE = 170;
+	public static final int NOSEQ = 171;
+	public static final int NOSOURCE = 172;
+	public static final int NOSPIE = 173;
+	public static final int NOSQL = 174;
+	public static final int NOSQLC = 175;
+	public static final int NOSQLCCSID = 176;
+	public static final int NOSSR = 177;
+	public static final int NOSSRANGE = 178;
+	public static final int NOSTDTRUNC = 179;
+	public static final int NOSEQUENCE = 180;
+	public static final int NOTERM = 181;
+	public static final int NOTERMINAL = 182;
+	public static final int NOTEST = 183;
+	public static final int NOTHREAD = 184;
+	public static final int NOTRIG = 185;
+	public static final int NOVBREF = 186;
+	public static final int NOWD = 187;
+	public static final int NOWORD = 188;
+	public static final int NOX = 189;
+	public static final int NOXREF = 190;
+	public static final int NOZWB = 191;
+	public static final int NS = 192;
+	public static final int NSEQ = 193;
+	public static final int NSYMBOL = 194;
+	public static final int NUM = 195;
+	public static final int NUMBER = 196;
+	public static final int NUMPROC = 197;
+	public static final int OBJ = 198;
+	public static final int OBJECT = 199;
+	public static final int OF = 200;
+	public static final int OFF = 201;
+	public static final int OFFSET = 202;
+	public static final int ON = 203;
+	public static final int OP = 204;
+	public static final int OPMARGINS = 205;
+	public static final int OPSEQUENCE = 206;
+	public static final int OPT = 207;
+	public static final int OPTFILE = 208;
+	public static final int OPTIMIZE = 209;
+	public static final int OPTIONS = 210;
+	public static final int OUT = 211;
+	public static final int OUTDD = 212;
+	public static final int PFD = 213;
+	public static final int PPTDBG = 214;
+	public static final int PGMN = 215;
+	public static final int PGMNAME = 216;
+	public static final int PROCESS = 217;
+	public static final int PROLOG = 218;
+	public static final int QUOTE = 219;
+	public static final int RENT = 220;
+	public static final int REPLACE = 221;
+	public static final int REPLACING = 222;
+	public static final int RMODE = 223;
+	public static final int RPARENCHAR = 224;
+	public static final int SEP = 225;
+	public static final int SEPARATE = 226;
+	public static final int SEQ = 227;
+	public static final int SEQUENCE = 228;
+	public static final int SHORT = 229;
+	public static final int SIZE = 230;
+	public static final int SOURCE = 231;
+	public static final int SP = 232;
+	public static final int SPACE = 233;
+	public static final int SPIE = 234;
+	public static final int SQL = 235;
+	public static final int SQLC = 236;
+	public static final int SQLCCSID = 237;
+	public static final int SQLIMS = 238;
+	public static final int SKIP1 = 239;
+	public static final int SKIP2 = 240;
+	public static final int SKIP3 = 241;
+	public static final int SS = 242;
+	public static final int SSR = 243;
+	public static final int SSRANGE = 244;
+	public static final int STD = 245;
+	public static final int SUPPRESS = 246;
+	public static final int SYSEIB = 247;
+	public static final int SZ = 248;
+	public static final int TERM = 249;
+	public static final int TERMINAL = 250;
+	public static final int TEST = 251;
+	public static final int THREAD = 252;
+	public static final int TITLE = 253;
+	public static final int TRIG = 254;
+	public static final int TRUNC = 255;
+	public static final int UE = 256;
+	public static final int UPPER = 257;
+	public static final int VBREF = 258;
+	public static final int WD = 259;
+	public static final int WORD = 260;
+	public static final int XMLPARSE = 261;
+	public static final int XMLSS = 262;
+	public static final int XOPTS = 263;
+	public static final int XP = 264;
+	public static final int XREF = 265;
+	public static final int YEARWINDOW = 266;
+	public static final int YW = 267;
+	public static final int ZWB = 268;
+	public static final int C_CHAR = 269;
+	public static final int D_CHAR = 270;
+	public static final int E_CHAR = 271;
+	public static final int F_CHAR = 272;
+	public static final int H_CHAR = 273;
+	public static final int I_CHAR = 274;
+	public static final int M_CHAR = 275;
+	public static final int N_CHAR = 276;
+	public static final int Q_CHAR = 277;
+	public static final int S_CHAR = 278;
+	public static final int U_CHAR = 279;
+	public static final int W_CHAR = 280;
+	public static final int X_CHAR = 281;
+	public static final int COMMENTENTRYTAG = 282;
+	public static final int COMMENTTAG = 283;
+	public static final int COMMACHAR = 284;
+	public static final int DOT = 285;
+	public static final int DOUBLEEQUALCHAR = 286;
+	public static final int NONNUMERICLITERAL = 287;
+	public static final int INTEGERLITERAL = 288;
+	public static final int NUMERICLITERAL = 289;
+	public static final int IDENTIFIER = 290;
+	public static final int FILENAME = 291;
+	public static final int SEPARATOR = 292;
+	public static final int NEWLINE = 293;
+	public static final int COMMENTENTRYLINE = 294;
+	public static final int COMMENTLINE = 295;
+	public static final int WS = 296;
+	public static final int TEXT = 297;
+	public static final int RULE_compilationUnit = 0;
+	public static final int RULE_compilerOptions = 1;
+	public static final int RULE_compilerXOpts = 2;
+	public static final int RULE_compilerOption = 3;
+	public static final int RULE_execCicsStatement = 4;
+	public static final int RULE_execSqlStatement = 5;
+	public static final int RULE_execSqlIncludeStatement = 6;
+	public static final int RULE_execSqlImsStatement = 7;
+	public static final int RULE_copyStatement = 8;
+	public static final int RULE_copySource = 9;
+	public static final int RULE_copyLibrary = 10;
+	public static final int RULE_replacingPhrase = 11;
+	public static final int RULE_replaceArea = 12;
+	public static final int RULE_replaceByStatement = 13;
+	public static final int RULE_replaceOffStatement = 14;
+	public static final int RULE_replaceClause = 15;
+	public static final int RULE_directoryPhrase = 16;
+	public static final int RULE_familyPhrase = 17;
+	public static final int RULE_replaceable = 18;
+	public static final int RULE_replacement = 19;
+	public static final int RULE_ejectStatement = 20;
+	public static final int RULE_skipStatement = 21;
+	public static final int RULE_titleStatement = 22;
+	public static final int RULE_pseudoText = 23;
+	public static final int RULE_charData = 24;
+	public static final int RULE_charDataSql = 25;
+	public static final int RULE_charDataLineNoDot = 26;
+	public static final int RULE_charDataLine = 27;
+	public static final int RULE_subscript = 28;
+	public static final int RULE_cobolWord = 29;
+	public static final int RULE_literal = 30;
+	public static final int RULE_filename = 31;
+	public static final int RULE_commentEntry = 32;
+	public static final int RULE_charDataKeyword = 33;
 	private static String[] makeRuleNames() {
 		return new String[] {
 			"compilationUnit", "compilerOptions", "compilerXOpts", "compilerOption",
@@ -317,16 +590,24 @@ public class CobolPreprocessorParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_compilationUnit; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).enterCompilationUnit(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).enterCompilationUnit(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).exitCompilationUnit(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).exitCompilationUnit(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitCompilationUnit(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) {
+				return ((CobolPreprocessorVisitor<? extends T>) visitor).visitCompilationUnit(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -340,7 +621,7 @@ public class CobolPreprocessorParser extends Parser {
 			setState(82);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (((_la) & ~0x3f) == 0 && ((1L << _la) & -2310346608841326594L) != 0 || (((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & -16449L) != 0 || (((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & -576460752303423489L) != 0 || (((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & -18084767253659649L) != 0 || (((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & 2541345570543L) != 0) {
+			while ((_la & ~0x3f) == 0 && ((1L << _la) & -2310346608841326594L) != 0 || ((_la - 64) & ~0x3f) == 0 && ((1L << (_la - 64)) & -16449L) != 0 || ((_la - 128) & ~0x3f) == 0 && ((1L << (_la - 128)) & -576460752303423489L) != 0 || ((_la - 192) & ~0x3f) == 0 && ((1L << (_la - 192)) & -18084767253659649L) != 0 || ((_la - 256) & ~0x3f) == 0 && ((1L << (_la - 256)) & 2541345570543L) != 0) {
 				{
 				setState(80);
 				_errHandler.sync(this);
@@ -464,16 +745,24 @@ public class CobolPreprocessorParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_compilerOptions; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).enterCompilerOptions(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).enterCompilerOptions(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).exitCompilerOptions(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).exitCompilerOptions(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitCompilerOptions(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) {
+				return ((CobolPreprocessorVisitor<? extends T>) visitor).visitCompilerOptions(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -491,7 +780,9 @@ public class CobolPreprocessorParser extends Parser {
 			_errHandler.recoverInline(this);
 			}
 			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				if (_input.LA(1) == Token.EOF) {
+					matchedEOF = true;
+				}
 				_errHandler.reportMatch(this);
 				consume();
 			}
@@ -499,242 +790,239 @@ public class CobolPreprocessorParser extends Parser {
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
-				switch (_alt) {
-				case 1:
-					{
+				if (_alt == 1) {
 					setState(93);
 					_errHandler.sync(this);
 					switch (_input.LA(1)) {
-					case ADATA:
-					case ADV:
-					case APOST:
-					case AR:
-					case ARITH:
-					case AWO:
-					case BLOCK0:
-					case BUF:
-					case BUFSIZE:
-					case CBLCARD:
-					case CICS:
-					case COBOL2:
-					case COBOL3:
-					case CODEPAGE:
-					case COMPILE:
-					case CP:
-					case CPP:
-					case CPSM:
-					case CURR:
-					case CURRENCY:
-					case DATA:
-					case DATEPROC:
-					case DBCS:
-					case DEBUG:
-					case DECK:
-					case DIAGTRUNC:
-					case DLL:
-					case DP:
-					case DTR:
-					case DU:
-					case DUMP:
-					case DYN:
-					case DYNAM:
-					case EDF:
-					case EPILOG:
-					case EXIT:
-					case EXP:
-					case EXPORTALL:
-					case FASTSRT:
-					case FEPI:
-					case FLAG:
-					case FLAGSTD:
-					case FSRT:
-					case GDS:
-					case GRAPHIC:
-					case INTDATE:
-					case LANG:
-					case LANGUAGE:
-					case LC:
-					case LEASM:
-					case LENGTH:
-					case LIB:
-					case LIN:
-					case LINECOUNT:
-					case LINKAGE:
-					case LIST:
-					case MAP:
-					case MARGINS:
-					case MD:
-					case MDECK:
-					case NAME:
-					case NATLANG:
-					case NOADATA:
-					case NOADV:
-					case NOAWO:
-					case NOBLOCK0:
-					case NOC:
-					case NOCBLCARD:
-					case NOCICS:
-					case NOCMPR2:
-					case NOCOMPILE:
-					case NOCPSM:
-					case NOCURR:
-					case NOCURRENCY:
-					case NOD:
-					case NODATEPROC:
-					case NODBCS:
-					case NODE:
-					case NODEBUG:
-					case NODECK:
-					case NODIAGTRUNC:
-					case NODLL:
-					case NODU:
-					case NODUMP:
-					case NODP:
-					case NODTR:
-					case NODYN:
-					case NODYNAM:
-					case NOEDF:
-					case NOEPILOG:
-					case NOEXIT:
-					case NOEXP:
-					case NOEXPORTALL:
-					case NOF:
-					case NOFASTSRT:
-					case NOFEPI:
-					case NOFLAG:
-					case NOFLAGMIG:
-					case NOFLAGSTD:
-					case NOFSRT:
-					case NOGRAPHIC:
-					case NOLENGTH:
-					case NOLIB:
-					case NOLINKAGE:
-					case NOLIST:
-					case NOMAP:
-					case NOMD:
-					case NOMDECK:
-					case NONAME:
-					case NONUM:
-					case NONUMBER:
-					case NOOBJ:
-					case NOOBJECT:
-					case NOOFF:
-					case NOOFFSET:
-					case NOOPSEQUENCE:
-					case NOOPT:
-					case NOOPTIMIZE:
-					case NOOPTIONS:
-					case NOP:
-					case NOPROLOG:
-					case NORENT:
-					case NOS:
-					case NOSEQ:
-					case NOSOURCE:
-					case NOSPIE:
-					case NOSQL:
-					case NOSQLC:
-					case NOSQLCCSID:
-					case NOSSR:
-					case NOSSRANGE:
-					case NOSTDTRUNC:
-					case NOSEQUENCE:
-					case NOTERM:
-					case NOTERMINAL:
-					case NOTEST:
-					case NOTHREAD:
-					case NOVBREF:
-					case NOWD:
-					case NOWORD:
-					case NOX:
-					case NOXREF:
-					case NOZWB:
-					case NS:
-					case NSEQ:
-					case NSYMBOL:
-					case NUM:
-					case NUMBER:
-					case NUMPROC:
-					case OBJ:
-					case OBJECT:
-					case OFF:
-					case OFFSET:
-					case OP:
-					case OPMARGINS:
-					case OPSEQUENCE:
-					case OPT:
-					case OPTFILE:
-					case OPTIMIZE:
-					case OPTIONS:
-					case OUT:
-					case OUTDD:
-					case PGMN:
-					case PGMNAME:
-					case PROLOG:
-					case QUOTE:
-					case RENT:
-					case RMODE:
-					case SEQ:
-					case SEQUENCE:
-					case SIZE:
-					case SOURCE:
-					case SP:
-					case SPACE:
-					case SPIE:
-					case SQL:
-					case SQLC:
-					case SQLCCSID:
-					case SSR:
-					case SSRANGE:
-					case SYSEIB:
-					case SZ:
-					case TERM:
-					case TERMINAL:
-					case TEST:
-					case THREAD:
-					case TRUNC:
-					case VBREF:
-					case WD:
-					case WORD:
-					case XMLPARSE:
-					case XP:
-					case XREF:
-					case YEARWINDOW:
-					case YW:
-					case ZWB:
-					case C_CHAR:
-					case D_CHAR:
-					case F_CHAR:
-					case Q_CHAR:
-					case S_CHAR:
-					case X_CHAR:
-					case COMMACHAR:
+						case ADATA:
+						case ADV:
+						case APOST:
+						case AR:
+						case ARITH:
+						case AWO:
+						case BLOCK0:
+						case BUF:
+						case BUFSIZE:
+						case CBLCARD:
+						case CICS:
+						case COBOL2:
+						case COBOL3:
+						case CODEPAGE:
+						case COMPILE:
+						case CP:
+						case CPP:
+						case CPSM:
+						case CURR:
+						case CURRENCY:
+						case DATA:
+						case DATEPROC:
+						case DBCS:
+						case DEBUG:
+						case DECK:
+						case DIAGTRUNC:
+						case DLL:
+						case DP:
+						case DTR:
+						case DU:
+						case DUMP:
+						case DYN:
+						case DYNAM:
+						case EDF:
+						case EPILOG:
+						case EXIT:
+						case EXP:
+						case EXPORTALL:
+						case FASTSRT:
+						case FEPI:
+						case FLAG:
+						case FLAGSTD:
+						case FSRT:
+						case GDS:
+						case GRAPHIC:
+						case INTDATE:
+						case LANG:
+						case LANGUAGE:
+						case LC:
+						case LEASM:
+						case LENGTH:
+						case LIB:
+						case LIN:
+						case LINECOUNT:
+						case LINKAGE:
+						case LIST:
+						case MAP:
+						case MARGINS:
+						case MD:
+						case MDECK:
+						case NAME:
+						case NATLANG:
+						case NOADATA:
+						case NOADV:
+						case NOAWO:
+						case NOBLOCK0:
+						case NOC:
+						case NOCBLCARD:
+						case NOCICS:
+						case NOCMPR2:
+						case NOCOMPILE:
+						case NOCPSM:
+						case NOCURR:
+						case NOCURRENCY:
+						case NOD:
+						case NODATEPROC:
+						case NODBCS:
+						case NODE:
+						case NODEBUG:
+						case NODECK:
+						case NODIAGTRUNC:
+						case NODLL:
+						case NODU:
+						case NODUMP:
+						case NODP:
+						case NODTR:
+						case NODYN:
+						case NODYNAM:
+						case NOEDF:
+						case NOEPILOG:
+						case NOEXIT:
+						case NOEXP:
+						case NOEXPORTALL:
+						case NOF:
+						case NOFASTSRT:
+						case NOFEPI:
+						case NOFLAG:
+						case NOFLAGMIG:
+						case NOFLAGSTD:
+						case NOFSRT:
+						case NOGRAPHIC:
+						case NOLENGTH:
+						case NOLIB:
+						case NOLINKAGE:
+						case NOLIST:
+						case NOMAP:
+						case NOMD:
+						case NOMDECK:
+						case NONAME:
+						case NONUM:
+						case NONUMBER:
+						case NOOBJ:
+						case NOOBJECT:
+						case NOOFF:
+						case NOOFFSET:
+						case NOOPSEQUENCE:
+						case NOOPT:
+						case NOOPTIMIZE:
+						case NOOPTIONS:
+						case NOP:
+						case NOPROLOG:
+						case NORENT:
+						case NOS:
+						case NOSEQ:
+						case NOSOURCE:
+						case NOSPIE:
+						case NOSQL:
+						case NOSQLC:
+						case NOSQLCCSID:
+						case NOSSR:
+						case NOSSRANGE:
+						case NOSTDTRUNC:
+						case NOSEQUENCE:
+						case NOTERM:
+						case NOTERMINAL:
+						case NOTEST:
+						case NOTHREAD:
+						case NOVBREF:
+						case NOWD:
+						case NOWORD:
+						case NOX:
+						case NOXREF:
+						case NOZWB:
+						case NS:
+						case NSEQ:
+						case NSYMBOL:
+						case NUM:
+						case NUMBER:
+						case NUMPROC:
+						case OBJ:
+						case OBJECT:
+						case OFF:
+						case OFFSET:
+						case OP:
+						case OPMARGINS:
+						case OPSEQUENCE:
+						case OPT:
+						case OPTFILE:
+						case OPTIMIZE:
+						case OPTIONS:
+						case OUT:
+						case OUTDD:
+						case PGMN:
+						case PGMNAME:
+						case PROLOG:
+						case QUOTE:
+						case RENT:
+						case RMODE:
+						case SEQ:
+						case SEQUENCE:
+						case SIZE:
+						case SOURCE:
+						case SP:
+						case SPACE:
+						case SPIE:
+						case SQL:
+						case SQLC:
+						case SQLCCSID:
+						case SSR:
+						case SSRANGE:
+						case SYSEIB:
+						case SZ:
+						case TERM:
+						case TERMINAL:
+						case TEST:
+						case THREAD:
+						case TRUNC:
+						case VBREF:
+						case WD:
+						case WORD:
+						case XMLPARSE:
+						case XP:
+						case XREF:
+						case YEARWINDOW:
+						case YW:
+						case ZWB:
+						case C_CHAR:
+						case D_CHAR:
+						case F_CHAR:
+						case Q_CHAR:
+						case S_CHAR:
+						case X_CHAR:
+						case COMMACHAR:
 						{
-						setState(89);
-						_errHandler.sync(this);
-						_la = _input.LA(1);
-						if (_la==COMMACHAR) {
-							{
-							setState(88);
-							match(COMMACHAR);
+							setState(89);
+							_errHandler.sync(this);
+							_la = _input.LA(1);
+							if (_la == COMMACHAR) {
+								{
+									setState(88);
+									match(COMMACHAR);
+								}
 							}
-						}
 
-						setState(91);
-						compilerOption();
+							setState(91);
+							compilerOption();
 						}
-						break;
-					case XOPTS:
+							break;
+						case XOPTS:
 						{
-						setState(92);
-						compilerXOpts();
+							setState(92);
+							compilerXOpts();
 						}
-						break;
-					default:
-						throw new NoViableAltException(this);
+							break;
+						default:
+							throw new NoViableAltException(this);
 					}
-					}
-					break;
-				default:
+				}
+				else {
 					throw new NoViableAltException(this);
 				}
 				setState(95);
@@ -775,16 +1063,24 @@ public class CobolPreprocessorParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_compilerXOpts; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).enterCompilerXOpts(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).enterCompilerXOpts(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).exitCompilerXOpts(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).exitCompilerXOpts(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitCompilerXOpts(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) {
+				return ((CobolPreprocessorVisitor<? extends T>) visitor).visitCompilerXOpts(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -804,7 +1100,7 @@ public class CobolPreprocessorParser extends Parser {
 			setState(106);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (((_la) & ~0x3f) == 0 && ((1L << _la) & -639230256804891194L) != 0 || (((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & -5339311376243L) != 0 || (((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & -144121922584707089L) != 0 || (((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & -6946732225628997889L) != 0 || (((_la - 258)) & ~0x3f) == 0 && ((1L << (_la - 258)) & 77094863L) != 0) {
+			while ((_la & ~0x3f) == 0 && ((1L << _la) & -639230256804891194L) != 0 || ((_la - 64) & ~0x3f) == 0 && ((1L << (_la - 64)) & -5339311376243L) != 0 || ((_la - 128) & ~0x3f) == 0 && ((1L << (_la - 128)) & -144121922584707089L) != 0 || ((_la - 192) & ~0x3f) == 0 && ((1L << (_la - 192)) & -6946732225628997889L) != 0 || ((_la - 258) & ~0x3f) == 0 && ((1L << (_la - 258)) & 77094863L) != 0) {
 				{
 				{
 				setState(101);
@@ -1133,16 +1429,24 @@ public class CobolPreprocessorParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_compilerOption; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).enterCompilerOption(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).enterCompilerOption(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).exitCompilerOption(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).exitCompilerOption(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitCompilerOption(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) {
+				return ((CobolPreprocessorVisitor<? extends T>) visitor).visitCompilerOption(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -1184,7 +1488,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -1196,7 +1502,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -1227,7 +1535,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -1253,18 +1563,14 @@ public class CobolPreprocessorParser extends Parser {
 				match(CICS);
 				setState(131);
 				_errHandler.sync(this);
-				switch ( getInterpreter().adaptivePredict(_input,7,_ctx) ) {
-				case 1:
-					{
-					setState(127);
-					match(LPARENCHAR);
-					setState(128);
-					literal();
-					setState(129);
-					match(RPARENCHAR);
+					if (getInterpreter().adaptivePredict(_input, 7, _ctx) == 1) {
+						setState(127);
+						match(LPARENCHAR);
+						setState(128);
+						literal();
+						setState(129);
+						match(RPARENCHAR);
 					}
-					break;
-				}
 				}
 				break;
 			case 10:
@@ -1290,7 +1596,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -1311,7 +1619,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -1340,7 +1650,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -1374,68 +1686,70 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
 				setState(165);
 				_errHandler.sync(this);
-				switch ( getInterpreter().adaptivePredict(_input,11,_ctx) ) {
-				case 1:
-					{
-					setState(154);
-					match(LPARENCHAR);
-					setState(156);
-					_errHandler.sync(this);
-					_la = _input.LA(1);
-					if (_la==FLAG || _la==NOFLAG) {
-						{
-						setState(155);
+					if (getInterpreter().adaptivePredict(_input, 11, _ctx) == 1) {
+						setState(154);
+						match(LPARENCHAR);
+						setState(156);
+						_errHandler.sync(this);
 						_la = _input.LA(1);
-						if ( !(_la==FLAG || _la==NOFLAG) ) {
-						_errHandler.recoverInline(this);
+						if (_la == FLAG || _la == NOFLAG) {
+							{
+								setState(155);
+								_la = _input.LA(1);
+								if (!(_la == FLAG || _la == NOFLAG)) {
+									_errHandler.recoverInline(this);
+								}
+								else {
+									if (_input.LA(1) == Token.EOF) {
+										matchedEOF = true;
+									}
+									_errHandler.reportMatch(this);
+									consume();
+								}
+							}
 						}
-						else {
-							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-							_errHandler.reportMatch(this);
-							consume();
-						}
-						}
-					}
 
-					setState(159);
-					_errHandler.sync(this);
-					_la = _input.LA(1);
-					if (_la==COMMACHAR) {
-						{
-						setState(158);
-						match(COMMACHAR);
-						}
-					}
-
-					setState(162);
-					_errHandler.sync(this);
-					_la = _input.LA(1);
-					if (_la==NOTRIG || _la==TRIG) {
-						{
-						setState(161);
+						setState(159);
+						_errHandler.sync(this);
 						_la = _input.LA(1);
-						if ( !(_la==NOTRIG || _la==TRIG) ) {
-						_errHandler.recoverInline(this);
+						if (_la == COMMACHAR) {
+							{
+								setState(158);
+								match(COMMACHAR);
+							}
 						}
-						else {
-							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-							_errHandler.reportMatch(this);
-							consume();
-						}
-						}
-					}
 
-					setState(164);
-					match(RPARENCHAR);
+						setState(162);
+						_errHandler.sync(this);
+						_la = _input.LA(1);
+						if (_la == NOTRIG || _la == TRIG) {
+							{
+								setState(161);
+								_la = _input.LA(1);
+								if (!(_la == NOTRIG || _la == TRIG)) {
+									_errHandler.recoverInline(this);
+								}
+								else {
+									if (_input.LA(1) == Token.EOF) {
+										matchedEOF = true;
+									}
+									_errHandler.reportMatch(this);
+									consume();
+								}
+							}
+						}
+
+						setState(164);
+						match(RPARENCHAR);
 					}
-					break;
-				}
 				}
 				break;
 			case 19:
@@ -1454,7 +1768,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -1476,7 +1792,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -1498,7 +1816,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -1513,7 +1833,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -1549,7 +1871,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -1564,7 +1888,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -1586,7 +1912,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -1594,11 +1922,13 @@ public class CobolPreprocessorParser extends Parser {
 				match(LPARENCHAR);
 				setState(182);
 				_la = _input.LA(1);
-				if ( !((((_la - 271)) & ~0x3f) == 0 && ((1L << (_la - 271)) & 905L) != 0) ) {
+				if ( !(((_la - 271) & ~0x3f) == 0 && ((1L << (_la - 271)) & 905L) != 0) ) {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -1611,11 +1941,13 @@ public class CobolPreprocessorParser extends Parser {
 					match(COMMACHAR);
 					setState(184);
 					_la = _input.LA(1);
-					if ( !((((_la - 271)) & ~0x3f) == 0 && ((1L << (_la - 271)) & 905L) != 0) ) {
+					if ( !(((_la - 271) & ~0x3f) == 0 && ((1L << (_la - 271)) & 905L) != 0) ) {
 					_errHandler.recoverInline(this);
 					}
 					else {
-						if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+						if (_input.LA(1) == Token.EOF) {
+							matchedEOF = true;
+						}
 						_errHandler.reportMatch(this);
 						consume();
 					}
@@ -1635,11 +1967,13 @@ public class CobolPreprocessorParser extends Parser {
 				match(LPARENCHAR);
 				setState(190);
 				_la = _input.LA(1);
-				if ( !((((_la - 273)) & ~0x3f) == 0 && ((1L << (_la - 273)) & 7L) != 0) ) {
+				if ( !(((_la - 273) & ~0x3f) == 0 && ((1L << (_la - 273)) & 7L) != 0) ) {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -1652,11 +1986,13 @@ public class CobolPreprocessorParser extends Parser {
 					match(COMMACHAR);
 					setState(192);
 					_la = _input.LA(1);
-					if ( !(_la==DD || _la==NN || (((_la - 242)) & ~0x3f) == 0 && ((1L << (_la - 242)) & 86167781377L) != 0) ) {
+					if ( !(_la==DD || _la==NN || ((_la - 242) & ~0x3f) == 0 && ((1L << (_la - 242)) & 86167781377L) != 0) ) {
 					_errHandler.recoverInline(this);
 					}
 					else {
-						if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+						if (_input.LA(1) == Token.EOF) {
+							matchedEOF = true;
+						}
 						_errHandler.reportMatch(this);
 						consume();
 					}
@@ -1694,7 +2030,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -1711,7 +2049,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -1719,11 +2059,13 @@ public class CobolPreprocessorParser extends Parser {
 				match(LPARENCHAR);
 				setState(204);
 				_la = _input.LA(1);
-				if ( !((((_la - 29)) & ~0x3f) == 0 && ((1L << (_la - 29)) & 61572657446913L) != 0 || _la==UE) ) {
+				if ( !(((_la - 29) & ~0x3f) == 0 && ((1L << (_la - 29)) & 61572657446913L) != 0 || _la==UE) ) {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -1768,7 +2110,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -1839,32 +2183,32 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
 				setState(233);
 				_errHandler.sync(this);
-				switch ( getInterpreter().adaptivePredict(_input,15,_ctx) ) {
-				case 1:
-					{
-					setState(230);
-					match(LPARENCHAR);
-					setState(231);
-					_la = _input.LA(1);
-					if ( !(_la==COMPILE || _la==NOC || _la==NOCOMPILE || _la==C_CHAR) ) {
-					_errHandler.recoverInline(this);
+					if (getInterpreter().adaptivePredict(_input, 15, _ctx) == 1) {
+						setState(230);
+						match(LPARENCHAR);
+						setState(231);
+						_la = _input.LA(1);
+						if (!(_la == COMPILE || _la == NOC || _la == NOCOMPILE || _la == C_CHAR)) {
+							_errHandler.recoverInline(this);
+						}
+						else {
+							if (_input.LA(1) == Token.EOF) {
+								matchedEOF = true;
+							}
+							_errHandler.reportMatch(this);
+							consume();
+						}
+						setState(232);
+						match(RPARENCHAR);
 					}
-					else {
-						if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-						_errHandler.reportMatch(this);
-						consume();
-					}
-					setState(232);
-					match(RPARENCHAR);
-					}
-					break;
-				}
 				}
 				break;
 			case 48:
@@ -1874,26 +2218,24 @@ public class CobolPreprocessorParser extends Parser {
 				match(NAME);
 				setState(239);
 				_errHandler.sync(this);
-				switch ( getInterpreter().adaptivePredict(_input,16,_ctx) ) {
-				case 1:
-					{
-					setState(236);
-					match(LPARENCHAR);
-					setState(237);
-					_la = _input.LA(1);
-					if ( !(_la==ALIAS || _la==NOALIAS) ) {
-					_errHandler.recoverInline(this);
+					if (getInterpreter().adaptivePredict(_input, 16, _ctx) == 1) {
+						setState(236);
+						match(LPARENCHAR);
+						setState(237);
+						_la = _input.LA(1);
+						if (!(_la == ALIAS || _la == NOALIAS)) {
+							_errHandler.recoverInline(this);
+						}
+						else {
+							if (_input.LA(1) == Token.EOF) {
+								matchedEOF = true;
+							}
+							_errHandler.reportMatch(this);
+							consume();
+						}
+						setState(238);
+						match(RPARENCHAR);
 					}
-					else {
-						if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-						_errHandler.reportMatch(this);
-						consume();
-					}
-					setState(238);
-					match(RPARENCHAR);
-					}
-					break;
-				}
 				}
 				break;
 			case 49:
@@ -1905,11 +2247,13 @@ public class CobolPreprocessorParser extends Parser {
 				match(LPARENCHAR);
 				setState(243);
 				_la = _input.LA(1);
-				if ( !((((_la - 29)) & ~0x3f) == 0 && ((1L << (_la - 29)) & 35184374185985L) != 0) ) {
+				if ( !(((_la - 29) & ~0x3f) == 0 && ((1L << (_la - 29)) & 35184374185985L) != 0) ) {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -1975,32 +2319,32 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
 				setState(256);
 				_errHandler.sync(this);
-				switch ( getInterpreter().adaptivePredict(_input,17,_ctx) ) {
-				case 1:
-					{
-					setState(253);
-					match(LPARENCHAR);
-					setState(254);
-					_la = _input.LA(1);
-					if ( !((((_la - 271)) & ~0x3f) == 0 && ((1L << (_la - 271)) & 641L) != 0) ) {
-					_errHandler.recoverInline(this);
+					if (getInterpreter().adaptivePredict(_input, 17, _ctx) == 1) {
+						setState(253);
+						match(LPARENCHAR);
+						setState(254);
+						_la = _input.LA(1);
+						if (!(((_la - 271) & ~0x3f) == 0 && ((1L << (_la - 271)) & 641L) != 0)) {
+							_errHandler.recoverInline(this);
+						}
+						else {
+							if (_input.LA(1) == Token.EOF) {
+								matchedEOF = true;
+							}
+							_errHandler.reportMatch(this);
+							consume();
+						}
+						setState(255);
+						match(RPARENCHAR);
 					}
-					else {
-						if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-						_errHandler.reportMatch(this);
-						consume();
-					}
-					setState(255);
-					match(RPARENCHAR);
-					}
-					break;
-				}
 				}
 				break;
 			case 58:
@@ -2019,7 +2363,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -2034,7 +2380,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -2063,7 +2411,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -2092,7 +2442,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -2107,7 +2459,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -2122,7 +2476,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -2158,7 +2514,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -2173,7 +2531,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -2195,7 +2555,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -2266,7 +2628,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -2288,7 +2652,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -2303,7 +2669,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -2318,7 +2686,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -2340,7 +2710,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -2383,7 +2755,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -2398,7 +2772,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -2427,7 +2803,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -2442,7 +2820,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -2464,7 +2844,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -2500,7 +2882,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -2522,7 +2906,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -2534,7 +2920,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -2558,7 +2946,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -2580,7 +2970,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -2599,7 +2991,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -2616,7 +3010,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -2631,7 +3027,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -2692,32 +3090,32 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
 				setState(344);
 				_errHandler.sync(this);
-				switch ( getInterpreter().adaptivePredict(_input,19,_ctx) ) {
-				case 1:
-					{
-					setState(341);
-					match(LPARENCHAR);
-					setState(342);
-					_la = _input.LA(1);
-					if ( !(_la==FULL || _la==STD) ) {
-					_errHandler.recoverInline(this);
+					if (getInterpreter().adaptivePredict(_input, 19, _ctx) == 1) {
+						setState(341);
+						match(LPARENCHAR);
+						setState(342);
+						_la = _input.LA(1);
+						if (!(_la == FULL || _la == STD)) {
+							_errHandler.recoverInline(this);
+						}
+						else {
+							if (_input.LA(1) == Token.EOF) {
+								matchedEOF = true;
+							}
+							_errHandler.reportMatch(this);
+							consume();
+						}
+						setState(343);
+						match(RPARENCHAR);
 					}
-					else {
-						if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-						_errHandler.reportMatch(this);
-						consume();
-					}
-					setState(343);
-					match(RPARENCHAR);
-					}
-					break;
-				}
 				}
 				break;
 			case 119:
@@ -2750,7 +3148,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -2771,7 +3171,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -2779,11 +3181,13 @@ public class CobolPreprocessorParser extends Parser {
 				match(LPARENCHAR);
 				setState(356);
 				_la = _input.LA(1);
-				if ( !(_la==CO || _la==COMPAT || (((_la - 86)) & ~0x3f) == 0 && ((1L << (_la - 86)) & 2071L) != 0 || (((_la - 257)) & ~0x3f) == 0 && ((1L << (_la - 257)) & 4456449L) != 0) ) {
+				if ( !(_la==CO || _la==COMPAT || ((_la - 86) & ~0x3f) == 0 && ((1L << (_la - 86)) & 2071L) != 0 || ((_la - 257) & ~0x3f) == 0 && ((1L << (_la - 257)) & 4456449L) != 0) ) {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -2807,7 +3211,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -2866,28 +3272,26 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
 				setState(376);
 				_errHandler.sync(this);
-				switch ( getInterpreter().adaptivePredict(_input,21,_ctx) ) {
-				case 1:
-					{
-					setState(370);
-					match(LPARENCHAR);
-					setState(371);
-					literal();
-					setState(372);
-					match(COMMACHAR);
-					setState(373);
-					literal();
-					setState(374);
-					match(RPARENCHAR);
+					if (getInterpreter().adaptivePredict(_input, 21, _ctx) == 1) {
+						setState(370);
+						match(LPARENCHAR);
+						setState(371);
+						literal();
+						setState(372);
+						match(COMMACHAR);
+						setState(373);
+						literal();
+						setState(374);
+						match(RPARENCHAR);
 					}
-					break;
-				}
 				}
 				break;
 			case 129:
@@ -2899,7 +3303,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -2938,7 +3344,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -2978,18 +3386,14 @@ public class CobolPreprocessorParser extends Parser {
 				match(SQL);
 				setState(398);
 				_errHandler.sync(this);
-				switch ( getInterpreter().adaptivePredict(_input,23,_ctx) ) {
-				case 1:
-					{
-					setState(394);
-					match(LPARENCHAR);
-					setState(395);
-					literal();
-					setState(396);
-					match(RPARENCHAR);
+					if (getInterpreter().adaptivePredict(_input, 23, _ctx) == 1) {
+						setState(394);
+						match(LPARENCHAR);
+						setState(395);
+						literal();
+						setState(396);
+						match(RPARENCHAR);
 					}
-					break;
-				}
 				}
 				break;
 			case 135:
@@ -3001,7 +3405,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -3016,7 +3422,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -3038,7 +3446,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -3051,90 +3461,88 @@ public class CobolPreprocessorParser extends Parser {
 				match(TEST);
 				setState(422);
 				_errHandler.sync(this);
-				switch ( getInterpreter().adaptivePredict(_input,29,_ctx) ) {
-				case 1:
-					{
-					setState(405);
-					match(LPARENCHAR);
-					setState(407);
-					_errHandler.sync(this);
-					_la = _input.LA(1);
-					if (_la==HOOK || _la==NOHOOK) {
-						{
-						setState(406);
+					if (getInterpreter().adaptivePredict(_input, 29, _ctx) == 1) {
+						setState(405);
+						match(LPARENCHAR);
+						setState(407);
+						_errHandler.sync(this);
 						_la = _input.LA(1);
-						if ( !(_la==HOOK || _la==NOHOOK) ) {
-						_errHandler.recoverInline(this);
+						if (_la == HOOK || _la == NOHOOK) {
+							{
+								setState(406);
+								_la = _input.LA(1);
+								if (!(_la == HOOK || _la == NOHOOK)) {
+									_errHandler.recoverInline(this);
+								}
+								else {
+									if (_input.LA(1) == Token.EOF) {
+										matchedEOF = true;
+									}
+									_errHandler.reportMatch(this);
+									consume();
+								}
+							}
 						}
-						else {
-							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-							_errHandler.reportMatch(this);
-							consume();
-						}
-						}
-					}
 
-					setState(410);
-					_errHandler.sync(this);
-					switch ( getInterpreter().adaptivePredict(_input,25,_ctx) ) {
-					case 1:
-						{
-						setState(409);
-						match(COMMACHAR);
+						setState(410);
+						_errHandler.sync(this);
+						if (getInterpreter().adaptivePredict(_input, 25, _ctx) == 1) {
+							setState(409);
+							match(COMMACHAR);
 						}
-						break;
-					}
-					setState(413);
-					_errHandler.sync(this);
-					_la = _input.LA(1);
-					if ((((_la - 169)) & ~0x3f) == 0 && ((1L << (_la - 169)) & 216172782113783811L) != 0) {
-						{
-						setState(412);
+						setState(413);
+						_errHandler.sync(this);
 						_la = _input.LA(1);
-						if ( !((((_la - 169)) & ~0x3f) == 0 && ((1L << (_la - 169)) & 216172782113783811L) != 0) ) {
-						_errHandler.recoverInline(this);
+						if (((_la - 169) & ~0x3f) == 0 && ((1L << (_la - 169)) & 216172782113783811L) != 0) {
+							{
+								setState(412);
+								_la = _input.LA(1);
+								if (!(((_la - 169) & ~0x3f) == 0 && ((1L << (_la - 169)) & 216172782113783811L) != 0)) {
+									_errHandler.recoverInline(this);
+								}
+								else {
+									if (_input.LA(1) == Token.EOF) {
+										matchedEOF = true;
+									}
+									_errHandler.reportMatch(this);
+									consume();
+								}
+							}
 						}
-						else {
-							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-							_errHandler.reportMatch(this);
-							consume();
-						}
-						}
-					}
 
-					setState(416);
-					_errHandler.sync(this);
-					_la = _input.LA(1);
-					if (_la==COMMACHAR) {
-						{
-						setState(415);
-						match(COMMACHAR);
-						}
-					}
-
-					setState(419);
-					_errHandler.sync(this);
-					_la = _input.LA(1);
-					if (_la==EJPD || _la==NOEJPD) {
-						{
-						setState(418);
+						setState(416);
+						_errHandler.sync(this);
 						_la = _input.LA(1);
-						if ( !(_la==EJPD || _la==NOEJPD) ) {
-						_errHandler.recoverInline(this);
+						if (_la == COMMACHAR) {
+							{
+								setState(415);
+								match(COMMACHAR);
+							}
 						}
-						else {
-							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-							_errHandler.reportMatch(this);
-							consume();
-						}
-						}
-					}
 
-					setState(421);
-					match(RPARENCHAR);
+						setState(419);
+						_errHandler.sync(this);
+						_la = _input.LA(1);
+						if (_la == EJPD || _la == NOEJPD) {
+							{
+								setState(418);
+								_la = _input.LA(1);
+								if (!(_la == EJPD || _la == NOEJPD)) {
+									_errHandler.recoverInline(this);
+								}
+								else {
+									if (_input.LA(1) == Token.EOF) {
+										matchedEOF = true;
+									}
+									_errHandler.reportMatch(this);
+									consume();
+								}
+							}
+						}
+
+						setState(421);
+						match(RPARENCHAR);
 					}
-					break;
-				}
 				}
 				break;
 			case 140:
@@ -3157,7 +3565,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -3181,7 +3591,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -3202,7 +3614,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -3210,11 +3624,13 @@ public class CobolPreprocessorParser extends Parser {
 				match(LPARENCHAR);
 				setState(437);
 				_la = _input.LA(1);
-				if ( !(_la==COMPAT || (((_la - 262)) & ~0x3f) == 0 && ((1L << (_la - 262)) & 524417L) != 0) ) {
+				if ( !(_la==COMPAT || ((_la - 262) & ~0x3f) == 0 && ((1L << (_la - 262)) & 524417L) != 0) ) {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -3231,40 +3647,40 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
 				setState(445);
 				_errHandler.sync(this);
-				switch ( getInterpreter().adaptivePredict(_input,31,_ctx) ) {
-				case 1:
-					{
-					setState(440);
-					match(LPARENCHAR);
-					setState(442);
-					_errHandler.sync(this);
-					_la = _input.LA(1);
-					if (_la==FULL || _la==SHORT) {
-						{
-						setState(441);
+					if (getInterpreter().adaptivePredict(_input, 31, _ctx) == 1) {
+						setState(440);
+						match(LPARENCHAR);
+						setState(442);
+						_errHandler.sync(this);
 						_la = _input.LA(1);
-						if ( !(_la==FULL || _la==SHORT) ) {
-						_errHandler.recoverInline(this);
+						if (_la == FULL || _la == SHORT) {
+							{
+								setState(441);
+								_la = _input.LA(1);
+								if (!(_la == FULL || _la == SHORT)) {
+									_errHandler.recoverInline(this);
+								}
+								else {
+									if (_input.LA(1) == Token.EOF) {
+										matchedEOF = true;
+									}
+									_errHandler.reportMatch(this);
+									consume();
+								}
+							}
 						}
-						else {
-							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-							_errHandler.reportMatch(this);
-							consume();
-						}
-						}
-					}
 
-					setState(444);
-					match(RPARENCHAR);
+						setState(444);
+						match(RPARENCHAR);
 					}
-					break;
-				}
 				}
 				break;
 			case 146:
@@ -3276,7 +3692,9 @@ public class CobolPreprocessorParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					if (_input.LA(1) == Token.EOF) {
+						matchedEOF = true;
+					}
 					_errHandler.reportMatch(this);
 					consume();
 				}
@@ -3323,16 +3741,24 @@ public class CobolPreprocessorParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_execCicsStatement; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).enterExecCicsStatement(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).enterExecCicsStatement(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).exitExecCicsStatement(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).exitExecCicsStatement(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitExecCicsStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) {
+				return ((CobolPreprocessorVisitor<? extends T>) visitor).visitExecCicsStatement(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -3352,14 +3778,10 @@ public class CobolPreprocessorParser extends Parser {
 			match(END_EXEC);
 			setState(460);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,33,_ctx) ) {
-			case 1:
-				{
-				setState(459);
-				match(DOT);
+				if (getInterpreter().adaptivePredict(_input, 33, _ctx) == 1) {
+					setState(459);
+					match(DOT);
 				}
-				break;
-			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -3388,16 +3810,24 @@ public class CobolPreprocessorParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_execSqlStatement; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).enterExecSqlStatement(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).enterExecSqlStatement(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).exitExecSqlStatement(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).exitExecSqlStatement(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitExecSqlStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) {
+				return ((CobolPreprocessorVisitor<? extends T>) visitor).visitExecSqlStatement(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -3417,14 +3847,10 @@ public class CobolPreprocessorParser extends Parser {
 			match(END_EXEC);
 			setState(467);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,34,_ctx) ) {
-			case 1:
-				{
-				setState(466);
-				match(DOT);
+				if (getInterpreter().adaptivePredict(_input, 34, _ctx) == 1) {
+					setState(466);
+					match(DOT);
 				}
-				break;
-			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -3460,16 +3886,24 @@ public class CobolPreprocessorParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_execSqlIncludeStatement; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).enterExecSqlIncludeStatement(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).enterExecSqlIncludeStatement(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).exitExecSqlIncludeStatement(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).exitExecSqlIncludeStatement(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitExecSqlIncludeStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) {
+				return ((CobolPreprocessorVisitor<? extends T>) visitor).visitExecSqlIncludeStatement(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -3777,14 +4211,10 @@ public class CobolPreprocessorParser extends Parser {
 			match(END_EXEC);
 			setState(479);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,36,_ctx) ) {
-			case 1:
-				{
-				setState(478);
-				match(DOT);
+				if (getInterpreter().adaptivePredict(_input, 36, _ctx) == 1) {
+					setState(478);
+					match(DOT);
 				}
-				break;
-			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -3813,16 +4243,24 @@ public class CobolPreprocessorParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_execSqlImsStatement; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).enterExecSqlImsStatement(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).enterExecSqlImsStatement(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).exitExecSqlImsStatement(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).exitExecSqlImsStatement(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitExecSqlImsStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) {
+				return ((CobolPreprocessorVisitor<? extends T>) visitor).visitExecSqlImsStatement(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -3842,14 +4280,10 @@ public class CobolPreprocessorParser extends Parser {
 			match(END_EXEC);
 			setState(486);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,37,_ctx) ) {
-			case 1:
-				{
-				setState(485);
-				match(DOT);
+				if (getInterpreter().adaptivePredict(_input, 37, _ctx) == 1) {
+					setState(485);
+					match(DOT);
 				}
-				break;
-			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -3898,16 +4332,24 @@ public class CobolPreprocessorParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_copyStatement; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).enterCopyStatement(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).enterCopyStatement(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).exitCopyStatement(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).exitCopyStatement(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitCopyStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) {
+				return ((CobolPreprocessorVisitor<? extends T>) visitor).visitCopyStatement(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -3925,7 +4367,7 @@ public class CobolPreprocessorParser extends Parser {
 			setState(498);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==IN || (((_la - 200)) & ~0x3f) == 0 && ((1L << (_la - 200)) & 70368748371977L) != 0) {
+			while (_la==IN || ((_la - 200) & ~0x3f) == 0 && ((1L << (_la - 200)) & 70368748371977L) != 0) {
 				{
 				{
 				setState(494);
@@ -4002,16 +4444,24 @@ public class CobolPreprocessorParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_copySource; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).enterCopySource(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).enterCopySource(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).exitCopySource(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).exitCopySource(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitCopySource(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) {
+				return ((CobolPreprocessorVisitor<? extends T>) visitor).visitCopySource(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -4312,24 +4762,22 @@ public class CobolPreprocessorParser extends Parser {
 			}
 			setState(510);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,41,_ctx) ) {
-			case 1:
-				{
-				setState(508);
-				_la = _input.LA(1);
-				if ( !(_la==IN || _la==OF) ) {
-				_errHandler.recoverInline(this);
+				if (getInterpreter().adaptivePredict(_input, 41, _ctx) == 1) {
+					setState(508);
+					_la = _input.LA(1);
+					if (!(_la == IN || _la == OF)) {
+						_errHandler.recoverInline(this);
+					}
+					else {
+						if (_input.LA(1) == Token.EOF) {
+							matchedEOF = true;
+						}
+						_errHandler.reportMatch(this);
+						consume();
+					}
+					setState(509);
+					copyLibrary();
 				}
-				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-					_errHandler.reportMatch(this);
-					consume();
-				}
-				setState(509);
-				copyLibrary();
-				}
-				break;
-			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -4357,16 +4805,24 @@ public class CobolPreprocessorParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_copyLibrary; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).enterCopyLibrary(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).enterCopyLibrary(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).exitCopyLibrary(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).exitCopyLibrary(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitCopyLibrary(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) {
+				return ((CobolPreprocessorVisitor<? extends T>) visitor).visitCopyLibrary(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -4685,16 +5141,24 @@ public class CobolPreprocessorParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_replacingPhrase; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).enterReplacingPhrase(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).enterReplacingPhrase(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).exitReplacingPhrase(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).exitReplacingPhrase(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitReplacingPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) {
+				return ((CobolPreprocessorVisitor<? extends T>) visitor).visitReplacingPhrase(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -4764,16 +5228,24 @@ public class CobolPreprocessorParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_replaceArea; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).enterReplaceArea(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).enterReplaceArea(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).exitReplaceArea(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).exitReplaceArea(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitReplaceArea(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) {
+				return ((CobolPreprocessorVisitor<? extends T>) visitor).visitReplaceArea(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -5089,14 +5561,10 @@ public class CobolPreprocessorParser extends Parser {
 			}
 			setState(533);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,46,_ctx) ) {
-			case 1:
-				{
-				setState(532);
-				replaceOffStatement();
+				if (getInterpreter().adaptivePredict(_input, 46, _ctx) == 1) {
+					setState(532);
+					replaceOffStatement();
 				}
-				break;
-			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -5126,16 +5594,24 @@ public class CobolPreprocessorParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_replaceByStatement; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).enterReplaceByStatement(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).enterReplaceByStatement(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).exitReplaceByStatement(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).exitReplaceByStatement(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitReplaceByStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) {
+				return ((CobolPreprocessorVisitor<? extends T>) visitor).visitReplaceByStatement(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -5161,7 +5637,7 @@ public class CobolPreprocessorParser extends Parser {
 				setState(539);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & -2346656880870555650L) != 0 || (((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & -16449L) != 0 || (((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & -576460752303423489L) != 0 || (((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & -2324912939422711809L) != 0 || (((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & 2541882441455L) != 0 );
+			} while ( (_la & ~0x3f) == 0 && ((1L << _la) & -2346656880870555650L) != 0 || ((_la - 64) & ~0x3f) == 0 && ((1L << (_la - 64)) & -16449L) != 0 || ((_la - 128) & ~0x3f) == 0 && ((1L << (_la - 128)) & -576460752303423489L) != 0 || ((_la - 192) & ~0x3f) == 0 && ((1L << (_la - 192)) & -2324912939422711809L) != 0 || ((_la - 256) & ~0x3f) == 0 && ((1L << (_la - 256)) & 2541882441455L) != 0 );
 			setState(541);
 			match(DOT);
 			}
@@ -5188,16 +5664,24 @@ public class CobolPreprocessorParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_replaceOffStatement; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).enterReplaceOffStatement(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).enterReplaceOffStatement(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).exitReplaceOffStatement(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).exitReplaceOffStatement(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitReplaceOffStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) {
+				return ((CobolPreprocessorVisitor<? extends T>) visitor).visitReplaceOffStatement(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -5253,16 +5737,24 @@ public class CobolPreprocessorParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_replaceClause; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).enterReplaceClause(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).enterReplaceClause(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).exitReplaceClause(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).exitReplaceClause(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitReplaceClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) {
+				return ((CobolPreprocessorVisitor<? extends T>) visitor).visitReplaceClause(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -5281,14 +5773,10 @@ public class CobolPreprocessorParser extends Parser {
 			replacement();
 			setState(551);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,48,_ctx) ) {
-			case 1:
-				{
-				setState(550);
-				subscript();
+				if (getInterpreter().adaptivePredict(_input, 48, _ctx) == 1) {
+					setState(550);
+					subscript();
 				}
-				break;
-			}
 			setState(556);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,49,_ctx);
@@ -5307,14 +5795,10 @@ public class CobolPreprocessorParser extends Parser {
 			}
 			setState(560);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,50,_ctx) ) {
-			case 1:
-				{
-				setState(559);
-				familyPhrase();
+				if (getInterpreter().adaptivePredict(_input, 50, _ctx) == 1) {
+					setState(559);
+					familyPhrase();
 				}
-				break;
-			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -5344,16 +5828,24 @@ public class CobolPreprocessorParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_directoryPhrase; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).enterDirectoryPhrase(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).enterDirectoryPhrase(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).exitDirectoryPhrase(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).exitDirectoryPhrase(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitDirectoryPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) {
+				return ((CobolPreprocessorVisitor<? extends T>) visitor).visitDirectoryPhrase(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -5370,7 +5862,9 @@ public class CobolPreprocessorParser extends Parser {
 			_errHandler.recoverInline(this);
 			}
 			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				if (_input.LA(1) == Token.EOF) {
+					matchedEOF = true;
+				}
 				_errHandler.reportMatch(this);
 				consume();
 			}
@@ -5684,16 +6178,24 @@ public class CobolPreprocessorParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_familyPhrase; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).enterFamilyPhrase(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).enterFamilyPhrase(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).exitFamilyPhrase(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).exitFamilyPhrase(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitFamilyPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) {
+				return ((CobolPreprocessorVisitor<? extends T>) visitor).visitFamilyPhrase(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -6020,16 +6522,24 @@ public class CobolPreprocessorParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_replaceable; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).enterReplaceable(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).enterReplaceable(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).exitReplaceable(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).exitReplaceable(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitReplaceable(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) {
+				return ((CobolPreprocessorVisitor<? extends T>) visitor).visitReplaceable(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -6101,16 +6611,24 @@ public class CobolPreprocessorParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_replacement; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).enterReplacement(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).enterReplacement(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).exitReplacement(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).exitReplacement(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitReplacement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) {
+				return ((CobolPreprocessorVisitor<? extends T>) visitor).visitReplacement(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -6172,16 +6690,24 @@ public class CobolPreprocessorParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_ejectStatement; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).enterEjectStatement(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).enterEjectStatement(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).exitEjectStatement(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).exitEjectStatement(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitEjectStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) {
+				return ((CobolPreprocessorVisitor<? extends T>) visitor).visitEjectStatement(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -6195,14 +6721,10 @@ public class CobolPreprocessorParser extends Parser {
 			match(EJECT);
 			setState(586);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,55,_ctx) ) {
-			case 1:
-				{
-				setState(585);
-				match(DOT);
+				if (getInterpreter().adaptivePredict(_input, 55, _ctx) == 1) {
+					setState(585);
+					match(DOT);
 				}
-				break;
-			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -6228,16 +6750,24 @@ public class CobolPreprocessorParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_skipStatement; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).enterSkipStatement(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).enterSkipStatement(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).exitSkipStatement(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).exitSkipStatement(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitSkipStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) {
+				return ((CobolPreprocessorVisitor<? extends T>) visitor).visitSkipStatement(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -6250,24 +6780,22 @@ public class CobolPreprocessorParser extends Parser {
 			{
 			setState(588);
 			_la = _input.LA(1);
-			if ( !((((_la - 239)) & ~0x3f) == 0 && ((1L << (_la - 239)) & 7L) != 0) ) {
+			if ( !(((_la - 239) & ~0x3f) == 0 && ((1L << (_la - 239)) & 7L) != 0) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				if (_input.LA(1) == Token.EOF) {
+					matchedEOF = true;
+				}
 				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(590);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,56,_ctx) ) {
-			case 1:
-				{
-				setState(589);
-				match(DOT);
+				if (getInterpreter().adaptivePredict(_input, 56, _ctx) == 1) {
+					setState(589);
+					match(DOT);
 				}
-				break;
-			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -6294,16 +6822,24 @@ public class CobolPreprocessorParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_titleStatement; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).enterTitleStatement(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).enterTitleStatement(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).exitTitleStatement(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).exitTitleStatement(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitTitleStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) {
+				return ((CobolPreprocessorVisitor<? extends T>) visitor).visitTitleStatement(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -6319,14 +6855,10 @@ public class CobolPreprocessorParser extends Parser {
 			literal();
 			setState(595);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,57,_ctx) ) {
-			case 1:
-				{
-				setState(594);
-				match(DOT);
+				if (getInterpreter().adaptivePredict(_input, 57, _ctx) == 1) {
+					setState(594);
+					match(DOT);
 				}
-				break;
-			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -6355,16 +6887,24 @@ public class CobolPreprocessorParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_pseudoText; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).enterPseudoText(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).enterPseudoText(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).exitPseudoText(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).exitPseudoText(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitPseudoText(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) {
+				return ((CobolPreprocessorVisitor<? extends T>) visitor).visitPseudoText(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -6380,7 +6920,7 @@ public class CobolPreprocessorParser extends Parser {
 			setState(599);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if (((_la) & ~0x3f) == 0 && ((1L << _la) & -2346656880870555650L) != 0 || (((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & -16449L) != 0 || (((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & -576460752303423489L) != 0 || (((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & -2324912939422711809L) != 0 || (((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & 2541345570543L) != 0) {
+			if ((_la & ~0x3f) == 0 && ((1L << _la) & -2346656880870555650L) != 0 || ((_la - 64) & ~0x3f) == 0 && ((1L << (_la - 64)) & -16449L) != 0 || ((_la - 128) & ~0x3f) == 0 && ((1L << (_la - 128)) & -576460752303423489L) != 0 || ((_la - 192) & ~0x3f) == 0 && ((1L << (_la - 192)) & -2324912939422711809L) != 0 || ((_la - 256) & ~0x3f) == 0 && ((1L << (_la - 256)) & 2541345570543L) != 0) {
 				{
 				setState(598);
 				charData();
@@ -6416,16 +6956,24 @@ public class CobolPreprocessorParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_charData; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).enterCharData(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).enterCharData(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).exitCharData(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).exitCharData(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitCharData(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) {
+				return ((CobolPreprocessorVisitor<? extends T>) visitor).visitCharData(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -6440,16 +6988,13 @@ public class CobolPreprocessorParser extends Parser {
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
-				switch (_alt) {
-				case 1:
+				if (_alt == 1) {
 					{
-					{
-					setState(603);
-					charDataLine();
+						setState(603);
+						charDataLine();
 					}
-					}
-					break;
-				default:
+				}
+				else {
 					throw new NoViableAltException(this);
 				}
 				setState(606);
@@ -6491,16 +7036,24 @@ public class CobolPreprocessorParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_charDataSql; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).enterCharDataSql(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).enterCharDataSql(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).exitCharDataSql(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).exitCharDataSql(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitCharDataSql(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) {
+				return ((CobolPreprocessorVisitor<? extends T>) visitor).visitCharDataSql(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -6815,7 +7368,7 @@ public class CobolPreprocessorParser extends Parser {
 				setState(613);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & -2346656880837001218L) != 0 || (((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & -16449L) != 0 || (((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & -576460752303423489L) != 0 || (((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & -2324912938885840897L) != 0 || (((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & 2541345570543L) != 0 );
+			} while ( (_la & ~0x3f) == 0 && ((1L << _la) & -2346656880837001218L) != 0 || ((_la - 64) & ~0x3f) == 0 && ((1L << (_la - 64)) & -16449L) != 0 || ((_la - 128) & ~0x3f) == 0 && ((1L << (_la - 128)) & -576460752303423489L) != 0 || ((_la - 192) & ~0x3f) == 0 && ((1L << (_la - 192)) & -2324912938885840897L) != 0 || ((_la - 256) & ~0x3f) == 0 && ((1L << (_la - 256)) & 2541345570543L) != 0 );
 			}
 		}
 		catch (RecognitionException re) {
@@ -6873,16 +7426,24 @@ public class CobolPreprocessorParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_charDataLineNoDot; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).enterCharDataLineNoDot(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).enterCharDataLineNoDot(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).exitCharDataLineNoDot(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).exitCharDataLineNoDot(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitCharDataLineNoDot(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) {
+				return ((CobolPreprocessorVisitor<? extends T>) visitor).visitCharDataLineNoDot(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -6897,324 +7458,321 @@ public class CobolPreprocessorParser extends Parser {
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
-				switch (_alt) {
-				case 1:
-					{
+				if (_alt == 1) {
 					setState(622);
 					_errHandler.sync(this);
 					switch (_input.LA(1)) {
-					case ADATA:
-					case ADV:
-					case ALIAS:
-					case ANSI:
-					case ANY:
-					case APOST:
-					case AR:
-					case ARITH:
-					case AUTO:
-					case AWO:
-					case BIN:
-					case BLOCK0:
-					case BUF:
-					case BUFSIZE:
-					case BY:
-					case CBL:
-					case CBLCARD:
-					case CO:
-					case COBOL2:
-					case COBOL3:
-					case CODEPAGE:
-					case COMPAT:
-					case COMPILE:
-					case CP:
-					case CPP:
-					case CPSM:
-					case CS:
-					case CURR:
-					case CURRENCY:
-					case DATA:
-					case DATEPROC:
-					case DBCS:
-					case DD:
-					case DEBUG:
-					case DECK:
-					case DIAGTRUNC:
-					case DLI:
-					case DLL:
-					case DP:
-					case DTR:
-					case DU:
-					case DUMP:
-					case DYN:
-					case DYNAM:
-					case EDF:
-					case EJPD:
-					case EN:
-					case ENGLISH:
-					case EPILOG:
-					case EXCI:
-					case EXIT:
-					case EXP:
-					case EXPORTALL:
-					case EXTEND:
-					case FASTSRT:
-					case FLAG:
-					case FLAGSTD:
-					case FSRT:
-					case FULL:
-					case GDS:
-					case GRAPHIC:
-					case HOOK:
-					case IN:
-					case INTDATE:
-					case JA:
-					case JP:
-					case KA:
-					case LANG:
-					case LANGUAGE:
-					case LC:
-					case LENGTH:
-					case LIB:
-					case LILIAN:
-					case LIN:
-					case LINECOUNT:
-					case LINKAGE:
-					case LIST:
-					case LM:
-					case LONGMIXED:
-					case LONGUPPER:
-					case LU:
-					case MAP:
-					case MARGINS:
-					case MAX:
-					case MD:
-					case MDECK:
-					case MIG:
-					case MIXED:
-					case NAME:
-					case NAT:
-					case NATIONAL:
-					case NATLANG:
-					case NN:
-					case NO:
-					case NOADATA:
-					case NOADV:
-					case NOALIAS:
-					case NOAWO:
-					case NOBLOCK0:
-					case NOC:
-					case NOCBLCARD:
-					case NOCICS:
-					case NOCMPR2:
-					case NOCOMPILE:
-					case NOCPSM:
-					case NOCURR:
-					case NOCURRENCY:
-					case NOD:
-					case NODATEPROC:
-					case NODBCS:
-					case NODE:
-					case NODEBUG:
-					case NODECK:
-					case NODIAGTRUNC:
-					case NODLL:
-					case NODU:
-					case NODUMP:
-					case NODP:
-					case NODTR:
-					case NODYN:
-					case NODYNAM:
-					case NOEDF:
-					case NOEJPD:
-					case NOEPILOG:
-					case NOEXIT:
-					case NOEXP:
-					case NOEXPORTALL:
-					case NOF:
-					case NOFASTSRT:
-					case NOFEPI:
-					case NOFLAG:
-					case NOFLAGMIG:
-					case NOFLAGSTD:
-					case NOFSRT:
-					case NOGRAPHIC:
-					case NOHOOK:
-					case NOLENGTH:
-					case NOLIB:
-					case NOLINKAGE:
-					case NOLIST:
-					case NOMAP:
-					case NOMD:
-					case NOMDECK:
-					case NONAME:
-					case NONUM:
-					case NONUMBER:
-					case NOOBJ:
-					case NOOBJECT:
-					case NOOFF:
-					case NOOFFSET:
-					case NOOPSEQUENCE:
-					case NOOPT:
-					case NOOPTIMIZE:
-					case NOOPTIONS:
-					case NOP:
-					case NOPFD:
-					case NOPROLOG:
-					case NORENT:
-					case NOS:
-					case NOSEP:
-					case NOSEPARATE:
-					case NOSEQ:
-					case NOSOURCE:
-					case NOSPIE:
-					case NOSQL:
-					case NOSQLC:
-					case NOSQLCCSID:
-					case NOSSR:
-					case NOSSRANGE:
-					case NOSTDTRUNC:
-					case NOSEQUENCE:
-					case NOTERM:
-					case NOTERMINAL:
-					case NOTEST:
-					case NOTHREAD:
-					case NOTRIG:
-					case NOVBREF:
-					case NOWORD:
-					case NOX:
-					case NOXREF:
-					case NOZWB:
-					case NS:
-					case NSEQ:
-					case NSYMBOL:
-					case NUM:
-					case NUMBER:
-					case NUMPROC:
-					case OBJ:
-					case OBJECT:
-					case OF:
-					case OFF:
-					case OFFSET:
-					case ON:
-					case OP:
-					case OPMARGINS:
-					case OPSEQUENCE:
-					case OPT:
-					case OPTFILE:
-					case OPTIMIZE:
-					case OPTIONS:
-					case OUT:
-					case OUTDD:
-					case PFD:
-					case PPTDBG:
-					case PGMN:
-					case PGMNAME:
-					case PROCESS:
-					case PROLOG:
-					case QUOTE:
-					case RENT:
-					case REPLACING:
-					case RMODE:
-					case SEP:
-					case SEPARATE:
-					case SEQ:
-					case SEQUENCE:
-					case SHORT:
-					case SIZE:
-					case SOURCE:
-					case SP:
-					case SPACE:
-					case SPIE:
-					case SQL:
-					case SQLC:
-					case SQLCCSID:
-					case SS:
-					case SSR:
-					case SSRANGE:
-					case STD:
-					case SYSEIB:
-					case SZ:
-					case TERM:
-					case TERMINAL:
-					case TEST:
-					case THREAD:
-					case TRIG:
-					case TRUNC:
-					case UE:
-					case UPPER:
-					case VBREF:
-					case WD:
-					case XMLPARSE:
-					case XMLSS:
-					case XOPTS:
-					case XREF:
-					case YEARWINDOW:
-					case YW:
-					case ZWB:
-					case C_CHAR:
-					case D_CHAR:
-					case E_CHAR:
-					case F_CHAR:
-					case H_CHAR:
-					case I_CHAR:
-					case M_CHAR:
-					case N_CHAR:
-					case Q_CHAR:
-					case S_CHAR:
-					case U_CHAR:
-					case W_CHAR:
-					case X_CHAR:
-					case COMMACHAR:
-					case IDENTIFIER:
+						case ADATA:
+						case ADV:
+						case ALIAS:
+						case ANSI:
+						case ANY:
+						case APOST:
+						case AR:
+						case ARITH:
+						case AUTO:
+						case AWO:
+						case BIN:
+						case BLOCK0:
+						case BUF:
+						case BUFSIZE:
+						case BY:
+						case CBL:
+						case CBLCARD:
+						case CO:
+						case COBOL2:
+						case COBOL3:
+						case CODEPAGE:
+						case COMPAT:
+						case COMPILE:
+						case CP:
+						case CPP:
+						case CPSM:
+						case CS:
+						case CURR:
+						case CURRENCY:
+						case DATA:
+						case DATEPROC:
+						case DBCS:
+						case DD:
+						case DEBUG:
+						case DECK:
+						case DIAGTRUNC:
+						case DLI:
+						case DLL:
+						case DP:
+						case DTR:
+						case DU:
+						case DUMP:
+						case DYN:
+						case DYNAM:
+						case EDF:
+						case EJPD:
+						case EN:
+						case ENGLISH:
+						case EPILOG:
+						case EXCI:
+						case EXIT:
+						case EXP:
+						case EXPORTALL:
+						case EXTEND:
+						case FASTSRT:
+						case FLAG:
+						case FLAGSTD:
+						case FSRT:
+						case FULL:
+						case GDS:
+						case GRAPHIC:
+						case HOOK:
+						case IN:
+						case INTDATE:
+						case JA:
+						case JP:
+						case KA:
+						case LANG:
+						case LANGUAGE:
+						case LC:
+						case LENGTH:
+						case LIB:
+						case LILIAN:
+						case LIN:
+						case LINECOUNT:
+						case LINKAGE:
+						case LIST:
+						case LM:
+						case LONGMIXED:
+						case LONGUPPER:
+						case LU:
+						case MAP:
+						case MARGINS:
+						case MAX:
+						case MD:
+						case MDECK:
+						case MIG:
+						case MIXED:
+						case NAME:
+						case NAT:
+						case NATIONAL:
+						case NATLANG:
+						case NN:
+						case NO:
+						case NOADATA:
+						case NOADV:
+						case NOALIAS:
+						case NOAWO:
+						case NOBLOCK0:
+						case NOC:
+						case NOCBLCARD:
+						case NOCICS:
+						case NOCMPR2:
+						case NOCOMPILE:
+						case NOCPSM:
+						case NOCURR:
+						case NOCURRENCY:
+						case NOD:
+						case NODATEPROC:
+						case NODBCS:
+						case NODE:
+						case NODEBUG:
+						case NODECK:
+						case NODIAGTRUNC:
+						case NODLL:
+						case NODU:
+						case NODUMP:
+						case NODP:
+						case NODTR:
+						case NODYN:
+						case NODYNAM:
+						case NOEDF:
+						case NOEJPD:
+						case NOEPILOG:
+						case NOEXIT:
+						case NOEXP:
+						case NOEXPORTALL:
+						case NOF:
+						case NOFASTSRT:
+						case NOFEPI:
+						case NOFLAG:
+						case NOFLAGMIG:
+						case NOFLAGSTD:
+						case NOFSRT:
+						case NOGRAPHIC:
+						case NOHOOK:
+						case NOLENGTH:
+						case NOLIB:
+						case NOLINKAGE:
+						case NOLIST:
+						case NOMAP:
+						case NOMD:
+						case NOMDECK:
+						case NONAME:
+						case NONUM:
+						case NONUMBER:
+						case NOOBJ:
+						case NOOBJECT:
+						case NOOFF:
+						case NOOFFSET:
+						case NOOPSEQUENCE:
+						case NOOPT:
+						case NOOPTIMIZE:
+						case NOOPTIONS:
+						case NOP:
+						case NOPFD:
+						case NOPROLOG:
+						case NORENT:
+						case NOS:
+						case NOSEP:
+						case NOSEPARATE:
+						case NOSEQ:
+						case NOSOURCE:
+						case NOSPIE:
+						case NOSQL:
+						case NOSQLC:
+						case NOSQLCCSID:
+						case NOSSR:
+						case NOSSRANGE:
+						case NOSTDTRUNC:
+						case NOSEQUENCE:
+						case NOTERM:
+						case NOTERMINAL:
+						case NOTEST:
+						case NOTHREAD:
+						case NOTRIG:
+						case NOVBREF:
+						case NOWORD:
+						case NOX:
+						case NOXREF:
+						case NOZWB:
+						case NS:
+						case NSEQ:
+						case NSYMBOL:
+						case NUM:
+						case NUMBER:
+						case NUMPROC:
+						case OBJ:
+						case OBJECT:
+						case OF:
+						case OFF:
+						case OFFSET:
+						case ON:
+						case OP:
+						case OPMARGINS:
+						case OPSEQUENCE:
+						case OPT:
+						case OPTFILE:
+						case OPTIMIZE:
+						case OPTIONS:
+						case OUT:
+						case OUTDD:
+						case PFD:
+						case PPTDBG:
+						case PGMN:
+						case PGMNAME:
+						case PROCESS:
+						case PROLOG:
+						case QUOTE:
+						case RENT:
+						case REPLACING:
+						case RMODE:
+						case SEP:
+						case SEPARATE:
+						case SEQ:
+						case SEQUENCE:
+						case SHORT:
+						case SIZE:
+						case SOURCE:
+						case SP:
+						case SPACE:
+						case SPIE:
+						case SQL:
+						case SQLC:
+						case SQLCCSID:
+						case SS:
+						case SSR:
+						case SSRANGE:
+						case STD:
+						case SYSEIB:
+						case SZ:
+						case TERM:
+						case TERMINAL:
+						case TEST:
+						case THREAD:
+						case TRIG:
+						case TRUNC:
+						case UE:
+						case UPPER:
+						case VBREF:
+						case WD:
+						case XMLPARSE:
+						case XMLSS:
+						case XOPTS:
+						case XREF:
+						case YEARWINDOW:
+						case YW:
+						case ZWB:
+						case C_CHAR:
+						case D_CHAR:
+						case E_CHAR:
+						case F_CHAR:
+						case H_CHAR:
+						case I_CHAR:
+						case M_CHAR:
+						case N_CHAR:
+						case Q_CHAR:
+						case S_CHAR:
+						case U_CHAR:
+						case W_CHAR:
+						case X_CHAR:
+						case COMMACHAR:
+						case IDENTIFIER:
 						{
-						setState(615);
-						cobolWord();
+							setState(615);
+							cobolWord();
 						}
-						break;
-					case NONNUMERICLITERAL:
-					case INTEGERLITERAL:
-					case NUMERICLITERAL:
+							break;
+						case NONNUMERICLITERAL:
+						case INTEGERLITERAL:
+						case NUMERICLITERAL:
 						{
-						setState(616);
-						literal();
+							setState(616);
+							literal();
 						}
-						break;
-					case FILENAME:
+							break;
+						case FILENAME:
 						{
-						setState(617);
-						filename();
+							setState(617);
+							filename();
 						}
-						break;
-					case COMMENTENTRYLINE:
+							break;
+						case COMMENTENTRYLINE:
 						{
-						setState(618);
-						commentEntry();
+							setState(618);
+							commentEntry();
 						}
-						break;
-					case TEXT:
+							break;
+						case TEXT:
 						{
-						setState(619);
-						match(TEXT);
+							setState(619);
+							match(TEXT);
 						}
-						break;
-					case LPARENCHAR:
+							break;
+						case LPARENCHAR:
 						{
-						setState(620);
-						match(LPARENCHAR);
+							setState(620);
+							match(LPARENCHAR);
 						}
-						break;
-					case RPARENCHAR:
+							break;
+						case RPARENCHAR:
 						{
-						setState(621);
-						match(RPARENCHAR);
+							setState(621);
+							match(RPARENCHAR);
 						}
-						break;
-					default:
-						throw new NoViableAltException(this);
+							break;
+						default:
+							throw new NoViableAltException(this);
 					}
-					}
-					break;
-				default:
+				}
+				else {
 					throw new NoViableAltException(this);
 				}
 				setState(624);
@@ -7282,16 +7840,24 @@ public class CobolPreprocessorParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_charDataLine; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).enterCharDataLine(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).enterCharDataLine(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).exitCharDataLine(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).exitCharDataLine(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitCharDataLine(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) {
+				return ((CobolPreprocessorVisitor<? extends T>) visitor).visitCharDataLine(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -7306,330 +7872,327 @@ public class CobolPreprocessorParser extends Parser {
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
-				switch (_alt) {
-				case 1:
-					{
+				if (_alt == 1) {
 					setState(634);
 					_errHandler.sync(this);
 					switch (_input.LA(1)) {
-					case ADATA:
-					case ADV:
-					case ALIAS:
-					case ANSI:
-					case ANY:
-					case APOST:
-					case AR:
-					case ARITH:
-					case AUTO:
-					case AWO:
-					case BIN:
-					case BLOCK0:
-					case BUF:
-					case BUFSIZE:
-					case BY:
-					case CBL:
-					case CBLCARD:
-					case CO:
-					case COBOL2:
-					case COBOL3:
-					case CODEPAGE:
-					case COMPAT:
-					case COMPILE:
-					case CP:
-					case CPP:
-					case CPSM:
-					case CS:
-					case CURR:
-					case CURRENCY:
-					case DATA:
-					case DATEPROC:
-					case DBCS:
-					case DD:
-					case DEBUG:
-					case DECK:
-					case DIAGTRUNC:
-					case DLI:
-					case DLL:
-					case DP:
-					case DTR:
-					case DU:
-					case DUMP:
-					case DYN:
-					case DYNAM:
-					case EDF:
-					case EJPD:
-					case EN:
-					case ENGLISH:
-					case EPILOG:
-					case EXCI:
-					case EXIT:
-					case EXP:
-					case EXPORTALL:
-					case EXTEND:
-					case FASTSRT:
-					case FLAG:
-					case FLAGSTD:
-					case FSRT:
-					case FULL:
-					case GDS:
-					case GRAPHIC:
-					case HOOK:
-					case IN:
-					case INTDATE:
-					case JA:
-					case JP:
-					case KA:
-					case LANG:
-					case LANGUAGE:
-					case LC:
-					case LENGTH:
-					case LIB:
-					case LILIAN:
-					case LIN:
-					case LINECOUNT:
-					case LINKAGE:
-					case LIST:
-					case LM:
-					case LONGMIXED:
-					case LONGUPPER:
-					case LU:
-					case MAP:
-					case MARGINS:
-					case MAX:
-					case MD:
-					case MDECK:
-					case MIG:
-					case MIXED:
-					case NAME:
-					case NAT:
-					case NATIONAL:
-					case NATLANG:
-					case NN:
-					case NO:
-					case NOADATA:
-					case NOADV:
-					case NOALIAS:
-					case NOAWO:
-					case NOBLOCK0:
-					case NOC:
-					case NOCBLCARD:
-					case NOCICS:
-					case NOCMPR2:
-					case NOCOMPILE:
-					case NOCPSM:
-					case NOCURR:
-					case NOCURRENCY:
-					case NOD:
-					case NODATEPROC:
-					case NODBCS:
-					case NODE:
-					case NODEBUG:
-					case NODECK:
-					case NODIAGTRUNC:
-					case NODLL:
-					case NODU:
-					case NODUMP:
-					case NODP:
-					case NODTR:
-					case NODYN:
-					case NODYNAM:
-					case NOEDF:
-					case NOEJPD:
-					case NOEPILOG:
-					case NOEXIT:
-					case NOEXP:
-					case NOEXPORTALL:
-					case NOF:
-					case NOFASTSRT:
-					case NOFEPI:
-					case NOFLAG:
-					case NOFLAGMIG:
-					case NOFLAGSTD:
-					case NOFSRT:
-					case NOGRAPHIC:
-					case NOHOOK:
-					case NOLENGTH:
-					case NOLIB:
-					case NOLINKAGE:
-					case NOLIST:
-					case NOMAP:
-					case NOMD:
-					case NOMDECK:
-					case NONAME:
-					case NONUM:
-					case NONUMBER:
-					case NOOBJ:
-					case NOOBJECT:
-					case NOOFF:
-					case NOOFFSET:
-					case NOOPSEQUENCE:
-					case NOOPT:
-					case NOOPTIMIZE:
-					case NOOPTIONS:
-					case NOP:
-					case NOPFD:
-					case NOPROLOG:
-					case NORENT:
-					case NOS:
-					case NOSEP:
-					case NOSEPARATE:
-					case NOSEQ:
-					case NOSOURCE:
-					case NOSPIE:
-					case NOSQL:
-					case NOSQLC:
-					case NOSQLCCSID:
-					case NOSSR:
-					case NOSSRANGE:
-					case NOSTDTRUNC:
-					case NOSEQUENCE:
-					case NOTERM:
-					case NOTERMINAL:
-					case NOTEST:
-					case NOTHREAD:
-					case NOTRIG:
-					case NOVBREF:
-					case NOWORD:
-					case NOX:
-					case NOXREF:
-					case NOZWB:
-					case NS:
-					case NSEQ:
-					case NSYMBOL:
-					case NUM:
-					case NUMBER:
-					case NUMPROC:
-					case OBJ:
-					case OBJECT:
-					case OF:
-					case OFF:
-					case OFFSET:
-					case ON:
-					case OP:
-					case OPMARGINS:
-					case OPSEQUENCE:
-					case OPT:
-					case OPTFILE:
-					case OPTIMIZE:
-					case OPTIONS:
-					case OUT:
-					case OUTDD:
-					case PFD:
-					case PPTDBG:
-					case PGMN:
-					case PGMNAME:
-					case PROCESS:
-					case PROLOG:
-					case QUOTE:
-					case RENT:
-					case REPLACING:
-					case RMODE:
-					case SEP:
-					case SEPARATE:
-					case SEQ:
-					case SEQUENCE:
-					case SHORT:
-					case SIZE:
-					case SOURCE:
-					case SP:
-					case SPACE:
-					case SPIE:
-					case SQL:
-					case SQLC:
-					case SQLCCSID:
-					case SS:
-					case SSR:
-					case SSRANGE:
-					case STD:
-					case SYSEIB:
-					case SZ:
-					case TERM:
-					case TERMINAL:
-					case TEST:
-					case THREAD:
-					case TRIG:
-					case TRUNC:
-					case UE:
-					case UPPER:
-					case VBREF:
-					case WD:
-					case XMLPARSE:
-					case XMLSS:
-					case XOPTS:
-					case XREF:
-					case YEARWINDOW:
-					case YW:
-					case ZWB:
-					case C_CHAR:
-					case D_CHAR:
-					case E_CHAR:
-					case F_CHAR:
-					case H_CHAR:
-					case I_CHAR:
-					case M_CHAR:
-					case N_CHAR:
-					case Q_CHAR:
-					case S_CHAR:
-					case U_CHAR:
-					case W_CHAR:
-					case X_CHAR:
-					case COMMACHAR:
-					case IDENTIFIER:
+						case ADATA:
+						case ADV:
+						case ALIAS:
+						case ANSI:
+						case ANY:
+						case APOST:
+						case AR:
+						case ARITH:
+						case AUTO:
+						case AWO:
+						case BIN:
+						case BLOCK0:
+						case BUF:
+						case BUFSIZE:
+						case BY:
+						case CBL:
+						case CBLCARD:
+						case CO:
+						case COBOL2:
+						case COBOL3:
+						case CODEPAGE:
+						case COMPAT:
+						case COMPILE:
+						case CP:
+						case CPP:
+						case CPSM:
+						case CS:
+						case CURR:
+						case CURRENCY:
+						case DATA:
+						case DATEPROC:
+						case DBCS:
+						case DD:
+						case DEBUG:
+						case DECK:
+						case DIAGTRUNC:
+						case DLI:
+						case DLL:
+						case DP:
+						case DTR:
+						case DU:
+						case DUMP:
+						case DYN:
+						case DYNAM:
+						case EDF:
+						case EJPD:
+						case EN:
+						case ENGLISH:
+						case EPILOG:
+						case EXCI:
+						case EXIT:
+						case EXP:
+						case EXPORTALL:
+						case EXTEND:
+						case FASTSRT:
+						case FLAG:
+						case FLAGSTD:
+						case FSRT:
+						case FULL:
+						case GDS:
+						case GRAPHIC:
+						case HOOK:
+						case IN:
+						case INTDATE:
+						case JA:
+						case JP:
+						case KA:
+						case LANG:
+						case LANGUAGE:
+						case LC:
+						case LENGTH:
+						case LIB:
+						case LILIAN:
+						case LIN:
+						case LINECOUNT:
+						case LINKAGE:
+						case LIST:
+						case LM:
+						case LONGMIXED:
+						case LONGUPPER:
+						case LU:
+						case MAP:
+						case MARGINS:
+						case MAX:
+						case MD:
+						case MDECK:
+						case MIG:
+						case MIXED:
+						case NAME:
+						case NAT:
+						case NATIONAL:
+						case NATLANG:
+						case NN:
+						case NO:
+						case NOADATA:
+						case NOADV:
+						case NOALIAS:
+						case NOAWO:
+						case NOBLOCK0:
+						case NOC:
+						case NOCBLCARD:
+						case NOCICS:
+						case NOCMPR2:
+						case NOCOMPILE:
+						case NOCPSM:
+						case NOCURR:
+						case NOCURRENCY:
+						case NOD:
+						case NODATEPROC:
+						case NODBCS:
+						case NODE:
+						case NODEBUG:
+						case NODECK:
+						case NODIAGTRUNC:
+						case NODLL:
+						case NODU:
+						case NODUMP:
+						case NODP:
+						case NODTR:
+						case NODYN:
+						case NODYNAM:
+						case NOEDF:
+						case NOEJPD:
+						case NOEPILOG:
+						case NOEXIT:
+						case NOEXP:
+						case NOEXPORTALL:
+						case NOF:
+						case NOFASTSRT:
+						case NOFEPI:
+						case NOFLAG:
+						case NOFLAGMIG:
+						case NOFLAGSTD:
+						case NOFSRT:
+						case NOGRAPHIC:
+						case NOHOOK:
+						case NOLENGTH:
+						case NOLIB:
+						case NOLINKAGE:
+						case NOLIST:
+						case NOMAP:
+						case NOMD:
+						case NOMDECK:
+						case NONAME:
+						case NONUM:
+						case NONUMBER:
+						case NOOBJ:
+						case NOOBJECT:
+						case NOOFF:
+						case NOOFFSET:
+						case NOOPSEQUENCE:
+						case NOOPT:
+						case NOOPTIMIZE:
+						case NOOPTIONS:
+						case NOP:
+						case NOPFD:
+						case NOPROLOG:
+						case NORENT:
+						case NOS:
+						case NOSEP:
+						case NOSEPARATE:
+						case NOSEQ:
+						case NOSOURCE:
+						case NOSPIE:
+						case NOSQL:
+						case NOSQLC:
+						case NOSQLCCSID:
+						case NOSSR:
+						case NOSSRANGE:
+						case NOSTDTRUNC:
+						case NOSEQUENCE:
+						case NOTERM:
+						case NOTERMINAL:
+						case NOTEST:
+						case NOTHREAD:
+						case NOTRIG:
+						case NOVBREF:
+						case NOWORD:
+						case NOX:
+						case NOXREF:
+						case NOZWB:
+						case NS:
+						case NSEQ:
+						case NSYMBOL:
+						case NUM:
+						case NUMBER:
+						case NUMPROC:
+						case OBJ:
+						case OBJECT:
+						case OF:
+						case OFF:
+						case OFFSET:
+						case ON:
+						case OP:
+						case OPMARGINS:
+						case OPSEQUENCE:
+						case OPT:
+						case OPTFILE:
+						case OPTIMIZE:
+						case OPTIONS:
+						case OUT:
+						case OUTDD:
+						case PFD:
+						case PPTDBG:
+						case PGMN:
+						case PGMNAME:
+						case PROCESS:
+						case PROLOG:
+						case QUOTE:
+						case RENT:
+						case REPLACING:
+						case RMODE:
+						case SEP:
+						case SEPARATE:
+						case SEQ:
+						case SEQUENCE:
+						case SHORT:
+						case SIZE:
+						case SOURCE:
+						case SP:
+						case SPACE:
+						case SPIE:
+						case SQL:
+						case SQLC:
+						case SQLCCSID:
+						case SS:
+						case SSR:
+						case SSRANGE:
+						case STD:
+						case SYSEIB:
+						case SZ:
+						case TERM:
+						case TERMINAL:
+						case TEST:
+						case THREAD:
+						case TRIG:
+						case TRUNC:
+						case UE:
+						case UPPER:
+						case VBREF:
+						case WD:
+						case XMLPARSE:
+						case XMLSS:
+						case XOPTS:
+						case XREF:
+						case YEARWINDOW:
+						case YW:
+						case ZWB:
+						case C_CHAR:
+						case D_CHAR:
+						case E_CHAR:
+						case F_CHAR:
+						case H_CHAR:
+						case I_CHAR:
+						case M_CHAR:
+						case N_CHAR:
+						case Q_CHAR:
+						case S_CHAR:
+						case U_CHAR:
+						case W_CHAR:
+						case X_CHAR:
+						case COMMACHAR:
+						case IDENTIFIER:
 						{
-						setState(626);
-						cobolWord();
+							setState(626);
+							cobolWord();
 						}
-						break;
-					case NONNUMERICLITERAL:
-					case INTEGERLITERAL:
-					case NUMERICLITERAL:
+							break;
+						case NONNUMERICLITERAL:
+						case INTEGERLITERAL:
+						case NUMERICLITERAL:
 						{
-						setState(627);
-						literal();
+							setState(627);
+							literal();
 						}
-						break;
-					case FILENAME:
+							break;
+						case FILENAME:
 						{
-						setState(628);
-						filename();
+							setState(628);
+							filename();
 						}
-						break;
-					case COMMENTENTRYLINE:
+							break;
+						case COMMENTENTRYLINE:
 						{
-						setState(629);
-						commentEntry();
+							setState(629);
+							commentEntry();
 						}
-						break;
-					case TEXT:
+							break;
+						case TEXT:
 						{
-						setState(630);
-						match(TEXT);
+							setState(630);
+							match(TEXT);
 						}
-						break;
-					case DOT:
+							break;
+						case DOT:
 						{
-						setState(631);
-						match(DOT);
+							setState(631);
+							match(DOT);
 						}
-						break;
-					case LPARENCHAR:
+							break;
+						case LPARENCHAR:
 						{
-						setState(632);
-						match(LPARENCHAR);
+							setState(632);
+							match(LPARENCHAR);
 						}
-						break;
-					case RPARENCHAR:
+							break;
+						case RPARENCHAR:
 						{
-						setState(633);
-						match(RPARENCHAR);
+							setState(633);
+							match(RPARENCHAR);
 						}
-						break;
-					default:
-						throw new NoViableAltException(this);
+							break;
+						default:
+							throw new NoViableAltException(this);
 					}
-					}
-					break;
-				default:
+				}
+				else {
 					throw new NoViableAltException(this);
 				}
 				setState(636);
@@ -7675,16 +8238,24 @@ public class CobolPreprocessorParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_subscript; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).enterSubscript(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).enterSubscript(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).exitSubscript(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).exitSubscript(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitSubscript(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) {
+				return ((CobolPreprocessorVisitor<? extends T>) visitor).visitSubscript(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -7982,19 +8553,15 @@ public class CobolPreprocessorParser extends Parser {
 			setState(652);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (((_la) & ~0x3f) == 0 && ((1L << _la) & -2346656880870555650L) != 0 || (((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & -33570881L) != 0 || (((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & -576460752303423489L) != 0 || (((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & -2324912943717679105L) != 0 || (((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & 32547798767L) != 0) {
+			while ((_la & ~0x3f) == 0 && ((1L << _la) & -2346656880870555650L) != 0 || ((_la - 64) & ~0x3f) == 0 && ((1L << (_la - 64)) & -33570881L) != 0 || ((_la - 128) & ~0x3f) == 0 && ((1L << (_la - 128)) & -576460752303423489L) != 0 || ((_la - 192) & ~0x3f) == 0 && ((1L << (_la - 192)) & -2324912943717679105L) != 0 || ((_la - 256) & ~0x3f) == 0 && ((1L << (_la - 256)) & 32547798767L) != 0) {
 				{
 				{
 				setState(644);
 				_errHandler.sync(this);
-				switch ( getInterpreter().adaptivePredict(_input,67,_ctx) ) {
-				case 1:
-					{
-					setState(643);
-					match(COMMACHAR);
+					if (getInterpreter().adaptivePredict(_input, 67, _ctx) == 1) {
+						setState(643);
+						match(COMMACHAR);
 					}
-					break;
-				}
 				setState(648);
 				_errHandler.sync(this);
 				switch (_input.LA(1)) {
@@ -8310,16 +8877,24 @@ public class CobolPreprocessorParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_cobolWord; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).enterCobolWord(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).enterCobolWord(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).exitCobolWord(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).exitCobolWord(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitCobolWord(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) {
+				return ((CobolPreprocessorVisitor<? extends T>) visitor).visitCobolWord(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -8631,16 +9206,24 @@ public class CobolPreprocessorParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_literal; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).enterLiteral(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).enterLiteral(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).exitLiteral(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).exitLiteral(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitLiteral(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) {
+				return ((CobolPreprocessorVisitor<? extends T>) visitor).visitLiteral(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -8653,11 +9236,13 @@ public class CobolPreprocessorParser extends Parser {
 			{
 			setState(661);
 			_la = _input.LA(1);
-			if ( !((((_la - 287)) & ~0x3f) == 0 && ((1L << (_la - 287)) & 7L) != 0) ) {
+			if ( !(((_la - 287) & ~0x3f) == 0 && ((1L << (_la - 287)) & 7L) != 0) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				if (_input.LA(1) == Token.EOF) {
+					matchedEOF = true;
+				}
 				_errHandler.reportMatch(this);
 				consume();
 			}
@@ -8683,16 +9268,24 @@ public class CobolPreprocessorParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_filename; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).enterFilename(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).enterFilename(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).exitFilename(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).exitFilename(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitFilename(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) {
+				return ((CobolPreprocessorVisitor<? extends T>) visitor).visitFilename(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -8729,16 +9322,24 @@ public class CobolPreprocessorParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_commentEntry; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).enterCommentEntry(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).enterCommentEntry(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).exitCommentEntry(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).exitCommentEntry(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitCommentEntry(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) {
+				return ((CobolPreprocessorVisitor<? extends T>) visitor).visitCommentEntry(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -8753,16 +9354,13 @@ public class CobolPreprocessorParser extends Parser {
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
-				switch (_alt) {
-				case 1:
+				if (_alt == 1) {
 					{
-					{
-					setState(665);
-					match(COMMENTENTRYLINE);
+						setState(665);
+						match(COMMENTENTRYLINE);
 					}
-					}
-					break;
-				default:
+				}
+				else {
 					throw new NoViableAltException(this);
 				}
 				setState(668);
@@ -9052,16 +9650,24 @@ public class CobolPreprocessorParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_charDataKeyword; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).enterCharDataKeyword(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).enterCharDataKeyword(this);
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CobolPreprocessorListener ) ((CobolPreprocessorListener)listener).exitCharDataKeyword(this);
+			if (listener instanceof CobolPreprocessorListener) {
+				((CobolPreprocessorListener) listener).exitCharDataKeyword(this);
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitCharDataKeyword(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) {
+				return ((CobolPreprocessorVisitor<? extends T>) visitor).visitCharDataKeyword(this);
+			}
+			else {
+				return visitor.visitChildren(this);
+			}
 		}
 	}
 
@@ -9074,11 +9680,13 @@ public class CobolPreprocessorParser extends Parser {
 			{
 			setState(670);
 			_la = _input.LA(1);
-			if ( !(((_la) & ~0x3f) == 0 && ((1L << _la) & -2346656880870555650L) != 0 || (((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & -33570881L) != 0 || (((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & -576460752303423489L) != 0 || (((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & -2324912943717679105L) != 0 || (((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & 335544047L) != 0) ) {
+			if ( !((_la & ~0x3f) == 0 && ((1L << _la) & -2346656880870555650L) != 0 || ((_la - 64) & ~0x3f) == 0 && ((1L << (_la - 64)) & -33570881L) != 0 || ((_la - 128) & ~0x3f) == 0 && ((1L << (_la - 128)) & -576460752303423489L) != 0 || ((_la - 192) & ~0x3f) == 0 && ((1L << (_la - 192)) & -2324912943717679105L) != 0 || ((_la - 256) & ~0x3f) == 0 && ((1L << (_la - 256)) & 335544047L) != 0) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				if (_input.LA(1) == Token.EOF) {
+					matchedEOF = true;
+				}
 				_errHandler.reportMatch(this);
 				consume();
 			}

@@ -78,7 +78,7 @@ public class JclParser implements Parser {
         return prefix.resolve("file.jcl");
     }
 
-    private static class ForwardingErrorListener extends BaseErrorListener {
+	private static final class ForwardingErrorListener extends BaseErrorListener {
         private final Path sourcePath;
         private final ExecutionContext ctx;
 
