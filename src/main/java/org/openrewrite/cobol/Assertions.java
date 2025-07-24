@@ -171,7 +171,7 @@ public class Assertions {
     }
 
     public static SourceSpecs cobolPostProcess(@Nullable String before) {
-        return cobolPostProcess(before, null);
+        return cobolPostProcess(before, doesNotExist());
     }
 
     public static SourceSpecs cobolPostProcess(@Nullable String before, @Nullable String after) {
