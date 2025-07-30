@@ -5,7 +5,12 @@
  */
 package org.openrewrite.cobol.internal;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
+import static java.util.Collections.emptySet;
+import static java.util.Collections.singletonList;
 
 public class HpTandem implements CobolDialect {
 
@@ -21,8 +26,8 @@ public class HpTandem implements CobolDialect {
 
     private HpTandem() {
         // Currently unknown.
-        this.separators = Collections.emptySet();
-        this.commentIndicators = new HashSet<>(Collections.singletonList('*'));
+        this.separators = emptySet();
+        this.commentIndicators = new HashSet<>(singletonList('*'));
         this.columns = Columns.IBM_ANSI_85;
     }
 

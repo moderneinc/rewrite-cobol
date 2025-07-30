@@ -23,16 +23,17 @@ import org.openrewrite.tree.ParsingEventListener;
 import org.openrewrite.tree.ParsingExecutionContextView;
 
 import java.nio.file.Path;
-import java.util.*;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 
 /**
  * Read preprocessed COBOL and execute preprocessor commands.
  */
 public class CobolPreprocessorParser implements Parser {
-    private static final List<String> COBOL_FILE_EXTENSIONS = Collections.singletonList(".cbl");
+    private static final List<String> COBOL_FILE_EXTENSIONS = singletonList(".cbl");
 
     private final CobolDialect cobolDialect;
     private List<SourceFile> copybooks;

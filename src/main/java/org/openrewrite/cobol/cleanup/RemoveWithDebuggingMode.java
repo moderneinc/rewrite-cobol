@@ -16,9 +16,10 @@ import org.openrewrite.cobol.tree.*;
 import org.openrewrite.internal.lang.Nullable;
 
 import java.time.Duration;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+
+import static java.util.Collections.singleton;
 
 @EqualsAndHashCode(callSuper = true)
 @Value
@@ -44,7 +45,7 @@ public class RemoveWithDebuggingMode extends Recipe {
 
     @Override
     public Set<String> getTags() {
-        return Collections.singleton("RSPEC-4057");
+        return singleton("RSPEC-4057");
     }
 
     @Override

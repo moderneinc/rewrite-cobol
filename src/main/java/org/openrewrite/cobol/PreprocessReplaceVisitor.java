@@ -15,6 +15,8 @@ import org.openrewrite.marker.Markers;
 
 import java.util.*;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.openrewrite.Tree.randomId;
 import static org.openrewrite.cobol.tree.Space.EMPTY;
 
@@ -188,7 +190,7 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
                     Replacement replacement = new Replacement(
                             randomId(),
                             Markers.EMPTY,
-                            Collections.singletonList(new Replacement.OriginalWord(word.getCobolWord(), isEmpty)),
+                            singletonList(new Replacement.OriginalWord(word.getCobolWord(), isEmpty)),
                             Replacement.Type.EQUAL, isCopiedSource);
                     replaceMap.put(replacement.getId().toString(), replacement);
                     word = word.withCobolWord(word.getCobolWord().withReplacement(replacement));
@@ -211,7 +213,7 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
                             Replacement replacement = new Replacement(
                                     randomId(),
                                     Markers.EMPTY,
-                                    Collections.singletonList(new Replacement.OriginalWord(word.getCobolWord(), isEmpty)),
+                                    singletonList(new Replacement.OriginalWord(word.getCobolWord(), isEmpty)),
                                     Replacement.Type.EQUAL, isCopiedSource);
                             replaceMap.put(replacement.getId().toString(), replacement);
                             word = word.withCobolWord(word.getCobolWord().withReplacement(replacement));
@@ -232,7 +234,7 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
                             Replacement replacement = new Replacement(
                                     randomId(),
                                     Markers.EMPTY,
-                                    Collections.singletonList(new Replacement.OriginalWord(word.getCobolWord(), isEmpty)),
+                                    singletonList(new Replacement.OriginalWord(word.getCobolWord(), isEmpty)),
                                     Replacement.Type.EQUAL, isCopiedSource);
                             replaceMap.put(replacement.getId().toString(), replacement);
                             word = word.withCobolWord(word.getCobolWord().withReplacement(replacement));
@@ -277,7 +279,7 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
                                 Replacement replacement = new Replacement(
                                         randomId(),
                                         Markers.EMPTY,
-                                        Collections.singletonList(originalWord),
+                                        singletonList(originalWord),
                                         Replacement.Type.EQUAL,
                                         isCopiedSource);
                                 replaceMap.put(replacement.getId().toString(), replacement);
@@ -313,7 +315,7 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
                                 Replacement replacement = new Replacement(
                                         randomId(),
                                         Markers.EMPTY,
-                                        Collections.singletonList(originalWord),
+                                        singletonList(originalWord),
                                         Replacement.Type.EQUAL, isCopiedSource);
                                 word = word.withCobolWord(word.getCobolWord().withReplacement(replacement));
                                 word = word.withCobolWord(word.getCobolWord().withWord(toWord.getCobolWord().getWord()));
@@ -351,7 +353,7 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
                             Replacement replacement = new Replacement(
                                     randomId(),
                                     Markers.EMPTY,
-                                    Collections.singletonList(new Replacement.OriginalWord(word.getCobolWord(), isEmpty)),
+                                    singletonList(new Replacement.OriginalWord(word.getCobolWord(), isEmpty)),
                                     Replacement.Type.EQUAL, isCopiedSource);
                             replaceMap.put(replacement.getId().toString(), replacement);
                             word = word.withCobolWord(word.getCobolWord().withReplacement(replacement));
@@ -373,7 +375,7 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
                                 Replacement replacement = new Replacement(
                                         randomId(),
                                         Markers.EMPTY,
-                                        Collections.singletonList(new Replacement.OriginalWord(word.getCobolWord(), isEmpty)),
+                                        singletonList(new Replacement.OriginalWord(word.getCobolWord(), isEmpty)),
                                         Replacement.Type.EQUAL, isCopiedSource);
                                 replaceMap.put(replacement.getId().toString(), replacement);
                                 if (word.getPrefix().isEmpty() && !toWord.getPrefix().isEmpty()) {
@@ -406,7 +408,7 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
                                     toWord.getCobolWord().getWord(),
                                     null,
                                     null,
-                                    Collections.emptyList()
+                                    emptyList()
                             );
 
                             Replacement.OriginalWord originalWord = new Replacement.OriginalWord(addedWord, false);
@@ -529,7 +531,7 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
                                 "",
                                 null,
                                 null,
-                                Collections.emptyList()
+                                emptyList()
                         )
                 ));
             }

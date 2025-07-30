@@ -15,9 +15,9 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.toList;
 import static org.fusesource.jansi.Ansi.ansi;
 
 @NoArgsConstructor
@@ -37,7 +37,7 @@ public class ListRepositories implements Callable<Integer> {
                     "**/.moderne", "**/.moderne/**", "**/target", "**/target/**", "**/build", "**/build/**",
                     "**/.hgtags", "**/.bzr", "**/.bzr/**", "**/.bzrignore", "**/.DS_Store")
             .map(exclude -> FileSystems.getDefault().getPathMatcher("glob:" + exclude))
-            .collect(Collectors.toList());
+            .collect(toList());
     private static final BuildEnvironment BUILD_ENVIRONMENT = BuildEnvironment.build(System::getenv);
 
     @CommandLine.Mixin

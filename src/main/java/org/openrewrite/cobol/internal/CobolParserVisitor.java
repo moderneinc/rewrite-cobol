@@ -5055,7 +5055,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.WITH(), ctx.DUPLICATES(), ctx.IN(), ctx.ORDER()),
-                Collections.emptyList()
+                emptyList()
         );
     }
 
@@ -5096,7 +5096,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.THROUGH(), ctx.THRU()),
-                convertAll(Collections.singletonList(ctx.procedureName()))
+                convertAll(singletonList(ctx.procedureName()))
         );
     }
 
@@ -5127,7 +5127,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.THROUGH(), ctx.THRU()),
-                convertAll(Collections.singletonList(ctx.procedureName()))
+                convertAll(singletonList(ctx.procedureName()))
         );
     }
 

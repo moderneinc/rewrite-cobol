@@ -15,7 +15,8 @@ import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.SequenceArea;
 
 import java.util.*;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toCollection;
 
 @Incubating(since = "0.0")
 @EqualsAndHashCode(callSuper = true)
@@ -37,7 +38,7 @@ public class ShiftSequenceAreas extends CobolIsoVisitor<ExecutionContext> {
         this.originalSequenceAreas = originalWords.stream()
                 .map(Cobol.Word::getSequenceArea)
                 .filter(Objects::nonNull)
-                .collect(Collectors.toCollection(LinkedList::new));
+                .collect(toCollection(LinkedList::new));
         this.startAfter = startAfter;
     }
 

@@ -23,7 +23,8 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 public class Assertions {
     private Assertions() {
@@ -251,10 +252,10 @@ public class Assertions {
                             throw new RuntimeException(e);
                         }
                     }))
-                    .collect(Collectors.toList());
+                    .collect(toList());
             return CopybookParser.builder().build()
                     .parseInputs(copyInputs, null, new InMemoryExecutionContext())
-                    .collect(Collectors.toList());
+                    .collect(toList());
         }
     }
 }

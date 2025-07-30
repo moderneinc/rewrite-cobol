@@ -25,18 +25,18 @@ import org.openrewrite.tree.ParseError;
 import org.openrewrite.tree.ParsingExecutionContextView;
 
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.openrewrite.Tree.randomId;
 
 /**
  * Read preprocessed COBOL and execute preprocessor commands.
  */
 public class CopybookParser implements Parser {
-    public static final List<String> COPYBOOK_FILE_EXTENSIONS = Collections.singletonList(".cpy");
+    public static final List<String> COPYBOOK_FILE_EXTENSIONS = singletonList(".cpy");
 
     private final CobolDialect cobolDialect;
 

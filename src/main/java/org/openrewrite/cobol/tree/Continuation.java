@@ -17,8 +17,8 @@ import org.openrewrite.marker.Markers;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
 import static org.openrewrite.cobol.internal.CobolSourcePrinter.COBOL_MARKER_WRAPPER;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "@c")
@@ -60,7 +60,7 @@ public class Continuation {
         List<List<ColumnArea>> lastColumnAreas = continuations.entrySet().stream()
                 .filter(it -> it.getKey() > word.getCobolWord().getWord().length())
                 .map(Map.Entry::getValue)
-                .collect(Collectors.toList());
+                .collect(toList());
 
         if (!lastColumnAreas.isEmpty()) {
             List<ColumnArea> columnAreas = lastColumnAreas.get(0);
@@ -107,7 +107,7 @@ public class Continuation {
         List<List<ColumnArea>> lastColumnAreas = continuations.entrySet().stream()
                 .filter(it -> it.getKey() > word.getWord().length())
                 .map(Map.Entry::getValue)
-                .collect(Collectors.toList());
+                .collect(toList());
 
         if (!lastColumnAreas.isEmpty()) {
             List<ColumnArea> columnAreas = lastColumnAreas.get(0);

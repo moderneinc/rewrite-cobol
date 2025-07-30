@@ -19,7 +19,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toMap;
 
 /**
  * A COBOL element that could have trailing space.
@@ -68,8 +69,7 @@ public class CobolRightPadded<T> {
         }
 
         List<CobolRightPadded<P>> after = new ArrayList<>(elements.size());
-        Map<UUID, CobolRightPadded<P>> beforeById = before.stream().collect(Collectors
-                .toMap(j -> j.getElement().getId(), Function.identity()));
+        Map<UUID, CobolRightPadded<P>> beforeById = before.stream().collect(toMap(j -> j.getElement().getId(), Function.identity()));
 
         for (P t : elements) {
             if (beforeById.get(t.getId()) != null) {

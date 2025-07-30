@@ -20,9 +20,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
 public class GenerateModel {
@@ -57,7 +57,7 @@ public class GenerateModel {
                 .stream()
                 .filter(J.ClassDeclaration.class::isInstance)
                 .map(J.ClassDeclaration.class::cast)
-                .collect(Collectors.toList())).generate();
+                .collect(toList())).generate();
     }
 
     public void generate() {

@@ -11,9 +11,10 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.EqualsAndHashCode;
 import org.openrewrite.internal.lang.Nullable;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
+
+import static java.util.Collections.synchronizedMap;
 
 /**
  * COBOL white space.
@@ -31,7 +32,7 @@ public class Space {
      * e.g.: a single space between keywords, or the common indentation of every line in a block.
      * So use flyweights to avoid storing many instances of functionally identical spaces
      */
-    private static final Map<String, Space> flyweights = Collections.synchronizedMap(new WeakHashMap<>());
+    private static final Map<String, Space> flyweights = synchronizedMap(new WeakHashMap<>());
 
     private Space(@Nullable String whitespace) {
         this.whitespace = whitespace == null || whitespace.isEmpty() ? null : whitespace;
