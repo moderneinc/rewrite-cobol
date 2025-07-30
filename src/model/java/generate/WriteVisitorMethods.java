@@ -75,7 +75,7 @@ public class WriteVisitorMethods extends Recipe {
                 String modelTypeName = modelClass.getSimpleName();
                 String paramName = modelTypeName.substring(0, 1).toLowerCase() + modelTypeName.substring(1);
                 String varName = paramName.substring(0, 1);
-                if (varName.equals("p")) {
+                if ("p".equals(varName)) {
                     varName = "pp";
                 }
 

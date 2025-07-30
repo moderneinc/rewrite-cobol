@@ -5968,7 +5968,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         indicatorArea();
 
         Map.Entry<Integer, String> nextIndicator = indicatorAreas.higherEntry(cursor);
-        boolean isContinued = nextIndicator != null && nextIndicator.getValue().equals("-");
+        boolean isContinued = nextIndicator != null && "-".equals(nextIndicator.getValue());
         cursor = saveCursor;
 
         Character delimiter = null;

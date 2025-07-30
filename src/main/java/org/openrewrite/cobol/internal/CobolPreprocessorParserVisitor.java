@@ -932,7 +932,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
                 break;
             }
         }
-        boolean isContinued = nextIndicator != null && indicatorAreas.get(nextIndicator).equals("-");
+        boolean isContinued = nextIndicator != null && "-".equals(indicatorAreas.get(nextIndicator));
 
         Character delimiter = null;
         // Detect a continued String literal.
