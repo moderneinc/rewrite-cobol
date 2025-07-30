@@ -192,6 +192,10 @@ public final class Assertions {
         return cobol;
     }
 
+    public static @Nullable String doesNotExist() {
+        return null;
+    }
+
     private static void acceptSpec(Consumer<SourceSpec<Cobol.CompilationUnit>> spec, SourceSpec<Cobol.CompilationUnit> cobol) {
         Consumer<Cobol.CompilationUnit> userSuppliedAfterRecipe = cobol.getAfterRecipe();
         cobol.afterRecipe(userSuppliedAfterRecipe::accept);
