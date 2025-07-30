@@ -13,7 +13,7 @@ description = "A version of the Moderne CLI specialized for parsing COBOL LSTs."
 repositories {
     mavenLocal()
     maven {
-        url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
+        url = uri("https://central.sonatype.com/repository/maven-snapshots/")
     }
     mavenCentral()
     val astPublishUsername = project.properties["moderne.artifactory.username"] as String? ?: project.properties["ast.publish.username"] as String? ?: System.getenv("AST_PUBLISH_USERNAME")
