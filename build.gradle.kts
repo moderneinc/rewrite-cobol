@@ -80,10 +80,11 @@ dependencies {
     modelCompileOnly("org.projectlombok:lombok:latest.release")
     modelImplementation("ch.qos.logback:logback-classic:latest.release")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.+")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:5.+")
-    testImplementation("org.junit-pioneer:junit-pioneer:2.0.0")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.13.3")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.14.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.14.0")
+    testImplementation("org.junit-pioneer:junit-pioneer:2.3.0")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.14.0")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:5.14.0")
 
     testImplementation("org.openrewrite:rewrite-test")
     testImplementation("org.assertj:assertj-core:latest.release")
