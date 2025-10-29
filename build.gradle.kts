@@ -75,7 +75,7 @@ dependencies {
     implementation("io.github.classgraph:classgraph:latest.release")
     runtimeOnly("org.openrewrite.tools:java-object-diff:latest.release")
 
-    modelImplementation("org.openrewrite:rewrite-java-17")
+    modelImplementation("org.openrewrite:rewrite-java-21")
     modelAnnotationProcessor("org.projectlombok:lombok:latest.release")
     modelCompileOnly("org.projectlombok:lombok:latest.release")
     modelImplementation("ch.qos.logback:logback-classic:latest.release")
