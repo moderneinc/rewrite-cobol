@@ -11,7 +11,7 @@ import org.openrewrite.cobol.tree.Cobol;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FindWords {
+public final class FindWords {
 
     private FindWords() {
     }

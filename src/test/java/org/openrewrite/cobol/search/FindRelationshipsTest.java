@@ -46,7 +46,7 @@ public class FindRelationshipsTest extends CobolTest {
               INCLUDE OBJLIB(IC201A)    MODULE FOO
               *INCLUDE OBJLIB(ABCD02)
               """,
-            (spec) -> spec.path("linkeditcards/LINKEDIT1")),
+            spec -> spec.path("linkeditcards/LINKEDIT1")),
           text(
 			"""
             BIND PACKAGE(&PROD0.EXT) OWNER(&SBS100S) -                        \s
@@ -56,7 +56,7 @@ public class FindRelationshipsTest extends CobolTest {
                ACTION(ADD)     -                                        \s
                ENABLE(*)                                                \s
             """,
-            (spec) -> spec.path("bindcards/BINDCARDPACKAGE")),
+            spec -> spec.path("bindcards/BINDCARDPACKAGE")),
           text(
 			"""
               BIND PLAN(LINKEDIT1) OWNER(SBS100S) -            \s
@@ -70,7 +70,7 @@ public class FindRelationshipsTest extends CobolTest {
                  ACTION(REPLACE) RETAIN -                     \s
                  ENABLE(*)    \s
               """,
-            (spec) -> spec.path("bindcards/BINDCARDPLAN"))
+            spec -> spec.path("bindcards/BINDCARDPLAN"))
         );
     }
 

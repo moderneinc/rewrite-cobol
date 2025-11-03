@@ -33,7 +33,7 @@ public class DefaultProgressBar implements AutoCloseable, ProgressBar {
         thread.setName("progress-bar");
         return thread;
     });
-    private static Terminal terminal = null;
+    private static Terminal terminal;
 
     private final long start = System.nanoTime();
     private final int maxLength = getTerminalWidth();
@@ -158,9 +158,9 @@ public class DefaultProgressBar implements AutoCloseable, ProgressBar {
 
         if (max == Integer.MAX_VALUE) {
             sb.append(LEFT_BRACKET);
-            int pos = (int) (totalElapsed.getSeconds() * 10 + totalElapsed.getNano() / 100000000) % ((BAR_LENGTH) * 2);
+            int pos = (int) (totalElapsed.getSeconds() * 10 + totalElapsed.getNano() / 100000000) % (BAR_LENGTH * 2);
             if (pos > BAR_LENGTH) {
-                pos = (BAR_LENGTH) * 2 - pos;
+                pos = BAR_LENGTH * 2 - pos;
             }
             sb.append(START_BLOCK);
             sb.append(repeat(SPACE, pos));
@@ -305,12 +305,12 @@ public class DefaultProgressBar implements AutoCloseable, ProgressBar {
         }
     }
 
-    public synchronized static int getTerminalWidth() {
+    public static synchronized int getTerminalWidth() {
         Terminal terminal = getTerminal();
         int width = terminal.getWidth();
 
         // Workaround for issue #23 under IntelliJ
-        return (width >= 10) ? width : DEFAULT_TERMINAL_WIDTH;
+        return width >= 10 ? width : DEFAULT_TERMINAL_WIDTH;
     }
 
     /**

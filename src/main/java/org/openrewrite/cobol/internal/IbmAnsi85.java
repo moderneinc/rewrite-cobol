@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class IbmAnsi85 implements CobolDialect {
+public final class IbmAnsi85 implements CobolDialect {
 
     private static final IbmAnsi85 INSTANCE = new IbmAnsi85();
 

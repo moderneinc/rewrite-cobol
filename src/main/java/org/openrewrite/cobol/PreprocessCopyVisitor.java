@@ -70,8 +70,7 @@ public class PreprocessCopyVisitor<P> extends CobolPreprocessorIsoVisitor<P> {
         if (copybooks.containsKey(copybookName)) {
             SourceFile sf = copybooks.get(copybookName);
             if (sf instanceof ParseError) {
-                c = c.withMarkers(c.getMarkers().addIfAbsent(new MissingCopybook(randomId(), MissingCopybook.Status.PARSE_ERROR)));
-                return c;
+                return c.withMarkers(c.getMarkers().addIfAbsent(new MissingCopybook(randomId(), MissingCopybook.Status.PARSE_ERROR)));
             }
 
             CobolPreprocessor.Copybook cb = (CobolPreprocessor.Copybook) sf;

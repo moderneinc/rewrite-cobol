@@ -24,7 +24,7 @@ import java.util.function.Consumer;
 
 import static java.util.stream.Collectors.toList;
 
-public class PreprocessorAssertions {
+public final class PreprocessorAssertions {
     private PreprocessorAssertions() {
     }
 

@@ -2,7 +2,7 @@ package io.moderne.cobol.internal;
 
 import java.util.StringJoiner;
 
-public class ExceptionPrinter {
+public final class ExceptionPrinter {
     private ExceptionPrinter() {
     }
 

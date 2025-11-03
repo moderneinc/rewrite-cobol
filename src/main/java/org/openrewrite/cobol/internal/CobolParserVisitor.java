@@ -61,45 +61,45 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     private final NavigableMap<Integer, String> commentAreas = new TreeMap<>();
 
     private static final Set<Character> commentIndicators = new HashSet<>();
-    private int cursor = 0;
+    private int cursor;
 
     // Trigger condition to remove whitespace added by the template.
     private boolean removeTemplateCommentArea;
     private boolean removeColumnMarkers;
     private boolean isAdditiveCommentArea;
 
-    private String copyStartComment = null;
-    private String copyStopComment = null;
-    private String copyUuidComment = null;
-    private String copybookNotFoundComment = null;
+    private String copyStartComment;
+    private String copyStopComment;
+    private String copyUuidComment;
+    private String copybookNotFoundComment;
 
     private final Stack<CopiedWord> copiedWordStack = new Stack<>();
 
-    private String replaceStartComment = null;
-    private String replaceStopComment = null;
-    private String replaceAdditiveWhitespaceComment = null;
-    private String replaceUuidComment = null;
+    private String replaceStartComment;
+    private String replaceStopComment;
+    private String replaceAdditiveWhitespaceComment;
+    private String replaceUuidComment;
 
-    private String replaceAdditiveTypeStartComment = null;
-    private String replaceAdditiveTypeStopComment = null;
+    private String replaceAdditiveTypeStartComment;
+    private String replaceAdditiveTypeStopComment;
 
     @Nullable
-    private Replacement replaceAdditiveType = null;
+    private Replacement replaceAdditiveType;
 
-    private String replaceAddWordStartComment = null;
-    private String replaceAddWordStopComment = null;
+    private String replaceAddWordStartComment;
+    private String replaceAddWordStopComment;
 
-    private String replaceReductiveTypeStartComment = null;
-    private String replaceReductiveTypeStopComment = null;
+    private String replaceReductiveTypeStartComment;
+    private String replaceReductiveTypeStopComment;
 
-    private String compileOptionStartComment = null;
-    private String compileOptionStopComment = null;
+    private String compileOptionStartComment;
+    private String compileOptionStopComment;
 
-    private String preprocessorStartComment = null;
-    private String preprocessorStopComment = null;
+    private String preprocessorStartComment;
+    private String preprocessorStopComment;
 
-    private String uuidComment = null;
-    private Integer nextIndex = null;
+    private String uuidComment;
+    private Integer nextIndex;
 
     public <T> T visit(@Nullable ParseTree... trees) {
         if (Duration.ofNanos(System.nanoTime() - start).compareTo(timeout) > 0) {
@@ -3183,7 +3183,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 (Cobol.ProcedureName) visit(ctx.procedureName(0)),
                 ctx.THROUGH() != null ? (Cobol.Word) visit(ctx.THROUGH()) :
                         ctx.THRU() != null ? (Cobol.Word) visit(ctx.THRU()) : null,
-                (ctx.procedureName().size() > 1) ? (Cobol.ProcedureName) visit(ctx.procedureName(1)) : null,
+                ctx.procedureName().size() > 1 ? (Cobol.ProcedureName) visit(ctx.procedureName(1)) : null,
                 visitNullable(ctx.performType())
         );
     }
@@ -3379,7 +3379,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                     EMPTY,
                     Markers.EMPTY,
                     visitNullable(ctx.OPTIONAL()),
-                    (ctx.identifier() == null) ? (Name) visit(ctx.fileName()) : (Name) visit(ctx.identifier())
+                    ctx.identifier() == null ? (Name) visit(ctx.fileName()) : (Name) visit(ctx.identifier())
             );
         } else {
             return new Cobol.ProcedureDivisionByReference(
@@ -5883,7 +5883,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         // |      | |~~~ Added WS to align next word ~~~ |~~ actual prefix ~~|CurrentWord  | `nextIndex` set the position where the whitespace of the current word starts.
         // |      |*| Template end.                                                        |
         if (!isColumnArea && nextIndex != null && nextIndex > 0) {
-            int totalWhitespace = (delimIndex - cursor);
+            int totalWhitespace = delimIndex - cursor;
             int prefixCount = nextIndex > totalWhitespace ? nextIndex - totalWhitespace : totalWhitespace - nextIndex;
             int templateWhitespace = totalWhitespace - prefixCount;
             this.cursor += templateWhitespace;
@@ -6182,7 +6182,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
 
             String current = source.substring(cursor);
             int newLinePos = current.indexOf("\n");
-            int endPos = (nextCommentArea != null && nextCommentArea < (newLinePos + cursor)) ? nextCommentArea : (newLinePos + cursor);
+            int endPos = nextCommentArea != null && nextCommentArea < (newLinePos + cursor) ? nextCommentArea : (newLinePos + cursor);
 
             current = source.substring(cursor, endPos).trim();
             // There are two types of continuations.

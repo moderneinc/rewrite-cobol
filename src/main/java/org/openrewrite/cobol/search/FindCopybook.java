@@ -116,7 +116,7 @@ public class FindCopybook extends Recipe {
             @Override
             public Cobol.Word visitWord(Cobol.Word word, ExecutionContext ctx) {
                 Cobol.Word w = super.visitWord(word, ctx);
-                w = w.withPreprocessorStatements(ListUtils.map(w.getPreprocessorStatements(), ps -> {
+                return w.withPreprocessorStatements(ListUtils.map(w.getPreprocessorStatements(), ps -> {
                     if (ps instanceof CobolPreprocessor.CopyStatement) {
                         CobolPreprocessor.CopyStatement copyStatement = (CobolPreprocessor.CopyStatement) ps;
                         if (copyStatement.getMarkers().findFirst(MissingCopybook.class).isPresent()) {
@@ -183,8 +183,6 @@ public class FindCopybook extends Recipe {
                     }
                     return ps;
                 }));
-
-                return w;
             }
         });
     }

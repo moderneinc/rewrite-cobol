@@ -5,7 +5,7 @@
  */
 package org.openrewrite.cobol;
 
-public class CobolStringUtils {
+public final class CobolStringUtils {
 
     private static final String EMPTY_STRING = "";
 

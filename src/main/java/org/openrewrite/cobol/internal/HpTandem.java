@@ -12,7 +12,7 @@ import java.util.Set;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.singletonList;
 
-public class HpTandem implements CobolDialect {
+public final class HpTandem implements CobolDialect {
 
     private static final HpTandem INSTANCE = new HpTandem();
 

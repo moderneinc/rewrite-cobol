@@ -26,7 +26,7 @@ import java.util.function.Consumer;
 
 import static java.util.stream.Collectors.toList;
 
-public class Assertions {
+public final class Assertions {
     private Assertions() {
     }
 

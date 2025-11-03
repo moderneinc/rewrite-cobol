@@ -20,24 +20,21 @@ public class ControlMVisitor<P> extends TreeVisitor<ControlM, P> {
         c = c.withPrefix(visitSpace(c.getPrefix(), Space.Location.COMPILATION_UNIT_PREFIX, p));
         c = c.withMarkers(visitMarkers(c.getMarkers(), p));
         c = c.withSections(ListUtils.map(c.getSections(), e -> visitAndCast(e, p)));
-        c = c.withEof(visitSpace(c.getEof(), Space.Location.COMPILATION_UNIT_EOF, p));
-        return c;
+        return c.withEof(visitSpace(c.getEof(), Space.Location.COMPILATION_UNIT_EOF, p));
     }
 
     public ControlM visitDefinitionSection(ControlM.DefinitionSection definitionSection, P p) {
         ControlM.DefinitionSection d = definitionSection;
         d = d.withPrefix(visitSpace(d.getPrefix(), Space.Location.DEFINITION_SECTION_PREFIX, p));
         d = d.withMarkers(visitMarkers(d.getMarkers(), p));
-        d = d.withLines(ListUtils.map(d.getLines(), e -> visitAndCast(e, p)));
-        return d;
+        return d.withLines(ListUtils.map(d.getLines(), e -> visitAndCast(e, p)));
     }
 
     public ControlM visitDescription(ControlM.Description description, P p) {
         ControlM.Description d = description;
         d = d.withPrefix(visitSpace(d.getPrefix(), Space.Location.DESCRIPTION_PREFIX, p));
         d = d.withMarkers(visitMarkers(d.getMarkers(), p));
-        d = d.withDescription(ListUtils.map(d.getDescription(), it -> visitAndCast(it, p)));
-        return d;
+        return d.withDescription(ListUtils.map(d.getDescription(), it -> visitAndCast(it, p)));
     }
 
     public ControlM visitSetVar(ControlM.SetVar setVar, P p) {
@@ -45,16 +42,14 @@ public class ControlMVisitor<P> extends TreeVisitor<ControlM, P> {
         s = s.withPrefix(visitSpace(s.getPrefix(), Space.Location.SET_VAR_PREFIX, p));
         s = s.withMarkers(visitMarkers(s.getMarkers(), p));
         s = s.withVarName(visitAndCast(s.getVarName(), p));
-        s = s.getPadding().withValue(visitLeftPadded(s.getPadding().getValue(), ControlMLeftPadded.Location.SET_VAR_INITIALIZER, p));
-        return s;
+        return s.getPadding().withValue(visitLeftPadded(s.getPadding().getValue(), ControlMLeftPadded.Location.SET_VAR_INITIALIZER, p));
     }
 
     public ControlM visitScheduleSection(ControlM.ScheduleSection scheduleSection, P p) {
         ControlM.ScheduleSection s = scheduleSection;
         s = s.withPrefix(visitSpace(s.getPrefix(), Space.Location.DEFINITION_SECTION_PREFIX, p));
         s = s.withMarkers(visitMarkers(s.getMarkers(), p));
-        s = s.withLines(ListUtils.map(s.getLines(), e -> visitAndCast(e, p)));
-        return s;
+        return s.withLines(ListUtils.map(s.getLines(), e -> visitAndCast(e, p)));
     }
 
     public ControlM visitInputSection(ControlM.InputSection inputSection, P p) {
@@ -62,8 +57,7 @@ public class ControlMVisitor<P> extends TreeVisitor<ControlM, P> {
         i = i.withPrefix(visitSpace(i.getPrefix(), Space.Location.INPUT_SECTION_PREFIX, p));
         i = i.withMarkers(visitMarkers(i.getMarkers(), p));
         i = i.withInputNames(ListUtils.map(i.getInputNames(), e -> visitAndCast(e, p)));
-        i = i.withLines(ListUtils.map(i.getLines(), e -> visitAndCast(e, p)));
-        return i;
+        return i.withLines(ListUtils.map(i.getLines(), e -> visitAndCast(e, p)));
     }
 
     public ControlM visitInput(ControlM.Input input, P p) {
@@ -71,8 +65,7 @@ public class ControlMVisitor<P> extends TreeVisitor<ControlM, P> {
         i = i.withPrefix(visitSpace(i.getPrefix(), Space.Location.INPUT_PREFIX, p));
         i = i.withMarkers(visitMarkers(i.getMarkers(), p));
         i = i.withIn(visitAndCast(i.getIn(), p));
-        i = i.withInput(ListUtils.map(i.getInput(), it -> visitAndCast(it, p)));
-        return i;
+        return i.withInput(ListUtils.map(i.getInput(), it -> visitAndCast(it, p)));
     }
 
     public ControlM visitInputNameParameter(ControlM.Input.NameParameter nameParameter, P p) {
@@ -80,8 +73,7 @@ public class ControlMVisitor<P> extends TreeVisitor<ControlM, P> {
         n = n.withPrefix(visitSpace(n.getPrefix(), Space.Location.PARAMETER_PREFIX, p));
         n = n.withMarkers(visitMarkers(n.getMarkers(), p));
         n = n.withName(visitAndCast(n.getName(), p));
-        n = n.withDate(visitAndCast(n.getDate(), p));
-        return n;
+        return n.withDate(visitAndCast(n.getDate(), p));
     }
 
     public ControlM visitOutputSection(ControlM.OutputSection outputSection, P p) {
@@ -89,8 +81,7 @@ public class ControlMVisitor<P> extends TreeVisitor<ControlM, P> {
         o = o.withPrefix(visitSpace(o.getPrefix(), Space.Location.OUTPUT_SECTION_PREFIX, p));
         o = o.withMarkers(visitMarkers(o.getMarkers(), p));
         o = o.withOutputNames(ListUtils.map(o.getOutputNames(), e -> visitAndCast(e, p)));
-        o = o.withLines(ListUtils.map(o.getLines(), e -> visitAndCast(e, p)));
-        return o;
+        return o.withLines(ListUtils.map(o.getLines(), e -> visitAndCast(e, p)));
     }
 
     public ControlM visitOutput(ControlM.Output output, P p) {
@@ -98,8 +89,7 @@ public class ControlMVisitor<P> extends TreeVisitor<ControlM, P> {
         o = o.withPrefix(visitSpace(o.getPrefix(), Space.Location.OUTPUT_PREFIX, p));
         o = o.withMarkers(visitMarkers(o.getMarkers(), p));
         o = o.withOut(visitAndCast(o.getOut(), p));
-        o = o.withOutput(ListUtils.map(o.getOutput(), it -> visitAndCast(it, p)));
-        return o;
+        return o.withOutput(ListUtils.map(o.getOutput(), it -> visitAndCast(it, p)));
     }
 
     public ControlM visitOutputNameParameter(ControlM.Output.NameParameter nameParameter, P p) {
@@ -107,39 +97,34 @@ public class ControlMVisitor<P> extends TreeVisitor<ControlM, P> {
         n = n.withPrefix(visitSpace(n.getPrefix(), Space.Location.PARAMETER_PREFIX, p));
         n = n.withMarkers(visitMarkers(n.getMarkers(), p));
         n = n.withName(visitAndCast(n.getName(), p));
-        n = n.withDate(visitAndCast(n.getDate(), p));
-        return n;
+        return n.withDate(visitAndCast(n.getDate(), p));
     }
 
     public ControlM visitApplicationFormSection(ControlM.ApplicationFormSection applicationFormSection, P p) {
         ControlM.ApplicationFormSection a = applicationFormSection;
         a = a.withPrefix(visitSpace(a.getPrefix(), Space.Location.DEFINITION_SECTION_PREFIX, p));
         a = a.withMarkers(visitMarkers(a.getMarkers(), p));
-        a = a.withLines(ListUtils.map(a.getLines(), e -> visitAndCast(e, p)));
-        return a;
+        return a.withLines(ListUtils.map(a.getLines(), e -> visitAndCast(e, p)));
     }
 
     public ControlM visitLine(ControlM.Line line, P p) {
         ControlM.Line l = line;
         l = l.withPrefix(visitSpace(l.getPrefix(), Space.Location.LINE_PREFIX, p));
         l = l.withMarkers(visitMarkers(l.getMarkers(), p));
-        l = l.withParameters(ListUtils.map(l.getParameters(), e -> visitAndCast(e, p)));
-        return l;
+        return l.withParameters(ListUtils.map(l.getParameters(), e -> visitAndCast(e, p)));
     }
 
     public ControlM visitParameter(ControlM.Parameter parameter, P p) {
         ControlM.Parameter pa = parameter;
         pa = pa.withPrefix(visitSpace(pa.getPrefix(), Space.Location.PARAMETER_PREFIX, p));
         pa = pa.withMarkers(visitMarkers(pa.getMarkers(), p));
-        pa = pa.withValue(visitAndCast(pa.getValue(), p));
-        return pa;
+        return pa.withValue(visitAndCast(pa.getValue(), p));
     }
 
     public ControlM visitWord(ControlM.Word word, P p) {
         ControlM.Word w = word;
         w = w.withPrefix(visitSpace(w.getPrefix(), Space.Location.WORD_PREFIX, p));
-        w = w.withMarkers(visitMarkers(w.getMarkers(), p));
-        return w;
+        return w.withMarkers(visitMarkers(w.getMarkers(), p));
     }
 
     public <T> ControlMLeftPadded<T> visitLeftPadded(@Nullable ControlMLeftPadded<T> left, ControlMLeftPadded.Location loc, P p) {
@@ -168,7 +153,7 @@ public class ControlMVisitor<P> extends TreeVisitor<ControlM, P> {
             return null;
         }
 
-        return (before == left.getBefore() && t == left.getElement()) ? left : new ControlMLeftPadded<>(before, t, left.getMarkers());
+        return before == left.getBefore() && t == left.getElement() ? left : new ControlMLeftPadded<>(before, t, left.getMarkers());
     }
 
 

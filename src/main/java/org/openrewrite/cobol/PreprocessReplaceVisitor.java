@@ -95,8 +95,8 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
         private final List<CobolPreprocessor.Word> from;
         private final List<CobolPreprocessor.Word> replacements;
 
-        boolean inMatch = false;
-        private int fromPos = 0;
+        boolean inMatch;
+        private int fromPos;
 
         public FindReplaceableAreasVisitor(List<CobolPreprocessor.Word> from) {
             this.from = from;
@@ -148,10 +148,10 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
         private final ReplacementType replacementType;
 
         private List<CobolPreprocessor.Word> current;
-        private Replacement replaceReductiveType = null;
-        private int fromPos = 0;
-        private int toPos = 0;
-        boolean inMatch = false;
+        private Replacement replaceReductiveType;
+        private int fromPos;
+        private int toPos;
+        boolean inMatch;
 
         public ReplaceVisitor(List<List<CobolPreprocessor.Word>> from,
                               List<CobolPreprocessor.Word> to,
@@ -167,8 +167,7 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
 
         @Override
         public CobolPreprocessor.Copybook visitCopybook(CobolPreprocessor.Copybook copybook, ExecutionContext executionContext) {
-            copybook = copybook.withLst(ListUtils.map(copybook.getLst(), it -> visit(it, executionContext)));
-            return copybook;
+            return copybook.withLst(ListUtils.map(copybook.getLst(), it -> visit(it, executionContext)));
         }
 
         @Override

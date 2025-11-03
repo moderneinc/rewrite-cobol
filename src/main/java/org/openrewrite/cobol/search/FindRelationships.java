@@ -56,7 +56,7 @@ public class FindRelationships extends Recipe {
             final Set<String> seenCursorAccess = new HashSet<>();
             final Set<String> seenTableAccess = new HashSet<>();
             String sourceName = "UNKNOWN";
-            boolean isSourceName = false;
+            boolean isSourceName;
 
             @Override
             public CobolPreprocessor.CompilationUnit visitCompilationUnit(CobolPreprocessor.CompilationUnit compilationUnit, ExecutionContext executionContext) {
@@ -122,7 +122,7 @@ public class FindRelationships extends Recipe {
             @Override
             public Cobol.Word visitWord(Cobol.Word word, ExecutionContext ctx) {
                 Cobol.Word w = super.visitWord(word, ctx);
-                w = w.withPreprocessorStatements(ListUtils.map(w.getPreprocessorStatements(), ps -> {
+                return w.withPreprocessorStatements(ListUtils.map(w.getPreprocessorStatements(), ps -> {
                     if (ps instanceof CobolPreprocessor.CopyStatement) {
                         CobolPreprocessor.CopyStatement copyStatement = (CobolPreprocessor.CopyStatement) ps;
                         String copyName = copyStatement.getCopySource().getName().getCobolWord().getWord();
@@ -167,13 +167,11 @@ public class FindRelationships extends Recipe {
                         if (execStatement.getCobol() instanceof CobolPreprocessor.CharDataSql &&
                                 !((CobolPreprocessor.CharDataSql) execStatement.getCobol()).getCobols().isEmpty()) {
                             CobolPreprocessor.CharDataSql sql = (CobolPreprocessor.CharDataSql) execStatement.getCobol();
-                            execStatement = execStatement.withCobol(getSqlRelationships(sql, programName, COBOL, seenIncludes, seenCursorAccess, seenTableAccess, ctx));
-                            return execStatement;
+                            return execStatement.withCobol(getSqlRelationships(sql, programName, COBOL, seenIncludes, seenCursorAccess, seenTableAccess, ctx));
                         }
                     }
                     return ps;
                 }));
-                return w;
             }
 
             @Override
@@ -289,10 +287,10 @@ public class FindRelationships extends Recipe {
                 }
 
                 ControlM.DefinitionSection d = super.visitDefinitionSection(definitionSection, ctx);
-                d = d.withLines(ListUtils.map(d.getLines(), (i, it) -> {
+                return d.withLines(ListUtils.map(d.getLines(), (i, it) -> {
                     if (i == 0 && it instanceof ControlM.Line) {
                         ControlM.Line line = (ControlM.Line) it;
-                        line = line.withParameters(ListUtils.map(line.getParameters(), (j, param) -> {
+                        return line.withParameters(ListUtils.map(line.getParameters(), (j, param) -> {
                             if (j == 0) {
                                 ControlM.Parameter p = (ControlM.Parameter) param;
                                 cobolRelationships.insertRow(ctx,
@@ -310,11 +308,9 @@ public class FindRelationships extends Recipe {
                             }
                             return param;
                         }));
-                        return line;
                     }
                     return it;
                 }));
-                return d;
             }
 
             private boolean isValidSchedule(ControlM.DefinitionSection d) {

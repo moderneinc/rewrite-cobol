@@ -21,7 +21,7 @@ import static java.util.Collections.emptyList;
  *
  * @param <T> The type of the inner list of elements.
  */
-public class CobolContainer<T> {
+public final class CobolContainer<T> {
     private transient Padding<T> padding;
 
     private static final CobolContainer<?> EMPTY = new CobolContainer<>(Space.EMPTY, null, emptyList(), Markers.EMPTY);

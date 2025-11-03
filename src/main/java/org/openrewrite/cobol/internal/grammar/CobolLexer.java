@@ -21,106 +21,579 @@ public class CobolLexer extends Lexer {
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
-	public static final int
-		ABORT=1, ACCEPT=2, ACCESS=3, ADD=4, ADDRESS=5, ADVANCING=6, AFTER=7, ALIGNED=8,
-		ALL=9, ALPHABET=10, ALPHABETIC=11, ALPHABETIC_LOWER=12, ALPHABETIC_UPPER=13,
-		ALPHANUMERIC=14, ALPHANUMERIC_EDITED=15, ALSO=16, ALTER=17, ALTERNATE=18,
-		AND=19, ANY=20, ARE=21, AREA=22, AREAS=23, AS=24, ASCENDING=25, ASCII=26,
-		ASSIGN=27, ASSOCIATED_DATA=28, ASSOCIATED_DATA_LENGTH=29, AT=30, ATTRIBUTE=31,
-		AUTHOR=32, AUTO=33, AUTO_SKIP=34, BACKGROUND_COLOR=35, BACKGROUND_COLOUR=36,
-		BASIS=37, BEEP=38, BEFORE=39, BEGINNING=40, BELL=41, BINARY=42, BIT=43,
-		BLANK=44, BLINK=45, BLOB=46, BLOCK=47, BOUNDS=48, BOTTOM=49, BY=50, BYFUNCTION=51,
-		BYTITLE=52, CALL=53, CANCEL=54, CAPABLE=55, CCSVERSION=56, CD=57, CF=58,
-		CH=59, CHAINING=60, CHANGED=61, CHANNEL=62, CHARACTER=63, CHARACTERS=64,
-		CLASS=65, CLASS_ID=66, CLOB=67, CLOCK_UNITS=68, CLOSE=69, CLOSE_DISPOSITION=70,
-		COBOL=71, CODE=72, CODE_SET=73, COLLATING=74, COL=75, COLUMN=76, COM_REG=77,
-		COMMA=78, COMMITMENT=79, COMMON=80, COMMUNICATION=81, COMP=82, COMP_1=83,
-		COMP_2=84, COMP_3=85, COMP_4=86, COMP_5=87, COMPUTATIONAL=88, COMPUTATIONAL_1=89,
-		COMPUTATIONAL_2=90, COMPUTATIONAL_3=91, COMPUTATIONAL_4=92, COMPUTATIONAL_5=93,
-		COMPUTE=94, CONFIGURATION=95, CONTAINS=96, CONTENT=97, CONTINUE=98, CONTROL=99,
-		CONTROL_POINT=100, CONTROLS=101, CONVENTION=102, CONVERTING=103, COPY=104,
-		CORR=105, CORRESPONDING=106, COUNT=107, CRUNCH=108, CURRENCY=109, CURSOR=110,
-		CYCLE=111, DATA=112, DATA_BASE=113, DATE=114, DATE_COMPILED=115, DATE_WRITTEN=116,
-		DAY=117, DAY_OF_WEEK=118, DBCS=119, DBCLOB=120, DE=121, DEBUG_CONTENTS=122,
-		DEBUG_ITEM=123, DEBUG_LINE=124, DEBUG_NAME=125, DEBUG_SUB_1=126, DEBUG_SUB_2=127,
-		DEBUG_SUB_3=128, DEBUGGING=129, DECIMAL_POINT=130, DECLARATIVES=131, DEFAULT=132,
-		DEFAULT_DISPLAY=133, DEFINITION=134, DELETE=135, DELIMITED=136, DELIMITER=137,
-		DEPENDING=138, DESCENDING=139, DESTINATION=140, DETAIL=141, DFHRESP=142,
-		DFHVALUE=143, DISABLE=144, DISK=145, DISPLAY=146, DISPLAY_1=147, DIVIDE=148,
-		DIVISION=149, DONTCARE=150, DOUBLE=151, DOWN=152, DUPLICATES=153, DYNAMIC=154,
-		EBCDIC=155, EGCS=156, EGI=157, ELSE=158, EMI=159, EMPTY_CHECK=160, ENABLE=161,
-		END=162, END_ACCEPT=163, END_ADD=164, END_CALL=165, END_COMPUTE=166, END_DELETE=167,
-		END_DISPLAY=168, END_DIVIDE=169, END_EVALUATE=170, END_IF=171, END_MULTIPLY=172,
-		END_OF_PAGE=173, END_PERFORM=174, END_READ=175, END_RECEIVE=176, END_REMARKS=177,
-		END_RETURN=178, END_REWRITE=179, END_SEARCH=180, END_START=181, END_STRING=182,
-		END_SUBTRACT=183, END_UNSTRING=184, END_WRITE=185, ENDING=186, ENTER=187,
-		ENTRY=188, ENTRY_PROCEDURE=189, ENVIRONMENT=190, EOP=191, EQUAL=192, ERASE=193,
-		ERROR=194, EOL=195, EOS=196, ESCAPE=197, ESI=198, EVALUATE=199, EVENT=200,
-		EVERY=201, EXCEPTION=202, EXCLUSIVE=203, EXHIBIT=204, EXIT=205, EXPORT=206,
-		EXTEND=207, EXTENDED=208, EXTERNAL=209, FALSE=210, FD=211, FILE=212, FILE_CONTROL=213,
-		FILLER=214, FINAL=215, FIRST=216, FOOTING=217, FOR=218, FOREGROUND_COLOR=219,
-		FOREGROUND_COLOUR=220, FROM=221, FULL=222, FUNCTION=223, FUNCTIONNAME=224,
-		FUNCTION_POINTER=225, GENERATE=226, GOBACK=227, GIVING=228, GLOBAL=229,
-		GO=230, GREATER=231, GRID=232, GROUP=233, HEADING=234, HIGHLIGHT=235,
-		HIGH_VALUE=236, HIGH_VALUES=237, I_O=238, I_O_CONTROL=239, ID=240, IDENTIFICATION=241,
-		IF=242, IMPLICIT=243, IMPORT=244, IN=245, INDEX=246, INDEXED=247, INDICATE=248,
-		INITIAL=249, INITIALIZE=250, INITIATE=251, INPUT=252, INPUT_OUTPUT=253,
-		INSPECT=254, INSTALLATION=255, INTEGER=256, INTO=257, INVALID=258, INVOKE=259,
-		IS=260, JUST=261, JUSTIFIED=262, KANJI=263, KEPT=264, KEY=265, KEYBOARD=266,
-		LABEL=267, LANGUAGE=268, LAST=269, LB=270, LD=271, LEADING=272, LEFT=273,
-		LEFTLINE=274, LENGTH=275, LENGTH_CHECK=276, LESS=277, LIBACCESS=278, LIBPARAMETER=279,
-		LIBRARY=280, LIMIT=281, LIMITS=282, LINAGE=283, LINAGE_COUNTER=284, LINE=285,
-		LINES=286, LINE_COUNTER=287, LINKAGE=288, LIST=289, LOCAL=290, LOCAL_STORAGE=291,
-		LOCK=292, LONG_DATE=293, LONG_TIME=294, LOWER=295, LOWLIGHT=296, LOW_VALUE=297,
-		LOW_VALUES=298, MEMORY=299, MERGE=300, MESSAGE=301, METHOD=302, MMDDYYYY=303,
-		MODE=304, MODULES=305, MORE_LABELS=306, MOVE=307, MULTIPLE=308, MULTIPLY=309,
-		NAMED=310, NATIONAL=311, NATIONAL_EDITED=312, NATIVE=313, NEGATIVE=314,
-		NETWORK=315, NEXT=316, NO=317, NO_ECHO=318, NOT=319, NULL=320, NULLS=321,
-		NUMBER=322, NUMERIC=323, NUMERIC_DATE=324, NUMERIC_EDITED=325, NUMERIC_TIME=326,
-		OBJECT_COMPUTER=327, OCCURS=328, ODT=329, OF=330, OFF=331, OMITTED=332,
-		ON=333, OPEN=334, OPTIONAL=335, OR=336, ORDER=337, ORDERLY=338, ORGANIZATION=339,
-		OTHER=340, OUTPUT=341, OVERFLOW=342, OVERLINE=343, OWN=344, PACKED_DECIMAL=345,
-		PADDING=346, PAGE=347, PAGE_COUNTER=348, PARAGRAPH=349, PASSWORD=350,
-		PERFORM=351, PF=352, PH=353, PIC=354, PICTURE=355, PLUS=356, POINTER=357,
-		POSITION=358, POSITIVE=359, PORT=360, PRINTER=361, PRINTING=362, PRIVATE=363,
-		PROCEDURE=364, PROCEDURE_POINTER=365, PROCEDURES=366, PROCEED=367, PROCESS=368,
-		PROGRAM=369, PROGRAM_ID=370, PROGRAM_LIBRARY=371, PROMPT=372, PURGE=373,
-		QUEUE=374, QUOTE=375, QUOTES=376, RANDOM=377, READER=378, REMOTE=379,
-		RD=380, REAL=381, READ=382, RECEIVE=383, RECEIVED=384, RECORD=385, RECORDING=386,
-		RECORDS=387, RECURSIVE=388, REDEFINES=389, REEL=390, REF=391, REFERENCE=392,
-		REFERENCES=393, RELATIVE=394, RELEASE=395, REMAINDER=396, REMARKS=397,
-		REMOVAL=398, REMOVE=399, RENAMES=400, REPLACE=401, REPLACING=402, REPORT=403,
-		REPORTING=404, REPORTS=405, REQUIRED=406, RERUN=407, RESERVE=408, REVERSE_VIDEO=409,
-		RESET=410, RETURN=411, RETURN_CODE=412, RETURNING=413, REVERSED=414, REWIND=415,
-		REWRITE=416, RF=417, RH=418, RIGHT=419, ROUNDED=420, RUN=421, SAME=422,
-		SAVE=423, SCREEN=424, SD=425, SEARCH=426, SECTION=427, SECURE=428, SECURITY=429,
-		SEGMENT=430, SEGMENT_LIMIT=431, SELECT=432, SEND=433, SENTENCE=434, SEPARATE=435,
-		SEQUENCE=436, SEQUENTIAL=437, SET=438, SHARED=439, SHAREDBYALL=440, SHAREDBYRUNUNIT=441,
-		SHARING=442, SHIFT_IN=443, SHIFT_OUT=444, SHORT_DATE=445, SIGN=446, SIZE=447,
-		SORT=448, SORT_CONTROL=449, SORT_CORE_SIZE=450, SORT_FILE_SIZE=451, SORT_MERGE=452,
-		SORT_MESSAGE=453, SORT_MODE_SIZE=454, SORT_RETURN=455, SOURCE=456, SOURCE_COMPUTER=457,
-		SPACE=458, SPACES=459, SPECIAL_NAMES=460, SQL=461, STANDARD=462, STANDARD_1=463,
-		STANDARD_2=464, START=465, STATUS=466, STOP=467, STRING=468, SUB_QUEUE_1=469,
-		SUB_QUEUE_2=470, SUB_QUEUE_3=471, SUBTRACT=472, SUM=473, SUPPRESS=474,
-		SYMBOL=475, SYMBOLIC=476, SYNC=477, SYNCHRONIZED=478, TABLE=479, TALLY=480,
-		TALLYING=481, TASK=482, TAPE=483, TERMINAL=484, TERMINATE=485, TEST=486,
-		TEXT=487, THAN=488, THEN=489, THREAD=490, THREAD_LOCAL=491, THROUGH=492,
-		THRU=493, TIME=494, TIMER=495, TIMES=496, TITLE=497, TO=498, TODAYS_DATE=499,
-		TODAYS_NAME=500, TOP=501, TRAILING=502, TRUE=503, TRUNCATED=504, TYPE=505,
-		TYPEDEF=506, UNDERLINE=507, UNIT=508, UNSTRING=509, UNTIL=510, UP=511,
-		UPON=512, USAGE=513, USE=514, USING=515, VALUE=516, VALUES=517, VARYING=518,
-		VIRTUAL=519, WAIT=520, WHEN=521, WHEN_COMPILED=522, WITH=523, WORDS=524,
-		WORKING_STORAGE=525, WRITE=526, YEAR=527, YYYYMMDD=528, YYYYDDD=529, ZERO=530,
-		ZERO_FILL=531, ZEROS=532, ZEROES=533, AMPCHAR=534, ASTERISKCHAR=535, DOUBLEASTERISKCHAR=536,
-		COLONCHAR=537, COMMACHAR=538, COMMENTENTRYTAG=539, COMMENTTAG=540, DOLLARCHAR=541,
-		DOUBLEQUOTE=542, DOT_FS=543, EQUALCHAR=544, EXECCICSTAG=545, EXECSQLTAG=546,
-		EXECSQLIMSTAG=547, LESSTHANCHAR=548, LESSTHANOREQUAL=549, LPARENCHAR=550,
-		MINUSCHAR=551, MORETHANCHAR=552, MORETHANOREQUAL=553, NOTEQUALCHAR=554,
-		PLUSCHAR=555, SINGLEQUOTE=556, RPARENCHAR=557, SLASHCHAR=558, NONNUMERICLITERAL=559,
-		LEVEL_NUMBER_66=560, LEVEL_NUMBER_77=561, LEVEL_NUMBER_88=562, INTEGERLITERAL=563,
-		NUMERICLITERAL=564, IDENTIFIER=565, SEPARATOR=566, NEWLINE=567, EXECCICSLINE=568,
-		EXECSQLIMSLINE=569, EXECSQLLINE=570, COMMENTENTRYLINE=571, COMMENTLINE=572,
-		WS=573;
+	public static final int ABORT = 1;
+	public static final int ACCEPT = 2;
+	public static final int ACCESS = 3;
+	public static final int ADD = 4;
+	public static final int ADDRESS = 5;
+	public static final int ADVANCING = 6;
+	public static final int AFTER = 7;
+	public static final int ALIGNED = 8;
+	public static final int ALL = 9;
+	public static final int ALPHABET = 10;
+	public static final int ALPHABETIC = 11;
+	public static final int ALPHABETIC_LOWER = 12;
+	public static final int ALPHABETIC_UPPER = 13;
+	public static final int ALPHANUMERIC = 14;
+	public static final int ALPHANUMERIC_EDITED = 15;
+	public static final int ALSO = 16;
+	public static final int ALTER = 17;
+	public static final int ALTERNATE = 18;
+	public static final int AND = 19;
+	public static final int ANY = 20;
+	public static final int ARE = 21;
+	public static final int AREA = 22;
+	public static final int AREAS = 23;
+	public static final int AS = 24;
+	public static final int ASCENDING = 25;
+	public static final int ASCII = 26;
+	public static final int ASSIGN = 27;
+	public static final int ASSOCIATED_DATA = 28;
+	public static final int ASSOCIATED_DATA_LENGTH = 29;
+	public static final int AT = 30;
+	public static final int ATTRIBUTE = 31;
+	public static final int AUTHOR = 32;
+	public static final int AUTO = 33;
+	public static final int AUTO_SKIP = 34;
+	public static final int BACKGROUND_COLOR = 35;
+	public static final int BACKGROUND_COLOUR = 36;
+	public static final int BASIS = 37;
+	public static final int BEEP = 38;
+	public static final int BEFORE = 39;
+	public static final int BEGINNING = 40;
+	public static final int BELL = 41;
+	public static final int BINARY = 42;
+	public static final int BIT = 43;
+	public static final int BLANK = 44;
+	public static final int BLINK = 45;
+	public static final int BLOB = 46;
+	public static final int BLOCK = 47;
+	public static final int BOUNDS = 48;
+	public static final int BOTTOM = 49;
+	public static final int BY = 50;
+	public static final int BYFUNCTION = 51;
+	public static final int BYTITLE = 52;
+	public static final int CALL = 53;
+	public static final int CANCEL = 54;
+	public static final int CAPABLE = 55;
+	public static final int CCSVERSION = 56;
+	public static final int CD = 57;
+	public static final int CF = 58;
+	public static final int CH = 59;
+	public static final int CHAINING = 60;
+	public static final int CHANGED = 61;
+	public static final int CHANNEL = 62;
+	public static final int CHARACTER = 63;
+	public static final int CHARACTERS = 64;
+	public static final int CLASS = 65;
+	public static final int CLASS_ID = 66;
+	public static final int CLOB = 67;
+	public static final int CLOCK_UNITS = 68;
+	public static final int CLOSE = 69;
+	public static final int CLOSE_DISPOSITION = 70;
+	public static final int COBOL = 71;
+	public static final int CODE = 72;
+	public static final int CODE_SET = 73;
+	public static final int COLLATING = 74;
+	public static final int COL = 75;
+	public static final int COLUMN = 76;
+	public static final int COM_REG = 77;
+	public static final int COMMA = 78;
+	public static final int COMMITMENT = 79;
+	public static final int COMMON = 80;
+	public static final int COMMUNICATION = 81;
+	public static final int COMP = 82;
+	public static final int COMP_1 = 83;
+	public static final int COMP_2 = 84;
+	public static final int COMP_3 = 85;
+	public static final int COMP_4 = 86;
+	public static final int COMP_5 = 87;
+	public static final int COMPUTATIONAL = 88;
+	public static final int COMPUTATIONAL_1 = 89;
+	public static final int COMPUTATIONAL_2 = 90;
+	public static final int COMPUTATIONAL_3 = 91;
+	public static final int COMPUTATIONAL_4 = 92;
+	public static final int COMPUTATIONAL_5 = 93;
+	public static final int COMPUTE = 94;
+	public static final int CONFIGURATION = 95;
+	public static final int CONTAINS = 96;
+	public static final int CONTENT = 97;
+	public static final int CONTINUE = 98;
+	public static final int CONTROL = 99;
+	public static final int CONTROL_POINT = 100;
+	public static final int CONTROLS = 101;
+	public static final int CONVENTION = 102;
+	public static final int CONVERTING = 103;
+	public static final int COPY = 104;
+	public static final int CORR = 105;
+	public static final int CORRESPONDING = 106;
+	public static final int COUNT = 107;
+	public static final int CRUNCH = 108;
+	public static final int CURRENCY = 109;
+	public static final int CURSOR = 110;
+	public static final int CYCLE = 111;
+	public static final int DATA = 112;
+	public static final int DATA_BASE = 113;
+	public static final int DATE = 114;
+	public static final int DATE_COMPILED = 115;
+	public static final int DATE_WRITTEN = 116;
+	public static final int DAY = 117;
+	public static final int DAY_OF_WEEK = 118;
+	public static final int DBCS = 119;
+	public static final int DBCLOB = 120;
+	public static final int DE = 121;
+	public static final int DEBUG_CONTENTS = 122;
+	public static final int DEBUG_ITEM = 123;
+	public static final int DEBUG_LINE = 124;
+	public static final int DEBUG_NAME = 125;
+	public static final int DEBUG_SUB_1 = 126;
+	public static final int DEBUG_SUB_2 = 127;
+	public static final int DEBUG_SUB_3 = 128;
+	public static final int DEBUGGING = 129;
+	public static final int DECIMAL_POINT = 130;
+	public static final int DECLARATIVES = 131;
+	public static final int DEFAULT = 132;
+	public static final int DEFAULT_DISPLAY = 133;
+	public static final int DEFINITION = 134;
+	public static final int DELETE = 135;
+	public static final int DELIMITED = 136;
+	public static final int DELIMITER = 137;
+	public static final int DEPENDING = 138;
+	public static final int DESCENDING = 139;
+	public static final int DESTINATION = 140;
+	public static final int DETAIL = 141;
+	public static final int DFHRESP = 142;
+	public static final int DFHVALUE = 143;
+	public static final int DISABLE = 144;
+	public static final int DISK = 145;
+	public static final int DISPLAY = 146;
+	public static final int DISPLAY_1 = 147;
+	public static final int DIVIDE = 148;
+	public static final int DIVISION = 149;
+	public static final int DONTCARE = 150;
+	public static final int DOUBLE = 151;
+	public static final int DOWN = 152;
+	public static final int DUPLICATES = 153;
+	public static final int DYNAMIC = 154;
+	public static final int EBCDIC = 155;
+	public static final int EGCS = 156;
+	public static final int EGI = 157;
+	public static final int ELSE = 158;
+	public static final int EMI = 159;
+	public static final int EMPTY_CHECK = 160;
+	public static final int ENABLE = 161;
+	public static final int END = 162;
+	public static final int END_ACCEPT = 163;
+	public static final int END_ADD = 164;
+	public static final int END_CALL = 165;
+	public static final int END_COMPUTE = 166;
+	public static final int END_DELETE = 167;
+	public static final int END_DISPLAY = 168;
+	public static final int END_DIVIDE = 169;
+	public static final int END_EVALUATE = 170;
+	public static final int END_IF = 171;
+	public static final int END_MULTIPLY = 172;
+	public static final int END_OF_PAGE = 173;
+	public static final int END_PERFORM = 174;
+	public static final int END_READ = 175;
+	public static final int END_RECEIVE = 176;
+	public static final int END_REMARKS = 177;
+	public static final int END_RETURN = 178;
+	public static final int END_REWRITE = 179;
+	public static final int END_SEARCH = 180;
+	public static final int END_START = 181;
+	public static final int END_STRING = 182;
+	public static final int END_SUBTRACT = 183;
+	public static final int END_UNSTRING = 184;
+	public static final int END_WRITE = 185;
+	public static final int ENDING = 186;
+	public static final int ENTER = 187;
+	public static final int ENTRY = 188;
+	public static final int ENTRY_PROCEDURE = 189;
+	public static final int ENVIRONMENT = 190;
+	public static final int EOP = 191;
+	public static final int EQUAL = 192;
+	public static final int ERASE = 193;
+	public static final int ERROR = 194;
+	public static final int EOL = 195;
+	public static final int EOS = 196;
+	public static final int ESCAPE = 197;
+	public static final int ESI = 198;
+	public static final int EVALUATE = 199;
+	public static final int EVENT = 200;
+	public static final int EVERY = 201;
+	public static final int EXCEPTION = 202;
+	public static final int EXCLUSIVE = 203;
+	public static final int EXHIBIT = 204;
+	public static final int EXIT = 205;
+	public static final int EXPORT = 206;
+	public static final int EXTEND = 207;
+	public static final int EXTENDED = 208;
+	public static final int EXTERNAL = 209;
+	public static final int FALSE = 210;
+	public static final int FD = 211;
+	public static final int FILE = 212;
+	public static final int FILE_CONTROL = 213;
+	public static final int FILLER = 214;
+	public static final int FINAL = 215;
+	public static final int FIRST = 216;
+	public static final int FOOTING = 217;
+	public static final int FOR = 218;
+	public static final int FOREGROUND_COLOR = 219;
+	public static final int FOREGROUND_COLOUR = 220;
+	public static final int FROM = 221;
+	public static final int FULL = 222;
+	public static final int FUNCTION = 223;
+	public static final int FUNCTIONNAME = 224;
+	public static final int FUNCTION_POINTER = 225;
+	public static final int GENERATE = 226;
+	public static final int GOBACK = 227;
+	public static final int GIVING = 228;
+	public static final int GLOBAL = 229;
+	public static final int GO = 230;
+	public static final int GREATER = 231;
+	public static final int GRID = 232;
+	public static final int GROUP = 233;
+	public static final int HEADING = 234;
+	public static final int HIGHLIGHT = 235;
+	public static final int HIGH_VALUE = 236;
+	public static final int HIGH_VALUES = 237;
+	public static final int I_O = 238;
+	public static final int I_O_CONTROL = 239;
+	public static final int ID = 240;
+	public static final int IDENTIFICATION = 241;
+	public static final int IF = 242;
+	public static final int IMPLICIT = 243;
+	public static final int IMPORT = 244;
+	public static final int IN = 245;
+	public static final int INDEX = 246;
+	public static final int INDEXED = 247;
+	public static final int INDICATE = 248;
+	public static final int INITIAL = 249;
+	public static final int INITIALIZE = 250;
+	public static final int INITIATE = 251;
+	public static final int INPUT = 252;
+	public static final int INPUT_OUTPUT = 253;
+	public static final int INSPECT = 254;
+	public static final int INSTALLATION = 255;
+	public static final int INTEGER = 256;
+	public static final int INTO = 257;
+	public static final int INVALID = 258;
+	public static final int INVOKE = 259;
+	public static final int IS = 260;
+	public static final int JUST = 261;
+	public static final int JUSTIFIED = 262;
+	public static final int KANJI = 263;
+	public static final int KEPT = 264;
+	public static final int KEY = 265;
+	public static final int KEYBOARD = 266;
+	public static final int LABEL = 267;
+	public static final int LANGUAGE = 268;
+	public static final int LAST = 269;
+	public static final int LB = 270;
+	public static final int LD = 271;
+	public static final int LEADING = 272;
+	public static final int LEFT = 273;
+	public static final int LEFTLINE = 274;
+	public static final int LENGTH = 275;
+	public static final int LENGTH_CHECK = 276;
+	public static final int LESS = 277;
+	public static final int LIBACCESS = 278;
+	public static final int LIBPARAMETER = 279;
+	public static final int LIBRARY = 280;
+	public static final int LIMIT = 281;
+	public static final int LIMITS = 282;
+	public static final int LINAGE = 283;
+	public static final int LINAGE_COUNTER = 284;
+	public static final int LINE = 285;
+	public static final int LINES = 286;
+	public static final int LINE_COUNTER = 287;
+	public static final int LINKAGE = 288;
+	public static final int LIST = 289;
+	public static final int LOCAL = 290;
+	public static final int LOCAL_STORAGE = 291;
+	public static final int LOCK = 292;
+	public static final int LONG_DATE = 293;
+	public static final int LONG_TIME = 294;
+	public static final int LOWER = 295;
+	public static final int LOWLIGHT = 296;
+	public static final int LOW_VALUE = 297;
+	public static final int LOW_VALUES = 298;
+	public static final int MEMORY = 299;
+	public static final int MERGE = 300;
+	public static final int MESSAGE = 301;
+	public static final int METHOD = 302;
+	public static final int MMDDYYYY = 303;
+	public static final int MODE = 304;
+	public static final int MODULES = 305;
+	public static final int MORE_LABELS = 306;
+	public static final int MOVE = 307;
+	public static final int MULTIPLE = 308;
+	public static final int MULTIPLY = 309;
+	public static final int NAMED = 310;
+	public static final int NATIONAL = 311;
+	public static final int NATIONAL_EDITED = 312;
+	public static final int NATIVE = 313;
+	public static final int NEGATIVE = 314;
+	public static final int NETWORK = 315;
+	public static final int NEXT = 316;
+	public static final int NO = 317;
+	public static final int NO_ECHO = 318;
+	public static final int NOT = 319;
+	public static final int NULL = 320;
+	public static final int NULLS = 321;
+	public static final int NUMBER = 322;
+	public static final int NUMERIC = 323;
+	public static final int NUMERIC_DATE = 324;
+	public static final int NUMERIC_EDITED = 325;
+	public static final int NUMERIC_TIME = 326;
+	public static final int OBJECT_COMPUTER = 327;
+	public static final int OCCURS = 328;
+	public static final int ODT = 329;
+	public static final int OF = 330;
+	public static final int OFF = 331;
+	public static final int OMITTED = 332;
+	public static final int ON = 333;
+	public static final int OPEN = 334;
+	public static final int OPTIONAL = 335;
+	public static final int OR = 336;
+	public static final int ORDER = 337;
+	public static final int ORDERLY = 338;
+	public static final int ORGANIZATION = 339;
+	public static final int OTHER = 340;
+	public static final int OUTPUT = 341;
+	public static final int OVERFLOW = 342;
+	public static final int OVERLINE = 343;
+	public static final int OWN = 344;
+	public static final int PACKED_DECIMAL = 345;
+	public static final int PADDING = 346;
+	public static final int PAGE = 347;
+	public static final int PAGE_COUNTER = 348;
+	public static final int PARAGRAPH = 349;
+	public static final int PASSWORD = 350;
+	public static final int PERFORM = 351;
+	public static final int PF = 352;
+	public static final int PH = 353;
+	public static final int PIC = 354;
+	public static final int PICTURE = 355;
+	public static final int PLUS = 356;
+	public static final int POINTER = 357;
+	public static final int POSITION = 358;
+	public static final int POSITIVE = 359;
+	public static final int PORT = 360;
+	public static final int PRINTER = 361;
+	public static final int PRINTING = 362;
+	public static final int PRIVATE = 363;
+	public static final int PROCEDURE = 364;
+	public static final int PROCEDURE_POINTER = 365;
+	public static final int PROCEDURES = 366;
+	public static final int PROCEED = 367;
+	public static final int PROCESS = 368;
+	public static final int PROGRAM = 369;
+	public static final int PROGRAM_ID = 370;
+	public static final int PROGRAM_LIBRARY = 371;
+	public static final int PROMPT = 372;
+	public static final int PURGE = 373;
+	public static final int QUEUE = 374;
+	public static final int QUOTE = 375;
+	public static final int QUOTES = 376;
+	public static final int RANDOM = 377;
+	public static final int READER = 378;
+	public static final int REMOTE = 379;
+	public static final int RD = 380;
+	public static final int REAL = 381;
+	public static final int READ = 382;
+	public static final int RECEIVE = 383;
+	public static final int RECEIVED = 384;
+	public static final int RECORD = 385;
+	public static final int RECORDING = 386;
+	public static final int RECORDS = 387;
+	public static final int RECURSIVE = 388;
+	public static final int REDEFINES = 389;
+	public static final int REEL = 390;
+	public static final int REF = 391;
+	public static final int REFERENCE = 392;
+	public static final int REFERENCES = 393;
+	public static final int RELATIVE = 394;
+	public static final int RELEASE = 395;
+	public static final int REMAINDER = 396;
+	public static final int REMARKS = 397;
+	public static final int REMOVAL = 398;
+	public static final int REMOVE = 399;
+	public static final int RENAMES = 400;
+	public static final int REPLACE = 401;
+	public static final int REPLACING = 402;
+	public static final int REPORT = 403;
+	public static final int REPORTING = 404;
+	public static final int REPORTS = 405;
+	public static final int REQUIRED = 406;
+	public static final int RERUN = 407;
+	public static final int RESERVE = 408;
+	public static final int REVERSE_VIDEO = 409;
+	public static final int RESET = 410;
+	public static final int RETURN = 411;
+	public static final int RETURN_CODE = 412;
+	public static final int RETURNING = 413;
+	public static final int REVERSED = 414;
+	public static final int REWIND = 415;
+	public static final int REWRITE = 416;
+	public static final int RF = 417;
+	public static final int RH = 418;
+	public static final int RIGHT = 419;
+	public static final int ROUNDED = 420;
+	public static final int RUN = 421;
+	public static final int SAME = 422;
+	public static final int SAVE = 423;
+	public static final int SCREEN = 424;
+	public static final int SD = 425;
+	public static final int SEARCH = 426;
+	public static final int SECTION = 427;
+	public static final int SECURE = 428;
+	public static final int SECURITY = 429;
+	public static final int SEGMENT = 430;
+	public static final int SEGMENT_LIMIT = 431;
+	public static final int SELECT = 432;
+	public static final int SEND = 433;
+	public static final int SENTENCE = 434;
+	public static final int SEPARATE = 435;
+	public static final int SEQUENCE = 436;
+	public static final int SEQUENTIAL = 437;
+	public static final int SET = 438;
+	public static final int SHARED = 439;
+	public static final int SHAREDBYALL = 440;
+	public static final int SHAREDBYRUNUNIT = 441;
+	public static final int SHARING = 442;
+	public static final int SHIFT_IN = 443;
+	public static final int SHIFT_OUT = 444;
+	public static final int SHORT_DATE = 445;
+	public static final int SIGN = 446;
+	public static final int SIZE = 447;
+	public static final int SORT = 448;
+	public static final int SORT_CONTROL = 449;
+	public static final int SORT_CORE_SIZE = 450;
+	public static final int SORT_FILE_SIZE = 451;
+	public static final int SORT_MERGE = 452;
+	public static final int SORT_MESSAGE = 453;
+	public static final int SORT_MODE_SIZE = 454;
+	public static final int SORT_RETURN = 455;
+	public static final int SOURCE = 456;
+	public static final int SOURCE_COMPUTER = 457;
+	public static final int SPACE = 458;
+	public static final int SPACES = 459;
+	public static final int SPECIAL_NAMES = 460;
+	public static final int SQL = 461;
+	public static final int STANDARD = 462;
+	public static final int STANDARD_1 = 463;
+	public static final int STANDARD_2 = 464;
+	public static final int START = 465;
+	public static final int STATUS = 466;
+	public static final int STOP = 467;
+	public static final int STRING = 468;
+	public static final int SUB_QUEUE_1 = 469;
+	public static final int SUB_QUEUE_2 = 470;
+	public static final int SUB_QUEUE_3 = 471;
+	public static final int SUBTRACT = 472;
+	public static final int SUM = 473;
+	public static final int SUPPRESS = 474;
+	public static final int SYMBOL = 475;
+	public static final int SYMBOLIC = 476;
+	public static final int SYNC = 477;
+	public static final int SYNCHRONIZED = 478;
+	public static final int TABLE = 479;
+	public static final int TALLY = 480;
+	public static final int TALLYING = 481;
+	public static final int TASK = 482;
+	public static final int TAPE = 483;
+	public static final int TERMINAL = 484;
+	public static final int TERMINATE = 485;
+	public static final int TEST = 486;
+	public static final int TEXT = 487;
+	public static final int THAN = 488;
+	public static final int THEN = 489;
+	public static final int THREAD = 490;
+	public static final int THREAD_LOCAL = 491;
+	public static final int THROUGH = 492;
+	public static final int THRU = 493;
+	public static final int TIME = 494;
+	public static final int TIMER = 495;
+	public static final int TIMES = 496;
+	public static final int TITLE = 497;
+	public static final int TO = 498;
+	public static final int TODAYS_DATE = 499;
+	public static final int TODAYS_NAME = 500;
+	public static final int TOP = 501;
+	public static final int TRAILING = 502;
+	public static final int TRUE = 503;
+	public static final int TRUNCATED = 504;
+	public static final int TYPE = 505;
+	public static final int TYPEDEF = 506;
+	public static final int UNDERLINE = 507;
+	public static final int UNIT = 508;
+	public static final int UNSTRING = 509;
+	public static final int UNTIL = 510;
+	public static final int UP = 511;
+	public static final int UPON = 512;
+	public static final int USAGE = 513;
+	public static final int USE = 514;
+	public static final int USING = 515;
+	public static final int VALUE = 516;
+	public static final int VALUES = 517;
+	public static final int VARYING = 518;
+	public static final int VIRTUAL = 519;
+	public static final int WAIT = 520;
+	public static final int WHEN = 521;
+	public static final int WHEN_COMPILED = 522;
+	public static final int WITH = 523;
+	public static final int WORDS = 524;
+	public static final int WORKING_STORAGE = 525;
+	public static final int WRITE = 526;
+	public static final int YEAR = 527;
+	public static final int YYYYMMDD = 528;
+	public static final int YYYYDDD = 529;
+	public static final int ZERO = 530;
+	public static final int ZERO_FILL = 531;
+	public static final int ZEROS = 532;
+	public static final int ZEROES = 533;
+	public static final int AMPCHAR = 534;
+	public static final int ASTERISKCHAR = 535;
+	public static final int DOUBLEASTERISKCHAR = 536;
+	public static final int COLONCHAR = 537;
+	public static final int COMMACHAR = 538;
+	public static final int COMMENTENTRYTAG = 539;
+	public static final int COMMENTTAG = 540;
+	public static final int DOLLARCHAR = 541;
+	public static final int DOUBLEQUOTE = 542;
+	public static final int DOT_FS = 543;
+	public static final int EQUALCHAR = 544;
+	public static final int EXECCICSTAG = 545;
+	public static final int EXECSQLTAG = 546;
+	public static final int EXECSQLIMSTAG = 547;
+	public static final int LESSTHANCHAR = 548;
+	public static final int LESSTHANOREQUAL = 549;
+	public static final int LPARENCHAR = 550;
+	public static final int MINUSCHAR = 551;
+	public static final int MORETHANCHAR = 552;
+	public static final int MORETHANOREQUAL = 553;
+	public static final int NOTEQUALCHAR = 554;
+	public static final int PLUSCHAR = 555;
+	public static final int SINGLEQUOTE = 556;
+	public static final int RPARENCHAR = 557;
+	public static final int SLASHCHAR = 558;
+	public static final int NONNUMERICLITERAL = 559;
+	public static final int LEVEL_NUMBER_66 = 560;
+	public static final int LEVEL_NUMBER_77 = 561;
+	public static final int LEVEL_NUMBER_88 = 562;
+	public static final int INTEGERLITERAL = 563;
+	public static final int NUMERICLITERAL = 564;
+	public static final int IDENTIFIER = 565;
+	public static final int SEPARATOR = 566;
+	public static final int NEWLINE = 567;
+	public static final int EXECCICSLINE = 568;
+	public static final int EXECSQLIMSLINE = 569;
+	public static final int EXECSQLLINE = 570;
+	public static final int COMMENTENTRYLINE = 571;
+	public static final int COMMENTLINE = 572;
+	public static final int WS = 573;
 	public static String[] channelNames = {
 		"DEFAULT_TOKEN_CHANNEL", "HIDDEN"
 	};

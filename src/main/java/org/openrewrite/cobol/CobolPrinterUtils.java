@@ -8,7 +8,7 @@ package org.openrewrite.cobol;
 import org.openrewrite.cobol.internal.CobolDialect;
 import org.openrewrite.internal.StringUtils;
 
-public class CobolPrinterUtils {
+public final class CobolPrinterUtils {
 
     private CobolPrinterUtils() {
     }
