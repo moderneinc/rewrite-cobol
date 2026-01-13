@@ -39,15 +39,9 @@ public class FindWord extends Recipe {
             example = "true")
     Boolean exactMatch;
 
-    @Override
-    public String getDisplayName() {
-        return "Find matching words in the source code";
-    }
+    String displayName = "Find matching words in the source code";
 
-    @Override
-    public String getDescription() {
-        return "Search for COBOL words based on a search term.";
-    }
+    String description = "Search for COBOL words based on a search term.";
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {

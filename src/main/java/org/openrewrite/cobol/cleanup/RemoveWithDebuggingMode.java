@@ -33,15 +33,9 @@ public class RemoveWithDebuggingMode extends Recipe {
     @Nullable
     Boolean updateSequenceAreas;
 
-    @Override
-    public String getDisplayName() {
-        return "Remove with debugging mode";
-    }
+    String displayName = "Remove with debugging mode";
 
-    @Override
-    public String getDescription() {
-        return "Remove debugging mode from SOURCE-COMPUTER paragraphs.";
-    }
+    String description = "Remove debugging mode from SOURCE-COMPUTER paragraphs.";
 
     @Override
     public Set<String> getTags() {

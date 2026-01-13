@@ -34,15 +34,9 @@ public class FindReference extends Recipe {
             example = "true")
     Boolean exactMatch;
 
-    @Override
-    public String getDisplayName() {
-        return "Find matching identifiers in COBOL, copybooks, and JCL";
-    }
+    String displayName = "Find matching identifiers in COBOL, copybooks, and JCL";
 
-    @Override
-    public String getDescription() {
-        return "Finds an identifier by an exact match or regex pattern in COBOL, copybooks, and/or JCL.";
-    }
+    String description = "Finds an identifier by an exact match or regex pattern in COBOL, copybooks, and/or JCL.";
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {

@@ -37,15 +37,9 @@ public class FindCopybook extends Recipe {
     @Nullable
     Boolean onlyMissingCopybooks;
 
-    @Override
-    public String getDisplayName() {
-        return "Find copybook usage";
-    }
+    String displayName = "Find copybook usage";
 
-    @Override
-    public String getDescription() {
-        return "Find all copy statements with the copybook name.";
-    }
+    String description = "Find all copy statements with the copybook name.";
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {

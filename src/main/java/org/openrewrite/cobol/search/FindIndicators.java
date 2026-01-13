@@ -23,15 +23,9 @@ public class FindIndicators extends Recipe {
             example = "D")
     String indicator;
 
-    @Override
-    public String getDisplayName() {
-        return "Find indicators";
-    }
+    String displayName = "Find indicators";
 
-    @Override
-    public String getDescription() {
-        return "Find matching indicators. Currently, this recipe will not mark indicators on copybook code.";
-    }
+    String description = "Find matching indicators. Currently, this recipe will not mark indicators on copybook code.";
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {
