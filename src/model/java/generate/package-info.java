@@ -4,7 +4,7 @@
  * See: https://creativecommons.org/licenses/by-nc-sa/4.0/
  */
 
-@NonNullApi
+@NullMarked
 package generate;
 
-import org.openrewrite.internal.lang.NonNullApi;
+import org.jspecify.annotations.NullMarked;

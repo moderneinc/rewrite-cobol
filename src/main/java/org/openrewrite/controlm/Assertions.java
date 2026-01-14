@@ -5,9 +5,9 @@
  */
 package org.openrewrite.controlm;
 
+import org.jspecify.annotations.Nullable;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.controlm.tree.ControlM;
-import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.test.SourceSpec;
 import org.openrewrite.test.SourceSpecs;
 

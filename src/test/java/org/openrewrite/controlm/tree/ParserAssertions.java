@@ -5,10 +5,10 @@
  */
 package org.openrewrite.controlm.tree;
 
+import org.jspecify.annotations.Nullable;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.controlm.ControlMIsoVisitor;
 import org.openrewrite.controlm.ControlMParser;
-import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.test.SourceSpec;
 import org.openrewrite.test.SourceSpecs;
 

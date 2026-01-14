@@ -8,11 +8,11 @@ package org.openrewrite.cobol.internal;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.jspecify.annotations.Nullable;
 import org.openrewrite.FileAttributes;
 import org.openrewrite.cobol.internal.grammar.CobolPreprocessorBaseVisitor;
 import org.openrewrite.cobol.internal.grammar.CobolPreprocessorParser;
 import org.openrewrite.cobol.tree.*;
-import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.marker.Markers;
 
 import java.nio.charset.Charset;
@@ -68,7 +68,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
         throw new IllegalStateException("Expected one of the supplied trees to be non-null");
     }
 
-    public <T> T visitNullable(@Nullable ParseTree tree) {
+	public <T> @Nullable T visitNullable(@Nullable ParseTree tree) {
         if (tree == null) {
             //noinspection ConstantConditions
             return null;
@@ -919,58 +919,59 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
      */
     private Space processTokenText(String text, List<Object> objects) {
 
-        parseCommentsAndEmptyLines(text, objects);
+		parseCommentsAndEmptyLines(text, objects);
 
-        int saveCursor = cursor;
-        sequenceArea();
-        indicatorArea();
+		int saveCursor = cursor;
+		sequenceArea();
+		indicatorArea();
 
-        Integer nextIndicator = null;
-        for (Integer integer : indicatorAreas.keySet()) {
-            if (integer > cursor) {
-                nextIndicator = integer;
-                break;
-            }
-        }
-        boolean isContinued = nextIndicator != null && "-".equals(indicatorAreas.get(nextIndicator));
+		Integer nextIndicator = null;
+		for (Integer integer : indicatorAreas.keySet()) {
+			if (integer > cursor) {
+				nextIndicator = integer;
+				break;
+			}
+		}
+		boolean isContinued = nextIndicator != null && "-".equals(indicatorAreas.get(nextIndicator));
 
-        Character delimiter = null;
-        // Detect a continued String literal.
-        if (text.startsWith("'") || text.startsWith("\"")) {
-            delimiter = text.charAt(0);
-        }
+		Character delimiter = null;
+		// Detect a continued String literal.
+		if (text.startsWith("'") || text.startsWith("\"")) {
+			delimiter = text.charAt(0);
+		}
 
-        // Detect a continued keyword or identifier.
-        if (isContinued && delimiter == null) {
-            // CommentAreas are optional text that will precede the end of line.
-            Integer nextCommentArea = null;
-            for (Integer it : commentAreas.keySet()) {
-                if (it > cursor) {
-                    nextCommentArea = it;
-                    break;
-                }
-            }
+		// Detect a continued keyword or identifier.
+		if (isContinued && delimiter == null) {
+			// CommentAreas are optional text that will precede the end of line.
+			Integer nextCommentArea = null;
+			for (Integer it : commentAreas.keySet()) {
+				if (it > cursor) {
+					nextCommentArea = it;
+					break;
+				}
+			}
 
-            String current = source.substring(cursor);
-            int newLinePos = current.indexOf("\n");
-            int endPos = (nextCommentArea != null && nextCommentArea < (newLinePos + cursor)) ? nextCommentArea : (newLinePos + cursor);
+			String current = source.substring(cursor);
+			int newLinePos = current.indexOf("\n");
+			int endPos = (nextCommentArea != null && nextCommentArea < (newLinePos + cursor)) ? nextCommentArea : (newLinePos + cursor);
 
-            current = source.substring(cursor, endPos).trim();
-            isContinued = !current.startsWith(text);
-        }
-        cursor = saveCursor;
+			current = source.substring(cursor, endPos).trim();
+			isContinued = !current.startsWith(text);
+		}
+		cursor = saveCursor;
 
-        // A literal continued on a new line.
-        if (isContinued) {
-            return delimiter == null ?
-                    processContinuedText(text, objects) :
-                    processLiteral(text, objects, delimiter);
-        } else if (END_OF_FILE.equals(text) && source.substring(cursor).isEmpty()) {
-            return EMPTY;
-        }
+		// A literal continued on a new line.
+		if (isContinued) {
+			return delimiter == null ?
+				processContinuedText(text, objects) :
+				processLiteral(text, objects, delimiter);
+		}
+		if (END_OF_FILE.equals(text) && source.substring(cursor).isEmpty()) {
+			return EMPTY;
+		}
 
-        return processText(text, objects);
-    }
+		return processText(text, objects);
+	}
 
     /**
      * Parse the comments and empty lines that precede the COBOL word.
@@ -1216,11 +1217,10 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
         return area != null && (commentIndicators.contains(area.getIndicator().charAt(0)));
     }
 
-    /**
-     * Return the SequenceArea based on the current cursor position if it exists.
-     */
-    @Nullable
-    private SequenceArea sequenceArea() {
+	/**
+	 * Return the SequenceArea based on the current cursor position if it exists.
+	 */
+	private @Nullable SequenceArea sequenceArea() {
         if (sequenceAreas.containsKey(cursor)) {
             String sequence = sequenceAreas.get(cursor);
             cursor += sequence.length();
@@ -1230,25 +1230,23 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
         return null;
     }
 
-    @Nullable
-    private IndicatorArea indicatorArea() {
+	private @Nullable IndicatorArea indicatorArea() {
         return indicatorArea(null, false);
     }
 
-    /**
-     * Return the IndicatorArea based on the current cursor position if it exists.
-     *
-     * @param continuationDelimiter the next expected Character in the source that comes after the indicator.
-     * @param isStringLiteral       String literals and Keywords/Identifiers have different rules for line continuations.
+	/**
+	 * Return the IndicatorArea based on the current cursor position if it exists.
+	 *
+	 * @param continuationDelimiter the next expected Character in the source that comes after the indicator.
+	 * @param isStringLiteral       String literals and Keywords/Identifiers have different rules for line continuations.
      *                              A continued String literal will be prefixed by the delimiter (' or "),
      *                              which needs to exist in the indicator marker.
      *                              I.E. 000001-|<whitespace including the delimiter " or '>|some continued string literal.
      *                              <p>
      *                              A continued Keyword/Identifier should not include the delimiter.
      *                              I.E. 000001-|<whitespace added to indicator>|TOKEN-NAME.
-     */
-    @Nullable
-    private IndicatorArea indicatorArea(@Nullable Character continuationDelimiter, boolean isStringLiteral) {
+	 */
+	private @Nullable IndicatorArea indicatorArea(@Nullable Character continuationDelimiter, boolean isStringLiteral) {
         if (indicatorAreas.containsKey(cursor)) {
             String indicatorArea = indicatorAreas.get(cursor);
             cursor += indicatorArea.length();
@@ -1269,11 +1267,10 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
         return null;
     }
 
-    /**
-     * Return the CommentArea based on the current cursor position if it exists.
-     */
-    @Nullable
-    private CommentArea commentArea() {
+	/**
+	 * Return the CommentArea based on the current cursor position if it exists.
+	 */
+	private @Nullable CommentArea commentArea() {
         int saveCursor = cursor;
 
         Space before = whitespace();

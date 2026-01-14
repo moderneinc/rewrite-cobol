@@ -15,8 +15,8 @@ import static org.openrewrite.cobol.Assertions.preprocessor;
 
 class CobolPreprocessorAnsi85DivisionTest extends CobolTest {
 
-    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/17")
     @ExpectedToFail
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/17")
     @Test
     void invalidGrammar() {
         rewriteRun(

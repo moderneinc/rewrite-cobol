@@ -5,13 +5,14 @@
  */
 package org.openrewrite.jcl.internal;
 
+import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
 import org.openrewrite.PrintOutputCapture;
-import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.jcl.JclVisitor;
 import org.openrewrite.jcl.marker.CommentArea;
 import org.openrewrite.jcl.marker.TrailingComment;
-import org.openrewrite.jcl.tree.*;
+import org.openrewrite.jcl.tree.Jcl;
+import org.openrewrite.jcl.tree.Space;
 import org.openrewrite.marker.Marker;
 import org.openrewrite.marker.Markers;
 
@@ -104,7 +105,7 @@ public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
         beforeSyntax(c.getPrefix(), c.getMarkers(), loc, p);
     }
 
-    protected void beforeSyntax(Space prefix, Markers markers, @Nullable Space.Location loc, PrintOutputCapture<P> p) {
+    protected void beforeSyntax(Space prefix, Markers markers, Space.@Nullable Location loc, PrintOutputCapture<P> p) {
         for (Marker marker : markers.getMarkers()) {
             p.out.append(p.getMarkerPrinter().beforePrefix(marker, new Cursor(getCursor(), marker), JCL_MARKER_WRAPPER));
         }

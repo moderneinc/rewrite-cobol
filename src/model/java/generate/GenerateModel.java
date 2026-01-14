@@ -12,16 +12,12 @@ import org.openrewrite.Result;
 import org.openrewrite.java.JavaParser;
 import org.openrewrite.java.tree.J;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
@@ -95,16 +91,5 @@ public class GenerateModel {
 //
 //        // TODO Unable to add accessors in the first phase due to some bug in JavaTemplate.
 //        writeResults(new WritePaddingAccessors().run(jp().parse(Collections.singletonList(cobolTreePath), null, ctx), ctx));
-    }
-
-    private void writeResults(List<Result> results) {
-        for (Result result : results) {
-            try {
-                Files.write(requireNonNull(result.getAfter()).getSourcePath(),
-                        result.getAfter().printAllAsBytes());
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
     }
 }

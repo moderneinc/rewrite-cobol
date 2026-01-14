@@ -3,7 +3,7 @@
  * For everyone else, this is licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International.
  * See: https://creativecommons.org/licenses/by-nc-sa/4.0/
  */
-@NonNullApi
+@NullMarked
 package org.openrewrite.cobol.tree.cobol;
 
-import org.openrewrite.internal.lang.NonNullApi;
+import org.jspecify.annotations.NullMarked;

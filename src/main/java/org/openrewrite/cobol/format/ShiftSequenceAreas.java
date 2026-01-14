@@ -14,7 +14,9 @@ import org.openrewrite.cobol.CobolIsoVisitor;
 import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.SequenceArea;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 import static java.util.stream.Collectors.toCollection;
 

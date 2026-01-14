@@ -7,14 +7,17 @@ package org.openrewrite.cobol.search;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import org.openrewrite.*;
+import org.openrewrite.ExecutionContext;
+import org.openrewrite.Option;
+import org.openrewrite.Recipe;
+import org.openrewrite.TreeVisitor;
 import org.openrewrite.cobol.CobolIsoVisitor;
-import org.openrewrite.cobol.tree.*;
+import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.marker.SearchResult;
 
 import static org.openrewrite.Tree.randomId;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 @Value
 public class FindIndicators extends Recipe {
 
@@ -23,15 +26,9 @@ public class FindIndicators extends Recipe {
             example = "D")
     String indicator;
 
-    @Override
-    public String getDisplayName() {
-        return "Find indicators";
-    }
+    String displayName = "Find indicators";
 
-    @Override
-    public String getDescription() {
-        return "Find matching indicators. Currently, this recipe will not mark indicators on copybook code.";
-    }
+    String description = "Find matching indicators. Currently, this recipe will not mark indicators on copybook code.";
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {
@@ -47,7 +44,7 @@ public class FindIndicators extends Recipe {
 
 
         @Override
-        public Cobol.Word visitWord(Cobol.Word word, ExecutionContext executionContext) {
+        public Cobol.Word visitWord(Cobol.Word word, ExecutionContext ctx) {
             if (word.getIndicatorArea() != null && word.getIndicatorArea().getIndicator().equals(indicator)) {
                 word = word.withIndicatorArea(
                         word.getIndicatorArea().withMarkers(

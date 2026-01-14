@@ -6,7 +6,8 @@
 package org.openrewrite.cobol.internal;
 
 import org.openrewrite.PrintOutputCapture;
-import org.openrewrite.cobol.tree.*;
+import org.openrewrite.cobol.tree.CobolPreprocessor;
+import org.openrewrite.cobol.tree.Space;
 
 /**
  * Print the original preprocessed COBOL.

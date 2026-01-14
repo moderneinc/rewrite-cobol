@@ -5,14 +5,17 @@
  */
 // Generated from java-escape by ANTLR 4.11.1
 package org.openrewrite.jcl.internal.grammar;
-import org.antlr.v4.runtime.atn.*;
-import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.misc.*;
-import org.antlr.v4.runtime.tree.*;
+import org.antlr.v4.runtime.atn.ATN;
+import org.antlr.v4.runtime.atn.ATNDeserializer;
+import org.antlr.v4.runtime.atn.ParserATNSimulator;
+import org.antlr.v4.runtime.atn.PredictionContextCache;
+import org.antlr.v4.runtime.dfa.DFA;
+import org.antlr.v4.runtime.tree.ParseTreeListener;
+import org.antlr.v4.runtime.tree.ParseTreeVisitor;
+import org.antlr.v4.runtime.tree.TerminalNode;
+
 import java.util.List;
-import java.util.Iterator;
-import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
 public class JCLParser extends Parser {
@@ -140,8 +143,8 @@ public class JCLParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitCompilationUnit(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) return ((JCLParserVisitor<? extends T>) visitor).visitCompilationUnit(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -218,8 +221,8 @@ public class JCLParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) return ((JCLParserVisitor<? extends T>) visitor).visitStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -324,8 +327,8 @@ public class JCLParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitJcl(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) return ((JCLParserVisitor<? extends T>) visitor).visitJcl(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -384,8 +387,8 @@ public class JCLParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitJclWord(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) return ((JCLParserVisitor<? extends T>) visitor).visitJclWord(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -448,8 +451,8 @@ public class JCLParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitJclCommentArea(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) return ((JCLParserVisitor<? extends T>) visitor).visitJclCommentArea(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -512,8 +515,8 @@ public class JCLParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitJclTrailingComment(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) return ((JCLParserVisitor<? extends T>) visitor).visitJclTrailingComment(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -586,8 +589,8 @@ public class JCLParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitJes2(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) return ((JCLParserVisitor<? extends T>) visitor).visitJes2(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -633,8 +636,8 @@ public class JCLParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitJes2Word(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) return ((JCLParserVisitor<? extends T>) visitor).visitJes2Word(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -697,8 +700,8 @@ public class JCLParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitJes2CommentArea(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) return ((JCLParserVisitor<? extends T>) visitor).visitJes2CommentArea(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -753,8 +756,8 @@ public class JCLParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitJes3(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) return ((JCLParserVisitor<? extends T>) visitor).visitJes3(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -800,8 +803,8 @@ public class JCLParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitJes3Word(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) return ((JCLParserVisitor<? extends T>) visitor).visitJes3Word(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -864,8 +867,8 @@ public class JCLParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitJes3CommentArea(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) return ((JCLParserVisitor<? extends T>) visitor).visitJes3CommentArea(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -920,8 +923,8 @@ public class JCLParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitStream(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) return ((JCLParserVisitor<? extends T>) visitor).visitStream(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -967,8 +970,8 @@ public class JCLParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitStreamWord(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) return ((JCLParserVisitor<? extends T>) visitor).visitStreamWord(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -1031,8 +1034,8 @@ public class JCLParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitStreamCommentArea(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) return ((JCLParserVisitor<? extends T>) visitor).visitStreamCommentArea(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -1087,8 +1090,8 @@ public class JCLParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitControlM(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) return ((JCLParserVisitor<? extends T>) visitor).visitControlM(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -1134,8 +1137,8 @@ public class JCLParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitControlMWord(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) return ((JCLParserVisitor<? extends T>) visitor).visitControlMWord(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -1198,8 +1201,8 @@ public class JCLParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitControlMCommentArea(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) return ((JCLParserVisitor<? extends T>) visitor).visitControlMCommentArea(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -1254,8 +1257,8 @@ public class JCLParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitComment(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) return ((JCLParserVisitor<? extends T>) visitor).visitComment(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -1301,8 +1304,8 @@ public class JCLParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitCommentWord(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) return ((JCLParserVisitor<? extends T>) visitor).visitCommentWord(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -1365,8 +1368,8 @@ public class JCLParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitCommentCommentArea(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) return ((JCLParserVisitor<? extends T>) visitor).visitCommentCommentArea(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -1421,8 +1424,8 @@ public class JCLParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitUnknown(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) return ((JCLParserVisitor<? extends T>) visitor).visitUnknown(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -1468,8 +1471,8 @@ public class JCLParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitUnknownWord(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) return ((JCLParserVisitor<? extends T>) visitor).visitUnknownWord(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -1548,8 +1551,8 @@ public class JCLParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitUnknownCommentArea(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof JCLParserVisitor) return ((JCLParserVisitor<? extends T>) visitor).visitUnknownCommentArea(this);
+			return visitor.visitChildren(this);
 		}
 	}
 

@@ -5,11 +5,14 @@
  */
 package org.openrewrite.cobol.tree;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Value;
+import lombok.With;
+import org.jspecify.annotations.Nullable;
 import org.openrewrite.*;
 import org.openrewrite.cobol.CobolVisitor;
 import org.openrewrite.cobol.internal.CobolPrinter;
-import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.marker.Markers;
 
 import java.nio.charset.Charset;
@@ -28,8 +31,7 @@ public interface Cobol extends Tree {
         return (R) acceptCobol(v.adapt(CobolVisitor.class), p);
     }
 
-    @Nullable
-    default <P> Cobol acceptCobol(CobolVisitor<P> v, P p) {
+	default <P> @Nullable Cobol acceptCobol(CobolVisitor<P> v, P p) {
         return v.defaultValue(this, p);
     }
 
@@ -42,11 +44,11 @@ public interface Cobol extends Tree {
 
     <P extends Cobol> P withPrefix(Space prefix);
 
-    default UUID getId() {
+	@Override default UUID getId() {
         return Cobol.CompilationUnit.id;
     }
 
-    default <T extends Tree> T withId(UUID id) {
+	@Override default <T extends Tree> T withId(UUID id) {
         //noinspection unchecked
         return (T) this;
     }

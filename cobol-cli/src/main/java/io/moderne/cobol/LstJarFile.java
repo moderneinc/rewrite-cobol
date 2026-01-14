@@ -9,9 +9,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-import org.openrewrite.internal.StringUtils;
 import org.openrewrite.marker.GitProvenance;
-import picocli.CommandLine;
 
 import java.io.*;
 import java.net.JarURLConnection;
@@ -122,8 +120,8 @@ public class LstJarFile {
         p.setProperty("lstFormatVersion", "2");
         if (gitProvenance.getOrigin() == null) {
             //the publish command will reject these jars
-            System.out.println("WARNING: The AST for " + groupId + ":" + artifactId + ":" + version
-                               + " can't be published because does not contain Git metadata. ");
+            System.out.println("WARNING: The AST for " + groupId + ":" + artifactId + ":" + version +
+                               " can't be published because does not contain Git metadata. ");
             p.setProperty("cloneUrl", "");
             p.setProperty("origin", "");
         } else {
@@ -179,9 +177,9 @@ public class LstJarFile {
                 .asString();
         if (!response.isSuccess()) {
             // FIXME error handling here should update progress bar
-            throw new RuntimeException("Error publishing " + jarFile.getAbsolutePath()
-                                       + " in " + deployUrl + ". Error code " + response.getStatus()
-                                       + " with the following error " + response.getBody());
+            throw new RuntimeException("Error publishing " + jarFile.getAbsolutePath() +
+                                       " in " + deployUrl + ". Error code " + response.getStatus() +
+                                       " with the following error " + response.getBody());
         }
     }
 }

@@ -5,7 +5,10 @@
  */
 package org.openrewrite.cobol.search;
 
-import org.openrewrite.*;
+import org.openrewrite.ExecutionContext;
+import org.openrewrite.Recipe;
+import org.openrewrite.Tree;
+import org.openrewrite.TreeVisitor;
 import org.openrewrite.cobol.CobolIsoVisitor;
 import org.openrewrite.cobol.CobolPreprocessorIsoVisitor;
 import org.openrewrite.cobol.marker.CopiedStatement;
@@ -59,20 +62,20 @@ public class FindRelationships extends Recipe {
             boolean isSourceName = false;
 
             @Override
-            public CobolPreprocessor.CompilationUnit visitCompilationUnit(CobolPreprocessor.CompilationUnit compilationUnit, ExecutionContext executionContext) {
+            public CobolPreprocessor.CompilationUnit visitCompilationUnit(CobolPreprocessor.CompilationUnit compilationUnit, ExecutionContext ctx) {
                 sourceName = compilationUnit.getSourcePath().getFileName().toString();
                 sourceName = sourceName.contains(".") ? sourceName.substring(0, sourceName.indexOf(".")) : sourceName;
                 isSourceName = true;
-                return super.visitCompilationUnit(compilationUnit, executionContext);
+                return super.visitCompilationUnit(compilationUnit, ctx);
             }
 
             @Override
-            public CobolPreprocessor.Copybook visitCopybook(CobolPreprocessor.Copybook copybook, ExecutionContext executionContext) {
+            public CobolPreprocessor.Copybook visitCopybook(CobolPreprocessor.Copybook copybook, ExecutionContext ctx) {
                 if (!isSourceName) {
                     sourceName = copybook.getSourcePath().getFileName().toString();
                     sourceName = sourceName.contains(".") ? sourceName.substring(0, sourceName.indexOf(".")) : sourceName;
                 }
-                return super.visitCopybook(copybook, executionContext);
+                return super.visitCopybook(copybook, ctx);
             }
 
             @Override
@@ -111,69 +114,69 @@ public class FindRelationships extends Recipe {
             String programName = "UNKNOWN";
 
             @Override
-            public Cobol.ProgramIdParagraph visitProgramIdParagraph(Cobol.ProgramIdParagraph programIdParagraph, ExecutionContext executionContext) {
+            public Cobol.ProgramIdParagraph visitProgramIdParagraph(Cobol.ProgramIdParagraph programIdParagraph, ExecutionContext ctx) {
                 Name rawName = programIdParagraph.getProgramName();
                 if (rawName instanceof Cobol.Word) {
                     programName = ((Cobol.Word) rawName).getWord();
                 }
-                return super.visitProgramIdParagraph(programIdParagraph, executionContext);
+                return super.visitProgramIdParagraph(programIdParagraph, ctx);
             }
 
             @Override
             public Cobol.Word visitWord(Cobol.Word word, ExecutionContext ctx) {
                 Cobol.Word w = super.visitWord(word, ctx);
-                w = w.withPreprocessorStatements(ListUtils.map(w.getPreprocessorStatements(), ps -> {
-                    if (ps instanceof CobolPreprocessor.CopyStatement) {
-                        CobolPreprocessor.CopyStatement copyStatement = (CobolPreprocessor.CopyStatement) ps;
-                        String copyName = copyStatement.getCopySource().getName().getCobolWord().getWord();
-                        if (seenCopies.add(copyName)) {
-                            Optional<CopiedStatement> cs = copyStatement.getMarkers().findFirst(CopiedStatement.class);
-                            cobolRelationships.insertRow(ctx,
-                                    new CobolRelationships.Row(
-                                            cs.isPresent() && StringUtils.isNotEmpty(cs.get().getSourceCopybook()) ? cs.get().getSourceCopybook() : programName,
-                                            cs.isPresent() && StringUtils.isNotEmpty(cs.get().getSourceCopybook()) ? COPYBOOK : COBOL,
-                                            COPY,
-                                            copyStatement.getCopySource().getName().getCobolWord().getWord(),
-                                            COPYBOOK,
-                                            copyStatement.getMarkers().findFirst(MissingCopybook.class).isPresent(),
-                                            ""
-                                    )
-                            );
-                        }
-                        return copyStatement.withCopySource(copyStatement.getCopySource().withName(
-                                SearchResult.found(copyStatement.getCopySource().getName())));
-                    } else if (ps instanceof CobolPreprocessor.ExecSqlIncludeStatement) {
-                        CobolPreprocessor.ExecSqlIncludeStatement includeStatement = (CobolPreprocessor.ExecSqlIncludeStatement) ps;
-                        if (includeStatement.getCopybook() != null) {
-                            String copyName = includeStatement.getCopySource().getCobolWord().getWord();
-                            if (seenCopies.add(copyName)) {
-                                Optional<CopiedStatement> cs = includeStatement.getMarkers().findFirst(CopiedStatement.class);
-                                cobolRelationships.insertRow(ctx,
-                                        new CobolRelationships.Row(
-                                                cs.isPresent() && StringUtils.isNotEmpty(cs.get().getSourceCopybook()) ? cs.get().getSourceCopybook() : programName,
-                                                cs.isPresent() && StringUtils.isNotEmpty(cs.get().getSourceCopybook()) ? COPYBOOK : COBOL,
-                                                INCLUDE,
-                                                includeStatement.getCopySource().getCobolWord().getWord(),
-                                                COPYBOOK,
-                                                includeStatement.getMarkers().findFirst(MissingCopybook.class).isPresent(),
-                                                ""
-                                        )
-                                );
-                            }
-                            return includeStatement.withCopySource(SearchResult.found(includeStatement.getCopySource()));
-                        }
-                    } else if (ps instanceof CobolPreprocessor.ExecStatement) {
-                        CobolPreprocessor.ExecStatement execStatement = (CobolPreprocessor.ExecStatement) ps;
-                        if (execStatement.getCobol() instanceof CobolPreprocessor.CharDataSql &&
-                                !((CobolPreprocessor.CharDataSql) execStatement.getCobol()).getCobols().isEmpty()) {
-                            CobolPreprocessor.CharDataSql sql = (CobolPreprocessor.CharDataSql) execStatement.getCobol();
-                            execStatement = execStatement.withCobol(getSqlRelationships(sql, programName, COBOL, seenIncludes, seenCursorAccess, seenTableAccess, ctx));
-                            return execStatement;
-                        }
-                    }
-                    return ps;
-                }));
-                return w;
+                return w.withPreprocessorStatements(ListUtils.map(w.getPreprocessorStatements(), ps -> {
+					if (ps instanceof CobolPreprocessor.CopyStatement) {
+						CobolPreprocessor.CopyStatement copyStatement = (CobolPreprocessor.CopyStatement) ps;
+						String copyName = copyStatement.getCopySource().getName().getCobolWord().getWord();
+						if (seenCopies.add(copyName)) {
+							Optional<CopiedStatement> cs = copyStatement.getMarkers().findFirst(CopiedStatement.class);
+							cobolRelationships.insertRow(ctx,
+								new CobolRelationships.Row(
+									cs.isPresent() && StringUtils.isNotEmpty(cs.get().getSourceCopybook()) ? cs.get().getSourceCopybook() : programName,
+									cs.isPresent() && StringUtils.isNotEmpty(cs.get().getSourceCopybook()) ? COPYBOOK : COBOL,
+									COPY,
+									copyStatement.getCopySource().getName().getCobolWord().getWord(),
+									COPYBOOK,
+									copyStatement.getMarkers().findFirst(MissingCopybook.class).isPresent(),
+									""
+								)
+							);
+						}
+						return copyStatement.withCopySource(copyStatement.getCopySource().withName(
+							SearchResult.found(copyStatement.getCopySource().getName())));
+					}
+					if (ps instanceof CobolPreprocessor.ExecSqlIncludeStatement) {
+						CobolPreprocessor.ExecSqlIncludeStatement includeStatement = (CobolPreprocessor.ExecSqlIncludeStatement) ps;
+						if (includeStatement.getCopybook() != null) {
+							String copyName = includeStatement.getCopySource().getCobolWord().getWord();
+							if (seenCopies.add(copyName)) {
+								Optional<CopiedStatement> cs = includeStatement.getMarkers().findFirst(CopiedStatement.class);
+								cobolRelationships.insertRow(ctx,
+									new CobolRelationships.Row(
+										cs.isPresent() && StringUtils.isNotEmpty(cs.get().getSourceCopybook()) ? cs.get().getSourceCopybook() : programName,
+										cs.isPresent() && StringUtils.isNotEmpty(cs.get().getSourceCopybook()) ? COPYBOOK : COBOL,
+										INCLUDE,
+										includeStatement.getCopySource().getCobolWord().getWord(),
+										COPYBOOK,
+										includeStatement.getMarkers().findFirst(MissingCopybook.class).isPresent(),
+										""
+									)
+								);
+							}
+							return includeStatement.withCopySource(SearchResult.found(includeStatement.getCopySource()));
+						}
+					}
+					else if (ps instanceof CobolPreprocessor.ExecStatement) {
+						CobolPreprocessor.ExecStatement execStatement = (CobolPreprocessor.ExecStatement) ps;
+						if (execStatement.getCobol() instanceof CobolPreprocessor.CharDataSql &&
+							!((CobolPreprocessor.CharDataSql) execStatement.getCobol()).getCobols().isEmpty()) {
+							CobolPreprocessor.CharDataSql sql = (CobolPreprocessor.CharDataSql) execStatement.getCobol();
+							return execStatement.withCobol(getSqlRelationships(sql, programName, COBOL, seenIncludes, seenCursorAccess, seenTableAccess, ctx));
+						}
+					}
+					return ps;
+				}));
             }
 
             @Override
@@ -275,10 +278,10 @@ public class FindRelationships extends Recipe {
         ControlMIsoVisitor<ExecutionContext> controlMVisitor = new ControlMIsoVisitor<ExecutionContext>() {
             String sourceName = "UNKNOWN";
             @Override
-            public ControlM.CompilationUnit visitCompilationUnit(ControlM.CompilationUnit compilationUnit, ExecutionContext executionContext) {
+            public ControlM.CompilationUnit visitCompilationUnit(ControlM.CompilationUnit compilationUnit, ExecutionContext ctx) {
                 sourceName = compilationUnit.getSourcePath().getFileName().toString();
                 sourceName = sourceName.contains(".") ? sourceName.substring(0, sourceName.indexOf(".")) : sourceName;
-                return super.visitCompilationUnit(compilationUnit, executionContext);
+                return super.visitCompilationUnit(compilationUnit, ctx);
             }
 
             @Override
@@ -289,10 +292,10 @@ public class FindRelationships extends Recipe {
                 }
 
                 ControlM.DefinitionSection d = super.visitDefinitionSection(definitionSection, ctx);
-                d = d.withLines(ListUtils.map(d.getLines(), (i, it) -> {
+                return d.withLines(ListUtils.map(d.getLines(), (i, it) -> {
                     if (i == 0 && it instanceof ControlM.Line) {
                         ControlM.Line line = (ControlM.Line) it;
-                        line = line.withParameters(ListUtils.map(line.getParameters(), (j, param) -> {
+                        return line.withParameters(ListUtils.map(line.getParameters(), (j, param) -> {
                             if (j == 0) {
                                 ControlM.Parameter p = (ControlM.Parameter) param;
                                 cobolRelationships.insertRow(ctx,
@@ -310,11 +313,9 @@ public class FindRelationships extends Recipe {
                             }
                             return param;
                         }));
-                        return line;
                     }
                     return it;
                 }));
-                return d;
             }
 
             private boolean isValidSchedule(ControlM.DefinitionSection d) {
@@ -327,8 +328,8 @@ public class FindRelationships extends Recipe {
             }
 
             @Override
-            public ControlM.Input visitInput(ControlM.Input input, ExecutionContext executionContext) {
-                ControlM.Input i = super.visitInput(input, executionContext);
+            public ControlM.Input visitInput(ControlM.Input input, ExecutionContext ctx) {
+                ControlM.Input i = super.visitInput(input, ctx);
                 if (!i.getInput().isEmpty() && i.getInput().get(0) instanceof ControlM.Input.NameParameter) {
                     i = i.withInput(ListUtils.map(i.getInput(), it -> {
                         if (it instanceof ControlM.Input.NameParameter) {
@@ -336,7 +337,7 @@ public class FindRelationships extends Recipe {
                             if (nameParameter.getName() != null && nameParameter.getName().getText().contains("_")) {
                                 String[] parts = nameParameter.getName().getText().split("_");
                                 if (parts.length == 3) {
-                                    cobolRelationships.insertRow(executionContext,
+                                    cobolRelationships.insertRow(ctx,
                                             new CobolRelationships.Row(
                                                     parts[1],
                                                     CONTROL_M_SCHEDULE,

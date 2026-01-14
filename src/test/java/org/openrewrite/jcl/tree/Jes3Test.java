@@ -10,7 +10,7 @@ import org.openrewrite.test.RewriteTest;
 
 import static org.openrewrite.jcl.tree.ParserAssertions.jcl;
 
-public class Jes3Test implements RewriteTest {
+class Jes3Test implements RewriteTest {
     @Test
     void statement() {
         rewriteRun(

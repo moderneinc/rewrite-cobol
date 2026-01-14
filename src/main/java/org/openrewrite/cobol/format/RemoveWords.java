@@ -13,7 +13,9 @@ import org.openrewrite.cobol.CobolIsoVisitor;
 import org.openrewrite.cobol.CobolPrinterUtils;
 import org.openrewrite.cobol.marker.CopiedWord;
 import org.openrewrite.cobol.search.FindWords;
-import org.openrewrite.cobol.tree.*;
+import org.openrewrite.cobol.tree.Cobol;
+import org.openrewrite.cobol.tree.ColumnArea;
+import org.openrewrite.cobol.tree.IndicatorArea;
 import org.openrewrite.internal.ListUtils;
 
 import java.util.HashMap;

@@ -7,11 +7,11 @@ package org.openrewrite.cobol.tree;
 
 import lombok.Value;
 import lombok.With;
+import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
 import org.openrewrite.PrintOutputCapture;
 import org.openrewrite.cobol.internal.CobolPreprocessorSourcePrinter;
 import org.openrewrite.cobol.internal.CobolSourcePrinter;
-import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.marker.Marker;
 import org.openrewrite.marker.Markers;
 

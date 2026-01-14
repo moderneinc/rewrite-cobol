@@ -10,7 +10,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.With;
 import lombok.experimental.FieldDefaults;
-import org.openrewrite.internal.lang.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.openrewrite.marker.Markers;
 
 import java.util.ArrayList;
@@ -87,8 +87,7 @@ public class CobolRightPadded<T> {
         return new CobolRightPadded<>(element, Space.EMPTY, Markers.EMPTY);
     }
 
-    @Nullable
-    public static <T> CobolRightPadded<T> withElement(@Nullable CobolRightPadded<T> before, @Nullable T elements) {
+	public static <T> @Nullable CobolRightPadded<T> withElement(@Nullable CobolRightPadded<T> before, @Nullable T elements) {
         if (before == null) {
             if (elements == null) {
                 return null;

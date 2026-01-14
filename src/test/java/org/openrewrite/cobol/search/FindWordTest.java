@@ -5,12 +5,11 @@
  */
 package org.openrewrite.cobol.search;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.openrewrite.DocumentExample;
 import org.openrewrite.Tree;
 import org.openrewrite.TreeVisitor;
 import org.openrewrite.cobol.CobolTest;
-import org.openrewrite.cobol.search.FindWord;
 import org.openrewrite.marker.Marker;
 import org.openrewrite.marker.SearchResult;
 import org.openrewrite.test.RecipeSpec;
@@ -21,7 +20,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openrewrite.cobol.Assertions.cobol;
 
-public class FindWordTest extends CobolTest {
+class FindWordTest extends CobolTest {
     @Override
     public void defaults(RecipeSpec spec) {
         spec.recipe(new FindWord("CM102M", true));
@@ -30,36 +29,14 @@ public class FindWordTest extends CobolTest {
     private final TreeVisitor<Tree, List<SearchResult>> visitor = new TreeVisitor<>() {
         @Override
         public <M extends Marker> M visitMarker(Marker marker, List<SearchResult> p) {
-            if (marker instanceof SearchResult) {
-                p.add((SearchResult) marker);
+            if (marker instanceof SearchResult result) {
+                p.add(result);
             }
             return super.visitMarker(marker, p);
         }
     };
 
-    @Test
-    void wordIsNotUsed() {
-        rewriteRun(
-          cobol(getNistResource("DB101A.CBL"))
-        );
-    }
-
-    @Test
-    void sm101A() {
-        rewriteRun(
-          spec -> spec.recipe(new FindWord("PROC-2", true)),
-          cobol(
-            getNistResource("SM101A.CBL"),
-            sm101A, spec -> spec.afterRecipe(cu -> {
-                List<SearchResult> searchResults = new ArrayList<>(3);
-                visitor.visit(cu, searchResults);
-                assertThat(searchResults).hasSize(3);
-            }))
-        );
-    }
-
-    @Test
-    void cm102mExactMatch() {
+	@DocumentExample @Test void cm102mExactMatch() {
         rewriteRun(
           cobol(
             """
@@ -100,6 +77,27 @@ public class FindWordTest extends CobolTest {
                 List<SearchResult> searchResults = new ArrayList<>(1);
                 visitor.visit(cu, searchResults);
                 assertThat(searchResults).hasSize(1);
+            }))
+        );
+    }
+
+    @Test
+    void wordIsNotUsed() {
+        rewriteRun(
+          cobol(getNistResource("DB101A.CBL"))
+        );
+    }
+
+    @Test
+    void sm101A() {
+        rewriteRun(
+          spec -> spec.recipe(new FindWord("PROC-2", true)),
+          cobol(
+            getNistResource("SM101A.CBL"),
+            sm101A, spec -> spec.afterRecipe(cu -> {
+                List<SearchResult> searchResults = new ArrayList<>(3);
+                visitor.visit(cu, searchResults);
+                assertThat(searchResults).hasSize(3);
             }))
         );
     }

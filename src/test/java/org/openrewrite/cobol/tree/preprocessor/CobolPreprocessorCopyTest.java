@@ -8,7 +8,10 @@ package org.openrewrite.cobol.tree.preprocessor;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
 import org.junit.jupiter.api.Test;
-import org.openrewrite.*;
+import org.openrewrite.ExecutionContext;
+import org.openrewrite.InMemoryExecutionContext;
+import org.openrewrite.PathUtils;
+import org.openrewrite.PrintOutputCapture;
 import org.openrewrite.cobol.CobolPreprocessorVisitor;
 import org.openrewrite.cobol.CobolTest;
 import org.openrewrite.cobol.internal.CobolDialect;
@@ -17,7 +20,6 @@ import org.openrewrite.cobol.internal.CobolPreprocessorPrinter;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
 import org.openrewrite.cobol.tree.Space;
 import org.openrewrite.test.RecipeSpec;
-
 
 import java.io.IOException;
 

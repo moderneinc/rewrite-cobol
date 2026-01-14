@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.EqualsAndHashCode;
-import org.openrewrite.internal.lang.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -40,31 +40,33 @@ public class Space {
 
     @JsonCreator
     public static Space build(@Nullable String whitespace) {
-        if (whitespace == null || whitespace.isEmpty()) {
-            return Space.EMPTY;
-        } else if (whitespace.length() <= 100) {
-            //noinspection StringOperationCanBeSimplified
-            return flyweights.computeIfAbsent(whitespace, k -> new Space(new String(whitespace)));
-        }
-        return new Space(whitespace);
-    }
+		if (whitespace == null || whitespace.isEmpty()) {
+			return Space.EMPTY;
+		}
+		if (whitespace.length() <= 100) {
+			//noinspection StringOperationCanBeSimplified
+			return flyweights.computeIfAbsent(whitespace, k -> new Space(new String(whitespace)));
+		}
+		return new Space(whitespace);
+	}
 
     public String getIndent() {
         return getWhitespaceIndent(whitespace);
     }
 
     private String getWhitespaceIndent(@Nullable String whitespace) {
-        if (whitespace == null) {
-            return "";
-        }
-        int lastNewline = whitespace.lastIndexOf('\n');
-        if (lastNewline >= 0) {
-            return whitespace.substring(lastNewline + 1);
-        } else if (lastNewline == whitespace.length() - 1) {
-            return "";
-        }
-        return whitespace;
-    }
+		if (whitespace == null) {
+			return "";
+		}
+		int lastNewline = whitespace.lastIndexOf('\n');
+		if (lastNewline >= 0) {
+			return whitespace.substring(lastNewline + 1);
+		}
+		if (lastNewline == whitespace.length() - 1) {
+			return "";
+		}
+		return whitespace;
+	}
 
     public String getWhitespace() {
         return whitespace == null ? "" : whitespace;

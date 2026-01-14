@@ -6,6 +6,7 @@
 package generate;
 
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.Nullable;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Recipe;
 import org.openrewrite.internal.ListUtils;
@@ -37,7 +38,7 @@ public class WriteModel extends Recipe {
 
     JavaParser.Builder<?, ?> parser = JavaParser.fromJavaVersion().classpath(JavaParser.runtimeClasspath());
 
-    JavaVisitor<ExecutionContext> writeModelClass = new JavaIsoVisitor<ExecutionContext>() {
+    JavaVisitor<ExecutionContext> writeModelClass = new JavaIsoVisitor<>() {
         final JavaTemplate valueModel = JavaTemplate.builder("" +
                 "@Value " +
                 "@EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true) " +
@@ -130,8 +131,7 @@ public class WriteModel extends Recipe {
         final JavaTemplate withGetterAnnotations = JavaTemplate.builder("@With @Getter")
                 .contextSensitive().javaParser(parser).build();
 
-        @Override
-        public J.ClassDeclaration visitClassDeclaration(J.ClassDeclaration classDecl, ExecutionContext ctx) {
+		@Override public  J.@Nullable ClassDeclaration visitClassDeclaration(J.ClassDeclaration classDecl, ExecutionContext ctx) {
             J.ClassDeclaration c = classDecl;
             if(FindAnnotations.find(c, "@generate.Skip").size() > 0) {
                 //noinspection ConstantConditions
@@ -189,7 +189,7 @@ public class WriteModel extends Recipe {
             }
 
             List<Statement> statements = c.getBody().getStatements();
-            c = c.withBody(c.getBody().withStatements(ListUtils.map(statements, (i, statement) -> {
+            return c.withBody(c.getBody().withStatements(ListUtils.map(statements, (i, statement) -> {
                 if (statement instanceof J.VariableDeclarations && i > 0) {
                     Statement previous = statements.get(i - 1);
                     if (!((J.VariableDeclarations) statement).getAllAnnotations().isEmpty() ||
@@ -199,8 +199,6 @@ public class WriteModel extends Recipe {
                 }
                 return statement;
             })));
-
-            return c;
         }
 
         private J.ClassDeclaration writeContainerGetterWithers(J.ClassDeclaration c, J.VariableDeclarations varDec, JavaType.FullyQualified elementType) {
@@ -209,14 +207,12 @@ public class WriteModel extends Recipe {
             String elementTypeName = elementType.getClassName();
             String modelTypeName = c.getSimpleName();
 
-            c = unwrappedContainerGetterWither.apply(updateCursor(c), c.getBody().getCoordinates().lastStatement(),
+            return unwrappedContainerGetterWither.apply(updateCursor(c), c.getBody().getCoordinates().lastStatement(),
                     elementTypeName, capitalizedName,
                     name,
                     modelTypeName, capitalizedName, elementTypeName, name,
                     capitalizedName, name,
                     name, name);
-
-            return c;
         }
 
         private J.ClassDeclaration writePaddedGetterWithers(J.ClassDeclaration c, J.VariableDeclarations varDec, JavaType.FullyQualified elementType,
@@ -274,9 +270,7 @@ public class WriteModel extends Recipe {
                 List<Statement> statements = new ArrayList<>(b.getStatements());
                 statements.addAll(ListUtils.map(modelClasses,
                         mc -> (J.ClassDeclaration) writeModelClass.visitNonNull(mc, ctx, getCursor().getParentOrThrow())));
-                b = b.withStatements(statements);
-
-                return b;
+                return b.withStatements(statements);
             }
         };
     }

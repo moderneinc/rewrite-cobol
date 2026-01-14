@@ -5,13 +5,16 @@
  */
 package org.openrewrite.cobol.internal;
 
+import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
 import org.openrewrite.PrintOutputCapture;
 import org.openrewrite.cobol.CobolPreprocessorVisitor;
 import org.openrewrite.cobol.marker.CopiedWord;
-import org.openrewrite.cobol.tree.*;
+import org.openrewrite.cobol.tree.CobolLine;
+import org.openrewrite.cobol.tree.CobolPreprocessor;
+import org.openrewrite.cobol.tree.Replacement;
+import org.openrewrite.cobol.tree.Space;
 import org.openrewrite.internal.StringUtils;
-import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.marker.Marker;
 import org.openrewrite.marker.Markers;
 
@@ -362,7 +365,7 @@ public class CobolPreprocessorSourcePrinter<P> extends CobolPreprocessorVisitor<
         beforeSyntax(c.getPrefix(), c.getMarkers(), loc, p);
     }
 
-    protected void beforeSyntax(Space prefix, Markers markers, @Nullable Space.Location loc, PrintOutputCapture<P> p) {
+    protected void beforeSyntax(Space prefix, Markers markers, Space.@Nullable Location loc, PrintOutputCapture<P> p) {
         for (Marker marker : markers.getMarkers()) {
             p.out.append(p.getMarkerPrinter().beforePrefix(marker, new Cursor(getCursor(), marker), COBOL_MARKER_WRAPPER));
         }

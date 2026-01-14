@@ -19,16 +19,14 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
     public Cobol.Abbreviation visitAbbreviation(Cobol.Abbreviation abbreviation, P p) {
         Cobol.Abbreviation a = abbreviation;
         a = a.withArithmeticExpression(visitAndCast(a.getArithmeticExpression(), p));
-        a = a.withAbbreviation(visitAndCast(a.getAbbreviation(), p));
-        return a;
+        return a.withAbbreviation(visitAndCast(a.getAbbreviation(), p));
     }
 
     @Override
     public Cobol.Accept visitAccept(Cobol.Accept accept, P p) {
         Cobol.Accept a = accept;
         a = a.withIdentifier(visitAndCast(a.getIdentifier(), p));
-        a = a.withOperation(visitAndCast(a.getOperation(), p));
-        return a;
+        return a.withOperation(visitAndCast(a.getOperation(), p));
     }
 
     @Override
@@ -44,8 +42,7 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
     @Override
     public Cobol.AcceptFromMnemonicStatement visitAcceptFromMnemonicStatement(Cobol.AcceptFromMnemonicStatement acceptFromMnemonicStatement, P p) {
         Cobol.AcceptFromMnemonicStatement a = acceptFromMnemonicStatement;
-        a = a.withMnemonicName(visitAndCast(a.getMnemonicName(), p));
-        return a;
+        return a.withMnemonicName(visitAndCast(a.getMnemonicName(), p));
     }
 
     @Override
@@ -63,24 +60,21 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         Cobol.Add a = add;
         a = a.withOperation(visitAndCast(a.getOperation(), p));
         a = a.withOnSizeError(visitAndCast(a.getOnSizeError(), p));
-        a = a.withNotOnSizeError(visitAndCast(a.getNotOnSizeError(), p));
-        return a;
+        return a.withNotOnSizeError(visitAndCast(a.getNotOnSizeError(), p));
     }
 
     @Override
     public Cobol.AddCorresponding visitAddCorresponding(Cobol.AddCorresponding addCorresponding, P p) {
         Cobol.AddCorresponding a = addCorresponding;
         a = a.withIdentifier(visitAndCast(a.getIdentifier(), p));
-        a = a.withRoundable(visitAndCast(a.getRoundable(), p));
-        return a;
+        return a.withRoundable(visitAndCast(a.getRoundable(), p));
     }
 
     @Override
     public Cobol.AddTo visitAddTo(Cobol.AddTo addTo, P p) {
         Cobol.AddTo a = addTo;
         a = a.withFrom(ListUtils.map(a.getFrom(), it -> visitAndCast(it, p)));
-        a = a.withRoundables(ListUtils.map(a.getRoundables(), it -> visitAndCast(it, p)));
-        return a;
+        return a.withRoundables(ListUtils.map(a.getRoundables(), it -> visitAndCast(it, p)));
     }
 
     @Override
@@ -88,23 +82,20 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         Cobol.AddToGiving a = addToGiving;
         a = a.withFrom(ListUtils.map(a.getFrom(), it -> visitAndCast(it, p)));
         a = a.withNames(ListUtils.map(a.getNames(), it -> visitAndCast(it, p)));
-        a = a.withRoundables(ListUtils.map(a.getRoundables(), it -> visitAndCast(it, p)));
-        return a;
+        return a.withRoundables(ListUtils.map(a.getRoundables(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.AlphabetAlso visitAlphabetAlso(Cobol.AlphabetAlso alphabetAlso, P p) {
         Cobol.AlphabetAlso a = alphabetAlso;
-        a = a.withLiterals(ListUtils.map(a.getLiterals(), it -> visitAndCast(it, p)));
-        return a;
+        return a.withLiterals(ListUtils.map(a.getLiterals(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.AlphabetClause visitAlphabetClause(Cobol.AlphabetClause alphabetClause, P p) {
         Cobol.AlphabetClause a = alphabetClause;
         a = a.withName(visitAndCast(a.getName(), p));
-        a = a.withWords(ListUtils.map(a.getWords(), it -> visitAndCast(it, p)));
-        return a;
+        return a.withWords(ListUtils.map(a.getWords(), it -> visitAndCast(it, p)));
     }
 
     @Override
@@ -112,15 +103,13 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         Cobol.AlphabetLiteral a = alphabetLiteral;
         a = a.withLiteral(visitAndCast(a.getLiteral(), p));
         a = a.withAlphabetThrough(visitAndCast(a.getAlphabetThrough(), p));
-        a = a.withAlphabetAlso(ListUtils.map(a.getAlphabetAlso(), it -> visitAndCast(it, p)));
-        return a;
+        return a.withAlphabetAlso(ListUtils.map(a.getAlphabetAlso(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.AlphabetThrough visitAlphabetThrough(Cobol.AlphabetThrough alphabetThrough, P p) {
         Cobol.AlphabetThrough a = alphabetThrough;
-        a = a.withLiteral(visitAndCast(a.getLiteral(), p));
-        return a;
+        return a.withLiteral(visitAndCast(a.getLiteral(), p));
     }
 
     @Override
@@ -132,69 +121,60 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
     public Cobol.AlternateRecordKeyClause visitAlternateRecordKeyClause(Cobol.AlternateRecordKeyClause alternateRecordKeyClause, P p) {
         Cobol.AlternateRecordKeyClause a = alternateRecordKeyClause;
         a = a.withQualifiedDataName(visitAndCast(a.getQualifiedDataName(), p));
-        a = a.withPasswordClause(visitAndCast(a.getPasswordClause(), p));
-        return a;
+        return a.withPasswordClause(visitAndCast(a.getPasswordClause(), p));
     }
 
     @Override
     public Cobol.AlterProceedTo visitAlterProceedTo(Cobol.AlterProceedTo alterProceedTo, P p) {
         Cobol.AlterProceedTo a = alterProceedTo;
         a = a.withFrom(visitAndCast(a.getFrom(), p));
-        a = a.withTo(visitAndCast(a.getTo(), p));
-        return a;
+        return a.withTo(visitAndCast(a.getTo(), p));
     }
 
     @Override
     public Cobol.AlterStatement visitAlterStatement(Cobol.AlterStatement alterStatement, P p) {
         Cobol.AlterStatement a = alterStatement;
-        a = a.withAlterProceedTo(ListUtils.map(a.getAlterProceedTo(), it -> visitAndCast(it, p)));
-        return a;
+        return a.withAlterProceedTo(ListUtils.map(a.getAlterProceedTo(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.AndOrCondition visitAndOrCondition(Cobol.AndOrCondition andOrCondition, P p) {
         Cobol.AndOrCondition a = andOrCondition;
         a = a.withCombinableCondition(visitAndCast(a.getCombinableCondition(), p));
-        a = a.withAbbreviations(ListUtils.map(a.getAbbreviations(), it -> visitAndCast(it, p)));
-        return a;
+        return a.withAbbreviations(ListUtils.map(a.getAbbreviations(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.Argument visitArgument(Cobol.Argument argument, P p) {
         Cobol.Argument a = argument;
         a = a.withFirst(visitAndCast(a.getFirst(), p));
-        a = a.withIntegerLiteral(visitAndCast(a.getIntegerLiteral(), p));
-        return a;
+        return a.withIntegerLiteral(visitAndCast(a.getIntegerLiteral(), p));
     }
 
     @Override
     public Cobol.ArithmeticExpression visitArithmeticExpression(Cobol.ArithmeticExpression arithmeticExpression, P p) {
         Cobol.ArithmeticExpression a = arithmeticExpression;
         a = a.withMultDivs(visitAndCast(a.getMultDivs(), p));
-        a = a.withPlusMinuses(ListUtils.map(a.getPlusMinuses(), it -> visitAndCast(it, p)));
-        return a;
+        return a.withPlusMinuses(ListUtils.map(a.getPlusMinuses(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.AssignClause visitAssignClause(Cobol.AssignClause assignClause, P p) {
         Cobol.AssignClause a = assignClause;
-        a = a.withName(visitAndCast(a.getName(), p));
-        return a;
+        return a.withName(visitAndCast(a.getName(), p));
     }
 
     @Override
     public Cobol.BlockContainsClause visitBlockContainsClause(Cobol.BlockContainsClause blockContainsClause, P p) {
         Cobol.BlockContainsClause b = blockContainsClause;
         b = b.withIntegerLiteral(visitAndCast(b.getIntegerLiteral(), p));
-        b = b.withBlockContainsTo(visitAndCast(b.getBlockContainsTo(), p));
-        return b;
+        return b.withBlockContainsTo(visitAndCast(b.getBlockContainsTo(), p));
     }
 
     @Override
     public Cobol.BlockContainsTo visitBlockContainsTo(Cobol.BlockContainsTo blockContainsTo, P p) {
         Cobol.BlockContainsTo b = blockContainsTo;
-        b = b.withIntegerLiteral(visitAndCast(b.getIntegerLiteral(), p));
-        return b;
+        return b.withIntegerLiteral(visitAndCast(b.getIntegerLiteral(), p));
     }
 
     @Override
@@ -205,36 +185,31 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         c = c.withCallGivingPhrase(visitAndCast(c.getCallGivingPhrase(), p));
         c = c.withOnOverflowPhrase(visitAndCast(c.getOnOverflowPhrase(), p));
         c = c.withOnExceptionClause(visitAndCast(c.getOnExceptionClause(), p));
-        c = c.withNotOnExceptionClause(visitAndCast(c.getNotOnExceptionClause(), p));
-        return c;
+        return c.withNotOnExceptionClause(visitAndCast(c.getNotOnExceptionClause(), p));
     }
 
     @Override
     public Cobol.CallBy visitCallBy(Cobol.CallBy callBy, P p) {
         Cobol.CallBy c = callBy;
-        c = c.withIdentifier(visitAndCast(c.getIdentifier(), p));
-        return c;
+        return c.withIdentifier(visitAndCast(c.getIdentifier(), p));
     }
 
     @Override
     public Cobol.CallGivingPhrase visitCallGivingPhrase(Cobol.CallGivingPhrase callGivingPhrase, P p) {
         Cobol.CallGivingPhrase c = callGivingPhrase;
-        c = c.withIdentifier(visitAndCast(c.getIdentifier(), p));
-        return c;
+        return c.withIdentifier(visitAndCast(c.getIdentifier(), p));
     }
 
     @Override
     public Cobol.CallPhrase visitCallPhrase(Cobol.CallPhrase callPhrase, P p) {
         Cobol.CallPhrase c = callPhrase;
-        c = c.withParameters(ListUtils.map(c.getParameters(), it -> visitAndCast(it, p)));
-        return c;
+        return c.withParameters(ListUtils.map(c.getParameters(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.Cancel visitCancel(Cobol.Cancel cancel, P p) {
         Cobol.Cancel c = cancel;
-        c = c.withCancelCalls(ListUtils.map(c.getCancelCalls(), it -> visitAndCast(it, p)));
-        return c;
+        return c.withCancelCalls(ListUtils.map(c.getCancelCalls(), it -> visitAndCast(it, p)));
     }
 
     @Override
@@ -242,76 +217,66 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         Cobol.CancelCall c = cancelCall;
         c = c.withLibraryName(visitAndCast(c.getLibraryName(), p));
         c = c.withIdentifier(visitAndCast(c.getIdentifier(), p));
-        c = c.withLiteral(visitAndCast(c.getLiteral(), p));
-        return c;
+        return c.withLiteral(visitAndCast(c.getLiteral(), p));
     }
 
     @Override
     public Cobol.ChannelClause visitChannelClause(Cobol.ChannelClause channelClause, P p) {
         Cobol.ChannelClause c = channelClause;
         c = c.withLiteral(visitAndCast(c.getLiteral(), p));
-        c = c.withMnemonicName(visitAndCast(c.getMnemonicName(), p));
-        return c;
+        return c.withMnemonicName(visitAndCast(c.getMnemonicName(), p));
     }
 
     @Override
     public Cobol.ClassClause visitClassClause(Cobol.ClassClause classClause, P p) {
         Cobol.ClassClause c = classClause;
         c = c.withClassName(visitAndCast(c.getClassName(), p));
-        c = c.withThroughs(ListUtils.map(c.getThroughs(), it -> visitAndCast(it, p)));
-        return c;
+        return c.withThroughs(ListUtils.map(c.getThroughs(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.ClassClauseThrough visitClassClauseThrough(Cobol.ClassClauseThrough classClauseThrough, P p) {
         Cobol.ClassClauseThrough c = classClauseThrough;
         c = c.withFrom(visitAndCast(c.getFrom(), p));
-        c = c.withTo(visitAndCast(c.getTo(), p));
-        return c;
+        return c.withTo(visitAndCast(c.getTo(), p));
     }
 
     @Override
     public Cobol.ClassCondition visitClassCondition(Cobol.ClassCondition classCondition, P p) {
         Cobol.ClassCondition c = classCondition;
         c = c.withName(visitAndCast(c.getName(), p));
-        c = c.withType(visitAndCast(c.getType(), p));
-        return c;
+        return c.withType(visitAndCast(c.getType(), p));
     }
 
     @Override
     public Cobol.Close visitClose(Cobol.Close close, P p) {
         Cobol.Close c = close;
-        c = c.withCloseFiles(ListUtils.map(c.getCloseFiles(), it -> visitAndCast(it, p)));
-        return c;
+        return c.withCloseFiles(ListUtils.map(c.getCloseFiles(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.CloseFile visitCloseFile(Cobol.CloseFile closeFile, P p) {
         Cobol.CloseFile c = closeFile;
         c = c.withFileName(visitAndCast(c.getFileName(), p));
-        c = c.withCloseStatement(visitAndCast(c.getCloseStatement(), p));
-        return c;
+        return c.withCloseStatement(visitAndCast(c.getCloseStatement(), p));
     }
 
     @Override
     public Cobol.ClosePortFileIOStatement visitClosePortFileIOStatement(Cobol.ClosePortFileIOStatement closePortFileIOStatement, P p) {
         Cobol.ClosePortFileIOStatement c = closePortFileIOStatement;
-        c = c.withClosePortFileIOUsing(ListUtils.map(c.getClosePortFileIOUsing(), it -> visitAndCast(it, p)));
-        return c;
+        return c.withClosePortFileIOUsing(ListUtils.map(c.getClosePortFileIOUsing(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.ClosePortFileIOUsingAssociatedData visitClosePortFileIOUsingAssociatedData(Cobol.ClosePortFileIOUsingAssociatedData closePortFileIOUsingAssociatedData, P p) {
         Cobol.ClosePortFileIOUsingAssociatedData c = closePortFileIOUsingAssociatedData;
-        c = c.withIdentifier(visitAndCast(c.getIdentifier(), p));
-        return c;
+        return c.withIdentifier(visitAndCast(c.getIdentifier(), p));
     }
 
     @Override
     public Cobol.ClosePortFileIOUsingAssociatedDataLength visitClosePortFileIOUsingAssociatedDataLength(Cobol.ClosePortFileIOUsingAssociatedDataLength closePortFileIOUsingAssociatedDataLength, P p) {
         Cobol.ClosePortFileIOUsingAssociatedDataLength c = closePortFileIOUsingAssociatedDataLength;
-        c = c.withIdentifier(visitAndCast(c.getIdentifier(), p));
-        return c;
+        return c.withIdentifier(visitAndCast(c.getIdentifier(), p));
     }
 
     @Override
@@ -332,15 +297,13 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
     @Override
     public Cobol.CodeSetClause visitCodeSetClause(Cobol.CodeSetClause codeSetClause, P p) {
         Cobol.CodeSetClause c = codeSetClause;
-        c = c.withAlphabetName(visitAndCast(c.getAlphabetName(), p));
-        return c;
+        return c.withAlphabetName(visitAndCast(c.getAlphabetName(), p));
     }
 
     @Override
     public Cobol.CollatingSequenceAlphabet visitCollatingSequenceAlphabet(Cobol.CollatingSequenceAlphabet collatingSequenceAlphabet, P p) {
         Cobol.CollatingSequenceAlphabet c = collatingSequenceAlphabet;
-        c = c.withAlphabetName(visitAndCast(c.getAlphabetName(), p));
-        return c;
+        return c.withAlphabetName(visitAndCast(c.getAlphabetName(), p));
     }
 
     @Override
@@ -348,53 +311,46 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         Cobol.CollatingSequenceClause c = collatingSequenceClause;
         c = c.withAlphabetName(ListUtils.map(c.getAlphabetName(), it -> visitAndCast(it, p)));
         c = c.withAlphanumeric(visitAndCast(c.getAlphanumeric(), p));
-        c = c.withNational(visitAndCast(c.getNational(), p));
-        return c;
+        return c.withNational(visitAndCast(c.getNational(), p));
     }
 
     @Override
     public Cobol.CombinableCondition visitCombinableCondition(Cobol.CombinableCondition combinableCondition, P p) {
         Cobol.CombinableCondition c = combinableCondition;
-        c = c.withSimpleCondition(visitAndCast(c.getSimpleCondition(), p));
-        return c;
+        return c.withSimpleCondition(visitAndCast(c.getSimpleCondition(), p));
     }
 
     @Override
     public Cobol.CommitmentControlClause visitCommitmentControlClause(Cobol.CommitmentControlClause commitmentControlClause, P p) {
         Cobol.CommitmentControlClause c = commitmentControlClause;
-        c = c.withFileName(visitAndCast(c.getFileName(), p));
-        return c;
+        return c.withFileName(visitAndCast(c.getFileName(), p));
     }
 
     @Override
     public Cobol.CommunicationDescriptionEntryFormat1 visitCommunicationDescriptionEntryFormat1(Cobol.CommunicationDescriptionEntryFormat1 communicationDescriptionEntryFormat1, P p) {
         Cobol.CommunicationDescriptionEntryFormat1 c = communicationDescriptionEntryFormat1;
         c = c.withName(visitAndCast(c.getName(), p));
-        c = c.withInputs(ListUtils.map(c.getInputs(), it -> visitAndCast(it, p)));
-        return c;
+        return c.withInputs(ListUtils.map(c.getInputs(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.CommunicationDescriptionEntryFormat2 visitCommunicationDescriptionEntryFormat2(Cobol.CommunicationDescriptionEntryFormat2 communicationDescriptionEntryFormat2, P p) {
         Cobol.CommunicationDescriptionEntryFormat2 c = communicationDescriptionEntryFormat2;
         c = c.withName(visitAndCast(c.getName(), p));
-        c = c.withOutputs(ListUtils.map(c.getOutputs(), it -> visitAndCast(it, p)));
-        return c;
+        return c.withOutputs(ListUtils.map(c.getOutputs(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.CommunicationDescriptionEntryFormat3 visitCommunicationDescriptionEntryFormat3(Cobol.CommunicationDescriptionEntryFormat3 communicationDescriptionEntryFormat3, P p) {
         Cobol.CommunicationDescriptionEntryFormat3 c = communicationDescriptionEntryFormat3;
         c = c.withName(visitAndCast(c.getName(), p));
-        c = c.withInitialIOs(ListUtils.map(c.getInitialIOs(), it -> visitAndCast(it, p)));
-        return c;
+        return c.withInitialIOs(ListUtils.map(c.getInitialIOs(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.CommunicationSection visitCommunicationSection(Cobol.CommunicationSection communicationSection, P p) {
         Cobol.CommunicationSection c = communicationSection;
-        c = c.withEntries(ListUtils.map(c.getEntries(), it -> visitAndCast(it, p)));
-        return c;
+        return c.withEntries(ListUtils.map(c.getEntries(), it -> visitAndCast(it, p)));
     }
 
     @Override
@@ -408,16 +364,14 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         c = c.withRoundables(ListUtils.map(c.getRoundables(), it -> visitAndCast(it, p)));
         c = c.withArithmeticExpression(visitAndCast(c.getArithmeticExpression(), p));
         c = c.withOnSizeErrorPhrase(visitAndCast(c.getOnSizeErrorPhrase(), p));
-        c = c.withNotOnSizeErrorPhrase(visitAndCast(c.getNotOnSizeErrorPhrase(), p));
-        return c;
+        return c.withNotOnSizeErrorPhrase(visitAndCast(c.getNotOnSizeErrorPhrase(), p));
     }
 
     @Override
     public Cobol.Condition visitCondition(Cobol.Condition condition, P p) {
         Cobol.Condition c = condition;
         c = c.withCombinableCondition(visitAndCast(c.getCombinableCondition(), p));
-        c = c.withAndOrConditions(ListUtils.map(c.getAndOrConditions(), it -> visitAndCast(it, p)));
-        return c;
+        return c.withAndOrConditions(ListUtils.map(c.getAndOrConditions(), it -> visitAndCast(it, p)));
     }
 
     @Override
@@ -427,22 +381,19 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         c = c.withInDatas(ListUtils.map(c.getInDatas(), it -> visitAndCast(it, p)));
         c = c.withInFile(visitAndCast(c.getInFile(), p));
         c = c.withReferences(ListUtils.map(c.getReferences(), it -> visitAndCast(it, p)));
-        c = c.withInMnemonics(ListUtils.map(c.getInMnemonics(), it -> visitAndCast(it, p)));
-        return c;
+        return c.withInMnemonics(ListUtils.map(c.getInMnemonics(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.ConditionNameSubscriptReference visitConditionNameSubscriptReference(Cobol.ConditionNameSubscriptReference conditionNameSubscriptReference, P p) {
         Cobol.ConditionNameSubscriptReference c = conditionNameSubscriptReference;
-        c = c.withSubscripts(ListUtils.map(c.getSubscripts(), it -> visitAndCast(it, p)));
-        return c;
+        return c.withSubscripts(ListUtils.map(c.getSubscripts(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.ConfigurationSection visitConfigurationSection(Cobol.ConfigurationSection configurationSection, P p) {
         Cobol.ConfigurationSection c = configurationSection;
-        c = c.withParagraphs(ListUtils.map(c.getParagraphs(), it -> visitAndCast(it, p)));
-        return c;
+        return c.withParagraphs(ListUtils.map(c.getParagraphs(), it -> visitAndCast(it, p)));
     }
 
     @Override
@@ -454,8 +405,7 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
     public Cobol.CurrencyClause visitCurrencyClause(Cobol.CurrencyClause currencyClause, P p) {
         Cobol.CurrencyClause c = currencyClause;
         c = c.withLiteral(visitAndCast(c.getLiteral(), p));
-        c = c.withPictureSymbolLiteral(visitAndCast(c.getPictureSymbolLiteral(), p));
-        return c;
+        return c.withPictureSymbolLiteral(visitAndCast(c.getPictureSymbolLiteral(), p));
     }
 
     @Override
@@ -466,8 +416,7 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
     @Override
     public Cobol.DataBaseSection visitDataBaseSection(Cobol.DataBaseSection dataBaseSection, P p) {
         Cobol.DataBaseSection d = dataBaseSection;
-        d = d.withEntries(ListUtils.map(d.getEntries(), it -> visitAndCast(it, p)));
-        return d;
+        return d.withEntries(ListUtils.map(d.getEntries(), it -> visitAndCast(it, p)));
     }
 
     @Override
@@ -475,8 +424,7 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         Cobol.DataBaseSectionEntry d = dataBaseSectionEntry;
         d = d.withDb(visitAndCast(d.getDb(), p));
         d = d.withFrom(visitAndCast(d.getFrom(), p));
-        d = d.withTo(visitAndCast(d.getTo(), p));
-        return d;
+        return d.withTo(visitAndCast(d.getTo(), p));
     }
 
     @Override
@@ -493,22 +441,19 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
     public Cobol.DataDescriptionEntry visitDataDescriptionEntry(Cobol.DataDescriptionEntry dataDescriptionEntry, P p) {
         Cobol.DataDescriptionEntry d = dataDescriptionEntry;
         d = d.withName(visitAndCast(d.getName(), p));
-        d = d.withClauses(ListUtils.map(d.getClauses(), it -> visitAndCast(it, p)));
-        return d;
+        return d.withClauses(ListUtils.map(d.getClauses(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.DataDivision visitDataDivision(Cobol.DataDivision dataDivision, P p) {
         Cobol.DataDivision d = dataDivision;
-        d = d.withSections(ListUtils.map(d.getSections(), it -> visitAndCast(it, p)));
-        return d;
+        return d.withSections(ListUtils.map(d.getSections(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.DataExternalClause visitDataExternalClause(Cobol.DataExternalClause dataExternalClause, P p) {
         Cobol.DataExternalClause d = dataExternalClause;
-        d = d.withLiteral(visitAndCast(d.getLiteral(), p));
-        return d;
+        return d.withLiteral(visitAndCast(d.getLiteral(), p));
     }
 
     @Override
@@ -532,43 +477,37 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         d = d.withName(visitAndCast(d.getName(), p));
         d = d.withDataOccursTo(visitAndCast(d.getDataOccursTo(), p));
         d = d.withDataOccursDepending(visitAndCast(d.getDataOccursDepending(), p));
-        d = d.withSortIndexed(ListUtils.map(d.getSortIndexed(), it -> visitAndCast(it, p)));
-        return d;
+        return d.withSortIndexed(ListUtils.map(d.getSortIndexed(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.DataOccursDepending visitDataOccursDepending(Cobol.DataOccursDepending dataOccursDepending, P p) {
         Cobol.DataOccursDepending d = dataOccursDepending;
-        d = d.withQualifiedDataName(visitAndCast(d.getQualifiedDataName(), p));
-        return d;
+        return d.withQualifiedDataName(visitAndCast(d.getQualifiedDataName(), p));
     }
 
     @Override
     public Cobol.DataOccursIndexed visitDataOccursIndexed(Cobol.DataOccursIndexed dataOccursIndexed, P p) {
         Cobol.DataOccursIndexed d = dataOccursIndexed;
-        d = d.withIndexNames(ListUtils.map(d.getIndexNames(), it -> visitAndCast(it, p)));
-        return d;
+        return d.withIndexNames(ListUtils.map(d.getIndexNames(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.DataOccursSort visitDataOccursSort(Cobol.DataOccursSort dataOccursSort, P p) {
         Cobol.DataOccursSort d = dataOccursSort;
-        d = d.withQualifiedDataNames(ListUtils.map(d.getQualifiedDataNames(), it -> visitAndCast(it, p)));
-        return d;
+        return d.withQualifiedDataNames(ListUtils.map(d.getQualifiedDataNames(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.DataOccursTo visitDataOccursTo(Cobol.DataOccursTo dataOccursTo, P p) {
         Cobol.DataOccursTo d = dataOccursTo;
-        d = d.withIntegerLiteral(visitAndCast(d.getIntegerLiteral(), p));
-        return d;
+        return d.withIntegerLiteral(visitAndCast(d.getIntegerLiteral(), p));
     }
 
     @Override
     public Cobol.DataPictureClause visitDataPictureClause(Cobol.DataPictureClause dataPictureClause, P p) {
         Cobol.DataPictureClause d = dataPictureClause;
-        d = d.withPictures(ListUtils.map(d.getPictures(), it -> visitAndCast(it, p)));
-        return d;
+        return d.withPictures(ListUtils.map(d.getPictures(), it -> visitAndCast(it, p)));
     }
 
     @Override
@@ -584,23 +523,20 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
     @Override
     public Cobol.DataRecordsClause visitDataRecordsClause(Cobol.DataRecordsClause dataRecordsClause, P p) {
         Cobol.DataRecordsClause d = dataRecordsClause;
-        d = d.withDataName(ListUtils.map(d.getDataName(), it -> visitAndCast(it, p)));
-        return d;
+        return d.withDataName(ListUtils.map(d.getDataName(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.DataRedefinesClause visitDataRedefinesClause(Cobol.DataRedefinesClause dataRedefinesClause, P p) {
         Cobol.DataRedefinesClause d = dataRedefinesClause;
-        d = d.withDataName(visitAndCast(d.getDataName(), p));
-        return d;
+        return d.withDataName(visitAndCast(d.getDataName(), p));
     }
 
     @Override
     public Cobol.DataRenamesClause visitDataRenamesClause(Cobol.DataRenamesClause dataRenamesClause, P p) {
         Cobol.DataRenamesClause d = dataRenamesClause;
         d = d.withFromName(visitAndCast(d.getFromName(), p));
-        d = d.withToName(visitAndCast(d.getToName(), p));
-        return d;
+        return d.withToName(visitAndCast(d.getToName(), p));
     }
 
     @Override
@@ -621,8 +557,7 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
     @Override
     public Cobol.DataTypeClause visitDataTypeClause(Cobol.DataTypeClause dataTypeClause, P p) {
         Cobol.DataTypeClause d = dataTypeClause;
-        d = d.withParenthesized(visitAndCast(d.getParenthesized(), p));
-        return d;
+        return d.withParenthesized(visitAndCast(d.getParenthesized(), p));
     }
 
     @Override
@@ -638,30 +573,26 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
     @Override
     public Cobol.DataUsingClause visitDataUsingClause(Cobol.DataUsingClause dataUsingClause, P p) {
         Cobol.DataUsingClause d = dataUsingClause;
-        d = d.withName(visitAndCast(d.getName(), p));
-        return d;
+        return d.withName(visitAndCast(d.getName(), p));
     }
 
     @Override
     public Cobol.DataValueClause visitDataValueClause(Cobol.DataValueClause dataValueClause, P p) {
         Cobol.DataValueClause d = dataValueClause;
-        d = d.withCobols(ListUtils.map(d.getCobols(), it -> visitAndCast(it, p)));
-        return d;
+        return d.withCobols(ListUtils.map(d.getCobols(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.DataValueInterval visitDataValueInterval(Cobol.DataValueInterval dataValueInterval, P p) {
         Cobol.DataValueInterval d = dataValueInterval;
         d = d.withFrom(visitAndCast(d.getFrom(), p));
-        d = d.withTo(visitAndCast(d.getTo(), p));
-        return d;
+        return d.withTo(visitAndCast(d.getTo(), p));
     }
 
     @Override
     public Cobol.DataValueIntervalTo visitDataValueIntervalTo(Cobol.DataValueIntervalTo dataValueIntervalTo, P p) {
         Cobol.DataValueIntervalTo d = dataValueIntervalTo;
-        d = d.withLiteral(visitAndCast(d.getLiteral(), p));
-        return d;
+        return d.withLiteral(visitAndCast(d.getLiteral(), p));
     }
 
     @Override
@@ -689,31 +620,27 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         Cobol.Delete d = delete;
         d = d.withFileName(visitAndCast(d.getFileName(), p));
         d = d.withInvalidKey(visitAndCast(d.getInvalidKey(), p));
-        d = d.withNotInvalidKey(visitAndCast(d.getNotInvalidKey(), p));
-        return d;
+        return d.withNotInvalidKey(visitAndCast(d.getNotInvalidKey(), p));
     }
 
     @Override
     public Cobol.DestinationCountClause visitDestinationCountClause(Cobol.DestinationCountClause destinationCountClause, P p) {
         Cobol.DestinationCountClause d = destinationCountClause;
-        d = d.withDataDescName(visitAndCast(d.getDataDescName(), p));
-        return d;
+        return d.withDataDescName(visitAndCast(d.getDataDescName(), p));
     }
 
     @Override
     public Cobol.DestinationTableClause visitDestinationTableClause(Cobol.DestinationTableClause destinationTableClause, P p) {
         Cobol.DestinationTableClause d = destinationTableClause;
         d = d.withIntegerLiteral(visitAndCast(d.getIntegerLiteral(), p));
-        d = d.withIndexNames(ListUtils.map(d.getIndexNames(), it -> visitAndCast(it, p)));
-        return d;
+        return d.withIndexNames(ListUtils.map(d.getIndexNames(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.Disable visitDisable(Cobol.Disable disable, P p) {
         Cobol.Disable d = disable;
         d = d.withCdName(visitAndCast(d.getCdName(), p));
-        d = d.withKeyName(visitAndCast(d.getKeyName(), p));
-        return d;
+        return d.withKeyName(visitAndCast(d.getKeyName(), p));
     }
 
     @Override
@@ -723,22 +650,19 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         d = d.withDisplayAt(visitAndCast(d.getDisplayAt(), p));
         d = d.withDisplayUpon(visitAndCast(d.getDisplayUpon(), p));
         d = d.withOnExceptionClause(visitAndCast(d.getOnExceptionClause(), p));
-        d = d.withNotOnExceptionClause(visitAndCast(d.getNotOnExceptionClause(), p));
-        return d;
+        return d.withNotOnExceptionClause(visitAndCast(d.getNotOnExceptionClause(), p));
     }
 
     @Override
     public Cobol.DisplayAt visitDisplayAt(Cobol.DisplayAt displayAt, P p) {
         Cobol.DisplayAt d = displayAt;
-        d = d.withName(visitAndCast(d.getName(), p));
-        return d;
+        return d.withName(visitAndCast(d.getName(), p));
     }
 
     @Override
     public Cobol.DisplayUpon visitDisplayUpon(Cobol.DisplayUpon displayUpon, P p) {
         Cobol.DisplayUpon d = displayUpon;
-        d = d.withName(visitAndCast(d.getName(), p));
-        return d;
+        return d.withName(visitAndCast(d.getName(), p));
     }
 
     @Override
@@ -748,73 +672,63 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         d = d.withAction(visitAndCast(d.getAction(), p));
         d = d.withDivideRemainder(visitAndCast(d.getDivideRemainder(), p));
         d = d.withOnSizeErrorPhrase(visitAndCast(d.getOnSizeErrorPhrase(), p));
-        d = d.withNotOnSizeErrorPhrase(visitAndCast(d.getNotOnSizeErrorPhrase(), p));
-        return d;
+        return d.withNotOnSizeErrorPhrase(visitAndCast(d.getNotOnSizeErrorPhrase(), p));
     }
 
     @Override
     public Cobol.DivideGiving visitDivideGiving(Cobol.DivideGiving divideGiving, P p) {
         Cobol.DivideGiving d = divideGiving;
-        d = d.withName(visitAndCast(d.getName(), p));
-        return d;
+        return d.withName(visitAndCast(d.getName(), p));
     }
 
     @Override
     public Cobol.DivideGivingPhrase visitDivideGivingPhrase(Cobol.DivideGivingPhrase divideGivingPhrase, P p) {
         Cobol.DivideGivingPhrase d = divideGivingPhrase;
-        d = d.withRoundables(ListUtils.map(d.getRoundables(), it -> visitAndCast(it, p)));
-        return d;
+        return d.withRoundables(ListUtils.map(d.getRoundables(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.DivideInto visitDivideInto(Cobol.DivideInto divideInto, P p) {
         Cobol.DivideInto d = divideInto;
-        d = d.withRoundables(ListUtils.map(d.getRoundables(), it -> visitAndCast(it, p)));
-        return d;
+        return d.withRoundables(ListUtils.map(d.getRoundables(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.DivideRemainder visitDivideRemainder(Cobol.DivideRemainder divideRemainder, P p) {
         Cobol.DivideRemainder d = divideRemainder;
-        d = d.withName(visitAndCast(d.getName(), p));
-        return d;
+        return d.withName(visitAndCast(d.getName(), p));
     }
 
     @Override
     public Cobol.Enable visitEnable(Cobol.Enable enable, P p) {
         Cobol.Enable e = enable;
         e = e.withCdName(visitAndCast(e.getCdName(), p));
-        e = e.withKeyName(visitAndCast(e.getKeyName(), p));
-        return e;
+        return e.withKeyName(visitAndCast(e.getKeyName(), p));
     }
 
     @Override
     public Cobol.EndKeyClause visitEndKeyClause(Cobol.EndKeyClause endKeyClause, P p) {
         Cobol.EndKeyClause e = endKeyClause;
-        e = e.withName(visitAndCast(e.getName(), p));
-        return e;
+        return e.withName(visitAndCast(e.getName(), p));
     }
 
     @Override
     public Cobol.EndProgram visitEndProgram(Cobol.EndProgram endProgram, P p) {
         Cobol.EndProgram e = endProgram;
-        e = e.withProgramName(visitAndCast(e.getProgramName(), p));
-        return e;
+        return e.withProgramName(visitAndCast(e.getProgramName(), p));
     }
 
     @Override
     public Cobol.Entry visitEntry(Cobol.Entry entry, P p) {
         Cobol.Entry e = entry;
         e = e.withLiteral(visitAndCast(e.getLiteral(), p));
-        e = e.withIdentifiers(ListUtils.map(e.getIdentifiers(), it -> visitAndCast(it, p)));
-        return e;
+        return e.withIdentifiers(ListUtils.map(e.getIdentifiers(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.EnvironmentDivision visitEnvironmentDivision(Cobol.EnvironmentDivision environmentDivision, P p) {
         Cobol.EnvironmentDivision e = environmentDivision;
-        e = e.withBody(ListUtils.map(e.getBody(), it -> visitAndCast(it, p)));
-        return e;
+        return e.withBody(ListUtils.map(e.getBody(), it -> visitAndCast(it, p)));
     }
 
     @Override
@@ -822,22 +736,19 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         Cobol.EnvironmentSwitchNameClause e = environmentSwitchNameClause;
         e = e.withEnvironmentName(visitAndCast(e.getEnvironmentName(), p));
         e = e.withMnemonicName(visitAndCast(e.getMnemonicName(), p));
-        e = e.withEnvironmentSwitchNameSpecialNamesStatusPhrase(visitAndCast(e.getEnvironmentSwitchNameSpecialNamesStatusPhrase(), p));
-        return e;
+        return e.withEnvironmentSwitchNameSpecialNamesStatusPhrase(visitAndCast(e.getEnvironmentSwitchNameSpecialNamesStatusPhrase(), p));
     }
 
     @Override
     public Cobol.EnvironmentSwitchNameSpecialNamesStatusPhrase visitEnvironmentSwitchNameSpecialNamesStatusPhrase(Cobol.EnvironmentSwitchNameSpecialNamesStatusPhrase environmentSwitchNameSpecialNamesStatusPhrase, P p) {
         Cobol.EnvironmentSwitchNameSpecialNamesStatusPhrase e = environmentSwitchNameSpecialNamesStatusPhrase;
-        e = e.withCobols(ListUtils.map(e.getCobols(), it -> visitAndCast(it, p)));
-        return e;
+        return e.withCobols(ListUtils.map(e.getCobols(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.ErrorKeyClause visitErrorKeyClause(Cobol.ErrorKeyClause errorKeyClause, P p) {
         Cobol.ErrorKeyClause e = errorKeyClause;
-        e = e.withName(visitAndCast(e.getName(), p));
-        return e;
+        return e.withName(visitAndCast(e.getName(), p));
     }
 
     @Override
@@ -846,53 +757,46 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         e = e.withSelect(visitAndCast(e.getSelect(), p));
         e = e.withAlsoSelect(ListUtils.map(e.getAlsoSelect(), it -> visitAndCast(it, p)));
         e = e.withWhenPhrase(ListUtils.map(e.getWhenPhrase(), it -> visitAndCast(it, p)));
-        e = e.withWhenOther(visitAndCast(e.getWhenOther(), p));
-        return e;
+        return e.withWhenOther(visitAndCast(e.getWhenOther(), p));
     }
 
     @Override
     public Cobol.EvaluateAlso visitEvaluateAlso(Cobol.EvaluateAlso evaluateAlso, P p) {
         Cobol.EvaluateAlso e = evaluateAlso;
-        e = e.withSelect(visitAndCast(e.getSelect(), p));
-        return e;
+        return e.withSelect(visitAndCast(e.getSelect(), p));
     }
 
     @Override
     public Cobol.EvaluateAlsoCondition visitEvaluateAlsoCondition(Cobol.EvaluateAlsoCondition evaluateAlsoCondition, P p) {
         Cobol.EvaluateAlsoCondition e = evaluateAlsoCondition;
-        e = e.withCondition(visitAndCast(e.getCondition(), p));
-        return e;
+        return e.withCondition(visitAndCast(e.getCondition(), p));
     }
 
     @Override
     public Cobol.EvaluateCondition visitEvaluateCondition(Cobol.EvaluateCondition evaluateCondition, P p) {
         Cobol.EvaluateCondition e = evaluateCondition;
         e = e.withCondition(visitAndCast(e.getCondition(), p));
-        e = e.withEvaluateThrough(visitAndCast(e.getEvaluateThrough(), p));
-        return e;
+        return e.withEvaluateThrough(visitAndCast(e.getEvaluateThrough(), p));
     }
 
     @Override
     public Cobol.EvaluateThrough visitEvaluateThrough(Cobol.EvaluateThrough evaluateThrough, P p) {
         Cobol.EvaluateThrough e = evaluateThrough;
-        e = e.withValue(visitAndCast(e.getValue(), p));
-        return e;
+        return e.withValue(visitAndCast(e.getValue(), p));
     }
 
     @Override
     public Cobol.EvaluateWhen visitEvaluateWhen(Cobol.EvaluateWhen evaluateWhen, P p) {
         Cobol.EvaluateWhen e = evaluateWhen;
         e = e.withCondition(visitAndCast(e.getCondition(), p));
-        e = e.withAlsoCondition(ListUtils.map(e.getAlsoCondition(), it -> visitAndCast(it, p)));
-        return e;
+        return e.withAlsoCondition(ListUtils.map(e.getAlsoCondition(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.EvaluateWhenPhrase visitEvaluateWhenPhrase(Cobol.EvaluateWhenPhrase evaluateWhenPhrase, P p) {
         Cobol.EvaluateWhenPhrase e = evaluateWhenPhrase;
         e = e.withWhens(ListUtils.map(e.getWhens(), it -> visitAndCast(it, p)));
-        e = e.withStatements(ListUtils.map(e.getStatements(), it -> visitAndCast(it, p)));
-        return e;
+        return e.withStatements(ListUtils.map(e.getStatements(), it -> visitAndCast(it, p)));
     }
 
     @Override
@@ -919,8 +823,7 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
     @Override
     public Cobol.Exhibit visitExhibit(Cobol.Exhibit exhibit, P p) {
         Cobol.Exhibit e = exhibit;
-        e = e.withOperands(ListUtils.map(e.getOperands(), it -> visitAndCast(it, p)));
-        return e;
+        return e.withOperands(ListUtils.map(e.getOperands(), it -> visitAndCast(it, p)));
     }
 
     @Override
@@ -936,23 +839,20 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
     @Override
     public Cobol.FigurativeConstant visitFigurativeConstant(Cobol.FigurativeConstant figurativeConstant, P p) {
         Cobol.FigurativeConstant f = figurativeConstant;
-        f = f.withLiteral(visitAndCast(f.getLiteral(), p));
-        return f;
+        return f.withLiteral(visitAndCast(f.getLiteral(), p));
     }
 
     @Override
     public Cobol.FileControlEntry visitFileControlEntry(Cobol.FileControlEntry fileControlEntry, P p) {
         Cobol.FileControlEntry f = fileControlEntry;
         f = f.withSelectClause(visitAndCast(f.getSelectClause(), p));
-        f = f.withControlClauses(ListUtils.map(f.getControlClauses(), it -> visitAndCast(it, p)));
-        return f;
+        return f.withControlClauses(ListUtils.map(f.getControlClauses(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.FileControlParagraph visitFileControlParagraph(Cobol.FileControlParagraph fileControlParagraph, P p) {
         Cobol.FileControlParagraph f = fileControlParagraph;
-        f = f.withControlEntries(ListUtils.map(f.getControlEntries(), it -> visitAndCast(it, p)));
-        return f;
+        return f.withControlEntries(ListUtils.map(f.getControlEntries(), it -> visitAndCast(it, p)));
     }
 
     @Override
@@ -960,22 +860,19 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         Cobol.FileDescriptionEntry f = fileDescriptionEntry;
         f = f.withName(visitAndCast(f.getName(), p));
         f = f.withClauses(ListUtils.map(f.getClauses(), it -> visitAndCast(it, p)));
-        f = f.withDataDescriptions(ListUtils.map(f.getDataDescriptions(), it -> visitAndCast(it, p)));
-        return f;
+        return f.withDataDescriptions(ListUtils.map(f.getDataDescriptions(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.FileSection visitFileSection(Cobol.FileSection fileSection, P p) {
         Cobol.FileSection f = fileSection;
-        f = f.withFileDescriptionEntry(ListUtils.map(f.getFileDescriptionEntry(), it -> visitAndCast(it, p)));
-        return f;
+        return f.withFileDescriptionEntry(ListUtils.map(f.getFileDescriptionEntry(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.FileStatusClause visitFileStatusClause(Cobol.FileStatusClause fileStatusClause, P p) {
         Cobol.FileStatusClause f = fileStatusClause;
-        f = f.withQualifiedDataNames(ListUtils.map(f.getQualifiedDataNames(), it -> visitAndCast(it, p)));
-        return f;
+        return f.withQualifiedDataNames(ListUtils.map(f.getQualifiedDataNames(), it -> visitAndCast(it, p)));
     }
 
     @Override
@@ -983,15 +880,13 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         Cobol.FunctionCall f = functionCall;
         f = f.withFunctionName(visitAndCast(f.getFunctionName(), p));
         f = f.withArguments(ListUtils.map(f.getArguments(), it -> visitAndCast(it, p)));
-        f = f.withReferenceModifier(visitAndCast(f.getReferenceModifier(), p));
-        return f;
+        return f.withReferenceModifier(visitAndCast(f.getReferenceModifier(), p));
     }
 
     @Override
     public Cobol.Generate visitGenerate(Cobol.Generate generate, P p) {
         Cobol.Generate g = generate;
-        g = g.withReportName(visitAndCast(g.getReportName(), p));
-        return g;
+        return g.withReportName(visitAndCast(g.getReportName(), p));
     }
 
     @Override
@@ -1007,31 +902,27 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
     @Override
     public Cobol.GoTo visitGoTo(Cobol.GoTo _goTo, P p) {
         Cobol.GoTo g = _goTo;
-        g = g.withStatement(visitAndCast(g.getStatement(), p));
-        return g;
+        return g.withStatement(visitAndCast(g.getStatement(), p));
     }
 
     @Override
     public Cobol.GoToDependingOnStatement visitGoToDependingOnStatement(Cobol.GoToDependingOnStatement goToDependingOnStatement, P p) {
         Cobol.GoToDependingOnStatement g = goToDependingOnStatement;
         g = g.withProcedureNames(ListUtils.map(g.getProcedureNames(), it -> visitAndCast(it, p)));
-        g = g.withIdentifier(visitAndCast(g.getIdentifier(), p));
-        return g;
+        return g.withIdentifier(visitAndCast(g.getIdentifier(), p));
     }
 
     @Override
     public Cobol.IdentificationDivision visitIdentificationDivision(Cobol.IdentificationDivision identificationDivision, P p) {
         Cobol.IdentificationDivision i = identificationDivision;
         i = i.withProgramIdParagraph(visitAndCast(i.getProgramIdParagraph(), p));
-        i = i.withParagraphs(ListUtils.map(i.getParagraphs(), it -> visitAndCast(it, p)));
-        return i;
+        return i.withParagraphs(ListUtils.map(i.getParagraphs(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.IdentificationDivisionParagraph visitIdentificationDivisionParagraph(Cobol.IdentificationDivisionParagraph identificationDivisionParagraph, P p) {
         Cobol.IdentificationDivisionParagraph i = identificationDivisionParagraph;
-        i = i.withCommentEntry(visitAndCast(i.getCommentEntry(), p));
-        return i;
+        return i.withCommentEntry(visitAndCast(i.getCommentEntry(), p));
     }
 
     @Override
@@ -1039,138 +930,119 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         Cobol.If i = _if;
         i = i.withCondition(visitAndCast(i.getCondition(), p));
         i = i.withIfThen(visitAndCast(i.getIfThen(), p));
-        i = i.withIfElse(visitAndCast(i.getIfElse(), p));
-        return i;
+        return i.withIfElse(visitAndCast(i.getIfElse(), p));
     }
 
     @Override
     public Cobol.IfElse visitIfElse(Cobol.IfElse ifElse, P p) {
         Cobol.IfElse i = ifElse;
-        i = i.withStatements(ListUtils.map(i.getStatements(), it -> visitAndCast(it, p)));
-        return i;
+        return i.withStatements(ListUtils.map(i.getStatements(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.IfThen visitIfThen(Cobol.IfThen ifThen, P p) {
         Cobol.IfThen i = ifThen;
-        i = i.withStatements(ListUtils.map(i.getStatements(), it -> visitAndCast(it, p)));
-        return i;
+        return i.withStatements(ListUtils.map(i.getStatements(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.InData visitInData(Cobol.InData inData, P p) {
         Cobol.InData i = inData;
-        i = i.withName(visitAndCast(i.getName(), p));
-        return i;
+        return i.withName(visitAndCast(i.getName(), p));
     }
 
     @Override
     public Cobol.InFile visitInFile(Cobol.InFile inFile, P p) {
         Cobol.InFile i = inFile;
-        i = i.withName(visitAndCast(i.getName(), p));
-        return i;
+        return i.withName(visitAndCast(i.getName(), p));
     }
 
     @Override
     public Cobol.Initialize visitInitialize(Cobol.Initialize initialize, P p) {
         Cobol.Initialize i = initialize;
         i = i.withIdentifiers(ListUtils.map(i.getIdentifiers(), it -> visitAndCast(it, p)));
-        i = i.withInitializeReplacingPhrase(visitAndCast(i.getInitializeReplacingPhrase(), p));
-        return i;
+        return i.withInitializeReplacingPhrase(visitAndCast(i.getInitializeReplacingPhrase(), p));
     }
 
     @Override
     public Cobol.InitializeReplacingBy visitInitializeReplacingBy(Cobol.InitializeReplacingBy initializeReplacingBy, P p) {
         Cobol.InitializeReplacingBy i = initializeReplacingBy;
-        i = i.withIdentifier(visitAndCast(i.getIdentifier(), p));
-        return i;
+        return i.withIdentifier(visitAndCast(i.getIdentifier(), p));
     }
 
     @Override
     public Cobol.InitializeReplacingPhrase visitInitializeReplacingPhrase(Cobol.InitializeReplacingPhrase initializeReplacingPhrase, P p) {
         Cobol.InitializeReplacingPhrase i = initializeReplacingPhrase;
-        i = i.withInitializeReplacingBy(ListUtils.map(i.getInitializeReplacingBy(), it -> visitAndCast(it, p)));
-        return i;
+        return i.withInitializeReplacingBy(ListUtils.map(i.getInitializeReplacingBy(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.Initiate visitInitiate(Cobol.Initiate initiate, P p) {
         Cobol.Initiate i = initiate;
-        i = i.withReportNames(ListUtils.map(i.getReportNames(), it -> visitAndCast(it, p)));
-        return i;
+        return i.withReportNames(ListUtils.map(i.getReportNames(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.InLibrary visitInLibrary(Cobol.InLibrary inLibrary, P p) {
         Cobol.InLibrary i = inLibrary;
         i = i.withWord(visitAndCast(i.getWord(), p));
-        i = i.withName(visitAndCast(i.getName(), p));
-        return i;
+        return i.withName(visitAndCast(i.getName(), p));
     }
 
     @Override
     public Cobol.InMnemonic visitInMnemonic(Cobol.InMnemonic inMnemonic, P p) {
         Cobol.InMnemonic i = inMnemonic;
-        i = i.withName(visitAndCast(i.getName(), p));
-        return i;
+        return i.withName(visitAndCast(i.getName(), p));
     }
 
     @Override
     public Cobol.InputOutputSection visitInputOutputSection(Cobol.InputOutputSection inputOutputSection, P p) {
         Cobol.InputOutputSection i = inputOutputSection;
-        i = i.withParagraphs(ListUtils.map(i.getParagraphs(), it -> visitAndCast(it, p)));
-        return i;
+        return i.withParagraphs(ListUtils.map(i.getParagraphs(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.InSection visitInSection(Cobol.InSection inSection, P p) {
         Cobol.InSection i = inSection;
-        i = i.withName(visitAndCast(i.getName(), p));
-        return i;
+        return i.withName(visitAndCast(i.getName(), p));
     }
 
     @Override
     public Cobol.Inspect visitInspect(Cobol.Inspect inspect, P p) {
         Cobol.Inspect i = inspect;
         i = i.withIdentifier(visitAndCast(i.getIdentifier(), p));
-        i = i.withPhrase(visitAndCast(i.getPhrase(), p));
-        return i;
+        return i.withPhrase(visitAndCast(i.getPhrase(), p));
     }
 
     @Override
     public Cobol.InspectAllLeading visitInspectAllLeading(Cobol.InspectAllLeading inspectAllLeading, P p) {
         Cobol.InspectAllLeading i = inspectAllLeading;
         i = i.withName(visitAndCast(i.getName(), p));
-        i = i.withInspections(ListUtils.map(i.getInspections(), it -> visitAndCast(it, p)));
-        return i;
+        return i.withInspections(ListUtils.map(i.getInspections(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.InspectAllLeadings visitInspectAllLeadings(Cobol.InspectAllLeadings inspectAllLeadings, P p) {
         Cobol.InspectAllLeadings i = inspectAllLeadings;
-        i = i.withLeadings(ListUtils.map(i.getLeadings(), it -> visitAndCast(it, p)));
-        return i;
+        return i.withLeadings(ListUtils.map(i.getLeadings(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.InspectBeforeAfter visitInspectBeforeAfter(Cobol.InspectBeforeAfter inspectBeforeAfter, P p) {
         Cobol.InspectBeforeAfter i = inspectBeforeAfter;
-        i = i.withIdentifier(visitAndCast(i.getIdentifier(), p));
-        return i;
+        return i.withIdentifier(visitAndCast(i.getIdentifier(), p));
     }
 
     @Override
     public Cobol.InspectBy visitInspectBy(Cobol.InspectBy inspectBy, P p) {
         Cobol.InspectBy i = inspectBy;
-        i = i.withIdentifier(visitAndCast(i.getIdentifier(), p));
-        return i;
+        return i.withIdentifier(visitAndCast(i.getIdentifier(), p));
     }
 
     @Override
     public Cobol.InspectCharacters visitInspectCharacters(Cobol.InspectCharacters inspectCharacters, P p) {
         Cobol.InspectCharacters i = inspectCharacters;
-        i = i.withInspections(ListUtils.map(i.getInspections(), it -> visitAndCast(it, p)));
-        return i;
+        return i.withInspections(ListUtils.map(i.getInspections(), it -> visitAndCast(it, p)));
     }
 
     @Override
@@ -1178,16 +1050,14 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         Cobol.InspectConvertingPhrase i = inspectConvertingPhrase;
         i = i.withIdentifier(visitAndCast(i.getIdentifier(), p));
         i = i.withInspectTo(visitAndCast(i.getInspectTo(), p));
-        i = i.withInspections(ListUtils.map(i.getInspections(), it -> visitAndCast(it, p)));
-        return i;
+        return i.withInspections(ListUtils.map(i.getInspections(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.InspectFor visitInspectFor(Cobol.InspectFor inspectFor, P p) {
         Cobol.InspectFor i = inspectFor;
         i = i.withIdentifier(visitAndCast(i.getIdentifier(), p));
-        i = i.withInspects(ListUtils.map(i.getInspects(), it -> visitAndCast(it, p)));
-        return i;
+        return i.withInspects(ListUtils.map(i.getInspects(), it -> visitAndCast(it, p)));
     }
 
     @Override
@@ -1195,74 +1065,64 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         Cobol.InspectReplacingAllLeading i = inspectReplacingAllLeading;
         i = i.withIdentifier(visitAndCast(i.getIdentifier(), p));
         i = i.withInspectBy(visitAndCast(i.getInspectBy(), p));
-        i = i.withInspections(ListUtils.map(i.getInspections(), it -> visitAndCast(it, p)));
-        return i;
+        return i.withInspections(ListUtils.map(i.getInspections(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.InspectReplacingAllLeadings visitInspectReplacingAllLeadings(Cobol.InspectReplacingAllLeadings inspectReplacingAllLeadings, P p) {
         Cobol.InspectReplacingAllLeadings i = inspectReplacingAllLeadings;
-        i = i.withInspections(ListUtils.map(i.getInspections(), it -> visitAndCast(it, p)));
-        return i;
+        return i.withInspections(ListUtils.map(i.getInspections(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.InspectReplacingCharacters visitInspectReplacingCharacters(Cobol.InspectReplacingCharacters inspectReplacingCharacters, P p) {
         Cobol.InspectReplacingCharacters i = inspectReplacingCharacters;
         i = i.withInspectBy(visitAndCast(i.getInspectBy(), p));
-        i = i.withInspections(ListUtils.map(i.getInspections(), it -> visitAndCast(it, p)));
-        return i;
+        return i.withInspections(ListUtils.map(i.getInspections(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.InspectReplacingPhrase visitInspectReplacingPhrase(Cobol.InspectReplacingPhrase inspectReplacingPhrase, P p) {
         Cobol.InspectReplacingPhrase i = inspectReplacingPhrase;
-        i = i.withInspections(ListUtils.map(i.getInspections(), it -> visitAndCast(it, p)));
-        return i;
+        return i.withInspections(ListUtils.map(i.getInspections(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.InspectTallyingPhrase visitInspectTallyingPhrase(Cobol.InspectTallyingPhrase inspectTallyingPhrase, P p) {
         Cobol.InspectTallyingPhrase i = inspectTallyingPhrase;
-        i = i.withInspectFors(ListUtils.map(i.getInspectFors(), it -> visitAndCast(it, p)));
-        return i;
+        return i.withInspectFors(ListUtils.map(i.getInspectFors(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.InspectTallyingReplacingPhrase visitInspectTallyingReplacingPhrase(Cobol.InspectTallyingReplacingPhrase inspectTallyingReplacingPhrase, P p) {
         Cobol.InspectTallyingReplacingPhrase i = inspectTallyingReplacingPhrase;
         i = i.withInspectFors(ListUtils.map(i.getInspectFors(), it -> visitAndCast(it, p)));
-        i = i.withReplacingPhrases(ListUtils.map(i.getReplacingPhrases(), it -> visitAndCast(it, p)));
-        return i;
+        return i.withReplacingPhrases(ListUtils.map(i.getReplacingPhrases(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.InspectTo visitInspectTo(Cobol.InspectTo inspectTo, P p) {
         Cobol.InspectTo i = inspectTo;
-        i = i.withIdentifier(visitAndCast(i.getIdentifier(), p));
-        return i;
+        return i.withIdentifier(visitAndCast(i.getIdentifier(), p));
     }
 
     @Override
     public Cobol.InTable visitInTable(Cobol.InTable inTable, P p) {
         Cobol.InTable i = inTable;
-        i = i.withTableCall(visitAndCast(i.getTableCall(), p));
-        return i;
+        return i.withTableCall(visitAndCast(i.getTableCall(), p));
     }
 
     @Override
     public Cobol.IoControlParagraph visitIoControlParagraph(Cobol.IoControlParagraph ioControlParagraph, P p) {
         Cobol.IoControlParagraph i = ioControlParagraph;
         i = i.withFileName(visitAndCast(i.getFileName(), p));
-        i = i.withClauses(ListUtils.map(i.getClauses(), it -> visitAndCast(it, p)));
-        return i;
+        return i.withClauses(ListUtils.map(i.getClauses(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.LabelRecordsClause visitLabelRecordsClause(Cobol.LabelRecordsClause labelRecordsClause, P p) {
         Cobol.LabelRecordsClause l = labelRecordsClause;
-        l = l.withDataNames(ListUtils.map(l.getDataNames(), it -> visitAndCast(it, p)));
-        return l;
+        return l.withDataNames(ListUtils.map(l.getDataNames(), it -> visitAndCast(it, p)));
     }
 
     @Override
@@ -1275,29 +1135,25 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         Cobol.LibraryAttributeClauseFormat2 l = libraryAttributeClauseFormat2;
         l = l.withLibraryAttributeFunction(visitAndCast(l.getLibraryAttributeFunction(), p));
         l = l.withLibraryAttributeParameter(visitAndCast(l.getLibraryAttributeParameter(), p));
-        l = l.withLibraryAttributeTitle(visitAndCast(l.getLibraryAttributeTitle(), p));
-        return l;
+        return l.withLibraryAttributeTitle(visitAndCast(l.getLibraryAttributeTitle(), p));
     }
 
     @Override
     public Cobol.LibraryAttributeFunction visitLibraryAttributeFunction(Cobol.LibraryAttributeFunction libraryAttributeFunction, P p) {
         Cobol.LibraryAttributeFunction l = libraryAttributeFunction;
-        l = l.withLiteral(visitAndCast(l.getLiteral(), p));
-        return l;
+        return l.withLiteral(visitAndCast(l.getLiteral(), p));
     }
 
     @Override
     public Cobol.LibraryAttributeParameter visitLibraryAttributeParameter(Cobol.LibraryAttributeParameter libraryAttributeParameter, P p) {
         Cobol.LibraryAttributeParameter l = libraryAttributeParameter;
-        l = l.withLiteral(visitAndCast(l.getLiteral(), p));
-        return l;
+        return l.withLiteral(visitAndCast(l.getLiteral(), p));
     }
 
     @Override
     public Cobol.LibraryAttributeTitle visitLibraryAttributeTitle(Cobol.LibraryAttributeTitle libraryAttributeTitle, P p) {
         Cobol.LibraryAttributeTitle l = libraryAttributeTitle;
-        l = l.withLiteral(visitAndCast(l.getLiteral(), p));
-        return l;
+        return l.withLiteral(visitAndCast(l.getLiteral(), p));
     }
 
     @Override
@@ -1305,8 +1161,7 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         Cobol.LibraryDescriptionEntryFormat1 l = libraryDescriptionEntryFormat1;
         l = l.withLibraryName(visitAndCast(l.getLibraryName(), p));
         l = l.withLibraryAttributeClauseFormat1(visitAndCast(l.getLibraryAttributeClauseFormat1(), p));
-        l = l.withLibraryEntryProcedureClauseFormat1(visitAndCast(l.getLibraryEntryProcedureClauseFormat1(), p));
-        return l;
+        return l.withLibraryEntryProcedureClauseFormat1(visitAndCast(l.getLibraryEntryProcedureClauseFormat1(), p));
     }
 
     @Override
@@ -1315,16 +1170,14 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         l = l.withLibraryName(visitAndCast(l.getLibraryName(), p));
         l = l.withLibraryIsGlobalClause(visitAndCast(l.getLibraryIsGlobalClause(), p));
         l = l.withLibraryIsCommonClause(visitAndCast(l.getLibraryIsCommonClause(), p));
-        l = l.withClauseFormats(ListUtils.map(l.getClauseFormats(), it -> visitAndCast(it, p)));
-        return l;
+        return l.withClauseFormats(ListUtils.map(l.getClauseFormats(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.LibraryEntryProcedureClauseFormat1 visitLibraryEntryProcedureClauseFormat1(Cobol.LibraryEntryProcedureClauseFormat1 libraryEntryProcedureClauseFormat1, P p) {
         Cobol.LibraryEntryProcedureClauseFormat1 l = libraryEntryProcedureClauseFormat1;
         l = l.withProgramName(visitAndCast(l.getProgramName(), p));
-        l = l.withLibraryEntryProcedureForClause(visitAndCast(l.getLibraryEntryProcedureForClause(), p));
-        return l;
+        return l.withLibraryEntryProcedureForClause(visitAndCast(l.getLibraryEntryProcedureForClause(), p));
     }
 
     @Override
@@ -1334,36 +1187,31 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         l = l.withLibraryEntryProcedureForClause(visitAndCast(l.getLibraryEntryProcedureForClause(), p));
         l = l.withLibraryEntryProcedureWithClause(visitAndCast(l.getLibraryEntryProcedureWithClause(), p));
         l = l.withLibraryEntryProcedureUsingClause(visitAndCast(l.getLibraryEntryProcedureUsingClause(), p));
-        l = l.withLibraryEntryProcedureGivingClause(visitAndCast(l.getLibraryEntryProcedureGivingClause(), p));
-        return l;
+        return l.withLibraryEntryProcedureGivingClause(visitAndCast(l.getLibraryEntryProcedureGivingClause(), p));
     }
 
     @Override
     public Cobol.LibraryEntryProcedureForClause visitLibraryEntryProcedureForClause(Cobol.LibraryEntryProcedureForClause libraryEntryProcedureForClause, P p) {
         Cobol.LibraryEntryProcedureForClause l = libraryEntryProcedureForClause;
-        l = l.withLiteral(visitAndCast(l.getLiteral(), p));
-        return l;
+        return l.withLiteral(visitAndCast(l.getLiteral(), p));
     }
 
     @Override
     public Cobol.LibraryEntryProcedureGivingClause visitLibraryEntryProcedureGivingClause(Cobol.LibraryEntryProcedureGivingClause libraryEntryProcedureGivingClause, P p) {
         Cobol.LibraryEntryProcedureGivingClause l = libraryEntryProcedureGivingClause;
-        l = l.withDataName(visitAndCast(l.getDataName(), p));
-        return l;
+        return l.withDataName(visitAndCast(l.getDataName(), p));
     }
 
     @Override
     public Cobol.LibraryEntryProcedureUsingClause visitLibraryEntryProcedureUsingClause(Cobol.LibraryEntryProcedureUsingClause libraryEntryProcedureUsingClause, P p) {
         Cobol.LibraryEntryProcedureUsingClause l = libraryEntryProcedureUsingClause;
-        l = l.withNames(ListUtils.map(l.getNames(), it -> visitAndCast(it, p)));
-        return l;
+        return l.withNames(ListUtils.map(l.getNames(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.LibraryEntryProcedureWithClause visitLibraryEntryProcedureWithClause(Cobol.LibraryEntryProcedureWithClause libraryEntryProcedureWithClause, P p) {
         Cobol.LibraryEntryProcedureWithClause l = libraryEntryProcedureWithClause;
-        l = l.withNames(ListUtils.map(l.getNames(), it -> visitAndCast(it, p)));
-        return l;
+        return l.withNames(ListUtils.map(l.getNames(), it -> visitAndCast(it, p)));
     }
 
     @Override
@@ -1380,44 +1228,38 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
     public Cobol.LinageClause visitLinageClause(Cobol.LinageClause linageClause, P p) {
         Cobol.LinageClause l = linageClause;
         l = l.withName(visitAndCast(l.getName(), p));
-        l = l.withLinageAt(ListUtils.map(l.getLinageAt(), it -> visitAndCast(it, p)));
-        return l;
+        return l.withLinageAt(ListUtils.map(l.getLinageAt(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.LinageFootingAt visitLinageFootingAt(Cobol.LinageFootingAt linageFootingAt, P p) {
         Cobol.LinageFootingAt l = linageFootingAt;
-        l = l.withName(visitAndCast(l.getName(), p));
-        return l;
+        return l.withName(visitAndCast(l.getName(), p));
     }
 
     @Override
     public Cobol.LinageLinesAtBottom visitLinageLinesAtBottom(Cobol.LinageLinesAtBottom linageLinesAtBottom, P p) {
         Cobol.LinageLinesAtBottom l = linageLinesAtBottom;
-        l = l.withName(visitAndCast(l.getName(), p));
-        return l;
+        return l.withName(visitAndCast(l.getName(), p));
     }
 
     @Override
     public Cobol.LinageLinesAtTop visitLinageLinesAtTop(Cobol.LinageLinesAtTop linageLinesAtTop, P p) {
         Cobol.LinageLinesAtTop l = linageLinesAtTop;
-        l = l.withName(visitAndCast(l.getName(), p));
-        return l;
+        return l.withName(visitAndCast(l.getName(), p));
     }
 
     @Override
     public Cobol.LinkageSection visitLinkageSection(Cobol.LinkageSection linkageSection, P p) {
         Cobol.LinkageSection l = linkageSection;
-        l = l.withDataDescriptions(ListUtils.map(l.getDataDescriptions(), it -> visitAndCast(it, p)));
-        return l;
+        return l.withDataDescriptions(ListUtils.map(l.getDataDescriptions(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.LocalStorageSection visitLocalStorageSection(Cobol.LocalStorageSection localStorageSection, P p) {
         Cobol.LocalStorageSection l = localStorageSection;
         l = l.withLocalName(visitAndCast(l.getLocalName(), p));
-        l = l.withDataDescriptions(ListUtils.map(l.getDataDescriptions(), it -> visitAndCast(it, p)));
-        return l;
+        return l.withDataDescriptions(ListUtils.map(l.getDataDescriptions(), it -> visitAndCast(it, p)));
     }
 
     @Override
@@ -1428,15 +1270,13 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         m = m.withMergeCollatingSequencePhrase(visitAndCast(m.getMergeCollatingSequencePhrase(), p));
         m = m.withMergeUsing(ListUtils.map(m.getMergeUsing(), it -> visitAndCast(it, p)));
         m = m.withMergeOutputProcedurePhrase(visitAndCast(m.getMergeOutputProcedurePhrase(), p));
-        m = m.withMergeGivingPhrase(ListUtils.map(m.getMergeGivingPhrase(), it -> visitAndCast(it, p)));
-        return m;
+        return m.withMergeGivingPhrase(ListUtils.map(m.getMergeGivingPhrase(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.Mergeable visitMergeable(Cobol.Mergeable mergeable, P p) {
         Cobol.Mergeable m = mergeable;
-        m = m.withName(visitAndCast(m.getName(), p));
-        return m;
+        return m.withName(visitAndCast(m.getName(), p));
     }
 
     @Override
@@ -1444,125 +1284,108 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         Cobol.MergeCollatingSequencePhrase m = mergeCollatingSequencePhrase;
         m = m.withName(ListUtils.map(m.getName(), it -> visitAndCast(it, p)));
         m = m.withMergeCollatingAlphanumeric(visitAndCast(m.getMergeCollatingAlphanumeric(), p));
-        m = m.withMergeCollatingNational(visitAndCast(m.getMergeCollatingNational(), p));
-        return m;
+        return m.withMergeCollatingNational(visitAndCast(m.getMergeCollatingNational(), p));
     }
 
     @Override
     public Cobol.MergeGiving visitMergeGiving(Cobol.MergeGiving mergeGiving, P p) {
         Cobol.MergeGiving m = mergeGiving;
-        m = m.withName(visitAndCast(m.getName(), p));
-        return m;
+        return m.withName(visitAndCast(m.getName(), p));
     }
 
     @Override
     public Cobol.MergeGivingPhrase visitMergeGivingPhrase(Cobol.MergeGivingPhrase mergeGivingPhrase, P p) {
         Cobol.MergeGivingPhrase m = mergeGivingPhrase;
-        m = m.withMergeGiving(ListUtils.map(m.getMergeGiving(), it -> visitAndCast(it, p)));
-        return m;
+        return m.withMergeGiving(ListUtils.map(m.getMergeGiving(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.MergeOnKeyClause visitMergeOnKeyClause(Cobol.MergeOnKeyClause mergeOnKeyClause, P p) {
         Cobol.MergeOnKeyClause m = mergeOnKeyClause;
-        m = m.withQualifiedDataName(ListUtils.map(m.getQualifiedDataName(), it -> visitAndCast(it, p)));
-        return m;
+        return m.withQualifiedDataName(ListUtils.map(m.getQualifiedDataName(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.MergeOutputProcedurePhrase visitMergeOutputProcedurePhrase(Cobol.MergeOutputProcedurePhrase mergeOutputProcedurePhrase, P p) {
         Cobol.MergeOutputProcedurePhrase m = mergeOutputProcedurePhrase;
         m = m.withProcedureName(visitAndCast(m.getProcedureName(), p));
-        m = m.withMergeOutputThrough(visitAndCast(m.getMergeOutputThrough(), p));
-        return m;
+        return m.withMergeOutputThrough(visitAndCast(m.getMergeOutputThrough(), p));
     }
 
     @Override
     public Cobol.MergeOutputThrough visitMergeOutputThrough(Cobol.MergeOutputThrough mergeOutputThrough, P p) {
         Cobol.MergeOutputThrough m = mergeOutputThrough;
-        m = m.withProcedureName(visitAndCast(m.getProcedureName(), p));
-        return m;
+        return m.withProcedureName(visitAndCast(m.getProcedureName(), p));
     }
 
     @Override
     public Cobol.MergeUsing visitMergeUsing(Cobol.MergeUsing mergeUsing, P p) {
         Cobol.MergeUsing m = mergeUsing;
-        m = m.withFileNames(ListUtils.map(m.getFileNames(), it -> visitAndCast(it, p)));
-        return m;
+        return m.withFileNames(ListUtils.map(m.getFileNames(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.MessageCountClause visitMessageCountClause(Cobol.MessageCountClause messageCountClause, P p) {
         Cobol.MessageCountClause m = messageCountClause;
-        m = m.withDataDescName(visitAndCast(m.getDataDescName(), p));
-        return m;
+        return m.withDataDescName(visitAndCast(m.getDataDescName(), p));
     }
 
     @Override
     public Cobol.MessageDateClause visitMessageDateClause(Cobol.MessageDateClause messageDateClause, P p) {
         Cobol.MessageDateClause m = messageDateClause;
-        m = m.withDataDescName(visitAndCast(m.getDataDescName(), p));
-        return m;
+        return m.withDataDescName(visitAndCast(m.getDataDescName(), p));
     }
 
     @Override
     public Cobol.MessageTimeClause visitMessageTimeClause(Cobol.MessageTimeClause messageTimeClause, P p) {
         Cobol.MessageTimeClause m = messageTimeClause;
-        m = m.withDataDescName(visitAndCast(m.getDataDescName(), p));
-        return m;
+        return m.withDataDescName(visitAndCast(m.getDataDescName(), p));
     }
 
     @Override
     public Cobol.MoveCorrespondingToStatement visitMoveCorrespondingToStatement(Cobol.MoveCorrespondingToStatement moveCorrespondingToStatement, P p) {
         Cobol.MoveCorrespondingToStatement m = moveCorrespondingToStatement;
         m = m.withMoveCorrespondingToSendingArea(visitAndCast(m.getMoveCorrespondingToSendingArea(), p));
-        m = m.withIdentifiers(ListUtils.map(m.getIdentifiers(), it -> visitAndCast(it, p)));
-        return m;
+        return m.withIdentifiers(ListUtils.map(m.getIdentifiers(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.MoveStatement visitMoveStatement(Cobol.MoveStatement moveStatement, P p) {
         Cobol.MoveStatement m = moveStatement;
-        m = m.withMoveToStatement(visitAndCast(m.getMoveToStatement(), p));
-        return m;
+        return m.withMoveToStatement(visitAndCast(m.getMoveToStatement(), p));
     }
 
     @Override
     public Cobol.MoveToStatement visitMoveToStatement(Cobol.MoveToStatement moveToStatement, P p) {
         Cobol.MoveToStatement m = moveToStatement;
         m = m.withFrom(visitAndCast(m.getFrom(), p));
-        m = m.withNames(ListUtils.map(m.getNames(), it -> visitAndCast(it, p)));
-        return m;
+        return m.withNames(ListUtils.map(m.getNames(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.MultDiv visitMultDiv(Cobol.MultDiv multDiv, P p) {
         Cobol.MultDiv m = multDiv;
-        m = m.withPowers(visitAndCast(m.getPowers(), p));
-        return m;
+        return m.withPowers(visitAndCast(m.getPowers(), p));
     }
 
     @Override
     public Cobol.MultDivs visitMultDivs(Cobol.MultDivs multDivs, P p) {
         Cobol.MultDivs m = multDivs;
         m = m.withPowers(visitAndCast(m.getPowers(), p));
-        m = m.withMultDivs(ListUtils.map(m.getMultDivs(), it -> visitAndCast(it, p)));
-        return m;
+        return m.withMultDivs(ListUtils.map(m.getMultDivs(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.MultipleFileClause visitMultipleFileClause(Cobol.MultipleFileClause multipleFileClause, P p) {
         Cobol.MultipleFileClause m = multipleFileClause;
-        m = m.withFilePositions(ListUtils.map(m.getFilePositions(), it -> visitAndCast(it, p)));
-        return m;
+        return m.withFilePositions(ListUtils.map(m.getFilePositions(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.MultipleFilePosition visitMultipleFilePosition(Cobol.MultipleFilePosition multipleFilePosition, P p) {
         Cobol.MultipleFilePosition m = multipleFilePosition;
         m = m.withFileName(visitAndCast(m.getFileName(), p));
-        m = m.withIntegerLiteral(visitAndCast(m.getIntegerLiteral(), p));
-        return m;
+        return m.withIntegerLiteral(visitAndCast(m.getIntegerLiteral(), p));
     }
 
     @Override
@@ -1571,81 +1394,70 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         m = m.withMultiplicand(visitAndCast(m.getMultiplicand(), p));
         m = m.withMultiply(visitAndCast(m.getMultiply(), p));
         m = m.withOnSizeErrorPhrase(visitAndCast(m.getOnSizeErrorPhrase(), p));
-        m = m.withNotOnSizeErrorPhrase(visitAndCast(m.getNotOnSizeErrorPhrase(), p));
-        return m;
+        return m.withNotOnSizeErrorPhrase(visitAndCast(m.getNotOnSizeErrorPhrase(), p));
     }
 
     @Override
     public Cobol.MultiplyGiving visitMultiplyGiving(Cobol.MultiplyGiving multiplyGiving, P p) {
         Cobol.MultiplyGiving m = multiplyGiving;
         m = m.withOperand(visitAndCast(m.getOperand(), p));
-        m = m.withResult(ListUtils.map(m.getResult(), it -> visitAndCast(it, p)));
-        return m;
+        return m.withResult(ListUtils.map(m.getResult(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.MultiplyRegular visitMultiplyRegular(Cobol.MultiplyRegular multiplyRegular, P p) {
         Cobol.MultiplyRegular m = multiplyRegular;
-        m = m.withOperand(ListUtils.map(m.getOperand(), it -> visitAndCast(it, p)));
-        return m;
+        return m.withOperand(ListUtils.map(m.getOperand(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.NextSentence visitNextSentence(Cobol.NextSentence nextSentence, P p) {
         Cobol.NextSentence n = nextSentence;
-        n = n.withWords(ListUtils.map(n.getWords(), it -> visitAndCast(it, p)));
-        return n;
+        return n.withWords(ListUtils.map(n.getWords(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.ObjectComputer visitObjectComputer(Cobol.ObjectComputer objectComputer, P p) {
         Cobol.ObjectComputer o = objectComputer;
-        o = o.withComputer(visitAndCast(o.getComputer(), p));
-        return o;
+        return o.withComputer(visitAndCast(o.getComputer(), p));
     }
 
     @Override
     public Cobol.ObjectComputerDefinition visitObjectComputerDefinition(Cobol.ObjectComputerDefinition objectComputerDefinition, P p) {
         Cobol.ObjectComputerDefinition o = objectComputerDefinition;
         o = o.withComputerName(visitAndCast(o.getComputerName(), p));
-        o = o.withSpecifications(ListUtils.map(o.getSpecifications(), it -> visitAndCast(it, p)));
-        return o;
+        return o.withSpecifications(ListUtils.map(o.getSpecifications(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.OdtClause visitOdtClause(Cobol.OdtClause odtClause, P p) {
         Cobol.OdtClause o = odtClause;
-        o = o.withMnemonicName(visitAndCast(o.getMnemonicName(), p));
-        return o;
+        return o.withMnemonicName(visitAndCast(o.getMnemonicName(), p));
     }
 
     @Override
     public Cobol.Open visitOpen(Cobol.Open open, P p) {
         Cobol.Open o = open;
-        o = o.withOpen(ListUtils.map(o.getOpen(), it -> visitAndCast(it, p)));
-        return o;
+        return o.withOpen(ListUtils.map(o.getOpen(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.Openable visitOpenable(Cobol.Openable openable, P p) {
         Cobol.Openable o = openable;
         o = o.withFileName(visitAndCast(o.getFileName(), p));
-        o = o.withFileName(visitAndCast(o.getFileName(), p));
-        return o;
+        return o.withFileName(visitAndCast(o.getFileName(), p));
     }
 
     @Override
     public Cobol.OpenInputOutputStatement visitOpenInputOutputStatement(Cobol.OpenInputOutputStatement openInputOutputStatement, P p) {
         Cobol.OpenInputOutputStatement o = openInputOutputStatement;
-        o = o.withOpenInput(ListUtils.map(o.getOpenInput(), it -> visitAndCast(it, p)));
-        return o;
+        return o.withOpenInput(ListUtils.map(o.getOpenInput(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.OpenIOExtendStatement visitOpenIOExtendStatement(Cobol.OpenIOExtendStatement openIOExtendStatement, P p) {
         Cobol.OpenIOExtendStatement o = openIOExtendStatement;
-        o = o.withFileNames(ListUtils.map(o.getFileNames(), it -> visitAndCast(it, p)));
-        return o;
+        return o.withFileNames(ListUtils.map(o.getFileNames(), it -> visitAndCast(it, p)));
     }
 
     @Override
@@ -1656,8 +1468,7 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
     @Override
     public Cobol.PaddingCharacterClause visitPaddingCharacterClause(Cobol.PaddingCharacterClause paddingCharacterClause, P p) {
         Cobol.PaddingCharacterClause pp = paddingCharacterClause;
-        pp = pp.withName(visitAndCast(pp.getName(), p));
-        return pp;
+        return pp.withName(visitAndCast(pp.getName(), p));
     }
 
     @Override
@@ -1665,52 +1476,45 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         Cobol.Paragraph pp = paragraph;
         pp = pp.withParagraphName(visitAndCast(pp.getParagraphName(), p));
         pp = pp.withAlteredGoTo(visitAndCast(pp.getAlteredGoTo(), p));
-        pp = pp.withSentences(ListUtils.map(pp.getSentences(), it -> visitAndCast(it, p)));
-        return pp;
+        return pp.withSentences(ListUtils.map(pp.getSentences(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.Paragraphs visitParagraphs(Cobol.Paragraphs paragraphs, P p) {
         Cobol.Paragraphs pp = paragraphs;
         pp = pp.withSentences(ListUtils.map(pp.getSentences(), it -> visitAndCast(it, p)));
-        pp = pp.withParagraphs(ListUtils.map(pp.getParagraphs(), it -> visitAndCast(it, p)));
-        return pp;
+        return pp.withParagraphs(ListUtils.map(pp.getParagraphs(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.Parenthesized visitParenthesized(Cobol.Parenthesized parenthesized, P p) {
         Cobol.Parenthesized pp = parenthesized;
-        pp = pp.withContents(ListUtils.map(pp.getContents(), it -> visitAndCast(it, p)));
-        return pp;
+        return pp.withContents(ListUtils.map(pp.getContents(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.PasswordClause visitPasswordClause(Cobol.PasswordClause passwordClause, P p) {
         Cobol.PasswordClause pp = passwordClause;
-        pp = pp.withDataName(visitAndCast(pp.getDataName(), p));
-        return pp;
+        return pp.withDataName(visitAndCast(pp.getDataName(), p));
     }
 
     @Override
     public Cobol.Perform visitPerform(Cobol.Perform perform, P p) {
         Cobol.Perform pp = perform;
-        pp = pp.withStatement(visitAndCast(pp.getStatement(), p));
-        return pp;
+        return pp.withStatement(visitAndCast(pp.getStatement(), p));
     }
 
     @Override
     public Cobol.Performable visitPerformable(Cobol.Performable performable, P p) {
         Cobol.Performable pp = performable;
-        pp = pp.withExpression(visitAndCast(pp.getExpression(), p));
-        return pp;
+        return pp.withExpression(visitAndCast(pp.getExpression(), p));
     }
 
     @Override
     public Cobol.PerformInlineStatement visitPerformInlineStatement(Cobol.PerformInlineStatement performInlineStatement, P p) {
         Cobol.PerformInlineStatement pp = performInlineStatement;
         pp = pp.withPerformType(visitAndCast(pp.getPerformType(), p));
-        pp = pp.withStatements(ListUtils.map(pp.getStatements(), it -> visitAndCast(it, p)));
-        return pp;
+        return pp.withStatements(ListUtils.map(pp.getStatements(), it -> visitAndCast(it, p)));
     }
 
     @Override
@@ -1718,8 +1522,7 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         Cobol.PerformProcedureStatement pp = performProcedureStatement;
         pp = pp.withProcedureName(visitAndCast(pp.getProcedureName(), p));
         pp = pp.withThroughProcedure(visitAndCast(pp.getThroughProcedure(), p));
-        pp = pp.withPerformType(visitAndCast(pp.getPerformType(), p));
-        return pp;
+        return pp.withPerformType(visitAndCast(pp.getPerformType(), p));
     }
 
     @Override
@@ -1730,31 +1533,27 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
     @Override
     public Cobol.PerformTimes visitPerformTimes(Cobol.PerformTimes performTimes, P p) {
         Cobol.PerformTimes pp = performTimes;
-        pp = pp.withValue(visitAndCast(pp.getValue(), p));
-        return pp;
+        return pp.withValue(visitAndCast(pp.getValue(), p));
     }
 
     @Override
     public Cobol.PerformUntil visitPerformUntil(Cobol.PerformUntil performUntil, P p) {
         Cobol.PerformUntil pp = performUntil;
         pp = pp.withPerformTestClause(visitAndCast(pp.getPerformTestClause(), p));
-        pp = pp.withCondition(visitAndCast(pp.getCondition(), p));
-        return pp;
+        return pp.withCondition(visitAndCast(pp.getCondition(), p));
     }
 
     @Override
     public Cobol.PerformVarying visitPerformVarying(Cobol.PerformVarying performVarying, P p) {
         Cobol.PerformVarying pp = performVarying;
-        pp = pp.withCobols(ListUtils.map(pp.getCobols(), it -> visitAndCast(it, p)));
-        return pp;
+        return pp.withCobols(ListUtils.map(pp.getCobols(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.PerformVaryingClause visitPerformVaryingClause(Cobol.PerformVaryingClause performVaryingClause, P p) {
         Cobol.PerformVaryingClause pp = performVaryingClause;
         pp = pp.withPerformVaryingPhrase(visitAndCast(pp.getPerformVaryingPhrase(), p));
-        pp = pp.withPerformAfter(ListUtils.map(pp.getPerformAfter(), it -> visitAndCast(it, p)));
-        return pp;
+        return pp.withPerformAfter(ListUtils.map(pp.getPerformAfter(), it -> visitAndCast(it, p)));
     }
 
     @Override
@@ -1763,45 +1562,39 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         pp = pp.withName(visitAndCast(pp.getName(), p));
         pp = pp.withFrom(visitAndCast(pp.getFrom(), p));
         pp = pp.withBy(visitAndCast(pp.getBy(), p));
-        pp = pp.withUntil(visitAndCast(pp.getUntil(), p));
-        return pp;
+        return pp.withUntil(visitAndCast(pp.getUntil(), p));
     }
 
     @Override
     public Cobol.Picture visitPicture(Cobol.Picture picture, P p) {
         Cobol.Picture pp = picture;
         pp = pp.withWords(ListUtils.map(pp.getWords(), it -> visitAndCast(it, p)));
-        pp = pp.withParenthesized(visitAndCast(pp.getParenthesized(), p));
-        return pp;
+        return pp.withParenthesized(visitAndCast(pp.getParenthesized(), p));
     }
 
     @Override
     public Cobol.PictureString visitPictureString(Cobol.PictureString pictureString, P p) {
         Cobol.PictureString pp = pictureString;
-        pp = pp.withPictures(ListUtils.map(pp.getPictures(), it -> visitAndCast(it, p)));
-        return pp;
+        return pp.withPictures(ListUtils.map(pp.getPictures(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.PlusMinus visitPlusMinus(Cobol.PlusMinus plusMinus, P p) {
         Cobol.PlusMinus pp = plusMinus;
-        pp = pp.withMultDivs(visitAndCast(pp.getMultDivs(), p));
-        return pp;
+        return pp.withMultDivs(visitAndCast(pp.getMultDivs(), p));
     }
 
     @Override
     public Cobol.Power visitPower(Cobol.Power power, P p) {
         Cobol.Power pp = power;
-        pp = pp.withExpression(visitAndCast(pp.getExpression(), p));
-        return pp;
+        return pp.withExpression(visitAndCast(pp.getExpression(), p));
     }
 
     @Override
     public Cobol.Powers visitPowers(Cobol.Powers powers, P p) {
         Cobol.Powers pp = powers;
         pp = pp.withExpression(visitAndCast(pp.getExpression(), p));
-        pp = pp.withPowers(ListUtils.map(pp.getPowers(), it -> visitAndCast(it, p)));
-        return pp;
+        return pp.withPowers(ListUtils.map(pp.getPowers(), it -> visitAndCast(it, p)));
     }
 
     @Override
@@ -1809,15 +1602,13 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         Cobol.ProcedureDeclarative pp = procedureDeclarative;
         pp = pp.withProcedureSectionHeader(visitAndCast(pp.getProcedureSectionHeader(), p));
         pp = pp.withUseStatement(visitAndCast(pp.getUseStatement(), p));
-        pp = pp.withParagraphs(visitAndCast(pp.getParagraphs(), p));
-        return pp;
+        return pp.withParagraphs(visitAndCast(pp.getParagraphs(), p));
     }
 
     @Override
     public Cobol.ProcedureDeclaratives visitProcedureDeclaratives(Cobol.ProcedureDeclaratives procedureDeclaratives, P p) {
         Cobol.ProcedureDeclaratives pp = procedureDeclaratives;
-        pp = pp.withProcedureDeclarative(ListUtils.map(pp.getProcedureDeclarative(), it -> visitAndCast(it, p)));
-        return pp;
+        return pp.withProcedureDeclarative(ListUtils.map(pp.getProcedureDeclarative(), it -> visitAndCast(it, p)));
     }
 
     @Override
@@ -1826,51 +1617,44 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         pp = pp.withProcedureDivisionUsingClause(visitAndCast(pp.getProcedureDivisionUsingClause(), p));
         pp = pp.withProcedureDivisionGivingClause(visitAndCast(pp.getProcedureDivisionGivingClause(), p));
         pp = pp.withProcedureDeclaratives(visitAndCast(pp.getProcedureDeclaratives(), p));
-        pp = pp.withBody(visitAndCast(pp.getBody(), p));
-        return pp;
+        return pp.withBody(visitAndCast(pp.getBody(), p));
     }
 
     @Override
     public Cobol.ProcedureDivisionBody visitProcedureDivisionBody(Cobol.ProcedureDivisionBody procedureDivisionBody, P p) {
         Cobol.ProcedureDivisionBody pp = procedureDivisionBody;
         pp = pp.withParagraphs(visitAndCast(pp.getParagraphs(), p));
-        pp = pp.withProcedureSection(ListUtils.map(pp.getProcedureSection(), it -> visitAndCast(it, p)));
-        return pp;
+        return pp.withProcedureSection(ListUtils.map(pp.getProcedureSection(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.ProcedureDivisionByReference visitProcedureDivisionByReference(Cobol.ProcedureDivisionByReference procedureDivisionByReference, P p) {
         Cobol.ProcedureDivisionByReference pp = procedureDivisionByReference;
-        pp = pp.withReference(visitAndCast(pp.getReference(), p));
-        return pp;
+        return pp.withReference(visitAndCast(pp.getReference(), p));
     }
 
     @Override
     public Cobol.ProcedureDivisionByReferencePhrase visitProcedureDivisionByReferencePhrase(Cobol.ProcedureDivisionByReferencePhrase procedureDivisionByReferencePhrase, P p) {
         Cobol.ProcedureDivisionByReferencePhrase pp = procedureDivisionByReferencePhrase;
-        pp = pp.withProcedureDivisionByReference(ListUtils.map(pp.getProcedureDivisionByReference(), it -> visitAndCast(it, p)));
-        return pp;
+        return pp.withProcedureDivisionByReference(ListUtils.map(pp.getProcedureDivisionByReference(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.ProcedureDivisionByValuePhrase visitProcedureDivisionByValuePhrase(Cobol.ProcedureDivisionByValuePhrase procedureDivisionByValuePhrase, P p) {
         Cobol.ProcedureDivisionByValuePhrase pp = procedureDivisionByValuePhrase;
-        pp = pp.withPhrases(ListUtils.map(pp.getPhrases(), it -> visitAndCast(it, p)));
-        return pp;
+        return pp.withPhrases(ListUtils.map(pp.getPhrases(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.ProcedureDivisionGivingClause visitProcedureDivisionGivingClause(Cobol.ProcedureDivisionGivingClause procedureDivisionGivingClause, P p) {
         Cobol.ProcedureDivisionGivingClause pp = procedureDivisionGivingClause;
-        pp = pp.withDataName(visitAndCast(pp.getDataName(), p));
-        return pp;
+        return pp.withDataName(visitAndCast(pp.getDataName(), p));
     }
 
     @Override
     public Cobol.ProcedureDivisionUsingClause visitProcedureDivisionUsingClause(Cobol.ProcedureDivisionUsingClause procedureDivisionUsingClause, P p) {
         Cobol.ProcedureDivisionUsingClause pp = procedureDivisionUsingClause;
-        pp = pp.withProcedureDivisionUsingParameter(ListUtils.map(pp.getProcedureDivisionUsingParameter(), it -> visitAndCast(it, p)));
-        return pp;
+        return pp.withProcedureDivisionUsingParameter(ListUtils.map(pp.getProcedureDivisionUsingParameter(), it -> visitAndCast(it, p)));
     }
 
     @Override
@@ -1878,39 +1662,34 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         Cobol.ProcedureName pp = procedureName;
         pp = pp.withParagraphName(visitAndCast(pp.getParagraphName(), p));
         pp = pp.withInSection(visitAndCast(pp.getInSection(), p));
-        pp = pp.withSectionName(visitAndCast(pp.getSectionName(), p));
-        return pp;
+        return pp.withSectionName(visitAndCast(pp.getSectionName(), p));
     }
 
     @Override
     public Cobol.ProcedureSection visitProcedureSection(Cobol.ProcedureSection procedureSection, P p) {
         Cobol.ProcedureSection pp = procedureSection;
         pp = pp.withProcedureSectionHeader(visitAndCast(pp.getProcedureSectionHeader(), p));
-        pp = pp.withParagraphs(visitAndCast(pp.getParagraphs(), p));
-        return pp;
+        return pp.withParagraphs(visitAndCast(pp.getParagraphs(), p));
     }
 
     @Override
     public Cobol.ProcedureSectionHeader visitProcedureSectionHeader(Cobol.ProcedureSectionHeader procedureSectionHeader, P p) {
         Cobol.ProcedureSectionHeader pp = procedureSectionHeader;
         pp = pp.withSectionName(visitAndCast(pp.getSectionName(), p));
-        pp = pp.withIdentifier(visitAndCast(pp.getIdentifier(), p));
-        return pp;
+        return pp.withIdentifier(visitAndCast(pp.getIdentifier(), p));
     }
 
     @Override
     public Cobol.ProgramIdParagraph visitProgramIdParagraph(Cobol.ProgramIdParagraph programIdParagraph, P p) {
         Cobol.ProgramIdParagraph pp = programIdParagraph;
         pp = pp.withProgramName(visitAndCast(pp.getProgramName(), p));
-        pp = pp.withCommentEntry(visitAndCast(pp.getCommentEntry(), p));
-        return pp;
+        return pp.withCommentEntry(visitAndCast(pp.getCommentEntry(), p));
     }
 
     @Override
     public Cobol.ProgramLibrarySection visitProgramLibrarySection(Cobol.ProgramLibrarySection programLibrarySection, P p) {
         Cobol.ProgramLibrarySection pp = programLibrarySection;
-        pp = pp.withLibraryDescriptionEntries(ListUtils.map(pp.getLibraryDescriptionEntries(), it -> visitAndCast(it, p)));
-        return pp;
+        return pp.withLibraryDescriptionEntries(ListUtils.map(pp.getLibraryDescriptionEntries(), it -> visitAndCast(it, p)));
     }
 
     @Override
@@ -1921,22 +1700,19 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         pp = pp.withDataDivision(visitAndCast(pp.getDataDivision(), p));
         pp = pp.withProcedureDivision(visitAndCast(pp.getProcedureDivision(), p));
         pp = pp.withProgramUnits(ListUtils.map(pp.getProgramUnits(), it -> visitAndCast(it, p)));
-        pp = pp.withEndProgram(visitAndCast(pp.getEndProgram(), p));
-        return pp;
+        return pp.withEndProgram(visitAndCast(pp.getEndProgram(), p));
     }
 
     @Override
     public Cobol.Purge visitPurge(Cobol.Purge purge, P p) {
         Cobol.Purge pp = purge;
-        pp = pp.withNames(ListUtils.map(pp.getNames(), it -> visitAndCast(it, p)));
-        return pp;
+        return pp.withNames(ListUtils.map(pp.getNames(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.QualifiedDataName visitQualifiedDataName(Cobol.QualifiedDataName qualifiedDataName, P p) {
         Cobol.QualifiedDataName q = qualifiedDataName;
-        q = q.withDataName(visitAndCast(q.getDataName(), p));
-        return q;
+        return q.withDataName(visitAndCast(q.getDataName(), p));
     }
 
     @Override
@@ -1944,38 +1720,33 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         Cobol.QualifiedDataNameFormat1 q = qualifiedDataNameFormat1;
         q = q.withName(visitAndCast(q.getName(), p));
         q = q.withQualifiedInData(ListUtils.map(q.getQualifiedInData(), it -> visitAndCast(it, p)));
-        q = q.withInFile(visitAndCast(q.getInFile(), p));
-        return q;
+        return q.withInFile(visitAndCast(q.getInFile(), p));
     }
 
     @Override
     public Cobol.QualifiedDataNameFormat2 visitQualifiedDataNameFormat2(Cobol.QualifiedDataNameFormat2 qualifiedDataNameFormat2, P p) {
         Cobol.QualifiedDataNameFormat2 q = qualifiedDataNameFormat2;
         q = q.withParagraphName(visitAndCast(q.getParagraphName(), p));
-        q = q.withInSection(visitAndCast(q.getInSection(), p));
-        return q;
+        return q.withInSection(visitAndCast(q.getInSection(), p));
     }
 
     @Override
     public Cobol.QualifiedDataNameFormat3 visitQualifiedDataNameFormat3(Cobol.QualifiedDataNameFormat3 qualifiedDataNameFormat3, P p) {
         Cobol.QualifiedDataNameFormat3 q = qualifiedDataNameFormat3;
         q = q.withTextName(visitAndCast(q.getTextName(), p));
-        q = q.withInLibrary(visitAndCast(q.getInLibrary(), p));
-        return q;
+        return q.withInLibrary(visitAndCast(q.getInLibrary(), p));
     }
 
     @Override
     public Cobol.QualifiedDataNameFormat4 visitQualifiedDataNameFormat4(Cobol.QualifiedDataNameFormat4 qualifiedDataNameFormat4, P p) {
         Cobol.QualifiedDataNameFormat4 q = qualifiedDataNameFormat4;
-        q = q.withInFile(visitAndCast(q.getInFile(), p));
-        return q;
+        return q.withInFile(visitAndCast(q.getInFile(), p));
     }
 
     @Override
     public Cobol.QualifiedInData visitQualifiedInData(Cobol.QualifiedInData qualifiedInData, P p) {
         Cobol.QualifiedInData q = qualifiedInData;
-        q = q.withIn(visitAndCast(q.getIn(), p));
-        return q;
+        return q.withIn(visitAndCast(q.getIn(), p));
     }
 
     @Override
@@ -1988,22 +1759,19 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         r = r.withInvalidKeyPhrase(visitAndCast(r.getInvalidKeyPhrase(), p));
         r = r.withNotInvalidKeyPhrase(visitAndCast(r.getNotInvalidKeyPhrase(), p));
         r = r.withAtEndPhrase(visitAndCast(r.getAtEndPhrase(), p));
-        r = r.withNotAtEndPhrase(visitAndCast(r.getNotAtEndPhrase(), p));
-        return r;
+        return r.withNotAtEndPhrase(visitAndCast(r.getNotAtEndPhrase(), p));
     }
 
     @Override
     public Cobol.ReadInto visitReadInto(Cobol.ReadInto readInto, P p) {
         Cobol.ReadInto r = readInto;
-        r = r.withIdentifier(visitAndCast(r.getIdentifier(), p));
-        return r;
+        return r.withIdentifier(visitAndCast(r.getIdentifier(), p));
     }
 
     @Override
     public Cobol.ReadKey visitReadKey(Cobol.ReadKey readKey, P p) {
         Cobol.ReadKey r = readKey;
-        r = r.withQualifiedDataName(visitAndCast(r.getQualifiedDataName(), p));
-        return r;
+        return r.withQualifiedDataName(visitAndCast(r.getQualifiedDataName(), p));
     }
 
     @Override
@@ -2014,8 +1782,7 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
     @Override
     public Cobol.Receivable visitReceivable(Cobol.Receivable receivable, P p) {
         Cobol.Receivable r = receivable;
-        r = r.withValue(visitAndCast(r.getValue(), p));
-        return r;
+        return r.withValue(visitAndCast(r.getValue(), p));
     }
 
     @Override
@@ -2023,15 +1790,13 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         Cobol.Receive r = receive;
         r = r.withFromOrInto(visitAndCast(r.getFromOrInto(), p));
         r = r.withOnExceptionClause(visitAndCast(r.getOnExceptionClause(), p));
-        r = r.withNotOnExceptionClause(visitAndCast(r.getNotOnExceptionClause(), p));
-        return r;
+        return r.withNotOnExceptionClause(visitAndCast(r.getNotOnExceptionClause(), p));
     }
 
     @Override
     public Cobol.ReceiveFrom visitReceiveFrom(Cobol.ReceiveFrom receiveFrom, P p) {
         Cobol.ReceiveFrom r = receiveFrom;
-        r = r.withDataName(visitAndCast(r.getDataName(), p));
-        return r;
+        return r.withDataName(visitAndCast(r.getDataName(), p));
     }
 
     @Override
@@ -2039,8 +1804,7 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         Cobol.ReceiveFromStatement r = receiveFromStatement;
         r = r.withDataName(visitAndCast(r.getDataName(), p));
         r = r.withReceiveFrom(visitAndCast(r.getReceiveFrom(), p));
-        r = r.withBeforeWithThreadSizeStatus(ListUtils.map(r.getBeforeWithThreadSizeStatus(), it -> visitAndCast(it, p)));
-        return r;
+        return r.withBeforeWithThreadSizeStatus(ListUtils.map(r.getBeforeWithThreadSizeStatus(), it -> visitAndCast(it, p)));
     }
 
     @Override
@@ -2049,8 +1813,7 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         r = r.withCdName(visitAndCast(r.getCdName(), p));
         r = r.withIdentifier(visitAndCast(r.getIdentifier(), p));
         r = r.withReceiveNoData(visitAndCast(r.getReceiveNoData(), p));
-        r = r.withReceiveWithData(visitAndCast(r.getReceiveWithData(), p));
-        return r;
+        return r.withReceiveWithData(visitAndCast(r.getReceiveWithData(), p));
     }
 
     @Override
@@ -2061,68 +1824,59 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
     @Override
     public Cobol.RecordContainsClause visitRecordContainsClause(Cobol.RecordContainsClause recordContainsClause, P p) {
         Cobol.RecordContainsClause r = recordContainsClause;
-        r = r.withClause(visitAndCast(r.getClause(), p));
-        return r;
+        return r.withClause(visitAndCast(r.getClause(), p));
     }
 
     @Override
     public Cobol.RecordContainsClauseFormat1 visitRecordContainsClauseFormat1(Cobol.RecordContainsClauseFormat1 recordContainsClauseFormat1, P p) {
         Cobol.RecordContainsClauseFormat1 r = recordContainsClauseFormat1;
-        r = r.withIntegerLiteral(visitAndCast(r.getIntegerLiteral(), p));
-        return r;
+        return r.withIntegerLiteral(visitAndCast(r.getIntegerLiteral(), p));
     }
 
     @Override
     public Cobol.RecordContainsClauseFormat2 visitRecordContainsClauseFormat2(Cobol.RecordContainsClauseFormat2 recordContainsClauseFormat2, P p) {
         Cobol.RecordContainsClauseFormat2 r = recordContainsClauseFormat2;
         r = r.withFromClause(ListUtils.map(r.getFromClause(), it -> visitAndCast(it, p)));
-        r = r.withQualifiedDataName(ListUtils.map(r.getQualifiedDataName(), it -> visitAndCast(it, p)));
-        return r;
+        return r.withQualifiedDataName(ListUtils.map(r.getQualifiedDataName(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.RecordContainsClauseFormat3 visitRecordContainsClauseFormat3(Cobol.RecordContainsClauseFormat3 recordContainsClauseFormat3, P p) {
         Cobol.RecordContainsClauseFormat3 r = recordContainsClauseFormat3;
         r = r.withIntegerLiteral(visitAndCast(r.getIntegerLiteral(), p));
-        r = r.withRecordContainsTo(visitAndCast(r.getRecordContainsTo(), p));
-        return r;
+        return r.withRecordContainsTo(visitAndCast(r.getRecordContainsTo(), p));
     }
 
     @Override
     public Cobol.RecordContainsTo visitRecordContainsTo(Cobol.RecordContainsTo recordContainsTo, P p) {
         Cobol.RecordContainsTo r = recordContainsTo;
-        r = r.withIntegerLiteral(visitAndCast(r.getIntegerLiteral(), p));
-        return r;
+        return r.withIntegerLiteral(visitAndCast(r.getIntegerLiteral(), p));
     }
 
     @Override
     public Cobol.RecordDelimiterClause visitRecordDelimiterClause(Cobol.RecordDelimiterClause recordDelimiterClause, P p) {
         Cobol.RecordDelimiterClause r = recordDelimiterClause;
-        r = r.withName(visitAndCast(r.getName(), p));
-        return r;
+        return r.withName(visitAndCast(r.getName(), p));
     }
 
     @Override
     public Cobol.RecordingModeClause visitRecordingModeClause(Cobol.RecordingModeClause recordingModeClause, P p) {
         Cobol.RecordingModeClause r = recordingModeClause;
-        r = r.withMode(visitAndCast(r.getMode(), p));
-        return r;
+        return r.withMode(visitAndCast(r.getMode(), p));
     }
 
     @Override
     public Cobol.RecordKeyClause visitRecordKeyClause(Cobol.RecordKeyClause recordKeyClause, P p) {
         Cobol.RecordKeyClause r = recordKeyClause;
         r = r.withQualifiedDataName(visitAndCast(r.getQualifiedDataName(), p));
-        r = r.withPasswordClause(visitAndCast(r.getPasswordClause(), p));
-        return r;
+        return r.withPasswordClause(visitAndCast(r.getPasswordClause(), p));
     }
 
     @Override
     public Cobol.ReferenceModifier visitReferenceModifier(Cobol.ReferenceModifier referenceModifier, P p) {
         Cobol.ReferenceModifier r = referenceModifier;
         r = r.withCharacterPosition(visitAndCast(r.getCharacterPosition(), p));
-        r = r.withLength(visitAndCast(r.getLength(), p));
-        return r;
+        return r.withLength(visitAndCast(r.getLength(), p));
     }
 
     @Override
@@ -2135,8 +1889,7 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         Cobol.RelationArithmeticComparison r = relationArithmeticComparison;
         r = r.withArithmeticExpressionA(visitAndCast(r.getArithmeticExpressionA(), p));
         r = r.withRelationalOperator(visitAndCast(r.getRelationalOperator(), p));
-        r = r.withArithmeticExpressionB(visitAndCast(r.getArithmeticExpressionB(), p));
-        return r;
+        return r.withArithmeticExpressionB(visitAndCast(r.getArithmeticExpressionB(), p));
     }
 
     @Override
@@ -2144,52 +1897,45 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         Cobol.RelationCombinedComparison r = relationCombinedComparison;
         r = r.withArithmeticExpression(visitAndCast(r.getArithmeticExpression(), p));
         r = r.withRelationalOperator(visitAndCast(r.getRelationalOperator(), p));
-        r = r.withCombinedCondition(visitAndCast(r.getCombinedCondition(), p));
-        return r;
+        return r.withCombinedCondition(visitAndCast(r.getCombinedCondition(), p));
     }
 
     @Override
     public Cobol.RelationCombinedCondition visitRelationCombinedCondition(Cobol.RelationCombinedCondition relationCombinedCondition, P p) {
         Cobol.RelationCombinedCondition r = relationCombinedCondition;
-        r = r.withRelationalArithmeticExpressions(ListUtils.map(r.getRelationalArithmeticExpressions(), it -> visitAndCast(it, p)));
-        return r;
+        return r.withRelationalArithmeticExpressions(ListUtils.map(r.getRelationalArithmeticExpressions(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.RelationSignCondition visitRelationSignCondition(Cobol.RelationSignCondition relationSignCondition, P p) {
         Cobol.RelationSignCondition r = relationSignCondition;
-        r = r.withArithmeticExpression(visitAndCast(r.getArithmeticExpression(), p));
-        return r;
+        return r.withArithmeticExpression(visitAndCast(r.getArithmeticExpression(), p));
     }
 
     @Override
     public Cobol.RelativeKeyClause visitRelativeKeyClause(Cobol.RelativeKeyClause relativeKeyClause, P p) {
         Cobol.RelativeKeyClause r = relativeKeyClause;
-        r = r.withQualifiedDataName(visitAndCast(r.getQualifiedDataName(), p));
-        return r;
+        return r.withQualifiedDataName(visitAndCast(r.getQualifiedDataName(), p));
     }
 
     @Override
     public Cobol.Release visitRelease(Cobol.Release release, P p) {
         Cobol.Release r = release;
         r = r.withRecordName(visitAndCast(r.getRecordName(), p));
-        r = r.withQualifiedDataName(visitAndCast(r.getQualifiedDataName(), p));
-        return r;
+        return r.withQualifiedDataName(visitAndCast(r.getQualifiedDataName(), p));
     }
 
     @Override
     public Cobol.ReportClause visitReportClause(Cobol.ReportClause reportClause, P p) {
         Cobol.ReportClause r = reportClause;
-        r = r.withReportName(ListUtils.map(r.getReportName(), it -> visitAndCast(it, p)));
-        return r;
+        return r.withReportName(ListUtils.map(r.getReportName(), it -> visitAndCast(it, p)));
     }
 
     @Override
     public Cobol.ReportDescription visitReportDescription(Cobol.ReportDescription reportDescription, P p) {
         Cobol.ReportDescription r = reportDescription;
         r = r.withReportDescriptionEntry(visitAndCast(r.getReportDescriptionEntry(), p));
-        r = r.withGroupDescriptionEntries(ListUtils.map(r.getGroupDescriptionEntries(), it -> visitAndCast(it, p)));
-        return r;
+        return r.withGroupDescriptionEntries(ListUtils.map(r.getGroupDescriptionEntries(), it -> visitAndCast(it, p)));
     }
 
     @Override
@@ -2201,22 +1947,19 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         r = r.withReportDescriptionHeadingClause(visitAndCast(r.getReportDescriptionHeadingClause(), p));
         r = r.withReportDescriptionFirstDetailClause(visitAndCast(r.getReportDescriptionFirstDetailClause(), p));
         r = r.withReportDescriptionLastDetailClause(visitAndCast(r.getReportDescriptionLastDetailClause(), p));
-        r = r.withReportDescriptionFootingClause(visitAndCast(r.getReportDescriptionFootingClause(), p));
-        return r;
+        return r.withReportDescriptionFootingClause(visitAndCast(r.getReportDescriptionFootingClause(), p));
     }
 
     @Override
     public Cobol.ReportDescriptionFirstDetailClause visitReportDescriptionFirstDetailClause(Cobol.ReportDescriptionFirstDetailClause reportDescriptionFirstDetailClause, P p) {
         Cobol.ReportDescriptionFirstDetailClause r = reportDescriptionFirstDetailClause;
-        r = r.withDataName(visitAndCast(r.getDataName(), p));
-        return r;
+        return r.withDataName(visitAndCast(r.getDataName(), p));
     }
 
     @Override
     public Cobol.ReportDescriptionFootingClause visitReportDescriptionFootingClause(Cobol.ReportDescriptionFootingClause reportDescriptionFootingClause, P p) {
         Cobol.ReportDescriptionFootingClause r = reportDescriptionFootingClause;
-        r = r.withDataName(visitAndCast(r.getDataName(), p));
-        return r;
+        return r.withDataName(visitAndCast(r.getDataName(), p));
     }
 
     @Override
@@ -2227,22 +1970,19 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
     @Override
     public Cobol.ReportDescriptionHeadingClause visitReportDescriptionHeadingClause(Cobol.ReportDescriptionHeadingClause reportDescriptionHeadingClause, P p) {
         Cobol.ReportDescriptionHeadingClause r = reportDescriptionHeadingClause;
-        r = r.withDataName(visitAndCast(r.getDataName(), p));
-        return r;
+        return r.withDataName(visitAndCast(r.getDataName(), p));
     }
 
     @Override
     public Cobol.ReportDescriptionLastDetailClause visitReportDescriptionLastDetailClause(Cobol.ReportDescriptionLastDetailClause reportDescriptionLastDetailClause, P p) {
         Cobol.ReportDescriptionLastDetailClause r = reportDescriptionLastDetailClause;
-        r = r.withDataName(visitAndCast(r.getDataName(), p));
-        return r;
+        return r.withDataName(visitAndCast(r.getDataName(), p));
     }
 
     @Override
     public Cobol.ReportDescriptionPageLimitClause visitReportDescriptionPageLimitClause(Cobol.ReportDescriptionPageLimitClause reportDescriptionPageLimitClause, P p) {
         Cobol.ReportDescriptionPageLimitClause r = reportDescriptionPageLimitClause;
-        r = r.withIntegerLiteral(visitAndCast(r.getIntegerLiteral(), p));
-        return r;
+        return r.withIntegerLiteral(visitAndCast(r.getIntegerLiteral(), p));
     }
 
     @Override
@@ -2253,8 +1993,7 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
     @Override
     public Cobol.ReportGroupColumnNumberClause visitReportGroupColumnNumberClause(Cobol.ReportGroupColumnNumberClause reportGroupColumnNumberClause, P p) {
         Cobol.ReportGroupColumnNumberClause r = reportGroupColumnNumberClause;
-        r = r.withDataName(visitAndCast(r.getDataName(), p));
-        return r;
+        return r.withDataName(visitAndCast(r.getDataName(), p));
     }
 
     @Override
@@ -2265,8 +2004,7 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         r = r.withGroupLineNumberClause(visitAndCast(r.getGroupLineNumberClause(), p));
         r = r.withGroupNextGroupClause(visitAndCast(r.getGroupNextGroupClause(), p));
         r = r.withGroupTypeClause(visitAndCast(r.getGroupTypeClause(), p));
-        r = r.withGroupUsageClause(visitAndCast(r.getGroupUsageClause(), p));
-        return r;
+        return r.withGroupUsageClause(visitAndCast(r.getGroupUsageClause(), p));
     }
 
     @Override
@@ -2275,8 +2013,7 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         r = r.withIntegerLiteral(visitAndCast(r.getIntegerLiteral(), p));
         r = r.withDataName(visitAndCast(r.getDataName(), p));
         r = r.withReportGroupLineNumberClause(visitAndCast(r.getReportGroupLineNumberClause(), p));
-        r = r.withGroupUsageClause(visitAndCast(r.getGroupUsageClause(), p));
-        return r;
+        return r.withGroupUsageClause(visitAndCast(r.getGroupUsageClause(), p));
     }
 
     @Override
@@ -2284,8 +2021,7 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         Cobol.ReportGroupDescriptionEntryFormat3 r = reportGroupDescriptionEntryFormat3;
         r = r.withIntegerLiteral(visitAndCast(r.getIntegerLiteral(), p));
         r = r.withDataName(visitAndCast(r.getDataName(), p));
-        r = r.withClauses(ListUtils.map(r.getClauses(), c -> visitAndCast(c, p)));
-        return r;
+        return r.withClauses(ListUtils.map(r.getClauses(), c -> visitAndCast(c, p)));
     }
 
     @Override
@@ -2301,29 +2037,25 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
     @Override
     public Cobol.ReportGroupLineNumberClause visitReportGroupLineNumberClause(Cobol.ReportGroupLineNumberClause reportGroupLineNumberClause, P p) {
         Cobol.ReportGroupLineNumberClause r = reportGroupLineNumberClause;
-        r = r.withClause(visitAndCast(r.getClause(), p));
-        return r;
+        return r.withClause(visitAndCast(r.getClause(), p));
     }
 
     @Override
     public Cobol.ReportGroupLineNumberNextPage visitReportGroupLineNumberNextPage(Cobol.ReportGroupLineNumberNextPage reportGroupLineNumberNextPage, P p) {
         Cobol.ReportGroupLineNumberNextPage r = reportGroupLineNumberNextPage;
-        r = r.withIntegerLiteral(visitAndCast(r.getIntegerLiteral(), p));
-        return r;
+        return r.withIntegerLiteral(visitAndCast(r.getIntegerLiteral(), p));
     }
 
     @Override
     public Cobol.ReportGroupLineNumberPlus visitReportGroupLineNumberPlus(Cobol.ReportGroupLineNumberPlus reportGroupLineNumberPlus, P p) {
         Cobol.ReportGroupLineNumberPlus r = reportGroupLineNumberPlus;
-        r = r.withIntegerLiteral(visitAndCast(r.getIntegerLiteral(), p));
-        return r;
+        return r.withIntegerLiteral(visitAndCast(r.getIntegerLiteral(), p));
     }
 
     @Override
     public Cobol.ReportGroupNextGroupClause visitReportGroupNextGroupClause(Cobol.ReportGroupNextGroupClause reportGroupNextGroupClause, P p) {
         Cobol.ReportGroupNextGroupClause r = reportGroupNextGroupClause;
-        r = r.withClause(visitAndCast(r.getClause(), p));
-        return r;
+        return r.withClause(visitAndCast(r.getClause(), p));
     }
 
     @Override
@@ -2334,22 +2066,19 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
     @Override
     public Cobol.ReportGroupNextGroupPlus visitReportGroupNextGroupPlus(Cobol.ReportGroupNextGroupPlus reportGroupNextGroupPlus, P p) {
         Cobol.ReportGroupNextGroupPlus r = reportGroupNextGroupPlus;
-        r = r.withIntegerLiteral(visitAndCast(r.getIntegerLiteral(), p));
-        return r;
+        return r.withIntegerLiteral(visitAndCast(r.getIntegerLiteral(), p));
     }
 
     @Override
     public Cobol.ReportGroupPictureClause visitReportGroupPictureClause(Cobol.ReportGroupPictureClause reportGroupPictureClause, P p) {
         Cobol.ReportGroupPictureClause r = reportGroupPictureClause;
-        r = r.withPictureString(visitAndCast(r.getPictureString(), p));
-        return r;
+        return r.withPictureString(visitAndCast(r.getPictureString(), p));
     }
 
     @Override
     public Cobol.ReportGroupResetClause visitReportGroupResetClause(Cobol.ReportGroupResetClause reportGroupResetClause, P p) {
         Cobol.ReportGroupResetClause r = reportGroupResetClause;
-        r = r.withDataName(visitAndCast(r.getDataName(), p));
-        return r;
+        return r.withDataName(visitAndCast(r.getDataName(), p));
     }
 
     @Override
@@ -2360,36 +2089,31 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
     @Override
     public Cobol.ReportGroupSourceClause visitReportGroupSourceClause(Cobol.ReportGroupSourceClause reportGroupSourceClause, P p) {
         Cobol.ReportGroupSourceClause r = reportGroupSourceClause;
-        r = r.withIdentifier(visitAndCast(r.getIdentifier(), p));
-        return r;
+        return r.withIdentifier(visitAndCast(r.getIdentifier(), p));
     }
 
     @Override
     public Cobol.ReportGroupSumClause visitReportGroupSumClause(Cobol.ReportGroupSumClause reportGroupSumClause, P p) {
         Cobol.ReportGroupSumClause r = reportGroupSumClause;
-        r = r.withCobols(ListUtils.map(r.getCobols(), c -> visitAndCast(c, p)));
-        return r;
+        return r.withCobols(ListUtils.map(r.getCobols(), c -> visitAndCast(c, p)));
     }
 
     @Override
     public Cobol.ReportGroupTypeClause visitReportGroupTypeClause(Cobol.ReportGroupTypeClause reportGroupTypeClause, P p) {
         Cobol.ReportGroupTypeClause r = reportGroupTypeClause;
-        r = r.withType(visitAndCast(r.getType(), p));
-        return r;
+        return r.withType(visitAndCast(r.getType(), p));
     }
 
     @Override
     public Cobol.ReportGroupTypeControlFooting visitReportGroupTypeControlFooting(Cobol.ReportGroupTypeControlFooting reportGroupTypeControlFooting, P p) {
         Cobol.ReportGroupTypeControlFooting r = reportGroupTypeControlFooting;
-        r = r.withDataName(visitAndCast(r.getDataName(), p));
-        return r;
+        return r.withDataName(visitAndCast(r.getDataName(), p));
     }
 
     @Override
     public Cobol.ReportGroupTypeControlHeading visitReportGroupTypeControlHeading(Cobol.ReportGroupTypeControlHeading reportGroupTypeControlHeading, P p) {
         Cobol.ReportGroupTypeControlHeading r = reportGroupTypeControlHeading;
-        r = r.withDataName(visitAndCast(r.getDataName(), p));
-        return r;
+        return r.withDataName(visitAndCast(r.getDataName(), p));
     }
 
     @Override
@@ -2425,58 +2149,50 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
     @Override
     public Cobol.ReportGroupValueClause visitReportGroupValueClause(Cobol.ReportGroupValueClause reportGroupValueClause, P p) {
         Cobol.ReportGroupValueClause r = reportGroupValueClause;
-        r = r.withLiteral(visitAndCast(r.getLiteral(), p));
-        return r;
+        return r.withLiteral(visitAndCast(r.getLiteral(), p));
     }
 
     @Override
     public Cobol.ReportName visitReportName(Cobol.ReportName reportName, P p) {
         Cobol.ReportName r = reportName;
-        r = r.withQualifiedDataName(visitAndCast(r.getQualifiedDataName(), p));
-        return r;
+        return r.withQualifiedDataName(visitAndCast(r.getQualifiedDataName(), p));
     }
 
     @Override
     public Cobol.ReportSection visitReportSection(Cobol.ReportSection reportSection, P p) {
         Cobol.ReportSection r = reportSection;
-        r = r.withDescriptions(ListUtils.map(r.getDescriptions(), d -> visitAndCast(d, p)));
-        return r;
+        return r.withDescriptions(ListUtils.map(r.getDescriptions(), d -> visitAndCast(d, p)));
     }
 
     @Override
     public Cobol.RerunClause visitRerunClause(Cobol.RerunClause rerunClause, P p) {
         Cobol.RerunClause r = rerunClause;
         r = r.withName(visitAndCast(r.getName(), p));
-        r = r.withAction(visitAndCast(r.getAction(), p));
-        return r;
+        return r.withAction(visitAndCast(r.getAction(), p));
     }
 
     @Override
     public Cobol.RerunEveryClock visitRerunEveryClock(Cobol.RerunEveryClock rerunEveryClock, P p) {
         Cobol.RerunEveryClock r = rerunEveryClock;
-        r = r.withIntegerLiteral(visitAndCast(r.getIntegerLiteral(), p));
-        return r;
+        return r.withIntegerLiteral(visitAndCast(r.getIntegerLiteral(), p));
     }
 
     @Override
     public Cobol.RerunEveryOf visitRerunEveryOf(Cobol.RerunEveryOf rerunEveryOf, P p) {
         Cobol.RerunEveryOf r = rerunEveryOf;
-        r = r.withFileName(visitAndCast(r.getFileName(), p));
-        return r;
+        return r.withFileName(visitAndCast(r.getFileName(), p));
     }
 
     @Override
     public Cobol.RerunEveryRecords visitRerunEveryRecords(Cobol.RerunEveryRecords rerunEveryRecords, P p) {
         Cobol.RerunEveryRecords r = rerunEveryRecords;
-        r = r.withIntegerLiteral(visitAndCast(r.getIntegerLiteral(), p));
-        return r;
+        return r.withIntegerLiteral(visitAndCast(r.getIntegerLiteral(), p));
     }
 
     @Override
     public Cobol.ReserveClause visitReserveClause(Cobol.ReserveClause reserveClause, P p) {
         Cobol.ReserveClause r = reserveClause;
-        r = r.withWords(ListUtils.map(r.getWords(), w -> visitAndCast(w, p)));
-        return r;
+        return r.withWords(ListUtils.map(r.getWords(), w -> visitAndCast(w, p)));
     }
 
     @Override
@@ -2490,15 +2206,13 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         r = r.withFileName(visitAndCast(r.getFileName(), p));
         r = r.withInto(visitAndCast(r.getInto(), p));
         r = r.withAtEndPhrase(visitAndCast(r.getAtEndPhrase(), p));
-        r = r.withNotAtEndPhrase(visitAndCast(r.getNotAtEndPhrase(), p));
-        return r;
+        return r.withNotAtEndPhrase(visitAndCast(r.getNotAtEndPhrase(), p));
     }
 
     @Override
     public Cobol.ReturnInto visitReturnInto(Cobol.ReturnInto returnInto, P p) {
         Cobol.ReturnInto r = returnInto;
-        r = r.withQualifiedDataName(visitAndCast(r.getQualifiedDataName(), p));
-        return r;
+        return r.withQualifiedDataName(visitAndCast(r.getQualifiedDataName(), p));
     }
 
     @Override
@@ -2507,29 +2221,25 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         r = r.withRecordName(visitAndCast(r.getRecordName(), p));
         r = r.withRewriteFrom(visitAndCast(r.getRewriteFrom(), p));
         r = r.withInvalidKeyPhrase(visitAndCast(r.getInvalidKeyPhrase(), p));
-        r = r.withNotInvalidKeyPhrase(visitAndCast(r.getNotInvalidKeyPhrase(), p));
-        return r;
+        return r.withNotInvalidKeyPhrase(visitAndCast(r.getNotInvalidKeyPhrase(), p));
     }
 
     @Override
     public Cobol.RewriteFrom visitRewriteFrom(Cobol.RewriteFrom rewriteFrom, P p) {
         Cobol.RewriteFrom r = rewriteFrom;
-        r = r.withIdentifier(visitAndCast(r.getIdentifier(), p));
-        return r;
+        return r.withIdentifier(visitAndCast(r.getIdentifier(), p));
     }
 
     @Override
     public Cobol.Roundable visitRoundable(Cobol.Roundable roundable, P p) {
         Cobol.Roundable r = roundable;
-        r = r.withIdentifier(visitAndCast(r.getIdentifier(), p));
-        return r;
+        return r.withIdentifier(visitAndCast(r.getIdentifier(), p));
     }
 
     @Override
     public Cobol.SameClause visitSameClause(Cobol.SameClause sameClause, P p) {
         Cobol.SameClause s = sameClause;
-        s = s.withFileNames(ListUtils.map(s.getFileNames(), f -> visitAndCast(f, p)));
-        return s;
+        return s.withFileNames(ListUtils.map(s.getFileNames(), f -> visitAndCast(f, p)));
     }
 
     @Override
@@ -2540,8 +2250,7 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
     @Override
     public Cobol.ScreenDescriptionBackgroundColorClause visitScreenDescriptionBackgroundColorClause(Cobol.ScreenDescriptionBackgroundColorClause screenDescriptionBackgroundColorClause, P p) {
         Cobol.ScreenDescriptionBackgroundColorClause s = screenDescriptionBackgroundColorClause;
-        s = s.withValue(visitAndCast(s.getValue(), p));
-        return s;
+        return s.withValue(visitAndCast(s.getValue(), p));
     }
 
     @Override
@@ -2567,23 +2276,20 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
     @Override
     public Cobol.ScreenDescriptionColumnClause visitScreenDescriptionColumnClause(Cobol.ScreenDescriptionColumnClause screenDescriptionColumnClause, P p) {
         Cobol.ScreenDescriptionColumnClause s = screenDescriptionColumnClause;
-        s = s.withValue(visitAndCast(s.getValue(), p));
-        return s;
+        return s.withValue(visitAndCast(s.getValue(), p));
     }
 
     @Override
     public Cobol.ScreenDescriptionControlClause visitScreenDescriptionControlClause(Cobol.ScreenDescriptionControlClause screenDescriptionControlClause, P p) {
         Cobol.ScreenDescriptionControlClause s = screenDescriptionControlClause;
-        s = s.withValue(visitAndCast(s.getValue(), p));
-        return s;
+        return s.withValue(visitAndCast(s.getValue(), p));
     }
 
     @Override
     public Cobol.ScreenDescriptionEntry visitScreenDescriptionEntry(Cobol.ScreenDescriptionEntry screenDescriptionEntry, P p) {
         Cobol.ScreenDescriptionEntry s = screenDescriptionEntry;
         s = s.withName(visitAndCast(s.getName(), p));
-        s = s.withClauses(ListUtils.map(s.getClauses(), c -> visitAndCast(c, p)));
-        return s;
+        return s.withClauses(ListUtils.map(s.getClauses(), c -> visitAndCast(c, p)));
     }
 
     @Override
@@ -2594,16 +2300,14 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
     @Override
     public Cobol.ScreenDescriptionForegroundColorClause visitScreenDescriptionForegroundColorClause(Cobol.ScreenDescriptionForegroundColorClause screenDescriptionForegroundColorClause, P p) {
         Cobol.ScreenDescriptionForegroundColorClause s = screenDescriptionForegroundColorClause;
-        s = s.withValue(visitAndCast(s.getValue(), p));
-        return s;
+        return s.withValue(visitAndCast(s.getValue(), p));
     }
 
     @Override
     public Cobol.ScreenDescriptionFromClause visitScreenDescriptionFromClause(Cobol.ScreenDescriptionFromClause screenDescriptionFromClause, P p) {
         Cobol.ScreenDescriptionFromClause s = screenDescriptionFromClause;
         s = s.withValue(visitAndCast(s.getValue(), p));
-        s = s.withScreenDescriptionToClause(visitAndCast(s.getScreenDescriptionToClause(), p));
-        return s;
+        return s.withScreenDescriptionToClause(visitAndCast(s.getScreenDescriptionToClause(), p));
     }
 
     @Override
@@ -2629,15 +2333,13 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
     @Override
     public Cobol.ScreenDescriptionLineClause visitScreenDescriptionLineClause(Cobol.ScreenDescriptionLineClause screenDescriptionLineClause, P p) {
         Cobol.ScreenDescriptionLineClause s = screenDescriptionLineClause;
-        s = s.withValue(visitAndCast(s.getValue(), p));
-        return s;
+        return s.withValue(visitAndCast(s.getValue(), p));
     }
 
     @Override
     public Cobol.ScreenDescriptionPictureClause visitScreenDescriptionPictureClause(Cobol.ScreenDescriptionPictureClause screenDescriptionPictureClause, P p) {
         Cobol.ScreenDescriptionPictureClause s = screenDescriptionPictureClause;
-        s = s.withPictureString(visitAndCast(s.getPictureString(), p));
-        return s;
+        return s.withPictureString(visitAndCast(s.getPictureString(), p));
     }
 
     @Override
@@ -2649,15 +2351,13 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
     public Cobol.ScreenDescriptionPromptClause visitScreenDescriptionPromptClause(Cobol.ScreenDescriptionPromptClause screenDescriptionPromptClause, P p) {
         Cobol.ScreenDescriptionPromptClause s = screenDescriptionPromptClause;
         s = s.withName(visitAndCast(s.getName(), p));
-        s = s.withScreenDescriptionPromptOccursClause(visitAndCast(s.getScreenDescriptionPromptOccursClause(), p));
-        return s;
+        return s.withScreenDescriptionPromptOccursClause(visitAndCast(s.getScreenDescriptionPromptOccursClause(), p));
     }
 
     @Override
     public Cobol.ScreenDescriptionPromptOccursClause visitScreenDescriptionPromptOccursClause(Cobol.ScreenDescriptionPromptOccursClause screenDescriptionPromptOccursClause, P p) {
         Cobol.ScreenDescriptionPromptOccursClause s = screenDescriptionPromptOccursClause;
-        s = s.withInteger(visitAndCast(s.getInteger(), p));
-        return s;
+        return s.withInteger(visitAndCast(s.getInteger(), p));
     }
 
     @Override
@@ -2678,22 +2378,19 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
     @Override
     public Cobol.ScreenDescriptionSizeClause visitScreenDescriptionSizeClause(Cobol.ScreenDescriptionSizeClause screenDescriptionSizeClause, P p) {
         Cobol.ScreenDescriptionSizeClause s = screenDescriptionSizeClause;
-        s = s.withValue(visitAndCast(s.getValue(), p));
-        return s;
+        return s.withValue(visitAndCast(s.getValue(), p));
     }
 
     @Override
     public Cobol.ScreenDescriptionToClause visitScreenDescriptionToClause(Cobol.ScreenDescriptionToClause screenDescriptionToClause, P p) {
         Cobol.ScreenDescriptionToClause s = screenDescriptionToClause;
-        s = s.withIdentifier(visitAndCast(s.getIdentifier(), p));
-        return s;
+        return s.withIdentifier(visitAndCast(s.getIdentifier(), p));
     }
 
     @Override
     public Cobol.ScreenDescriptionValueClause visitScreenDescriptionValueClause(Cobol.ScreenDescriptionValueClause screenDescriptionValueClause, P p) {
         Cobol.ScreenDescriptionValueClause s = screenDescriptionValueClause;
-        s = s.withValue(visitAndCast(s.getValue(), p));
-        return s;
+        return s.withValue(visitAndCast(s.getValue(), p));
     }
 
     @Override
@@ -2709,15 +2406,13 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
     @Override
     public Cobol.SearchVarying visitSearchVarying(Cobol.SearchVarying searchVarying, P p) {
         Cobol.SearchVarying s = searchVarying;
-        s = s.withQualifiedDataName(visitAndCast(s.getQualifiedDataName(), p));
-        return s;
+        return s.withQualifiedDataName(visitAndCast(s.getQualifiedDataName(), p));
     }
 
     @Override
     public Cobol.ScreenDescriptionUsingClause visitScreenDescriptionUsingClause(Cobol.ScreenDescriptionUsingClause screenDescriptionUsingClause, P p) {
         Cobol.ScreenDescriptionUsingClause s = screenDescriptionUsingClause;
-        s = s.withIdentifier(visitAndCast(s.getIdentifier(), p));
-        return s;
+        return s.withIdentifier(visitAndCast(s.getIdentifier(), p));
     }
 
     @Override
@@ -2726,8 +2421,7 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         s = s.withQualifiedDataName(visitAndCast(s.getQualifiedDataName(), p));
         s = s.withSearchVarying(visitAndCast(s.getSearchVarying(), p));
         s = s.withAtEndPhrase(visitAndCast(s.getAtEndPhrase(), p));
-        s = s.withSearchWhen(ListUtils.map(s.getSearchWhen(), e -> visitAndCast(e, p)));
-        return s;
+        return s.withSearchWhen(ListUtils.map(s.getSearchWhen(), e -> visitAndCast(e, p)));
     }
 
     @Override
@@ -2738,16 +2432,14 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
     @Override
     public Cobol.ScreenSection visitScreenSection(Cobol.ScreenSection screenSection, P p) {
         Cobol.ScreenSection s = screenSection;
-        s = s.withDescriptions(ListUtils.map(s.getDescriptions(), e -> visitAndCast(e, p)));
-        return s;
+        return s.withDescriptions(ListUtils.map(s.getDescriptions(), e -> visitAndCast(e, p)));
     }
 
     @Override
     public Cobol.SearchWhen visitSearchWhen(Cobol.SearchWhen searchWhen, P p) {
         Cobol.SearchWhen s = searchWhen;
         s = s.withCondition(visitAndCast(s.getCondition(), p));
-        s = s.withStatements(ListUtils.map(s.getStatements(), e -> visitAndCast(e, p)));
-        return s;
+        return s.withStatements(ListUtils.map(s.getStatements(), e -> visitAndCast(e, p)));
     }
 
     @Override
@@ -2755,52 +2447,45 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         Cobol.Send s = send;
         s = s.withStatement(visitAndCast(s.getStatement(), p));
         s = s.withOnExceptionClause(visitAndCast(s.getOnExceptionClause(), p));
-        s = s.withNotOnExceptionClause(visitAndCast(s.getNotOnExceptionClause(), p));
-        return s;
+        return s.withNotOnExceptionClause(visitAndCast(s.getNotOnExceptionClause(), p));
     }
 
     @Override
     public Cobol.SelectClause visitSelectClause(Cobol.SelectClause selectClause, P p) {
         Cobol.SelectClause s = selectClause;
-        s = s.withFileName(visitAndCast(s.getFileName(), p));
-        return s;
+        return s.withFileName(visitAndCast(s.getFileName(), p));
     }
 
     @Override
     public Cobol.SendAdvancingLines visitSendAdvancingLines(Cobol.SendAdvancingLines sendAdvancingLines, P p) {
         Cobol.SendAdvancingLines s = sendAdvancingLines;
-        s = s.withName(visitAndCast(s.getName(), p));
-        return s;
+        return s.withName(visitAndCast(s.getName(), p));
     }
 
     @Override
     public Cobol.SendPhrase visitSendPhrase(Cobol.SendPhrase sendPhrase, P p) {
         Cobol.SendPhrase s = sendPhrase;
-        s = s.withTarget(visitAndCast(s.getTarget(), p));
-        return s;
+        return s.withTarget(visitAndCast(s.getTarget(), p));
     }
 
     @Override
     public Cobol.Sentence visitSentence(Cobol.Sentence sentence, P p) {
         Cobol.Sentence s = sentence;
-        s = s.withStatements(ListUtils.map(s.getStatements(), e -> visitAndCast(e, p)));
-        return s;
+        return s.withStatements(ListUtils.map(s.getStatements(), e -> visitAndCast(e, p)));
     }
 
     @Override
     public Cobol.Set visitSet(Cobol.Set set, P p) {
         Cobol.Set s = set;
         s = s.withTo(ListUtils.map(s.getTo(), e -> visitAndCast(e, p)));
-        s = s.withUpDown(visitAndCast(s.getUpDown(), p));
-        return s;
+        return s.withUpDown(visitAndCast(s.getUpDown(), p));
     }
 
     @Override
     public Cobol.SetTo visitSetTo(Cobol.SetTo setTo, P p) {
         Cobol.SetTo s = setTo;
         s = s.withIdentifiers(ListUtils.map(s.getIdentifiers(), e -> visitAndCast(e, p)));
-        s = s.withValues(ListUtils.map(s.getValues(), e -> visitAndCast(e, p)));
-        return s;
+        return s.withValues(ListUtils.map(s.getValues(), e -> visitAndCast(e, p)));
     }
 
     @Override
@@ -2813,15 +2498,13 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         s = s.withSortInputProcedurePhrase(visitAndCast(s.getSortInputProcedurePhrase(), p));
         s = s.withSortUsing(ListUtils.map(s.getSortUsing(), e -> visitAndCast(e, p)));
         s = s.withSortOutputProcedurePhrase(visitAndCast(s.getSortOutputProcedurePhrase(), p));
-        s = s.withSortGiving(ListUtils.map(s.getSortGiving(), e -> visitAndCast(e, p)));
-        return s;
+        return s.withSortGiving(ListUtils.map(s.getSortGiving(), e -> visitAndCast(e, p)));
     }
 
     @Override
     public Cobol.Sortable visitSortable(Cobol.Sortable sortable, P p) {
         Cobol.Sortable s = sortable;
-        s = s.withNames(ListUtils.map(s.getNames(), e -> visitAndCast(e, p)));
-        return s;
+        return s.withNames(ListUtils.map(s.getNames(), e -> visitAndCast(e, p)));
     }
 
     @Override
@@ -2831,23 +2514,20 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         s = s.withSendFromPhrase(visitAndCast(s.getSendFromPhrase(), p));
         s = s.withSendWithPhrase(visitAndCast(s.getSendWithPhrase(), p));
         s = s.withSendReplacingPhrase(visitAndCast(s.getSendReplacingPhrase(), p));
-        s = s.withSendAdvancingPhrase(visitAndCast(s.getSendAdvancingPhrase(), p));
-        return s;
+        return s.withSendAdvancingPhrase(visitAndCast(s.getSendAdvancingPhrase(), p));
     }
 
     @Override
     public Cobol.SetUpDown visitSetUpDown(Cobol.SetUpDown setUpDown, P p) {
         Cobol.SetUpDown s = setUpDown;
         s = s.withTo(ListUtils.map(s.getTo(), e -> visitAndCast(e, p)));
-        s = s.withValue(visitAndCast(s.getValue(), p));
-        return s;
+        return s.withValue(visitAndCast(s.getValue(), p));
     }
 
     @Override
     public Cobol.SpecialNames visitSpecialNames(Cobol.SpecialNames specialNames, P p) {
         Cobol.SpecialNames s = specialNames;
-        s = s.withClauses(ListUtils.map(s.getClauses(), e -> visitAndCast(e, p)));
-        return s;
+        return s.withClauses(ListUtils.map(s.getClauses(), e -> visitAndCast(e, p)));
     }
 
     @Override
@@ -2855,23 +2535,20 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         Cobol.SortCollatingSequencePhrase s = sortCollatingSequencePhrase;
         s = s.withAlphabetNames(ListUtils.map(s.getAlphabetNames(), e -> visitAndCast(e, p)));
         s = s.withSortCollatingAlphanumeric(visitAndCast(s.getSortCollatingAlphanumeric(), p));
-        s = s.withSortCollatingNational(visitAndCast(s.getSortCollatingNational(), p));
-        return s;
+        return s.withSortCollatingNational(visitAndCast(s.getSortCollatingNational(), p));
     }
 
     @Override
     public Cobol.SortGiving visitSortGiving(Cobol.SortGiving sortGiving, P p) {
         Cobol.SortGiving s = sortGiving;
-        s = s.withFileName(visitAndCast(s.getFileName(), p));
-        return s;
+        return s.withFileName(visitAndCast(s.getFileName(), p));
     }
 
     @Override
     public Cobol.SortProcedurePhrase visitSortProcedurePhrase(Cobol.SortProcedurePhrase sortProcedurePhrase, P p) {
         Cobol.SortProcedurePhrase s = sortProcedurePhrase;
         s = s.withProcedureName(visitAndCast(s.getProcedureName(), p));
-        s = s.withSortInputThrough(visitAndCast(s.getSortInputThrough(), p));
-        return s;
+        return s.withSortInputThrough(visitAndCast(s.getSortInputThrough(), p));
     }
 
     @Override
@@ -2880,86 +2557,74 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         s = s.withFileName(visitAndCast(s.getFileName(), p));
         s = s.withStartKey(visitAndCast(s.getStartKey(), p));
         s = s.withInvalidKeyPhrase(visitAndCast(s.getInvalidKeyPhrase(), p));
-        s = s.withNotInvalidKeyPhrase(visitAndCast(s.getNotInvalidKeyPhrase(), p));
-        return s;
+        return s.withNotInvalidKeyPhrase(visitAndCast(s.getNotInvalidKeyPhrase(), p));
     }
 
     @Override
     public Cobol.SourceComputer visitSourceComputer(Cobol.SourceComputer sourceComputer, P p) {
         Cobol.SourceComputer s = sourceComputer;
-        s = s.withComputer(visitAndCast(s.getComputer(), p));
-        return s;
+        return s.withComputer(visitAndCast(s.getComputer(), p));
     }
 
     @Override
     public Cobol.StartKey visitStartKey(Cobol.StartKey startKey, P p) {
         Cobol.StartKey s = startKey;
-        s = s.withQualifiedDataName(visitAndCast(s.getQualifiedDataName(), p));
-        return s;
+        return s.withQualifiedDataName(visitAndCast(s.getQualifiedDataName(), p));
     }
 
     @Override
     public Cobol.SourceComputerDefinition visitSourceComputerDefinition(Cobol.SourceComputerDefinition sourceComputerDefinition, P p) {
         Cobol.SourceComputerDefinition s = sourceComputerDefinition;
-        s = s.withComputerName(visitAndCast(s.getComputerName(), p));
-        return s;
+        return s.withComputerName(visitAndCast(s.getComputerName(), p));
     }
 
     @Override
     public Cobol.Stop visitStop(Cobol.Stop stop, P p) {
         Cobol.Stop s = stop;
-        s = s.withStatement(visitAndCast(s.getStatement(), p));
-        return s;
+        return s.withStatement(visitAndCast(s.getStatement(), p));
     }
 
     @Override
     public Cobol.StatementPhrase visitStatementPhrase(Cobol.StatementPhrase statementPhrase, P p) {
         Cobol.StatementPhrase s = statementPhrase;
-        s = s.withStatements(ListUtils.map(s.getStatements(), e -> visitAndCast(e, p)));
-        return s;
+        return s.withStatements(ListUtils.map(s.getStatements(), e -> visitAndCast(e, p)));
     }
 
     @Override
     public Cobol.StatusKeyClause visitStatusKeyClause(Cobol.StatusKeyClause statusKeyClause, P p) {
         Cobol.StatusKeyClause s = statusKeyClause;
-        s = s.withName(visitAndCast(s.getName(), p));
-        return s;
+        return s.withName(visitAndCast(s.getName(), p));
     }
 
     @Override
     public Cobol.StopStatementGiving visitStopStatementGiving(Cobol.StopStatementGiving stopStatementGiving, P p) {
         Cobol.StopStatementGiving s = stopStatementGiving;
-        s = s.withName(visitAndCast(s.getName(), p));
-        return s;
+        return s.withName(visitAndCast(s.getName(), p));
     }
 
     @Override
     public Cobol.StringDelimitedByPhrase visitStringDelimitedByPhrase(Cobol.StringDelimitedByPhrase stringDelimitedByPhrase, P p) {
         Cobol.StringDelimitedByPhrase s = stringDelimitedByPhrase;
-        s = s.withIdentifier(visitAndCast(s.getIdentifier(), p));
-        return s;
+        return s.withIdentifier(visitAndCast(s.getIdentifier(), p));
     }
 
     @Override
     public Cobol.StringForPhrase visitStringForPhrase(Cobol.StringForPhrase stringForPhrase, P p) {
         Cobol.StringForPhrase s = stringForPhrase;
-        s = s.withIdentifier(visitAndCast(s.getIdentifier(), p));
-        return s;
+        return s.withIdentifier(visitAndCast(s.getIdentifier(), p));
     }
 
     @Override
     public Cobol.StringIntoPhrase visitStringIntoPhrase(Cobol.StringIntoPhrase stringIntoPhrase, P p) {
         Cobol.StringIntoPhrase s = stringIntoPhrase;
-        s = s.withIdentifier(visitAndCast(s.getIdentifier(), p));
-        return s;
+        return s.withIdentifier(visitAndCast(s.getIdentifier(), p));
     }
 
     @Override
     public Cobol.StringSendingPhrase visitStringSendingPhrase(Cobol.StringSendingPhrase stringSendingPhrase, P p) {
         Cobol.StringSendingPhrase s = stringSendingPhrase;
         s = s.withSendings(ListUtils.map(s.getSendings(), e -> visitAndCast(e, p)));
-        s = s.withPhrase(visitAndCast(s.getPhrase(), p));
-        return s;
+        return s.withPhrase(visitAndCast(s.getPhrase(), p));
     }
 
     @Override
@@ -2969,16 +2634,14 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         s = s.withStringIntoPhrase(visitAndCast(s.getStringIntoPhrase(), p));
         s = s.withStringWithPointerPhrase(visitAndCast(s.getStringWithPointerPhrase(), p));
         s = s.withOnOverflowPhrase(visitAndCast(s.getOnOverflowPhrase(), p));
-        s = s.withNotOnOverflowPhrase(visitAndCast(s.getNotOnOverflowPhrase(), p));
-        return s;
+        return s.withNotOnOverflowPhrase(visitAndCast(s.getNotOnOverflowPhrase(), p));
     }
 
     @Override
     public Cobol.Subscript visitSubscript(Cobol.Subscript subscript, P p) {
         Cobol.Subscript s = subscript;
         s = s.withFirst(visitAndCast(s.getFirst(), p));
-        s = s.withSecond(visitAndCast(s.getSecond(), p));
-        return s;
+        return s.withSecond(visitAndCast(s.getSecond(), p));
     }
 
     @Override
@@ -2986,23 +2649,20 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         Cobol.Subtract s = subtract;
         s = s.withOperation(visitAndCast(s.getOperation(), p));
         s = s.withOnSizeErrorPhrase(visitAndCast(s.getOnSizeErrorPhrase(), p));
-        s = s.withNotOnSizeErrorPhrase(visitAndCast(s.getOnSizeErrorPhrase(), p));
-        return s;
+        return s.withNotOnSizeErrorPhrase(visitAndCast(s.getOnSizeErrorPhrase(), p));
     }
 
     @Override
     public Cobol.StringWithPointerPhrase visitStringWithPointerPhrase(Cobol.StringWithPointerPhrase stringWithPointerPhrase, P p) {
         Cobol.StringWithPointerPhrase s = stringWithPointerPhrase;
-        s = s.withQualifiedDataName(visitAndCast(s.getQualifiedDataName(), p));
-        return s;
+        return s.withQualifiedDataName(visitAndCast(s.getQualifiedDataName(), p));
     }
 
     @Override
     public Cobol.SubtractCorrespondingStatement visitSubtractCorrespondingStatement(Cobol.SubtractCorrespondingStatement subtractCorrespondingStatement, P p) {
         Cobol.SubtractCorrespondingStatement s = subtractCorrespondingStatement;
         s = s.withQualifiedDataName(visitAndCast(s.getQualifiedDataName(), p));
-        s = s.withSubtractMinuendCorresponding(visitAndCast(s.getSubtractMinuendCorresponding(), p));
-        return s;
+        return s.withSubtractMinuendCorresponding(visitAndCast(s.getSubtractMinuendCorresponding(), p));
     }
 
     @Override
@@ -3010,74 +2670,64 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         Cobol.SubtractFromGivingStatement s = subtractFromGivingStatement;
         s = s.withSubtractSubtrahend(ListUtils.map(s.getSubtractSubtrahend(), e -> visitAndCast(e, p)));
         s = s.withSubtractMinuendGiving(visitAndCast(s.getSubtractMinuendGiving(), p));
-        s = s.withSubtractGiving(ListUtils.map(s.getSubtractGiving(), e -> visitAndCast(e, p)));
-        return s;
+        return s.withSubtractGiving(ListUtils.map(s.getSubtractGiving(), e -> visitAndCast(e, p)));
     }
 
     @Override
     public Cobol.SubtractFromStatement visitSubtractFromStatement(Cobol.SubtractFromStatement subtractFromStatement, P p) {
         Cobol.SubtractFromStatement s = subtractFromStatement;
         s = s.withSubtractSubtrahend(ListUtils.map(s.getSubtractSubtrahend(), e -> visitAndCast(e, p)));
-        s = s.withSubtractMinuend(ListUtils.map(s.getSubtractMinuend(), e -> visitAndCast(e, p)));
-        return s;
+        return s.withSubtractMinuend(ListUtils.map(s.getSubtractMinuend(), e -> visitAndCast(e, p)));
     }
 
     @Override
     public Cobol.SubtractMinuendCorresponding visitSubtractMinuendCorresponding(Cobol.SubtractMinuendCorresponding subtractMinuendCorresponding, P p) {
         Cobol.SubtractMinuendCorresponding s = subtractMinuendCorresponding;
-        s = s.withQualifiedDataName(visitAndCast(s.getQualifiedDataName(), p));
-        return s;
+        return s.withQualifiedDataName(visitAndCast(s.getQualifiedDataName(), p));
     }
 
     @Override
     public Cobol.SymbolicCharacter visitSymbolicCharacter(Cobol.SymbolicCharacter symbolicCharacter, P p) {
         Cobol.SymbolicCharacter s = symbolicCharacter;
         s = s.withSymbols(ListUtils.map(s.getSymbols(), e -> visitAndCast(e, p)));
-        s = s.withLiterals(ListUtils.map(s.getLiterals(), e -> visitAndCast(e, p)));
-        return s;
+        return s.withLiterals(ListUtils.map(s.getLiterals(), e -> visitAndCast(e, p)));
     }
 
     @Override
     public Cobol.SymbolicCharactersClause visitSymbolicCharactersClause(Cobol.SymbolicCharactersClause symbolicCharactersClause, P p) {
         Cobol.SymbolicCharactersClause s = symbolicCharactersClause;
         s = s.withSymbols(ListUtils.map(s.getSymbols(), e -> visitAndCast(e, p)));
-        s = s.withAlphabetName(visitAndCast(s.getAlphabetName(), p));
-        return s;
+        return s.withAlphabetName(visitAndCast(s.getAlphabetName(), p));
     }
 
     @Override
     public Cobol.SymbolicDestinationClause visitSymbolicDestinationClause(Cobol.SymbolicDestinationClause symbolicDestinationClause, P p) {
         Cobol.SymbolicDestinationClause s = symbolicDestinationClause;
-        s = s.withDataDescName(visitAndCast(s.getDataDescName(), p));
-        return s;
+        return s.withDataDescName(visitAndCast(s.getDataDescName(), p));
     }
 
     @Override
     public Cobol.SymbolicQueueClause visitSymbolicQueueClause(Cobol.SymbolicQueueClause symbolicQueueClause, P p) {
         Cobol.SymbolicQueueClause s = symbolicQueueClause;
-        s = s.withDataDescName(visitAndCast(s.getDataDescName(), p));
-        return s;
+        return s.withDataDescName(visitAndCast(s.getDataDescName(), p));
     }
 
     @Override
     public Cobol.SymbolicSourceClause visitSymbolicSourceClause(Cobol.SymbolicSourceClause symbolicSourceClause, P p) {
         Cobol.SymbolicSourceClause s = symbolicSourceClause;
-        s = s.withDataDescName(visitAndCast(s.getDataDescName(), p));
-        return s;
+        return s.withDataDescName(visitAndCast(s.getDataDescName(), p));
     }
 
     @Override
     public Cobol.SymbolicSubQueueClause visitSymbolicSubQueueClause(Cobol.SymbolicSubQueueClause symbolicSubQueueClause, P p) {
         Cobol.SymbolicSubQueueClause s = symbolicSubQueueClause;
-        s = s.withDataDescName(visitAndCast(s.getDataDescName(), p));
-        return s;
+        return s.withDataDescName(visitAndCast(s.getDataDescName(), p));
     }
 
     @Override
     public Cobol.SymbolicTerminalClause visitSymbolicTerminalClause(Cobol.SymbolicTerminalClause symbolicTerminalClause, P p) {
         Cobol.SymbolicTerminalClause s = symbolicTerminalClause;
-        s = s.withDataDescName(visitAndCast(s.getDataDescName(), p));
-        return s;
+        return s.withDataDescName(visitAndCast(s.getDataDescName(), p));
     }
 
     @Override
@@ -3085,29 +2735,25 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         Cobol.TableCall t = tableCall;
         t = t.withQualifiedDataName(visitAndCast(t.getQualifiedDataName(), p));
         t = t.withSubscripts(ListUtils.map(t.getSubscripts(), e -> visitAndCast(e, p)));
-        t = t.withReferenceModifier(visitAndCast(t.getReferenceModifier(), p));
-        return t;
+        return t.withReferenceModifier(visitAndCast(t.getReferenceModifier(), p));
     }
 
     @Override
     public Cobol.Terminate visitTerminate(Cobol.Terminate terminate, P p) {
         Cobol.Terminate t = terminate;
-        t = t.withReportName(visitAndCast(t.getReportName(), p));
-        return t;
+        return t.withReportName(visitAndCast(t.getReportName(), p));
     }
 
     @Override
     public Cobol.TextLengthClause visitTextLengthClause(Cobol.TextLengthClause textLengthClause, P p) {
         Cobol.TextLengthClause t = textLengthClause;
-        t = t.withDataDescName(visitAndCast(t.getDataDescName(), p));
-        return t;
+        return t.withDataDescName(visitAndCast(t.getDataDescName(), p));
     }
 
     @Override
     public Cobol.UnstringTallyingPhrase visitUnstringTallyingPhrase(Cobol.UnstringTallyingPhrase unstringTallyingPhrase, P p) {
         Cobol.UnstringTallyingPhrase u = unstringTallyingPhrase;
-        u = u.withQualifiedDataName(visitAndCast(u.getQualifiedDataName(), p));
-        return u;
+        return u.withQualifiedDataName(visitAndCast(u.getQualifiedDataName(), p));
     }
 
     @Override
@@ -3118,29 +2764,25 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         u = u.withUnstringWithPointerPhrase(visitAndCast(u.getUnstringWithPointerPhrase(), p));
         u = u.withUnstringTallyingPhrase(visitAndCast(u.getUnstringTallyingPhrase(), p));
         u = u.withOnOverflowPhrase(visitAndCast(u.getOnOverflowPhrase(), p));
-        u = u.withNotOnOverflowPhrase(visitAndCast(u.getNotOnOverflowPhrase(), p));
-        return u;
+        return u.withNotOnOverflowPhrase(visitAndCast(u.getNotOnOverflowPhrase(), p));
     }
 
     @Override
     public Cobol.UnstringCountIn visitUnstringCountIn(Cobol.UnstringCountIn unstringCountIn, P p) {
         Cobol.UnstringCountIn u = unstringCountIn;
-        u = u.withIdentifier(visitAndCast(u.getIdentifier(), p));
-        return u;
+        return u.withIdentifier(visitAndCast(u.getIdentifier(), p));
     }
 
     @Override
     public Cobol.UnstringDelimitedByPhrase visitUnstringDelimitedByPhrase(Cobol.UnstringDelimitedByPhrase unstringDelimitedByPhrase, P p) {
         Cobol.UnstringDelimitedByPhrase u = unstringDelimitedByPhrase;
-        u = u.withName(visitAndCast(u.getName(), p));
-        return u;
+        return u.withName(visitAndCast(u.getName(), p));
     }
 
     @Override
     public Cobol.UnstringDelimiterIn visitUnstringDelimiterIn(Cobol.UnstringDelimiterIn unstringDelimiterIn, P p) {
         Cobol.UnstringDelimiterIn u = unstringDelimiterIn;
-        u = u.withIdentifier(visitAndCast(u.getIdentifier(), p));
-        return u;
+        return u.withIdentifier(visitAndCast(u.getIdentifier(), p));
     }
 
     @Override
@@ -3148,22 +2790,19 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         Cobol.UnstringInto u = unstringInto;
         u = u.withIdentifier(visitAndCast(u.getIdentifier(), p));
         u = u.withUnstringDelimiterIn(visitAndCast(u.getUnstringDelimiterIn(), p));
-        u = u.withUnstringCountIn(visitAndCast(u.getUnstringCountIn(), p));
-        return u;
+        return u.withUnstringCountIn(visitAndCast(u.getUnstringCountIn(), p));
     }
 
     @Override
     public Cobol.UnstringIntoPhrase visitUnstringIntoPhrase(Cobol.UnstringIntoPhrase unstringIntoPhrase, P p) {
         Cobol.UnstringIntoPhrase u = unstringIntoPhrase;
-        u = u.withUnstringIntos(ListUtils.map(u.getUnstringIntos(), e -> visitAndCast(e, p)));
-        return u;
+        return u.withUnstringIntos(ListUtils.map(u.getUnstringIntos(), e -> visitAndCast(e, p)));
     }
 
     @Override
     public Cobol.UnstringOrAllPhrase visitUnstringOrAllPhrase(Cobol.UnstringOrAllPhrase unstringOrAllPhrase, P p) {
         Cobol.UnstringOrAllPhrase u = unstringOrAllPhrase;
-        u = u.withName(visitAndCast(u.getName(), p));
-        return u;
+        return u.withName(visitAndCast(u.getName(), p));
     }
 
     @Override
@@ -3171,72 +2810,62 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         Cobol.UnstringSendingPhrase u = unstringSendingPhrase;
         u = u.withIdentifier(visitAndCast(u.getIdentifier(), p));
         u = u.withUnstringDelimitedByPhrase(visitAndCast(u.getUnstringDelimitedByPhrase(), p));
-        u = u.withUnstringOrAllPhrases(ListUtils.map(u.getUnstringOrAllPhrases(), e -> visitAndCast(e, p)));
-        return u;
+        return u.withUnstringOrAllPhrases(ListUtils.map(u.getUnstringOrAllPhrases(), e -> visitAndCast(e, p)));
     }
 
     @Override
     public Cobol.UnstringWithPointerPhrase visitUnstringWithPointerPhrase(Cobol.UnstringWithPointerPhrase unstringWithPointerPhrase, P p) {
         Cobol.UnstringWithPointerPhrase u = unstringWithPointerPhrase;
-        u = u.withQualifiedDataName(visitAndCast(u.getQualifiedDataName(), p));
-        return u;
+        return u.withQualifiedDataName(visitAndCast(u.getQualifiedDataName(), p));
     }
 
     @Override
     public Cobol.UseAfterClause visitUseAfterClause(Cobol.UseAfterClause useAfterClause, P p) {
         Cobol.UseAfterClause u = useAfterClause;
-        u = u.withUseAfterOn(visitAndCast(u.getUseAfterOn(), p));
-        return u;
+        return u.withUseAfterOn(visitAndCast(u.getUseAfterOn(), p));
     }
 
     @Override
     public Cobol.UseAfterOn visitUseAfterOn(Cobol.UseAfterOn useAfterOn, P p) {
         Cobol.UseAfterOn u = useAfterOn;
-        u = u.withFileNames(ListUtils.map(u.getFileNames(), e -> visitAndCast(e, p)));
-        return u;
+        return u.withFileNames(ListUtils.map(u.getFileNames(), e -> visitAndCast(e, p)));
     }
 
     @Override
     public Cobol.UseDebugClause visitUseDebugClause(Cobol.UseDebugClause useDebugClause, P p) {
         Cobol.UseDebugClause u = useDebugClause;
-        u = u.withUseDebugs(ListUtils.map(u.getUseDebugs(), e -> visitAndCast(e, p)));
-        return u;
+        return u.withUseDebugs(ListUtils.map(u.getUseDebugs(), e -> visitAndCast(e, p)));
     }
 
     @Override
     public Cobol.UseDebugOn visitUseDebugOn(Cobol.UseDebugOn useDebugOn, P p) {
         Cobol.UseDebugOn u = useDebugOn;
-        u = u.withName(visitAndCast(u.getName(), p));
-        return u;
+        return u.withName(visitAndCast(u.getName(), p));
     }
 
     @Override
     public Cobol.UseStatement visitUseStatement(Cobol.UseStatement useStatement, P p) {
         Cobol.UseStatement u = useStatement;
-        u = u.withClause(visitAndCast(u.getClause(), p));
-        return u;
+        return u.withClause(visitAndCast(u.getClause(), p));
     }
 
     @Override
     public Cobol.ValuedObjectComputerClause visitValuedObjectComputerClause(Cobol.ValuedObjectComputerClause valuedObjectComputerClause, P p) {
         Cobol.ValuedObjectComputerClause v = valuedObjectComputerClause;
-        v = v.withValue(visitAndCast(v.getValue(), p));
-        return v;
+        return v.withValue(visitAndCast(v.getValue(), p));
     }
 
     @Override
     public Cobol.ValueOfClause visitValueOfClause(Cobol.ValueOfClause valueOfClause, P p) {
         Cobol.ValueOfClause v = valueOfClause;
-        v = v.withValuePairs(ListUtils.map(v.getValuePairs(), e -> visitAndCast(e, p)));
-        return v;
+        return v.withValuePairs(ListUtils.map(v.getValuePairs(), e -> visitAndCast(e, p)));
     }
 
     @Override
     public Cobol.ValuePair visitValuePair(Cobol.ValuePair valuePair, P p) {
         Cobol.ValuePair v = valuePair;
         v = v.withSystemName(visitAndCast(v.getSystemName(), p));
-        v = v.withName(visitAndCast(v.getName(), p));
-        return v;
+        return v.withName(visitAndCast(v.getName(), p));
     }
 
     @Override
@@ -3248,21 +2877,18 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
         w = w.withWriteAtEndOfPagePhrase(visitAndCast(w.getWriteAtEndOfPagePhrase(), p));
         w = w.withWriteNotAtEndOfPagePhrase(visitAndCast(w.getWriteNotAtEndOfPagePhrase(), p));
         w = w.withInvalidKeyPhrase(visitAndCast(w.getInvalidKeyPhrase(), p));
-        w = w.withNotInvalidKeyPhrase(visitAndCast(w.getNotInvalidKeyPhrase(), p));
-        return w;
+        return w.withNotInvalidKeyPhrase(visitAndCast(w.getNotInvalidKeyPhrase(), p));
     }
 
     @Override
     public Cobol.WorkingStorageSection visitWorkingStorageSection(Cobol.WorkingStorageSection workingStorageSection, P p) {
         Cobol.WorkingStorageSection w = workingStorageSection;
-        w = w.withDataDescriptions(ListUtils.map(w.getDataDescriptions(), e -> visitAndCast(e, p)));
-        return w;
+        return w.withDataDescriptions(ListUtils.map(w.getDataDescriptions(), e -> visitAndCast(e, p)));
     }
 
     @Override
     public Cobol.WriteAdvancingLines visitWriteAdvancingLines(Cobol.WriteAdvancingLines writeAdvancingLines, P p) {
         Cobol.WriteAdvancingLines w = writeAdvancingLines;
-        w = w.withName(visitAndCast(w.getName(), p));
-        return w;
+        return w.withName(visitAndCast(w.getName(), p));
     }
 }

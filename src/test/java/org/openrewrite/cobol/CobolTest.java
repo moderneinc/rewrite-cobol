@@ -20,7 +20,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openrewrite.test.RewriteTest.toRecipe;
 
-public class CobolTest implements RewriteTest {
+class CobolTest implements RewriteTest {
     private volatile List<String> nistResourcePaths;
 
     @Override

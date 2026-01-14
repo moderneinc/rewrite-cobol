@@ -110,13 +110,11 @@ public class WritePaddingAccessors extends Recipe {
                 }
             }
 
-            c = paddedGetterWither.apply(updateCursor(c), c.getBody().getCoordinates().lastStatement(),
+            return paddedGetterWither.apply(updateCursor(c), c.getBody().getCoordinates().lastStatement(),
                     nullable ? "@Nullable " : "", leftOrRight, elementTypeName, capitalizedName,
                     name, modelTypeName, capitalizedName,
                     nullable ? "@Nullable " : "", leftOrRight,
                     elementTypeName, name, name, name, modelTypeName, newModelArguments);
-
-            return c;
         }
 
         boolean isPadded(Statement statement) {
@@ -128,7 +126,7 @@ public class WritePaddingAccessors extends Recipe {
 
     @Override
     public JavaVisitor<ExecutionContext> getVisitor() {
-        return new JavaIsoVisitor<ExecutionContext>() {
+        return new JavaIsoVisitor<>() {
             @Override
             public J.Block visitBlock(J.Block block, ExecutionContext ctx) {
                 Object parent = getCursor().getParentOrThrow().getValue();
@@ -138,14 +136,12 @@ public class WritePaddingAccessors extends Recipe {
 
                 J.Block b = block;
 
-                b = b.withStatements(ListUtils.map(b.getStatements(),
+                return b.withStatements(ListUtils.map(b.getStatements(),
                         mc -> mc instanceof J.ClassDeclaration ?
                                 (Statement) new WritePaddingAccessorsVisitor((J.ClassDeclaration) mc)
                                         .visitNonNull(mc, ctx, getCursor().getParentOrThrow()) :
                                 mc)
                 );
-
-                return b;
             }
         };
     }

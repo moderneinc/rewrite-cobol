@@ -5,13 +5,13 @@
  */
 package org.openrewrite.cobol.internal;
 
+import org.jspecify.annotations.Nullable;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.InMemoryExecutionContext;
 import org.openrewrite.PrintOutputCapture;
 import org.openrewrite.cobol.tree.*;
 import org.openrewrite.internal.ListUtils;
 import org.openrewrite.internal.StringUtils;
-import org.openrewrite.internal.lang.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;

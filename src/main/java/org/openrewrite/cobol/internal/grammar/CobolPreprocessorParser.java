@@ -5,14 +5,17 @@
  */
 // Generated from java-escape by ANTLR 4.11.1
 package org.openrewrite.cobol.internal.grammar;
-import org.antlr.v4.runtime.atn.*;
-import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.misc.*;
-import org.antlr.v4.runtime.tree.*;
+import org.antlr.v4.runtime.atn.ATN;
+import org.antlr.v4.runtime.atn.ATNDeserializer;
+import org.antlr.v4.runtime.atn.ParserATNSimulator;
+import org.antlr.v4.runtime.atn.PredictionContextCache;
+import org.antlr.v4.runtime.dfa.DFA;
+import org.antlr.v4.runtime.tree.ParseTreeListener;
+import org.antlr.v4.runtime.tree.ParseTreeVisitor;
+import org.antlr.v4.runtime.tree.TerminalNode;
+
 import java.util.List;
-import java.util.Iterator;
-import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
 public class CobolPreprocessorParser extends Parser {
@@ -325,8 +328,8 @@ public class CobolPreprocessorParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitCompilationUnit(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) return ((CobolPreprocessorVisitor<? extends T>) visitor).visitCompilationUnit(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -472,8 +475,8 @@ public class CobolPreprocessorParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitCompilerOptions(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) return ((CobolPreprocessorVisitor<? extends T>) visitor).visitCompilerOptions(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -783,8 +786,8 @@ public class CobolPreprocessorParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitCompilerXOpts(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) return ((CobolPreprocessorVisitor<? extends T>) visitor).visitCompilerXOpts(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -1141,8 +1144,8 @@ public class CobolPreprocessorParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitCompilerOption(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) return ((CobolPreprocessorVisitor<? extends T>) visitor).visitCompilerOption(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -3331,8 +3334,8 @@ public class CobolPreprocessorParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitExecCicsStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) return ((CobolPreprocessorVisitor<? extends T>) visitor).visitExecCicsStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -3396,8 +3399,8 @@ public class CobolPreprocessorParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitExecSqlStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) return ((CobolPreprocessorVisitor<? extends T>) visitor).visitExecSqlStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -3468,8 +3471,8 @@ public class CobolPreprocessorParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitExecSqlIncludeStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) return ((CobolPreprocessorVisitor<? extends T>) visitor).visitExecSqlIncludeStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -3821,8 +3824,8 @@ public class CobolPreprocessorParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitExecSqlImsStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) return ((CobolPreprocessorVisitor<? extends T>) visitor).visitExecSqlImsStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -3906,8 +3909,8 @@ public class CobolPreprocessorParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitCopyStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) return ((CobolPreprocessorVisitor<? extends T>) visitor).visitCopyStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -4010,8 +4013,8 @@ public class CobolPreprocessorParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitCopySource(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) return ((CobolPreprocessorVisitor<? extends T>) visitor).visitCopySource(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -4365,8 +4368,8 @@ public class CobolPreprocessorParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitCopyLibrary(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) return ((CobolPreprocessorVisitor<? extends T>) visitor).visitCopyLibrary(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -4693,8 +4696,8 @@ public class CobolPreprocessorParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitReplacingPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) return ((CobolPreprocessorVisitor<? extends T>) visitor).visitReplacingPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -4772,8 +4775,8 @@ public class CobolPreprocessorParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitReplaceArea(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) return ((CobolPreprocessorVisitor<? extends T>) visitor).visitReplaceArea(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -5134,8 +5137,8 @@ public class CobolPreprocessorParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitReplaceByStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) return ((CobolPreprocessorVisitor<? extends T>) visitor).visitReplaceByStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -5196,8 +5199,8 @@ public class CobolPreprocessorParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitReplaceOffStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) return ((CobolPreprocessorVisitor<? extends T>) visitor).visitReplaceOffStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -5261,8 +5264,8 @@ public class CobolPreprocessorParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitReplaceClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) return ((CobolPreprocessorVisitor<? extends T>) visitor).visitReplaceClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -5352,8 +5355,8 @@ public class CobolPreprocessorParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitDirectoryPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) return ((CobolPreprocessorVisitor<? extends T>) visitor).visitDirectoryPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -5692,8 +5695,8 @@ public class CobolPreprocessorParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitFamilyPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) return ((CobolPreprocessorVisitor<? extends T>) visitor).visitFamilyPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -6028,8 +6031,8 @@ public class CobolPreprocessorParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitReplaceable(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) return ((CobolPreprocessorVisitor<? extends T>) visitor).visitReplaceable(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -6109,8 +6112,8 @@ public class CobolPreprocessorParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitReplacement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) return ((CobolPreprocessorVisitor<? extends T>) visitor).visitReplacement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -6180,8 +6183,8 @@ public class CobolPreprocessorParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitEjectStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) return ((CobolPreprocessorVisitor<? extends T>) visitor).visitEjectStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -6236,8 +6239,8 @@ public class CobolPreprocessorParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitSkipStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) return ((CobolPreprocessorVisitor<? extends T>) visitor).visitSkipStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -6302,8 +6305,8 @@ public class CobolPreprocessorParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitTitleStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) return ((CobolPreprocessorVisitor<? extends T>) visitor).visitTitleStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -6363,8 +6366,8 @@ public class CobolPreprocessorParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitPseudoText(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) return ((CobolPreprocessorVisitor<? extends T>) visitor).visitPseudoText(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -6424,8 +6427,8 @@ public class CobolPreprocessorParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitCharData(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) return ((CobolPreprocessorVisitor<? extends T>) visitor).visitCharData(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -6499,8 +6502,8 @@ public class CobolPreprocessorParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitCharDataSql(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) return ((CobolPreprocessorVisitor<? extends T>) visitor).visitCharDataSql(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -6881,8 +6884,8 @@ public class CobolPreprocessorParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitCharDataLineNoDot(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) return ((CobolPreprocessorVisitor<? extends T>) visitor).visitCharDataLineNoDot(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -7290,8 +7293,8 @@ public class CobolPreprocessorParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitCharDataLine(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) return ((CobolPreprocessorVisitor<? extends T>) visitor).visitCharDataLine(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -7683,8 +7686,8 @@ public class CobolPreprocessorParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitSubscript(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) return ((CobolPreprocessorVisitor<? extends T>) visitor).visitSubscript(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -8318,8 +8321,8 @@ public class CobolPreprocessorParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitCobolWord(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) return ((CobolPreprocessorVisitor<? extends T>) visitor).visitCobolWord(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -8639,8 +8642,8 @@ public class CobolPreprocessorParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitLiteral(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) return ((CobolPreprocessorVisitor<? extends T>) visitor).visitLiteral(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -8691,8 +8694,8 @@ public class CobolPreprocessorParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitFilename(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) return ((CobolPreprocessorVisitor<? extends T>) visitor).visitFilename(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -8737,8 +8740,8 @@ public class CobolPreprocessorParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitCommentEntry(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) return ((CobolPreprocessorVisitor<? extends T>) visitor).visitCommentEntry(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -9060,8 +9063,8 @@ public class CobolPreprocessorParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolPreprocessorVisitor ) return ((CobolPreprocessorVisitor<? extends T>)visitor).visitCharDataKeyword(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolPreprocessorVisitor) return ((CobolPreprocessorVisitor<? extends T>) visitor).visitCharDataKeyword(this);
+			return visitor.visitChildren(this);
 		}
 	}
 

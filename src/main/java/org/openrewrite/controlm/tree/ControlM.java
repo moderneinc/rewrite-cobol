@@ -8,10 +8,10 @@ package org.openrewrite.controlm.tree;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
+import org.jspecify.annotations.Nullable;
 import org.openrewrite.*;
 import org.openrewrite.controlm.ControlMVisitor;
 import org.openrewrite.controlm.internal.ControlMPrinter;
-import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.marker.Markers;
 
 import java.lang.ref.WeakReference;
@@ -29,8 +29,7 @@ public interface ControlM extends Tree {
         return (R) acceptControlM(v.adapt(ControlMVisitor.class), p);
     }
 
-    @Nullable
-    default <P> ControlM acceptControlM(ControlMVisitor<P> v, P p) {
+	default <P> @Nullable ControlM acceptControlM(ControlMVisitor<P> v, P p) {
         return v.defaultValue(this, p);
     }
 
@@ -190,8 +189,7 @@ public interface ControlM extends Tree {
         public static class Padding {
             private final SetVar t;
 
-            @Nullable
-            public ControlMLeftPadded<Word> getValue() {
+			public @Nullable ControlMLeftPadded<Word> getValue() {
                 return t.value;
             }
 

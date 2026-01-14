@@ -6,6 +6,7 @@
 package org.openrewrite.cobol.search;
 
 import org.junit.jupiter.api.Test;
+import org.openrewrite.DocumentExample;
 import org.openrewrite.cobol.CobolTest;
 import org.openrewrite.cobol.table.CobolRelationships.Row;
 import org.openrewrite.test.RecipeSpec;
@@ -13,21 +14,21 @@ import org.openrewrite.test.RecipeSpec;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.openrewrite.cobol.Assertions.*;
+import static org.openrewrite.cobol.Assertions.cobol;
+import static org.openrewrite.cobol.Assertions.copybook;
 import static org.openrewrite.cobol.table.CobolRelationships.ResourceAction.*;
 import static org.openrewrite.cobol.table.CobolRelationships.ResourceType.*;
 import static org.openrewrite.controlm.Assertions.controlM;
 import static org.openrewrite.test.SourceSpecs.text;
 
-public class FindRelationshipsTest extends CobolTest {
+class FindRelationshipsTest extends CobolTest {
 
     @Override
     public void defaults(RecipeSpec spec) {
         spec.recipe(new FindRelationships());
     }
 
-    @Test
-    void IC201A() {
+	@DocumentExample @Test void IC201A() {
         rewriteRun(
           spec -> spec.dataTable(Row.class, rows -> {
               assertThat(rows.stream().map(Row::getDependent)).contains("IC201A", "LINKEDIT1", "BINDCARDPACKAGE", "BINDCARDPLAN");

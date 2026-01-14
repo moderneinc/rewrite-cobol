@@ -5,9 +5,12 @@
  */
 package org.openrewrite.jcl.tree;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Value;
+import lombok.With;
+import org.jspecify.annotations.Nullable;
 import org.openrewrite.*;
-import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.jcl.JclVisitor;
 import org.openrewrite.jcl.internal.JclPrinter;
 import org.openrewrite.marker.Markers;
@@ -26,8 +29,7 @@ public interface Jcl extends Tree {
         return (R) acceptJcl(v.adapt(JclVisitor.class), p);
     }
 
-    @Nullable
-    default <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
+	default <P> @Nullable Jcl acceptJcl(JclVisitor<P> v, P p) {
         return v.defaultValue(this, p);
     }
 

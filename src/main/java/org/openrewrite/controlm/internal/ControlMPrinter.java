@@ -5,6 +5,7 @@
  */
 package org.openrewrite.controlm.internal;
 
+import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
 import org.openrewrite.PrintOutputCapture;
 import org.openrewrite.controlm.ControlMVisitor;
@@ -12,7 +13,6 @@ import org.openrewrite.controlm.marker.Column;
 import org.openrewrite.controlm.tree.ControlM;
 import org.openrewrite.controlm.tree.ControlMLeftPadded;
 import org.openrewrite.controlm.tree.Space;
-import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.marker.Marker;
 import org.openrewrite.marker.Markers;
 
@@ -179,7 +179,7 @@ public class ControlMPrinter<P> extends ControlMVisitor<PrintOutputCapture<P>> {
         beforeSyntax(c.getPrefix(), c.getMarkers(), loc, p);
     }
 
-    protected void beforeSyntax(Space prefix, Markers markers, @Nullable Space.Location loc, PrintOutputCapture<P> p) {
+    protected void beforeSyntax(Space prefix, Markers markers, Space.@Nullable Location loc, PrintOutputCapture<P> p) {
         for (Marker marker : markers.getMarkers()) {
             p.out.append(p.getMarkerPrinter().beforePrefix(marker, new Cursor(getCursor(), marker), CONTROL_M_MARKER_WRAPPER));
         }

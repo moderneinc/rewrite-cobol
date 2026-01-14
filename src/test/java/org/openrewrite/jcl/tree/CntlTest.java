@@ -11,7 +11,7 @@ import org.openrewrite.test.RewriteTest;
 
 import static org.openrewrite.jcl.tree.ParserAssertions.jcl;
 
-public class CntlTest implements RewriteTest {
+class CntlTest implements RewriteTest {
     @ParameterizedTest
     @ValueSource(
       strings = {
