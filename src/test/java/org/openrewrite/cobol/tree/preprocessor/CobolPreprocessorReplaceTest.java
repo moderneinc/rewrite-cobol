@@ -10,7 +10,6 @@ import org.openrewrite.ExecutionContext;
 import org.openrewrite.InMemoryExecutionContext;
 import org.openrewrite.Issue;
 import org.openrewrite.PrintOutputCapture;
-import org.openrewrite.cobol.Assertions;
 import org.openrewrite.cobol.CobolTest;
 import org.openrewrite.cobol.internal.CobolDialect;
 import org.openrewrite.cobol.internal.CobolPreprocessorOutputSourcePrinter;
@@ -21,6 +20,7 @@ import org.openrewrite.internal.StringUtils;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.openrewrite.cobol.Assertions.trimTrailingSpaces;
 import static org.openrewrite.cobol.PreprocessorAssertions.cobolPreprocessorCopy;
 
 class CobolPreprocessorReplaceTest extends CobolTest {
@@ -53,7 +53,7 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                   new PrintOutputCapture<>(new InMemoryExecutionContext());
                 printer.visit(issue38, outputCapture);
                 String result =
-                  Assertions.trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
+                  trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
                 assertThat(result).isEqualTo(
                   """
                     STOP RUN
@@ -81,7 +81,7 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                     new PrintOutputCapture<>(new InMemoryExecutionContext());
                 printer.visit(k1fda, outputCapture);
                 String result =
-                    Assertions.trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
+                    trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
                 assertThat(result).isEqualTo(
                   """
                     LABEL RECORDS STANDARD
@@ -96,7 +96,7 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                 CobolPreprocessor.CopyStatement k101aFirst = statements.get(1);
                 outputCapture = new PrintOutputCapture<>(new InMemoryExecutionContext());
                 printer.visit(k101aFirst, outputCapture);
-                result = Assertions.trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
+                result = trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
                 assertThat(result).isEqualTo(
                   """
                             .
@@ -108,7 +108,7 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                 CobolPreprocessor.CopyStatement k101aSecond = statements.get(2);
                 outputCapture = new PrintOutputCapture<>(new InMemoryExecutionContext());
                 printer.visit(k101aSecond, outputCapture);
-                result = Assertions.trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
+                result = trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
                 assertThat(result).isEqualTo(
                   """
                             .
@@ -120,7 +120,7 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                 CobolPreprocessor.CopyStatement k1wkaFirst = statements.get(3);
                 outputCapture = new PrintOutputCapture<>(new InMemoryExecutionContext());
                 printer.visit(k1wkaFirst, outputCapture);
-                result = Assertions.trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
+                result = trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
                 assertThat(result).isEqualTo(
                   """
                     02 WSTR999 PICTURE X(3) VALUE                              "ABC".
@@ -130,7 +130,7 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                 CobolPreprocessor.CopyStatement k1wkaSecond = statements.get(4);
                 outputCapture = new PrintOutputCapture<>(new InMemoryExecutionContext());
                 printer.visit(k1wkaSecond, outputCapture);
-                result = Assertions.trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
+                result = trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
                 assertThat(result).isEqualTo(
                   """
                     02 WSTR-2A PICTURE X(3) VALUE                              "ABC".
@@ -140,7 +140,7 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                 CobolPreprocessor.CopyStatement k1wkbFirst = statements.get(5);
                 outputCapture = new PrintOutputCapture<>(new InMemoryExecutionContext());
                 printer.visit(k1wkbFirst, outputCapture);
-                result = Assertions.trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
+                result = trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
                 assertThat(result).isEqualTo(
                   """
                     02 WSTR91  PICTURE XXX VALUE "ABC".
@@ -152,7 +152,7 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                 CobolPreprocessor.CopyStatement k1wkbSecond = statements.get(6);
                 outputCapture = new PrintOutputCapture<>(new InMemoryExecutionContext());
                 printer.visit(k1wkbSecond, outputCapture);
-                result = Assertions.trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
+                result = trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
                 assertThat(result).isEqualTo(
                   """
                     02 WSTR4A  PICTURE XXX VALUE "ABC".
@@ -164,7 +164,7 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                 CobolPreprocessor.CopyStatement k1prb = statements.get(7);
                 outputCapture = new PrintOutputCapture<>(new InMemoryExecutionContext());
                 printer.visit(k1prb, outputCapture);
-                result = Assertions.trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
+                result = trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
                 assertThat(result).isEqualTo(
                   """
                     MOVE WSTR4B TO WSTR91.
@@ -193,7 +193,7 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                           new PrintOutputCapture<>(new InMemoryExecutionContext());
                   printer.visit(k2sea, outputCapture);
                   String result =
-                          Assertions.trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
+                          trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
 
                   assertThat(result).isEqualTo(
                     """
@@ -213,7 +213,7 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                   CobolPreprocessor.CopyStatement k2praFirst = statements.get(1);
                   outputCapture = new PrintOutputCapture<>(new InMemoryExecutionContext());
                   printer.visit(k2praFirst, outputCapture);
-                  result = Assertions.trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
+                  result = trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
                   assertThat(result).isEqualTo(
                     """
                       MOVE     "TRUE " TO AREA-1.
@@ -229,7 +229,7 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                   CobolPreprocessor.CopyStatement k2praSecond = statements.get(2);
                   outputCapture = new PrintOutputCapture<>(new InMemoryExecutionContext());
                   printer.visit(k2praSecond, outputCapture);
-                  result = Assertions.trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
+                  result = trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
                   assertThat(result).isEqualTo(
                     """
                          MOVE     TRUE-Q-04 OF TRUE-Q-03                                                 IN TRUE-Q-02
@@ -265,7 +265,7 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                           new PrintOutputCapture<>(new InMemoryExecutionContext());
                   printer.visit(k3snb, outputCapture);
                   String result =
-                          Assertions.trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
+                          trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
                   assertThat(result).isEqualTo(
                     """
                       XXXXX051
@@ -278,7 +278,7 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                   CobolPreprocessor.CopyStatement k3fcb = statements.get(1);
                   outputCapture = new PrintOutputCapture<>(new InMemoryExecutionContext());
                   printer.visit(k3fcb, outputCapture);
-                  result = Assertions.trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
+                  result = trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
                   assertThat(result).isEqualTo(
                     """
                       SELECT PRINT-FILE ASSIGN TO
@@ -291,7 +291,7 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                   CobolPreprocessor.CopyStatement k3iob = statements.get(2);
                   outputCapture = new PrintOutputCapture<>(new InMemoryExecutionContext());
                   printer.visit(k3iob, outputCapture);
-                  result = Assertions.trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
+                  result = trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
                   assertThat(result).isEqualTo("""
                     SAME RECORD AREA FOR TEST-FILE, PRINT-FILE.
                     """
@@ -318,7 +318,7 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                           new PrintOutputCapture<>(new InMemoryExecutionContext());
                   printer.visit(k5sdb, outputCapture);
                   String result =
-                          Assertions.trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
+                          trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
                   assertThat(result).isEqualTo("""
                     DATA RECORD S-RECORD.
                     """
@@ -327,7 +327,7 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                   CobolPreprocessor.CopyStatement k501b = statements.get(1);
                   outputCapture = new PrintOutputCapture<>(new InMemoryExecutionContext());
                   printer.visit(k501b, outputCapture);
-                  result = Assertions.trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
+                  result = trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
                   assertThat(result).isEqualTo(
                     """
                       02  KEYS-GROUP.
@@ -362,7 +362,7 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                           new PrintOutputCapture<>(new InMemoryExecutionContext());
                   printer.visit(kp001, outputCapture);
                   String result =
-                          Assertions.trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
+                          trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
                   assertThat(result).isEqualTo(
                     """
                       PST-TEST-001.
@@ -378,7 +378,7 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                   CobolPreprocessor.CopyStatement kp002 = statements.get(1);
                   outputCapture = new PrintOutputCapture<>(new InMemoryExecutionContext());
                   printer.visit(kp002, outputCapture);
-                  result = Assertions.trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
+                  result = trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
                   assertThat(result).isEqualTo(
                     """
                           MOVE   +00009 TO WRK-DS-05V00-O005-001  IN WRK-XN-00050-O005F-001 OF GRP-006 OF GRP-004 IN GRP-003 ( 2 ).
@@ -396,7 +396,7 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                   CobolPreprocessor.CopyStatement kp003 = statements.get(2);
                   outputCapture = new PrintOutputCapture<>(new InMemoryExecutionContext());
                   printer.visit(kp003, outputCapture);
-                  result = Assertions.trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
+                  result = trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
                   assertThat(result).isEqualTo(
                     """
                       PST-TEST-003.
@@ -410,7 +410,7 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                   CobolPreprocessor.CopyStatement kp004 = statements.get(3);
                   outputCapture = new PrintOutputCapture<>(new InMemoryExecutionContext());
                   printer.visit(kp004, outputCapture);
-                  result = Assertions.trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
+                  result = trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
                   assertThat(result).isEqualTo(
                     """
                       PST-INIT-004.
@@ -432,31 +432,31 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                   CobolPreprocessor.CopyStatement kp005 = statements.get(4);
                   outputCapture = new PrintOutputCapture<>(new InMemoryExecutionContext());
                   printer.visit(kp005, outputCapture);
-                  result = Assertions.trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
+                  result = trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
                   assertThat(result).isEqualTo("MOVE 7 TO WRK-DS-09V00-901.\n");
 
                   CobolPreprocessor.CopyStatement kp006 = statements.get(5);
                   outputCapture = new PrintOutputCapture<>(new InMemoryExecutionContext());
                   printer.visit(kp006, outputCapture);
-                  result = Assertions.trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
+                  result = trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
                   assertThat(result).isEqualTo("ADD      001005 TO WRK-DS-09V00-901.\n");
 
                   CobolPreprocessor.CopyStatement kp007 = statements.get(6);
                   outputCapture = new PrintOutputCapture<>(new InMemoryExecutionContext());
                   printer.visit(kp007, outputCapture);
-                  result = Assertions.trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
+                  result = trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
                   assertThat(result).isEqualTo("PERFORM PASS.\n\n");
 
                   CobolPreprocessor.CopyStatement kp008 = statements.get(7);
                   outputCapture = new PrintOutputCapture<>(new InMemoryExecutionContext());
                   printer.visit(kp008, outputCapture);
-                  result = Assertions.trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
+                  result = trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
                   assertThat(result).isEqualTo("PERFORM PASS.\n\n\n");
 
                   CobolPreprocessor.CopyStatement kp009 = statements.get(8);
                   outputCapture = new PrintOutputCapture<>(new InMemoryExecutionContext());
                   printer.visit(kp009, outputCapture);
-                  result = Assertions.trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
+                  result = trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
                   assertThat(result).isEqualTo("IF      WRK-XN-00001 = \"T\"\n");
               }
             ))

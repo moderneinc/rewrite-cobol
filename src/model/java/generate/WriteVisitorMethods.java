@@ -40,7 +40,7 @@ public class WriteVisitorMethods extends Recipe {
 
     @Override
     public JavaVisitor<ExecutionContext> getVisitor() {
-        return new JavaVisitor<ExecutionContext>() {
+        return new JavaVisitor<>() {
             @Override
             public J visitClassDeclaration(J.ClassDeclaration classDecl, ExecutionContext ctx) {
                 switch (classDecl.getSimpleName()) {
@@ -57,7 +57,7 @@ public class WriteVisitorMethods extends Recipe {
 
     JavaParser.Builder<?, ?> parser = JavaParser.fromJavaVersion().classpath(JavaParser.runtimeClasspath());
 
-    private final JavaVisitor<ExecutionContext> writeVisitorMethods = new JavaIsoVisitor<ExecutionContext>() {
+    private final JavaVisitor<ExecutionContext> writeVisitorMethods = new JavaIsoVisitor<>() {
         final JavaTemplate visitMethod = JavaTemplate.builder("" +
                 "public Cobol visit#{}(Cobol.#{} #{}, P p) {" +
                 "    Cobol.#{} #{} = #{};" +

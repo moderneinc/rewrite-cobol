@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.jspecify.annotations.Nullable;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.FileAttributes;
 import org.openrewrite.cobol.CobolParsingTimeoutException;
@@ -17,7 +18,6 @@ import org.openrewrite.cobol.internal.grammar.CobolParser;
 import org.openrewrite.cobol.marker.CopiedWord;
 import org.openrewrite.cobol.marker.MissingCopybook;
 import org.openrewrite.cobol.tree.*;
-import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.marker.Markers;
 
 import java.nio.charset.Charset;
@@ -114,7 +114,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         throw new IllegalStateException("Expected one of the supplied trees to be non-null");
     }
 
-    public <T> T visitNullable(@Nullable ParseTree tree) {
+	public <T> @Nullable T visitNullable(@Nullable ParseTree tree) {
         if (tree == null) {
             //noinspection ConstantConditions
             return null;
@@ -546,18 +546,17 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
 
     @Override
     public Object visitBasis(CobolParser.BasisContext ctx) {
-        if (ctx.arithmeticExpression() != null) {
-            return new Cobol.Parenthesized(
-                    EMPTY,
-                    Markers.EMPTY,
-                    (Cobol.Word) visit(ctx.LPARENCHAR()),
-                    singletonList((Cobol) visit(ctx.arithmeticExpression())),
-                    (Cobol.Word) visit(ctx.RPARENCHAR())
-            );
-        } else {
-            return visit(ctx.identifier(), ctx.literal());
-        }
-    }
+		if (ctx.arithmeticExpression() != null) {
+			return new Cobol.Parenthesized(
+				EMPTY,
+				Markers.EMPTY,
+				(Cobol.Word) visit(ctx.LPARENCHAR()),
+				singletonList((Cobol) visit(ctx.arithmeticExpression())),
+				(Cobol.Word) visit(ctx.RPARENCHAR())
+			);
+		}
+		return visit(ctx.identifier(), ctx.literal());
+	}
 
     @Override
     public Object visitBlockContainsClause(CobolParser.BlockContainsClauseContext ctx) {
@@ -3374,21 +3373,20 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
 
     @Override
     public Cobol.ProcedureDivisionByReference visitProcedureDivisionByReference(CobolParser.ProcedureDivisionByReferenceContext ctx) {
-        if (ctx.ANY() == null) {
-            return new Cobol.ProcedureDivisionByReference(
-                    EMPTY,
-                    Markers.EMPTY,
-                    visitNullable(ctx.OPTIONAL()),
-                    (ctx.identifier() == null) ? (Name) visit(ctx.fileName()) : (Name) visit(ctx.identifier())
-            );
-        } else {
-            return new Cobol.ProcedureDivisionByReference(
-                    EMPTY,
-                    Markers.EMPTY,
-                    (Cobol.Word) visit(ctx.ANY()),
-                    null);
-        }
-    }
+		if (ctx.ANY() == null) {
+			return new Cobol.ProcedureDivisionByReference(
+				EMPTY,
+				Markers.EMPTY,
+				visitNullable(ctx.OPTIONAL()),
+				(ctx.identifier() == null) ? (Name) visit(ctx.fileName()) : (Name) visit(ctx.identifier())
+			);
+		}
+		return new Cobol.ProcedureDivisionByReference(
+			EMPTY,
+			Markers.EMPTY,
+			(Cobol.Word) visit(ctx.ANY()),
+			null);
+	}
 
     @Override
     public Cobol.ProcedureDivisionByReferencePhrase visitProcedureDivisionByReferencePhrase(CobolParser.ProcedureDivisionByReferencePhraseContext ctx) {
@@ -5961,30 +5959,31 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
      * Markers consist of COBOL areas that are removed during preprocessing.
      */
     private Space processTokenText(String text, List<Object> objects) {
-        parseCommentsAndEmptyLines(text, objects);
+		parseCommentsAndEmptyLines(text, objects);
 
-        int saveCursor = cursor;
-        sequenceArea();
-        indicatorArea();
+		int saveCursor = cursor;
+		sequenceArea();
+		indicatorArea();
 
-        Map.Entry<Integer, String> nextIndicator = indicatorAreas.higherEntry(cursor);
-        boolean isContinued = nextIndicator != null && "-".equals(nextIndicator.getValue());
-        cursor = saveCursor;
+		Map.Entry<Integer, String> nextIndicator = indicatorAreas.higherEntry(cursor);
+		boolean isContinued = nextIndicator != null && "-".equals(nextIndicator.getValue());
+		cursor = saveCursor;
 
-        Character delimiter = null;
-        if (text.startsWith("'") || text.startsWith("\"")) {
-            delimiter = text.charAt(0);
-        }
+		Character delimiter = null;
+		if (text.startsWith("'") || text.startsWith("\"")) {
+			delimiter = text.charAt(0);
+		}
 
-        // A literal continued on a new line.
-        if (delimiter != null && isContinued) {
-            return processLiteral(text, objects, delimiter);
-        } else if (END_OF_FILE.equals(text) && source.substring(cursor).isEmpty()) {
-            return EMPTY;
-        }
+		// A literal continued on a new line.
+		if (delimiter != null && isContinued) {
+			return processLiteral(text, objects, delimiter);
+		}
+		if (END_OF_FILE.equals(text) && source.substring(cursor).isEmpty()) {
+			return EMPTY;
+		}
 
-        return processText(text, objects, isContinued);
-    }
+		return processText(text, objects, isContinued);
+	}
 
     /**
      * Parse the comments and empty lines that precede the COBOL word.
@@ -6552,8 +6551,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         return area != null && (isUnknownIndicator || commentIndicators.contains(area.getIndicator().charAt(0)));
     }
 
-    @Nullable
-    private SequenceArea sequenceArea() {
+	private @Nullable SequenceArea sequenceArea() {
         if (sequenceAreas.containsKey(cursor)) {
             String sequence = sequenceAreas.get(cursor);
             cursor += sequence.length();
@@ -6563,25 +6561,23 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         return null;
     }
 
-    @Nullable
-    private IndicatorArea indicatorArea() {
+	private @Nullable IndicatorArea indicatorArea() {
         return indicatorArea(null, false);
     }
 
-    /**
-     * Return the IndicatorArea based on the current cursor position if it exists.
-     *
-     * @param continuationDelimiter the next expected Character in the source that comes after the indicator.
-     * @param isStringLiteral       String literals and Keywords/Identifiers have different rules for line continuations.
+	/**
+	 * Return the IndicatorArea based on the current cursor position if it exists.
+	 *
+	 * @param continuationDelimiter the next expected Character in the source that comes after the indicator.
+	 * @param isStringLiteral       String literals and Keywords/Identifiers have different rules for line continuations.
      *                              A continued String literal will be prefixed by the delimiter ' or ",
      *                              which needs to exist in the indicator marker.
      *                              I.E. 000001-|<whitespace including the delimiter " or '>|some continued string literal.
      *                              <p>
      *                              A continued Keyword/Identifier should not include the delimiter.
      *                              I.E. 000001-|<whitespace added to indicator>|TOKEN-NAME.
-     */
-    @Nullable
-    private IndicatorArea indicatorArea(@Nullable Character continuationDelimiter, boolean isStringLiteral) {
+	 */
+	private @Nullable IndicatorArea indicatorArea(@Nullable Character continuationDelimiter, boolean isStringLiteral) {
         if (indicatorAreas.containsKey(cursor)) {
             String indicatorArea = indicatorAreas.get(cursor);
             cursor += indicatorArea.length();
@@ -6602,12 +6598,11 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         return null;
     }
 
-    /**
-     * Return the CommentArea based on the current cursor position if it exists.
-     * `removeTemplateCommentArea` is used to remove CommentAreas that were added by the COBOL copy template.
-     */
-    @Nullable
-    private CommentArea commentArea() {
+	/**
+	 * Return the CommentArea based on the current cursor position if it exists.
+	 * `removeTemplateCommentArea` is used to remove CommentAreas that were added by the COBOL copy template.
+	 */
+	private @Nullable CommentArea commentArea() {
         int saveCursor = cursor;
 
         Space before = whitespace();

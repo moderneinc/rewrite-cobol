@@ -8,9 +8,9 @@ package org.openrewrite.cobol.search;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.openrewrite.DocumentExample;
 import org.openrewrite.Issue;
 import org.openrewrite.cobol.CobolTest;
-import org.openrewrite.cobol.table.CobolRelationships;
 import org.openrewrite.cobol.table.CopybookSource;
 import org.openrewrite.cobol.table.CopybookSource.Row;
 import org.openrewrite.test.RecipeSpec;
@@ -27,6 +27,34 @@ class FindCopybookTest extends CobolTest {
     @Override
     public void defaults(RecipeSpec spec) {
         spec.recipe(new FindCopybook(null, false));
+    }
+
+
+	@DocumentExample @Test void isUsedInCopyStatement() {
+        rewriteRun(
+          spec -> spec.recipe(new FindCopybook("INCEPTION", false)).dataTable(Row.class, rows -> {
+              assertThat(rows.stream().map(CopybookSource.Row::getCopybookName)).containsOnly("INCEPTION");
+              assertThat(rows.stream().map(Row::getResolutionStatus)).containsOnly(RESOLVED);
+          }),
+          cobol(
+            """
+              000000 IDENTIFICATION DIVISION.                                         *
+                     PROGRAM-ID. IC109A.                                              *
+                     DATA DIVISION.                                                   *
+                     LINKAGE SECTION.                                                 *
+                         01  GRP-01.                                                  *
+                             COPY INCEPTION.                                          *
+              """,
+            """
+              000000 IDENTIFICATION DIVISION.                                         *
+                     PROGRAM-ID. IC109A.                                              *
+                     DATA DIVISION.                                                   *
+                     LINKAGE SECTION.                                                 *
+                         01  GRP-01.                                                  *
+                             COPY ~~>INCEPTION.                                          *
+              """
+          )
+        );
     }
 
     @ParameterizedTest
@@ -131,35 +159,6 @@ class FindCopybookTest extends CobolTest {
                              EXEC SQL INCLUDE ~~>MISSING END-EXEC.                       *
                              %s
               """.formatted(input)
-          )
-        );
-    }
-
-
-    @Test
-    void isUsedInCopyStatement() {
-        rewriteRun(
-          spec -> spec.recipe(new FindCopybook("INCEPTION", false)).dataTable(Row.class, rows -> {
-              assertThat(rows.stream().map(CopybookSource.Row::getCopybookName)).containsOnly("INCEPTION");
-              assertThat(rows.stream().map(Row::getResolutionStatus)).containsOnly(RESOLVED);
-          }),
-          cobol(
-            """
-              000000 IDENTIFICATION DIVISION.                                         *
-                     PROGRAM-ID. IC109A.                                              *
-                     DATA DIVISION.                                                   *
-                     LINKAGE SECTION.                                                 *
-                         01  GRP-01.                                                  *
-                             COPY INCEPTION.                                          *
-              """,
-            """
-              000000 IDENTIFICATION DIVISION.                                         *
-                     PROGRAM-ID. IC109A.                                              *
-                     DATA DIVISION.                                                   *
-                     LINKAGE SECTION.                                                 *
-                         01  GRP-01.                                                  *
-                             COPY ~~>INCEPTION.                                          *
-              """
           )
         );
     }

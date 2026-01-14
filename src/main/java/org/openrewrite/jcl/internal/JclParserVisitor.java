@@ -8,13 +8,15 @@ package org.openrewrite.jcl.internal;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.jspecify.annotations.Nullable;
 import org.openrewrite.FileAttributes;
-import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.jcl.internal.grammar.JCLParser;
 import org.openrewrite.jcl.internal.grammar.JCLParserBaseVisitor;
 import org.openrewrite.jcl.marker.CommentArea;
 import org.openrewrite.jcl.marker.TrailingComment;
-import org.openrewrite.jcl.tree.*;
+import org.openrewrite.jcl.tree.Jcl;
+import org.openrewrite.jcl.tree.Space;
+import org.openrewrite.jcl.tree.Statement;
 import org.openrewrite.marker.Markers;
 
 import java.nio.charset.Charset;

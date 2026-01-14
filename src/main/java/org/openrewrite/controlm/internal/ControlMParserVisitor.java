@@ -7,6 +7,7 @@ package org.openrewrite.controlm.internal;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.jspecify.annotations.Nullable;
 import org.openrewrite.FileAttributes;
 import org.openrewrite.controlm.internal.grammar.ControlMParser;
 import org.openrewrite.controlm.internal.grammar.ControlMParserBaseVisitor;
@@ -15,7 +16,6 @@ import org.openrewrite.controlm.tree.ControlM;
 import org.openrewrite.controlm.tree.ControlMLeftPadded;
 import org.openrewrite.controlm.tree.Section;
 import org.openrewrite.controlm.tree.Space;
-import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.marker.Markers;
 
 import java.nio.charset.Charset;
@@ -51,7 +51,7 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
         this.charsetBomMarked = charsetBomMarked;
     }
 
-    public <T> T visitNullable(@Nullable ParseTree tree) {
+	public <T> @Nullable T visitNullable(@Nullable ParseTree tree) {
         if (tree == null) {
             //noinspection ConstantConditions
             return null;
@@ -105,37 +105,46 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
 
     @Override
     public ControlM visitDefinitionLine(ControlMParser.DefinitionLineContext ctx) {
-        if (ctx.memLine() != null) {
-            return visit(ctx.memLine());
-        } else if (ctx.ownerLine() != null) {
-            return visit(ctx.ownerLine());
-        } else if (ctx.applLine() != null) {
-            return visit(ctx.applLine());
-        } else if (ctx.descLine() != null) {
-            return visit(ctx.descLine());
-        } else if (ctx.overlibLine() != null) {
-            return visit(ctx.overlibLine());
-        } else if (ctx.schenvLine() != null) {
-            return visit(ctx.schenvLine());
-        } else if (ctx.setVarLine() != null) {
-            return visit(ctx.setVarLine());
-        } else if (ctx.ctbSetLine() != null) {
-            return visit(ctx.ctbSetLine());
-        } else if (ctx.docLine() != null) {
-            return visit(ctx.docLine());
-        } else {
-            Space prefix = whitespace();
-            Markers markers = Markers.EMPTY;
-            markers = markers.addIfAbsent(mapColumn(Column.Location.START));
-            markers = markers.addIfAbsent(mapColumn(Column.Location.END));
-            return new ControlM.Line(
-                    randomId(),
-                    prefix,
-                    markers,
-                    emptyList()
-            );
-        }
-    }
+		if (ctx.memLine() != null) {
+			return visit(ctx.memLine());
+		}
+		if (ctx.ownerLine() != null) {
+			return visit(ctx.ownerLine());
+		}
+		if (ctx.applLine() != null) {
+			return visit(ctx.applLine());
+		}
+		if (ctx.descLine() != null) {
+			return visit(ctx.descLine());
+		}
+		else if (ctx.overlibLine() != null) {
+			return visit(ctx.overlibLine());
+		}
+		else if (ctx.schenvLine() != null) {
+			return visit(ctx.schenvLine());
+		}
+		else if (ctx.setVarLine() != null) {
+			return visit(ctx.setVarLine());
+		}
+		else if (ctx.ctbSetLine() != null) {
+			return visit(ctx.ctbSetLine());
+		}
+		else if (ctx.docLine() != null) {
+			return visit(ctx.docLine());
+		}
+		else {
+			Space prefix = whitespace();
+			Markers markers = Markers.EMPTY;
+			markers = markers.addIfAbsent(mapColumn(Column.Location.START));
+			markers = markers.addIfAbsent(mapColumn(Column.Location.END));
+			return new ControlM.Line(
+				randomId(),
+				prefix,
+				markers,
+				emptyList()
+			);
+		}
+	}
 
     @Override
     public ControlM.Line visitMemLine(ControlMParser.MemLineContext ctx) {

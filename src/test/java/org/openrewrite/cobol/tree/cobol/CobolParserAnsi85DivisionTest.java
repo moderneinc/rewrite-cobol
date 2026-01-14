@@ -21,10 +21,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openrewrite.cobol.Assertions.cobol;
 
-public class CobolParserAnsi85DivisionTest extends CobolTest {
+class CobolParserAnsi85DivisionTest extends CobolTest {
 
-    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/17")
     @ExpectedToFail
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/17")
     @Test
     void invalidGrammar() {
         rewriteRun(

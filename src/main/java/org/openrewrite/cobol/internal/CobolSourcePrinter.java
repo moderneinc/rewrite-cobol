@@ -5,6 +5,7 @@
  */
 package org.openrewrite.cobol.internal;
 
+import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
 import org.openrewrite.PrintOutputCapture;
 import org.openrewrite.cobol.CobolPreprocessorVisitor;
@@ -14,11 +15,9 @@ import org.openrewrite.cobol.marker.CopiedWord;
 import org.openrewrite.cobol.marker.MissingCopybook;
 import org.openrewrite.cobol.tree.*;
 import org.openrewrite.internal.StringUtils;
-import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.marker.Marker;
 import org.openrewrite.marker.Markers;
 
-import java.util.Optional;
 import java.util.function.UnaryOperator;
 
 /**
@@ -1378,7 +1377,7 @@ public class CobolSourcePrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
         return generate;
     }
 
-    public Cobol visitGlobalClause(Cobol.GlobalClause globalClause, PrintOutputCapture<P> p) {
+	@Override public Cobol visitGlobalClause(Cobol.GlobalClause globalClause, PrintOutputCapture<P> p) {
         beforeSyntax(globalClause, Space.Location.GLOBAL_CLAUSE_PREFIX, p);
         visit(globalClause.getWords(), p);
         afterSyntax(globalClause, p);
@@ -4489,7 +4488,7 @@ public class CobolSourcePrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
         beforeSyntax(c.getPrefix(), c.getMarkers(), loc, p);
     }
 
-    protected void beforeSyntax(Space prefix, Markers markers, @Nullable Space.Location loc, PrintOutputCapture<P> p) {
+    protected void beforeSyntax(Space prefix, Markers markers, Space.@Nullable Location loc, PrintOutputCapture<P> p) {
         for (Marker marker : markers.getMarkers()) {
             p.out.append(p.getMarkerPrinter().beforePrefix(marker, new Cursor(getCursor(), marker), COBOL_MARKER_WRAPPER));
         }

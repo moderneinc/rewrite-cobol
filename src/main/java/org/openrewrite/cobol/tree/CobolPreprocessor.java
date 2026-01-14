@@ -5,11 +5,14 @@
  */
 package org.openrewrite.cobol.tree;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Value;
+import lombok.With;
+import org.jspecify.annotations.Nullable;
 import org.openrewrite.*;
 import org.openrewrite.cobol.CobolPreprocessorVisitor;
 import org.openrewrite.cobol.internal.CobolPreprocessorPrinter;
-import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.marker.Markers;
 
 import java.nio.charset.Charset;
@@ -27,8 +30,7 @@ public interface CobolPreprocessor extends Tree {
         return (R) acceptCobolPreprocessor(v.adapt(CobolPreprocessorVisitor.class), p);
     }
 
-    @Nullable
-    default <P> CobolPreprocessor acceptCobolPreprocessor(CobolPreprocessorVisitor<P> v, P p) {
+	default <P> @Nullable CobolPreprocessor acceptCobolPreprocessor(CobolPreprocessorVisitor<P> v, P p) {
         return v.defaultValue(this, p);
     }
 
@@ -41,11 +43,11 @@ public interface CobolPreprocessor extends Tree {
 
     <P extends CobolPreprocessor> P withPrefix(Space prefix);
 
-    default UUID getId() {
+	@Override default UUID getId() {
         return Cobol.CompilationUnit.id;
     }
 
-    default <T extends Tree> T withId(UUID id) {
+	@Override default <T extends Tree> T withId(UUID id) {
         //noinspection unchecked
         return (T) this;
     }
@@ -306,8 +308,7 @@ public interface CobolPreprocessor extends Tree {
 
         Word dot;
 
-        @Nullable
-        CobolPreprocessor.Copybook copybook;
+		CobolPreprocessor.@Nullable Copybook copybook;
 
         @Override
         public <P> CobolPreprocessor acceptCobolPreprocessor(CobolPreprocessorVisitor<P> v, P p) {
@@ -622,19 +623,19 @@ public interface CobolPreprocessor extends Tree {
         @With
         Cobol.Word cobolWord;
 
-        public Space getPrefix() {
+		@Override public Space getPrefix() {
             return cobolWord.getPrefix();
         }
 
-        public Word withPrefix(Space prefix) {
+		@Override public Word withPrefix(Space prefix) {
             return cobolWord.getPrefix() == prefix ? this : withCobolWord(cobolWord.withPrefix(prefix));
         }
 
-        public Markers getMarkers() {
+		@Override public Markers getMarkers() {
             return cobolWord.getMarkers();
         }
 
-        public Word withMarkers(Markers markers) {
+		@Override public Word withMarkers(Markers markers) {
             return cobolWord.getMarkers() == markers ? this : withCobolWord(cobolWord.withMarkers(markers));
         }
 

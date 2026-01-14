@@ -10,7 +10,7 @@ import org.openrewrite.test.RewriteTest;
 
 import static org.openrewrite.jcl.tree.ParserAssertions.jcl;
 
-public class ContinuationTest implements RewriteTest {
+class ContinuationTest implements RewriteTest {
 
     @Test
     void splitByParam() {

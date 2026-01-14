@@ -7,6 +7,7 @@ package org.openrewrite.cobol;
 
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
+import org.jspecify.annotations.Nullable;
 import org.openrewrite.*;
 import org.openrewrite.cobol.internal.CobolPrinter;
 import org.openrewrite.cobol.internal.IbmAnsi85;
@@ -14,7 +15,6 @@ import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
 import org.openrewrite.cobol.tree.Space;
 import org.openrewrite.internal.StringUtils;
-import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.test.SourceSpec;
 import org.openrewrite.test.SourceSpecs;
 

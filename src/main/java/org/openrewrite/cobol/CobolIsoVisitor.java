@@ -135,7 +135,7 @@ public class CobolIsoVisitor<P> extends CobolVisitor<P> {
         return (Cobol.BlockContainsTo) super.visitBlockContainsTo(blockContainsTo, p);
     }
 
-    public Cobol.Call visitCall(Cobol.Call call, P p) {
+	@Override public Cobol.Call visitCall(Cobol.Call call, P p) {
         return (Cobol.Call) super.visitCall(call, p);
     }
 

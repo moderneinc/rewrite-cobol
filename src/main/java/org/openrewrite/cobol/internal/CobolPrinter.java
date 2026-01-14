@@ -6,7 +6,10 @@
 package org.openrewrite.cobol.internal;
 
 import org.openrewrite.PrintOutputCapture;
-import org.openrewrite.cobol.tree.*;
+import org.openrewrite.cobol.tree.Cobol;
+import org.openrewrite.cobol.tree.CobolLine;
+import org.openrewrite.cobol.tree.Replacement;
+import org.openrewrite.cobol.tree.Space;
 
 /**
  * Print the post-processed COBOL AST.

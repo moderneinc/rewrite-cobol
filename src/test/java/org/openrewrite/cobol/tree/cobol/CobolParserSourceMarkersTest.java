@@ -10,7 +10,7 @@ import org.openrewrite.cobol.CobolTest;
 
 import static org.openrewrite.cobol.Assertions.cobol;
 
-public class CobolParserSourceMarkersTest extends CobolTest {
+class CobolParserSourceMarkersTest extends CobolTest {
 
     @Test
     void lineNumbers() {

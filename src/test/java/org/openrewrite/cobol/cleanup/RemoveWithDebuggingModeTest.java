@@ -7,27 +7,20 @@ package org.openrewrite.cobol.cleanup;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.openrewrite.DocumentExample;
 import org.openrewrite.cobol.CobolTest;
 import org.openrewrite.test.RecipeSpec;
 
 import static org.openrewrite.cobol.Assertions.cobol;
 
-public class RemoveWithDebuggingModeTest extends CobolTest {
+class RemoveWithDebuggingModeTest extends CobolTest {
 
     @Override
     public void defaults(RecipeSpec spec) {
         spec.recipe(new RemoveWithDebuggingMode(true));
     }
 
-    @Test
-    public void noChange() {
-        rewriteRun(
-          cobol(getNistResource("CM101M.CBL"))
-        );
-    }
-
-    @Test
-    void removeWithDebuggingMode() {
+	@DocumentExample @Test void removeWithDebuggingMode() {
         rewriteRun(
           cobol(
             """
@@ -54,6 +47,12 @@ public class RemoveWithDebuggingModeTest extends CobolTest {
               000900     XXXXX083.                                                    DB1014.2
               """
           )
+        );
+    }
+
+	@Test void noChange() {
+        rewriteRun(
+          cobol(getNistResource("CM101M.CBL"))
         );
     }
 

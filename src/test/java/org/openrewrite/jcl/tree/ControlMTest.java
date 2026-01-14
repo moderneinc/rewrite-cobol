@@ -10,7 +10,7 @@ import org.openrewrite.test.RewriteTest;
 
 import static org.openrewrite.jcl.tree.ParserAssertions.jcl;
 
-public class ControlMTest implements RewriteTest {
+class ControlMTest implements RewriteTest {
 
     @Test
     void controlM() {

@@ -5,7 +5,7 @@ import org.fusesource.jansi.*;
 import org.fusesource.jansi.io.AnsiOutputStream;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
-import org.openrewrite.internal.lang.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.openrewrite.polyglot.ProgressBar;
 import picocli.CommandLine;
 
@@ -256,13 +256,14 @@ public class DefaultProgressBar implements AutoCloseable, ProgressBar {
     }
 
     private double normalizedProgress() {
-        if (max <= 0) {
-            return 0.0;
-        } else if (current > max) {
-            return 1.0;
-        }
-        return ((double) current) / max;
-    }
+		if (max <= 0) {
+			return 0.0;
+		}
+		if (current > max) {
+			return 1.0;
+		}
+		return ((double) current) / max;
+	}
 
     public static Builder builder(CommandLine.Model.CommandSpec spec) {
         return new Builder(spec);

@@ -13,8 +13,7 @@ import org.openrewrite.cobol.internal.CobolPreprocessorPrinter;
 
 import static org.openrewrite.cobol.Assertions.copybook;
 
-public class CobolPreprocessorCopybookTest extends CobolTest {
-    private final CobolPreprocessorPrinter<ExecutionContext> printer = new CobolPreprocessorPrinter<>(false, true);
+class CobolPreprocessorCopybookTest extends CobolTest {
 
     @Test
     void newLineInContentArea() {

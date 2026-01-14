@@ -5,14 +5,18 @@
  */
 // Generated from java-escape by ANTLR 4.11.1
 package org.openrewrite.cobol.internal.grammar;
-import org.antlr.v4.runtime.atn.*;
-import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.misc.*;
-import org.antlr.v4.runtime.tree.*;
+import org.antlr.v4.runtime.atn.ATN;
+import org.antlr.v4.runtime.atn.ATNDeserializer;
+import org.antlr.v4.runtime.atn.ParserATNSimulator;
+import org.antlr.v4.runtime.atn.PredictionContextCache;
+import org.antlr.v4.runtime.dfa.DFA;
+import org.antlr.v4.runtime.misc.Utils;
+import org.antlr.v4.runtime.tree.ParseTreeListener;
+import org.antlr.v4.runtime.tree.ParseTreeVisitor;
+import org.antlr.v4.runtime.tree.TerminalNode;
+
 import java.util.List;
-import java.util.Iterator;
-import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
 public class CobolParser extends Parser {
@@ -786,8 +790,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCompilationUnit(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCompilationUnit(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -864,8 +868,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitProgramUnit(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitProgramUnit(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -970,8 +974,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitEndProgramStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitEndProgramStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -1031,8 +1035,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitIdentificationDivision(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitIdentificationDivision(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -1120,8 +1124,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitIdentificationDivisionBody(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitIdentificationDivisionBody(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -1223,8 +1227,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitProgramIdParagraph(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitProgramIdParagraph(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -1333,8 +1337,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitAuthorParagraph(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitAuthorParagraph(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -1393,8 +1397,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitInstallationParagraph(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitInstallationParagraph(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -1453,8 +1457,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDateWrittenParagraph(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDateWrittenParagraph(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -1513,8 +1517,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDateCompiledParagraph(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDateCompiledParagraph(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -1573,8 +1577,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSecurityParagraph(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSecurityParagraph(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -1637,8 +1641,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitRemarksParagraph(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitRemarksParagraph(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -1721,8 +1725,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitEnvironmentDivision(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitEnvironmentDivision(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -1791,8 +1795,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitEnvironmentDivisionBody(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitEnvironmentDivisionBody(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -1864,8 +1868,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitConfigurationSection(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitConfigurationSection(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -1936,8 +1940,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitConfigurationSectionParagraph(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitConfigurationSectionParagraph(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -2011,8 +2015,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSourceComputerParagraph(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSourceComputerParagraph(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -2104,8 +2108,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitObjectComputerParagraph(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitObjectComputerParagraph(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -2190,8 +2194,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitObjectComputerClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitObjectComputerClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -2281,8 +2285,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitMemorySizeClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitMemorySizeClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -2512,8 +2516,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDiskSizeClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDiskSizeClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -2758,8 +2762,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCollatingSequenceClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCollatingSequenceClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -2880,8 +2884,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCollatingSequenceClauseAlphanumeric(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCollatingSequenceClauseAlphanumeric(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -2951,8 +2955,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCollatingSequenceClauseNational(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCollatingSequenceClauseNational(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -3021,8 +3025,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSegmentLimitClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSegmentLimitClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -3079,8 +3083,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCharacterSetClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCharacterSetClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -3136,8 +3140,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSpecialNamesParagraph(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSpecialNamesParagraph(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -3238,8 +3242,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSpecialNameClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSpecialNameClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -3362,8 +3366,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitAlphabetClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitAlphabetClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -3438,8 +3442,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitAlphabetClauseFormat1(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitAlphabetClauseFormat1(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -3582,8 +3586,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitAlphabetLiterals(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitAlphabetLiterals(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -3822,8 +3826,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitAlphabetThrough(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitAlphabetThrough(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -3882,8 +3886,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitAlphabetAlso(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitAlphabetAlso(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -3957,8 +3961,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitAlphabetClauseFormat2(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitAlphabetClauseFormat2(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -4052,8 +4056,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitChannelClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitChannelClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -4123,8 +4127,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitClassClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitClassClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -4235,8 +4239,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitClassClauseThrough(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitClassClauseThrough(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -4304,8 +4308,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitClassClauseFrom(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitClassClauseFrom(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -4365,8 +4369,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitClassClauseTo(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitClassClauseTo(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -4432,8 +4436,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCurrencySignClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCurrencySignClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -4524,8 +4528,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDecimalPointClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDecimalPointClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -4588,8 +4592,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDefaultComputationalSignClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDefaultComputationalSignClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -4708,8 +4712,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDefaultDisplaySignClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDefaultDisplaySignClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -4811,8 +4815,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitEnvironmentSwitchNameClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitEnvironmentSwitchNameClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -5036,8 +5040,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitEnvironmentSwitchNameSpecialNamesStatusPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitEnvironmentSwitchNameSpecialNamesStatusPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -5207,8 +5211,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitOdtClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitOdtClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -5268,8 +5272,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReserveNetworkClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReserveNetworkClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -5368,8 +5372,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSymbolicCharactersClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSymbolicCharactersClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -5496,8 +5500,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSymbolicCharacters(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSymbolicCharacters(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -5592,8 +5596,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitInputOutputSection(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitInputOutputSection(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -5659,8 +5663,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitInputOutputSectionParagraph(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitInputOutputSectionParagraph(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -5729,8 +5733,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitFileControlParagraph(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitFileControlParagraph(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -5818,8 +5822,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitFileControlEntry(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitFileControlEntry(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -5880,8 +5884,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSelectClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSelectClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -5968,8 +5972,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitFileControlClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitFileControlClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -6105,8 +6109,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitAssignClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitAssignClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -6254,8 +6258,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReserveClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReserveClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -6354,8 +6358,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitOrganizationClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitOrganizationClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -6464,8 +6468,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitPaddingCharacterClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitPaddingCharacterClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -6551,8 +6555,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitRecordDelimiterClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitRecordDelimiterClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -6635,8 +6639,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitAccessModeClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitAccessModeClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -6719,8 +6723,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitRecordKeyClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitRecordKeyClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -6826,8 +6830,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitAlternateRecordKeyClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitAlternateRecordKeyClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -6928,8 +6932,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitPasswordClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitPasswordClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -6992,8 +6996,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitFileStatusClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitFileStatusClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -7073,8 +7077,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitRelativeKeyClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitRelativeKeyClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -7152,8 +7156,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitIoControlParagraph(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitIoControlParagraph(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -7245,8 +7249,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitIoControlClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitIoControlClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -7334,8 +7338,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitRerunClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitRerunClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -7431,8 +7435,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitRerunEveryRecords(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitRerunEveryRecords(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -7485,8 +7489,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitRerunEveryOf(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitRerunEveryOf(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -7564,8 +7568,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitRerunEveryClock(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitRerunEveryClock(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -7629,8 +7633,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSameClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSameClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -7741,8 +7745,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitMultipleFileClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitMultipleFileClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -7834,8 +7838,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitMultipleFilePosition(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitMultipleFilePosition(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -7895,8 +7899,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCommitmentControlClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCommitmentControlClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -7961,8 +7965,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataDivision(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataDivision(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -8049,8 +8053,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataDivisionSection(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataDivisionSection(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -8164,8 +8168,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitFileSection(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitFileSection(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -8250,8 +8254,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitFileDescriptionEntry(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitFileDescriptionEntry(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -8387,8 +8391,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitFileDescriptionEntryClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitFileDescriptionEntryClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -8507,8 +8511,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitExternalClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitExternalClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -8562,8 +8566,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitGlobalClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitGlobalClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -8625,8 +8629,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitBlockContainsClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitBlockContainsClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -8712,8 +8716,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitBlockContainsTo(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitBlockContainsTo(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -8766,8 +8770,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitRecordContainsClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitRecordContainsClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -8835,8 +8839,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitRecordContainsClauseFormat1(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitRecordContainsClauseFormat1(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -8915,8 +8919,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitRecordContainsClauseFormat2(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitRecordContainsClauseFormat2(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -9058,8 +9062,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitRecordContainsClauseFormat3(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitRecordContainsClauseFormat3(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -9127,8 +9131,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitRecordContainsTo(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitRecordContainsTo(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -9184,8 +9188,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitLabelRecordsClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitLabelRecordsClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -9427,8 +9431,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitValueOfClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitValueOfClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -9496,8 +9500,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitValuePair(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitValuePair(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -9576,8 +9580,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataRecordsClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataRecordsClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -9676,8 +9680,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitLinageClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitLinageClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -9911,8 +9915,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitLinageAt(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitLinageAt(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -9982,8 +9986,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitLinageFootingAt(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitLinageFootingAt(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -10203,8 +10207,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitLinageLinesAtTop(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitLinageLinesAtTop(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -10424,8 +10428,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitLinageLinesAtBottom(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitLinageLinesAtBottom(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -10642,8 +10646,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitRecordingModeClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitRecordingModeClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -10710,8 +10714,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitModeStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitModeStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -10757,8 +10761,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCodeSetClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCodeSetClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -10822,8 +10826,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -10914,8 +10918,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataBaseSection(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataBaseSection(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -10985,8 +10989,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataBaseSectionEntry(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataBaseSectionEntry(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -11042,8 +11046,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitWorkingStorageSection(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitWorkingStorageSection(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -11112,8 +11116,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitLinkageSection(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitLinkageSection(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -11188,8 +11192,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCommunicationSection(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCommunicationSection(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -11276,8 +11280,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCommunicationDescriptionEntry(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCommunicationDescriptionEntry(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -11406,8 +11410,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCommunicationDescriptionEntryFormat1(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCommunicationDescriptionEntryFormat1(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -11741,8 +11745,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCommunicationDescriptionEntryFormat2(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCommunicationDescriptionEntryFormat2(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -11900,8 +11904,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCommunicationDescriptionEntryFormat3(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCommunicationDescriptionEntryFormat3(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -12167,8 +12171,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDestinationCountClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDestinationCountClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -12239,8 +12243,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDestinationTableClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDestinationTableClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -12322,8 +12326,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitEndKeyClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitEndKeyClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -12385,8 +12389,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitErrorKeyClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitErrorKeyClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -12448,8 +12452,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitMessageCountClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitMessageCountClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -12519,8 +12523,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitMessageDateClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitMessageDateClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -12582,8 +12586,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitMessageTimeClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitMessageTimeClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -12645,8 +12649,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitStatusKeyClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitStatusKeyClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -12708,8 +12712,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSymbolicDestinationClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSymbolicDestinationClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -12779,8 +12783,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSymbolicQueueClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSymbolicQueueClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -12850,8 +12854,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSymbolicSourceClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSymbolicSourceClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -12921,8 +12925,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSymbolicTerminalClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSymbolicTerminalClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -12994,8 +12998,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSymbolicSubQueueClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSymbolicSubQueueClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -13073,8 +13077,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitTextLengthClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitTextLengthClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -13146,8 +13150,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitLocalStorageSection(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitLocalStorageSection(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -13230,8 +13234,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitScreenSection(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitScreenSection(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -13465,8 +13469,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitScreenDescriptionEntry(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitScreenDescriptionEntry(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -13721,8 +13725,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitScreenDescriptionBlankClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitScreenDescriptionBlankClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -13776,8 +13780,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitScreenDescriptionBellClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitScreenDescriptionBellClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -13828,8 +13832,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitScreenDescriptionBlinkClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitScreenDescriptionBlinkClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -13873,8 +13877,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitScreenDescriptionEraseClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitScreenDescriptionEraseClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -13928,8 +13932,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitScreenDescriptionLightClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitScreenDescriptionLightClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -13982,8 +13986,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitScreenDescriptionGridClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitScreenDescriptionGridClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -14034,8 +14038,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitScreenDescriptionReverseVideoClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitScreenDescriptionReverseVideoClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -14077,8 +14081,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitScreenDescriptionUnderlineClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitScreenDescriptionUnderlineClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -14127,8 +14131,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitScreenDescriptionSizeClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitScreenDescriptionSizeClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -14208,8 +14212,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitScreenDescriptionLineClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitScreenDescriptionLineClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -14318,8 +14322,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitScreenDescriptionColumnClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitScreenDescriptionColumnClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -14432,8 +14436,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitScreenDescriptionForegroundColorClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitScreenDescriptionForegroundColorClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -14518,8 +14522,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitScreenDescriptionBackgroundColorClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitScreenDescriptionBackgroundColorClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -14600,8 +14604,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitScreenDescriptionControlClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitScreenDescriptionControlClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -14660,8 +14664,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitScreenDescriptionValueClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitScreenDescriptionValueClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -14723,8 +14727,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitScreenDescriptionPictureClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitScreenDescriptionPictureClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -14796,8 +14800,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitScreenDescriptionFromClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitScreenDescriptionFromClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -14869,8 +14873,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitScreenDescriptionToClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitScreenDescriptionToClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -14917,8 +14921,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitScreenDescriptionUsingClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitScreenDescriptionUsingClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -14965,8 +14969,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitScreenDescriptionUsageClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitScreenDescriptionUsageClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -15033,8 +15037,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitScreenDescriptionBlankWhenZeroClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitScreenDescriptionBlankWhenZeroClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -15091,8 +15095,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitScreenDescriptionJustifiedClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitScreenDescriptionJustifiedClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -15158,8 +15162,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitScreenDescriptionSignClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitScreenDescriptionSignClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -15251,8 +15255,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitScreenDescriptionAutoClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitScreenDescriptionAutoClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -15304,8 +15308,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitScreenDescriptionSecureClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitScreenDescriptionSecureClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -15357,8 +15361,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitScreenDescriptionRequiredClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitScreenDescriptionRequiredClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -15420,8 +15424,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitScreenDescriptionPromptClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitScreenDescriptionPromptClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -15514,8 +15518,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitScreenDescriptionPromptOccursClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitScreenDescriptionPromptOccursClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -15571,8 +15575,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitScreenDescriptionFullClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitScreenDescriptionFullClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -15623,8 +15627,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitScreenDescriptionZeroFillClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitScreenDescriptionZeroFillClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -15674,8 +15678,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportSection(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportSection(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -15744,8 +15748,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportDescription(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportDescription(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -15824,8 +15828,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportDescriptionEntry(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportDescriptionEntry(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -15933,8 +15937,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportDescriptionGlobalClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportDescriptionGlobalClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -15996,8 +16000,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportDescriptionPageLimitClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportDescriptionPageLimitClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -16091,8 +16095,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportDescriptionHeadingClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportDescriptionHeadingClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -16140,8 +16144,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportDescriptionFirstDetailClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportDescriptionFirstDetailClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -16191,8 +16195,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportDescriptionLastDetailClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportDescriptionLastDetailClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -16241,8 +16245,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportDescriptionFootingClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportDescriptionFootingClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -16294,8 +16298,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportGroupDescriptionEntry(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportGroupDescriptionEntry(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -16375,8 +16379,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportGroupDescriptionEntryFormat1(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportGroupDescriptionEntryFormat1(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -16467,8 +16471,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportGroupDescriptionEntryFormat2(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportGroupDescriptionEntryFormat2(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -16613,8 +16617,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportGroupDescriptionEntryFormat3(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportGroupDescriptionEntryFormat3(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -16783,8 +16787,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportGroupBlankWhenZeroClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportGroupBlankWhenZeroClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -16844,8 +16848,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportGroupColumnNumberClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportGroupColumnNumberClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -16911,8 +16915,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportGroupIndicateClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportGroupIndicateClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -16967,8 +16971,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportGroupJustifiedClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportGroupJustifiedClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -17037,8 +17041,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportGroupLineNumberClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportGroupLineNumberClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -17135,8 +17139,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportGroupLineNumberNextPage(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportGroupLineNumberNextPage(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -17204,8 +17208,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportGroupLineNumberPlus(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportGroupLineNumberPlus(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -17260,8 +17264,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportGroupNextGroupClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportGroupNextGroupClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -17346,8 +17350,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportGroupNextGroupPlus(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportGroupNextGroupPlus(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -17392,8 +17396,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportGroupNextGroupNextPage(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportGroupNextGroupNextPage(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -17442,8 +17446,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportGroupPictureClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportGroupPictureClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -17511,8 +17515,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportGroupResetClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportGroupResetClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -17716,8 +17720,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportGroupSignClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportGroupSignClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -17796,8 +17800,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportGroupSourceClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportGroupSourceClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -17869,8 +17873,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportGroupSumClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportGroupSumClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -18000,8 +18004,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportGroupTypeClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportGroupTypeClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -18102,8 +18106,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportGroupTypeReportHeading(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportGroupTypeReportHeading(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -18164,8 +18168,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportGroupTypePageHeading(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportGroupTypePageHeading(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -18230,8 +18234,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportGroupTypeControlHeading(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportGroupTypeControlHeading(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -18438,8 +18442,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportGroupTypeDetail(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportGroupTypeDetail(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -18496,8 +18500,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportGroupTypeControlFooting(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportGroupTypeControlFooting(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -18706,8 +18710,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportGroupUsageClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportGroupUsageClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -18780,8 +18784,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportGroupTypePageFooting(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportGroupTypePageFooting(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -18842,8 +18846,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportGroupTypeReportFooting(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportGroupTypeReportFooting(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -18906,8 +18910,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportGroupValueClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportGroupValueClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -18970,8 +18974,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitProgramLibrarySection(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitProgramLibrarySection(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -19037,8 +19041,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitLibraryDescriptionEntry(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitLibraryDescriptionEntry(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -19105,8 +19109,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitLibraryDescriptionEntryFormat1(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitLibraryDescriptionEntryFormat1(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -19195,8 +19199,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitLibraryDescriptionEntryFormat2(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitLibraryDescriptionEntryFormat2(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -19297,8 +19301,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitLibraryAttributeClauseFormat1(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitLibraryAttributeClauseFormat1(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -19384,8 +19388,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitLibraryAttributeClauseFormat2(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitLibraryAttributeClauseFormat2(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -19492,8 +19496,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitLibraryAttributeFunction(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitLibraryAttributeFunction(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -19543,8 +19547,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitLibraryAttributeParameter(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitLibraryAttributeParameter(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -19603,8 +19607,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitLibraryAttributeTitle(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitLibraryAttributeTitle(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -19665,8 +19669,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitLibraryEntryProcedureClauseFormat1(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitLibraryEntryProcedureClauseFormat1(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -19736,8 +19740,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitLibraryEntryProcedureClauseFormat2(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitLibraryEntryProcedureClauseFormat2(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -19825,8 +19829,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitLibraryEntryProcedureForClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitLibraryEntryProcedureForClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -19873,8 +19877,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitLibraryEntryProcedureGivingClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitLibraryEntryProcedureGivingClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -19924,8 +19928,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitLibraryEntryProcedureUsingClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitLibraryEntryProcedureUsingClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -19993,8 +19997,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitLibraryEntryProcedureUsingName(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitLibraryEntryProcedureUsingName(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -20055,8 +20059,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitLibraryEntryProcedureWithClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitLibraryEntryProcedureWithClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -20124,8 +20128,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitLibraryEntryProcedureWithName(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitLibraryEntryProcedureWithName(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -20181,8 +20185,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitLibraryIsCommonClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitLibraryIsCommonClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -20236,8 +20240,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitLibraryIsGlobalClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitLibraryIsGlobalClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -20301,8 +20305,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataDescriptionEntry(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataDescriptionEntry(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -20386,8 +20390,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataDescriptionEntryFormat1(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataDescriptionEntryFormat1(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -20532,8 +20536,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataDescriptionEntryFormat1Clause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataDescriptionEntryFormat1Clause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -20728,8 +20732,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataDescriptionEntryFormat2(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataDescriptionEntryFormat2(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -20784,8 +20788,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataDescriptionEntryFormat3(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataDescriptionEntryFormat3(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -20837,8 +20841,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataDescriptionEntryExecSql(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataDescriptionEntryExecSql(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -20910,8 +20914,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataAlignedClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataAlignedClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -20957,8 +20961,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataBlankWhenZeroClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataBlankWhenZeroClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -21023,8 +21027,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataCommonOwnLocalClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataCommonOwnLocalClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -21080,8 +21084,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataExternalClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataExternalClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -21147,8 +21151,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataGlobalClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataGlobalClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -21202,8 +21206,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataIntegerStringClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataIntegerStringClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -21256,8 +21260,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataJustifiedClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataJustifiedClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -21343,8 +21347,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataOccursClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataOccursClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -21465,8 +21469,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataOccursTo(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataOccursTo(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -21514,8 +21518,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataOccursDepending(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataOccursDepending(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -21579,8 +21583,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataOccursSort(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataOccursSort(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -21680,8 +21684,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataOccursIndexed(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataOccursIndexed(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -21770,8 +21774,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataPictureClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataPictureClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -21839,8 +21843,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitPictureString(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitPictureString(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -21909,8 +21913,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitPicture(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitPicture(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -22000,8 +22004,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitPictureChars(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitPictureChars(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -22163,8 +22167,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitPictureCardinality(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitPictureCardinality(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -22214,8 +22218,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataReceivedByClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataReceivedByClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -22287,8 +22291,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataRecordAreaClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataRecordAreaClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -22335,8 +22339,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataRedefinesClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataRedefinesClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -22388,8 +22392,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataRenamesClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataRenamesClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -22459,8 +22463,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataSignClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataSignClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -22554,8 +22558,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataSynchronizedClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataSynchronizedClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -22625,8 +22629,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataThreadLocalClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataThreadLocalClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -22693,8 +22697,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataTypeClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataTypeClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -22806,8 +22810,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataTypeDefClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataTypeDefClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -22894,8 +22898,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataUsageClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataUsageClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -23175,8 +23179,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataUsingClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataUsingClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -23268,8 +23272,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataValueClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataValueClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -23382,8 +23386,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataValueInterval(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataValueInterval(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -23441,8 +23445,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataValueIntervalFrom(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataValueIntervalFrom(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -23501,8 +23505,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataValueIntervalTo(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataValueIntervalTo(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -23557,8 +23561,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataWithLowerBoundsClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataWithLowerBoundsClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -23627,8 +23631,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitProcedureDivision(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitProcedureDivision(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -23714,8 +23718,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitProcedureDivisionUsingClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitProcedureDivisionUsingClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -23784,8 +23788,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitProcedureDivisionGivingClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitProcedureDivisionGivingClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -23843,8 +23847,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitProcedureDivisionUsingParameter(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitProcedureDivisionUsingParameter(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -23906,8 +23910,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitProcedureDivisionByReferencePhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitProcedureDivisionByReferencePhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -23996,8 +24000,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitProcedureDivisionByReference(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitProcedureDivisionByReference(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -24249,8 +24253,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitProcedureDivisionByValuePhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitProcedureDivisionByValuePhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -24330,8 +24334,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitProcedureDivisionByValue(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitProcedureDivisionByValue(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -24407,8 +24411,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitProcedureDeclaratives(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitProcedureDeclaratives(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -24485,8 +24489,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitProcedureDeclarative(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitProcedureDeclarative(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -24542,8 +24546,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitProcedureSectionHeader(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitProcedureSectionHeader(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -24606,8 +24610,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitProcedureDivisionBody(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitProcedureDivisionBody(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -24670,8 +24674,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitProcedureSection(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitProcedureSection(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -24728,8 +24732,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitParagraphs(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitParagraphs(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -24814,8 +24818,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitParagraph(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitParagraph(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -24904,8 +24908,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSentence(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSentence(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -25111,8 +25115,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -25660,8 +25664,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitAcceptStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitAcceptStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -25774,8 +25778,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitAcceptFromDateStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitAcceptFromDateStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -25916,8 +25920,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitAcceptFromMnemonicStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitAcceptFromMnemonicStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -25963,8 +25967,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitAcceptFromEscapeKeyStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitAcceptFromEscapeKeyStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -26011,8 +26015,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitAcceptMessageCountStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitAcceptMessageCountStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -26068,8 +26072,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitRoundable(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitRoundable(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -26138,8 +26142,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitAddStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitAddStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -26245,8 +26249,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitAddToStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitAddToStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -26326,8 +26330,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitAddTo(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitAddTo(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -26388,8 +26392,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitAddToGivingStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitAddToGivingStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -26499,8 +26503,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitAddCorrespondingStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitAddCorrespondingStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -26562,8 +26566,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitAddFrom(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitAddFrom(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -26623,8 +26627,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitAddToGiving(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitAddToGiving(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -26681,8 +26685,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitAddGiving(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitAddGiving(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -26726,8 +26730,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitAlteredGoTo(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitAlteredGoTo(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -26788,8 +26792,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitAlterStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitAlterStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -26862,8 +26866,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitAlterProceedTo(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitAlterProceedTo(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -26944,8 +26948,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCallStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCallStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -27070,8 +27074,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCallUsingPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCallUsingPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -27142,8 +27146,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCallUsingParameter(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCallUsingParameter(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -27212,8 +27216,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCallByReferencePhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCallByReferencePhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -27308,8 +27312,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCallByReference(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCallByReference(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -27596,8 +27600,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCallByValuePhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCallByValuePhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -27679,8 +27683,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCallByValue(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCallByValue(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -27772,8 +27776,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCallByContentPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCallByContentPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -27856,8 +27860,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCallByContent(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCallByContent(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -27952,8 +27956,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCallGivingPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCallGivingPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -28012,8 +28016,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCancelStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCancelStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -28086,8 +28090,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCancelCall(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCancelCall(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -28166,8 +28170,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCloseStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCloseStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -28241,8 +28245,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCloseFile(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCloseFile(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -28313,8 +28317,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCloseReelUnitStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCloseReelUnitStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -28426,8 +28430,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCloseRelativeStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCloseRelativeStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -28507,8 +28511,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitClosePortFileIOStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitClosePortFileIOStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -28618,8 +28622,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitClosePortFileIOUsing(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitClosePortFileIOUsing(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -28686,8 +28690,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitClosePortFileIOUsingCloseDisposition(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitClosePortFileIOUsingCloseDisposition(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -28756,8 +28760,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitClosePortFileIOUsingAssociatedData(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitClosePortFileIOUsingAssociatedData(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -28822,8 +28826,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitClosePortFileIOUsingAssociatedDataLength(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitClosePortFileIOUsingAssociatedDataLength(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -28910,8 +28914,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitComputeStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitComputeStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -29012,8 +29016,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitComputeStore(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitComputeStore(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -29055,8 +29059,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitContinueStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitContinueStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -29109,8 +29113,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDeleteStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDeleteStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -29210,8 +29214,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDisableStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDisableStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -29346,8 +29350,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDisplayStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDisplayStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -29486,8 +29490,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDisplayOperand(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDisplayOperand(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -29548,8 +29552,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDisplayAt(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDisplayAt(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -29613,8 +29617,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDisplayUpon(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDisplayUpon(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -29674,8 +29678,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDisplayWith(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDisplayWith(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -29755,8 +29759,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDivideStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDivideStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -29883,8 +29887,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDivideIntoStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDivideIntoStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -29956,8 +29960,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDivideIntoGivingStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDivideIntoGivingStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -30035,8 +30039,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDivideByGivingStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDivideByGivingStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -30111,8 +30115,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDivideGivingPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDivideGivingPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -30177,8 +30181,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDivideInto(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDivideInto(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -30222,8 +30226,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDivideGiving(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDivideGiving(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -30268,8 +30272,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDivideRemainder(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDivideRemainder(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -30328,8 +30332,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitEnableStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitEnableStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -30448,8 +30452,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitEntryStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitEntryStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -30544,8 +30548,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitEvaluateStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitEvaluateStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -30652,8 +30656,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitEvaluateSelect(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitEvaluateSelect(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -30725,8 +30729,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitEvaluateAlsoSelect(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitEvaluateAlsoSelect(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -30781,8 +30785,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitEvaluateWhenPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitEvaluateWhenPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -30868,8 +30872,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitEvaluateWhen(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitEvaluateWhen(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -30941,8 +30945,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitEvaluateCondition(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitEvaluateCondition(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -31036,8 +31040,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitEvaluateThrough(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitEvaluateThrough(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -31093,8 +31097,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitEvaluateAlsoCondition(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitEvaluateAlsoCondition(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -31145,8 +31149,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitEvaluateWhenOther(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitEvaluateWhenOther(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -31215,8 +31219,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitEvaluateValue(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitEvaluateValue(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -31281,8 +31285,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitExecCicsStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitExecCicsStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -31346,8 +31350,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitExecSqlStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitExecSqlStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -31411,8 +31415,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitExecSqlImsStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitExecSqlImsStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -31481,8 +31485,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitExhibitStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitExhibitStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -31570,8 +31574,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitExhibitOperand(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitExhibitOperand(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -31636,8 +31640,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitExitStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitExitStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -31878,8 +31882,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitGenerateStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitGenerateStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -31923,8 +31927,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitGobackStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitGobackStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -31973,8 +31977,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitGoToStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitGoToStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -32045,8 +32049,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitGoToStatementSimple(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitGoToStatementSimple(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -32099,8 +32103,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitGoToDependingOnStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitGoToDependingOnStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -32341,8 +32345,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitIfStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitIfStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -32416,8 +32420,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitIfThen(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitIfThen(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -32509,8 +32513,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitIfElse(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitIfElse(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -32594,8 +32598,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitInitializeStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitInitializeStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -32675,8 +32679,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitInitializeReplacingPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitInitializeReplacingPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -32755,8 +32759,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitInitializeReplacingBy(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitInitializeReplacingBy(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -32841,8 +32845,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitInitiateStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitInitiateStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -32920,8 +32924,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitInspectStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitInspectStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -32999,8 +33003,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitInspectTallyingPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitInspectTallyingPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -33075,8 +33079,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitInspectReplacingPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitInspectReplacingPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -33162,8 +33166,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitInspectTallyingReplacingPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitInspectTallyingReplacingPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -33249,8 +33253,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitInspectConvertingPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitInspectConvertingPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -33340,8 +33344,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitInspectFor(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitInspectFor(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -33423,8 +33427,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitInspectCharacters(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitInspectCharacters(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -33499,8 +33503,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitInspectReplacingCharacters(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitInspectReplacingCharacters(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -33574,8 +33578,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitInspectAllLeadings(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitInspectAllLeadings(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -33655,8 +33659,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitInspectReplacingAllLeadings(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitInspectReplacingAllLeadings(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -33739,8 +33743,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitInspectAllLeading(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitInspectAllLeading(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -33825,8 +33829,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitInspectReplacingAllLeading(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitInspectReplacingAllLeading(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -33905,8 +33909,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitInspectBy(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitInspectBy(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -33970,8 +33974,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitInspectTo(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitInspectTo(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -34037,8 +34041,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitInspectBeforeAfter(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitInspectBeforeAfter(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -34142,8 +34146,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitMergeStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitMergeStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -34266,8 +34270,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitMergeOnKeyClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitMergeOnKeyClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -34373,8 +34377,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitMergeCollatingSequencePhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitMergeCollatingSequencePhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -34483,8 +34487,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitMergeCollatingAlphanumeric(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitMergeCollatingAlphanumeric(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -34546,8 +34550,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitMergeCollatingNational(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitMergeCollatingNational(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -34618,8 +34622,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitMergeUsing(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitMergeUsing(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -34690,8 +34694,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitMergeOutputProcedurePhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitMergeOutputProcedurePhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -34762,8 +34766,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitMergeOutputThrough(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitMergeOutputThrough(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -34822,8 +34826,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitMergeGivingPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitMergeGivingPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -34896,8 +34900,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitMergeGiving(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitMergeGiving(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -34992,8 +34996,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitMoveStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitMoveStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -35251,8 +35255,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitMoveToStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitMoveToStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -35322,8 +35326,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitMoveToSendingArea(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitMoveToSendingArea(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -35389,8 +35393,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitMoveCorrespondingToStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitMoveCorrespondingToStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -35468,8 +35472,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitMoveCorrespondingToSendingArea(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitMoveCorrespondingToSendingArea(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -35531,8 +35535,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitMultiplyStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitMultiplyStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -35643,8 +35647,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitMultiplyRegular(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitMultiplyRegular(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -35707,8 +35711,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitMultiplyRegularOperand(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitMultiplyRegularOperand(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -35759,8 +35763,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitMultiplyGiving(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitMultiplyGiving(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -35830,8 +35834,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitMultiplyGivingOperand(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitMultiplyGivingOperand(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -35888,8 +35892,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitMultiplyGivingResult(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitMultiplyGivingResult(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -35932,8 +35936,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitNextSentenceStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitNextSentenceStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -36001,8 +36005,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitOpenStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitOpenStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -36091,8 +36095,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitOpenInputStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitOpenInputStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -36161,8 +36165,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitOpenInput(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitOpenInput(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -36239,8 +36243,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitOpenOutputStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitOpenOutputStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -36308,8 +36312,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitOpenOutput(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitOpenOutput(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -36380,8 +36384,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitOpenIOStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitOpenIOStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -36450,8 +36454,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitOpenExtendStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitOpenExtendStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -36520,8 +36524,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitPerformStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitPerformStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -36588,8 +36592,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitPerformInlineStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitPerformInlineStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -36666,8 +36670,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitPerformProcedureStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitPerformProcedureStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -36748,8 +36752,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitPerformType(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitPerformType(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -36817,8 +36821,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitPerformTimes(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitPerformTimes(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -36882,8 +36886,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitPerformUntil(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitPerformUntil(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -36943,8 +36947,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitPerformVarying(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitPerformVarying(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -37023,8 +37027,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitPerformVaryingClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitPerformVaryingClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -37097,8 +37101,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitPerformVaryingPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitPerformVaryingPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -37163,8 +37167,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitPerformAfter(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitPerformAfter(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -37217,8 +37221,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitPerformFrom(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitPerformFrom(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -37291,8 +37295,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitPerformBy(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitPerformBy(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -37359,8 +37363,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitPerformTestClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitPerformTestClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -37429,8 +37433,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitPurgeStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitPurgeStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -37520,8 +37524,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReadStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReadStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -37669,8 +37673,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReadInto(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReadInto(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -37718,8 +37722,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReadWith(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReadWith(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -37803,8 +37807,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReadKey(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReadKey(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -37872,8 +37876,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReceiveStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReceiveStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -37997,8 +38001,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReceiveFromStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReceiveFromStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -38099,8 +38103,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReceiveFrom(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReceiveFrom(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -38184,8 +38188,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReceiveIntoStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReceiveIntoStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -38277,8 +38281,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReceiveNoData(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReceiveNoData(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -38346,8 +38350,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReceiveWithData(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReceiveWithData(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -38415,8 +38419,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReceiveBefore(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReceiveBefore(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -38486,8 +38490,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReceiveWith(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReceiveWith(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -38546,8 +38550,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReceiveThread(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReceiveThread(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -38609,8 +38613,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReceiveSize(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReceiveSize(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -38683,8 +38687,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReceiveStatus(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReceiveStatus(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -38748,8 +38752,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReleaseStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReleaseStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -38820,8 +38824,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReturnStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReturnStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -38911,8 +38915,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReturnInto(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReturnInto(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -38969,8 +38973,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitRewriteStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitRewriteStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -39058,8 +39062,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitRewriteFrom(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitRewriteFrom(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -39120,8 +39124,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSearchStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSearchStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -39230,8 +39234,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSearchVarying(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSearchVarying(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -39286,8 +39290,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSearchWhen(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSearchWhen(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -39376,8 +39380,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSendStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSendStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -39652,8 +39656,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSendStatementSync(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSendStatementSync(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -39755,8 +39759,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSendStatementAsync(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSendStatementAsync(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -39814,8 +39818,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSendFromPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSendFromPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -39865,8 +39869,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSendWithPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSendWithPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -40099,8 +40103,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSendReplacingPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSendReplacingPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -40164,8 +40168,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSendAdvancingPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSendAdvancingPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -40248,8 +40252,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSendAdvancingPage(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSendAdvancingPage(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -40298,8 +40302,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSendAdvancingLines(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSendAdvancingLines(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -40376,8 +40380,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSendAdvancingMnemonic(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSendAdvancingMnemonic(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -40428,8 +40432,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSetStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSetStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -40518,8 +40522,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSetToStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSetToStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -40608,8 +40612,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSetUpDownByStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSetUpDownByStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -40690,8 +40694,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSetTo(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSetTo(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -40741,8 +40745,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSetToValue(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSetToValue(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -40839,8 +40843,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSetByValue(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSetByValue(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -40928,8 +40932,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSortStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSortStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -41072,8 +41076,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSortOnKeyClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSortOnKeyClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -41168,8 +41172,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSortDuplicatesPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSortDuplicatesPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -41256,8 +41260,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSortCollatingSequencePhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSortCollatingSequencePhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -41366,8 +41370,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSortCollatingAlphanumeric(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSortCollatingAlphanumeric(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -41429,8 +41433,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSortCollatingNational(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSortCollatingNational(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -41503,8 +41507,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSortInputProcedurePhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSortInputProcedurePhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -41575,8 +41579,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSortInputThrough(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSortInputThrough(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -41635,8 +41639,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSortUsing(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSortUsing(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -41707,8 +41711,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSortOutputProcedurePhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSortOutputProcedurePhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -41779,8 +41783,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSortOutputThrough(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSortOutputThrough(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -41839,8 +41843,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSortGivingPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSortGivingPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -41913,8 +41917,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSortGiving(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSortGiving(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -42015,8 +42019,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitStartStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitStartStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -42116,8 +42120,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitStartKey(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitStartKey(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -42289,8 +42293,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitStopStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitStopStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -42362,8 +42366,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitStopStatementGiving(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitStopStatementGiving(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -42451,8 +42455,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitStringStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitStringStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -42566,8 +42570,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitStringSendingPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitStringSendingPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -42655,8 +42659,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitStringSending(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitStringSending(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -42719,8 +42723,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitStringDelimitedByPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitStringDelimitedByPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -42801,8 +42805,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitStringForPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitStringForPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -42863,8 +42867,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitStringIntoPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitStringIntoPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -42912,8 +42916,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitStringWithPointerPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitStringWithPointerPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -42984,8 +42988,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSubtractStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSubtractStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -43091,8 +43095,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSubtractFromStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSubtractFromStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -43186,8 +43190,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSubtractFromGivingStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSubtractFromGivingStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -43277,8 +43281,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSubtractCorrespondingStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSubtractCorrespondingStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -43340,8 +43344,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSubtractSubtrahend(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSubtractSubtrahend(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -43398,8 +43402,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSubtractMinuend(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSubtractMinuend(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -43446,8 +43450,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSubtractMinuendGiving(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSubtractMinuendGiving(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -43504,8 +43508,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSubtractGiving(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSubtractGiving(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -43550,8 +43554,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSubtractMinuendCorresponding(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSubtractMinuendCorresponding(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -43607,8 +43611,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitTerminateStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitTerminateStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -43671,8 +43675,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitUnstringStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitUnstringStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -43780,8 +43784,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitUnstringSendingPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitUnstringSendingPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -43856,8 +43860,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitUnstringDelimitedByPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitUnstringDelimitedByPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -43943,8 +43947,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitUnstringOrAllPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitUnstringOrAllPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -44018,8 +44022,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitUnstringIntoPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitUnstringIntoPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -44090,8 +44094,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitUnstringInto(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitUnstringInto(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -44158,8 +44162,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitUnstringDelimiterIn(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitUnstringDelimiterIn(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -44218,8 +44222,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitUnstringCountIn(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitUnstringCountIn(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -44278,8 +44282,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitUnstringWithPointerPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitUnstringWithPointerPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -44338,8 +44342,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitUnstringTallyingPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitUnstringTallyingPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -44400,8 +44404,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitUseStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitUseStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -44472,8 +44476,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitUseAfterClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitUseAfterClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -44569,8 +44573,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitUseAfterOn(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitUseAfterOn(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -44797,8 +44801,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitUseDebugClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitUseDebugClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -44887,8 +44891,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitUseDebugOn(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitUseDebugOn(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -45004,8 +45008,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitWriteStatement(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitWriteStatement(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -45126,8 +45130,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitWriteFromPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitWriteFromPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -45196,8 +45200,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitWriteAdvancingPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitWriteAdvancingPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -45280,8 +45284,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitWriteAdvancingPage(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitWriteAdvancingPage(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -45330,8 +45334,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitWriteAdvancingLines(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitWriteAdvancingLines(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -45408,8 +45412,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitWriteAdvancingMnemonic(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitWriteAdvancingMnemonic(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -45459,8 +45463,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitWriteAtEndOfPagePhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitWriteAtEndOfPagePhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -45547,8 +45551,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitWriteNotAtEndOfPagePhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitWriteNotAtEndOfPagePhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -45635,8 +45639,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitAtEndPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitAtEndPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -45714,8 +45718,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitNotAtEndPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitNotAtEndPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -45794,8 +45798,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitInvalidKeyPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitInvalidKeyPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -45873,8 +45877,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitNotInvalidKeyPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitNotInvalidKeyPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -45953,8 +45957,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitOnOverflowPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitOnOverflowPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -46032,8 +46036,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitNotOnOverflowPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitNotOnOverflowPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -46113,8 +46117,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitOnSizeErrorPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitOnSizeErrorPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -46195,8 +46199,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitNotOnSizeErrorPhrase(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitNotOnSizeErrorPhrase(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -46277,8 +46281,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitOnExceptionClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitOnExceptionClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -46356,8 +46360,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitNotOnExceptionClause(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitNotOnExceptionClause(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -46437,8 +46441,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitArithmeticExpression(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitArithmeticExpression(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -46501,8 +46505,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitPlusMinus(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitPlusMinus(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -46563,8 +46567,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitMultDivs(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitMultDivs(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -46625,8 +46629,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitMultDiv(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitMultDiv(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -46689,8 +46693,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitPowers(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitPowers(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -46768,8 +46772,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitPower(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitPower(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -46823,8 +46827,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitBasis(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitBasis(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -46898,8 +46902,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCondition(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCondition(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -46966,8 +46970,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitAndOrCondition(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitAndOrCondition(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -47056,8 +47060,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCombinableCondition(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCombinableCondition(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -47123,8 +47127,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSimpleCondition(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSimpleCondition(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -47210,8 +47214,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitClassCondition(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitClassCondition(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -47473,8 +47477,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitConditionNameReference(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitConditionNameReference(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -47595,8 +47599,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitConditionNameSubscriptReference(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitConditionNameSubscriptReference(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -47673,8 +47677,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitRelationCondition(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitRelationCondition(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -47743,8 +47747,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitRelationSignCondition(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitRelationSignCondition(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -47825,8 +47829,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitRelationArithmeticComparison(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitRelationArithmeticComparison(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -47882,8 +47886,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitRelationCombinedComparison(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitRelationCombinedComparison(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -47946,8 +47950,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitRelationCombinedCondition(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitRelationCombinedCondition(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -48028,8 +48032,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitRelationalOperator(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitRelationalOperator(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -48267,8 +48271,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitAbbreviation(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitAbbreviation(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -48362,8 +48366,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitIdentifier(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitIdentifier(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -48443,8 +48447,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitTableCall(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitTableCall(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -48524,8 +48528,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitTableCallSubscripts(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitTableCallSubscripts(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -48606,8 +48610,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitFunctionCall(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitFunctionCall(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -48689,8 +48693,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitFunctionCallArguments(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitFunctionCallArguments(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -48767,8 +48771,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReferenceModifier(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReferenceModifier(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -48829,8 +48833,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCharacterPosition(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCharacterPosition(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -48874,8 +48878,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitLength(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitLength(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -48929,8 +48933,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSubscript(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSubscript(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -49043,8 +49047,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitArgument(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitArgument(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -49151,8 +49155,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitQualifiedDataName(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitQualifiedDataName(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -49235,8 +49239,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitQualifiedDataNameFormat1(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitQualifiedDataNameFormat1(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -49342,8 +49346,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitQualifiedDataNameFormat2(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitQualifiedDataNameFormat2(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -49392,8 +49396,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitQualifiedDataNameFormat3(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitQualifiedDataNameFormat3(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -49440,8 +49444,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitQualifiedDataNameFormat4(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitQualifiedDataNameFormat4(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -49490,8 +49494,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitQualifiedInData(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitQualifiedInData(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -49550,8 +49554,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitInData(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitInData(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -49608,8 +49612,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitInFile(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitInFile(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -49666,8 +49670,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitInMnemonic(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitInMnemonic(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -49724,8 +49728,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitInSection(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitInSection(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -49782,8 +49786,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitInLibrary(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitInLibrary(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -49840,8 +49844,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitInTable(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitInTable(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -49896,8 +49900,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitAlphabetName(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitAlphabetName(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -49941,8 +49945,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitAssignmentName(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitAssignmentName(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -49986,8 +49990,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitBasisName(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitBasisName(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -50031,8 +50035,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCdName(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCdName(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -50076,8 +50080,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitClassName(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitClassName(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -50121,8 +50125,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitComputerName(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitComputerName(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -50166,8 +50170,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitConditionName(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitConditionName(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -50211,8 +50215,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataName(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataName(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -50258,8 +50262,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitDataDescName(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitDataDescName(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -50323,8 +50327,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitEnvironmentName(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitEnvironmentName(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -50368,8 +50372,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitFileName(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitFileName(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -50418,8 +50422,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitFunctionName(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitFunctionName(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -50504,8 +50508,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitIndexName(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitIndexName(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -50549,8 +50553,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitLanguageName(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitLanguageName(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -50594,8 +50598,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitLibraryName(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitLibraryName(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -50639,8 +50643,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitLocalName(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitLocalName(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -50684,8 +50688,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitMnemonicName(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitMnemonicName(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -50732,8 +50736,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitParagraphName(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitParagraphName(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -50929,8 +50933,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitProcedureName(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitProcedureName(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -50999,8 +51003,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitProgramName(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitProgramName(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -51187,8 +51191,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitRecordName(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitRecordName(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -51232,8 +51236,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitReportName(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitReportName(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -51277,8 +51281,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitRoutineName(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitRoutineName(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -51322,8 +51326,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitScreenName(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitScreenName(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -51370,8 +51374,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSectionName(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSectionName(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -51561,8 +51565,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSystemName(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSystemName(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -51606,8 +51610,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSymbolicCharacter(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSymbolicCharacter(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -51651,8 +51655,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitTextName(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitTextName(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -51822,8 +51826,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCobolWord(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCobolWord(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -51889,8 +51893,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitLiteral(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitLiteral(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -51974,8 +51978,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitBooleanLiteral(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitBooleanLiteral(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -52030,8 +52034,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitNumericLiteral(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitNumericLiteral(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -52101,8 +52105,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitIntegerLiteral(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitIntegerLiteral(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -52161,8 +52165,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCicsDfhRespLiteral(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCicsDfhRespLiteral(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -52232,8 +52236,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCicsDfhValueLiteral(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCicsDfhValueLiteral(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -52311,8 +52315,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitFigurativeConstant(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitFigurativeConstant(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -52485,8 +52489,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitSpecialRegister(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitSpecialRegister(this);
+			return visitor.visitChildren(this);
 		}
 	}
 
@@ -52738,8 +52742,8 @@ public class CobolParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CobolVisitor ) return ((CobolVisitor<? extends T>)visitor).visitCommentEntry(this);
-			else return visitor.visitChildren(this);
+			if (visitor instanceof CobolVisitor) return ((CobolVisitor<? extends T>) visitor).visitCommentEntry(this);
+			return visitor.visitChildren(this);
 		}
 	}
 

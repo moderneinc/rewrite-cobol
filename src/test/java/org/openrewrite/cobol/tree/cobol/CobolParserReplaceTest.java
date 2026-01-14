@@ -11,7 +11,7 @@ import org.openrewrite.cobol.CobolTest;
 
 import static org.openrewrite.cobol.Assertions.cobolPostProcess;
 
-public class CobolParserReplaceTest extends CobolTest {
+class CobolParserReplaceTest extends CobolTest {
 
     @Issue("https://github.com/openrewrite/rewrite-cobol/issues/36")
     @Test

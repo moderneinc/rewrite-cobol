@@ -2,7 +2,7 @@ package io.moderne.cobol.internal;
 
 import lombok.Getter;
 import org.fusesource.jansi.Ansi;
-import org.openrewrite.internal.lang.Nullable;
+import org.jspecify.annotations.Nullable;
 import picocli.CommandLine;
 
 /**

@@ -7,7 +7,10 @@ package org.openrewrite.jcl;
 
 import lombok.Getter;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Scanner;
+import java.util.Set;
 
 public class JclLineReader {
     private static final Set<String> JCL_STATEMENT_NAMES = new HashSet<>(Arrays.asList("JOB", "JCLLIB", "CNTL", "ENDCNTL",
@@ -129,24 +132,27 @@ public class JclLineReader {
     }
 
     private static LineType getLineType(String line) {
-        char c0 = !line.isEmpty() ? line.charAt(0) : '~';
-        char c1 = line.length() > 1 ? line.charAt(1) : '~';
-        char c2 = line.length() > 2 ? line.charAt(2) : '~';
-        char c3 = line.length() > 3 ? line.charAt(3) : '~';
+		char c0 = !line.isEmpty() ? line.charAt(0) : '~';
+		char c1 = line.length() > 1 ? line.charAt(1) : '~';
+		char c2 = line.length() > 2 ? line.charAt(2) : '~';
+		char c3 = line.length() > 3 ? line.charAt(3) : '~';
 
-        if (c0 == '/' && c1 == '/' && c2 == '*' && (c3 == ' ' || c3 == '~' || c3 == '*' || c3 == '=' || c3 == '-' || c3 == '/' || c3 == '\r' || c3 == '\n')) {
-            return LineType.COMMENT;
-        } else if (c0 == '/' && c1 == '/' && c2 == '*') {
-            return LineType.JES3;
-        } else if (c0 == '/' && c1 == '/') {
-            String[] words = line.split("\\s+");
-            return words.length >=2 && JCL_STATEMENT_NAMES.contains(words[1]) ? LineType.JCL_STATEMENT : LineType.JCL;
-        } else if (c0 == '/' && c1 == '*') {
-            return LineType.JES2;
-        }
+		if (c0 == '/' && c1 == '/' && c2 == '*' && (c3 == ' ' || c3 == '~' || c3 == '*' || c3 == '=' || c3 == '-' || c3 == '/' || c3 == '\r' || c3 == '\n')) {
+			return LineType.COMMENT;
+		}
+		if (c0 == '/' && c1 == '/' && c2 == '*') {
+			return LineType.JES3;
+		}
+		if (c0 == '/' && c1 == '/') {
+			String[] words = line.split("\\s+");
+			return words.length >= 2 && JCL_STATEMENT_NAMES.contains(words[1]) ? LineType.JCL_STATEMENT : LineType.JCL;
+		}
+		if (c0 == '/' && c1 == '*') {
+			return LineType.JES2;
+		}
 
-        return LineType.UNKNOWN;
-    }
+		return LineType.UNKNOWN;
+	}
 
     @Getter
     private enum LineType {

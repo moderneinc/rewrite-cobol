@@ -12,7 +12,7 @@ import org.openrewrite.test.RewriteTest;
 
 import static org.openrewrite.controlm.tree.ParserAssertions.controlM;
 
-public class CompilationUnitTest implements RewriteTest {
+class CompilationUnitTest implements RewriteTest {
 
     @Test
     void blankFile() {

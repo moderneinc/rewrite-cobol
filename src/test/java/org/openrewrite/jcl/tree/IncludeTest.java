@@ -12,7 +12,7 @@ import org.openrewrite.test.RewriteTest;
 
 import static org.openrewrite.jcl.tree.ParserAssertions.jcl;
 
-public class IncludeTest implements RewriteTest {
+class IncludeTest implements RewriteTest {
     @ParameterizedTest
     @ValueSource(
       strings = {

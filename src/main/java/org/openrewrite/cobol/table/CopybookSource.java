@@ -8,7 +8,6 @@ package org.openrewrite.cobol.table;
 import lombok.Value;
 import org.openrewrite.Column;
 import org.openrewrite.DataTable;
-import org.openrewrite.Option;
 import org.openrewrite.Recipe;
 
 public class CopybookSource extends DataTable<CopybookSource.Row> {

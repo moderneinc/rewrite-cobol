@@ -9,7 +9,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.InMemoryExecutionContext;
-import org.openrewrite.cobol.tree.*;
+import org.openrewrite.cobol.tree.Cobol;
+import org.openrewrite.cobol.tree.CobolPreprocessor;
+import org.openrewrite.cobol.tree.Replacement;
 import org.openrewrite.internal.ListUtils;
 import org.openrewrite.marker.Markers;
 
@@ -167,8 +169,7 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
 
         @Override
         public CobolPreprocessor.Copybook visitCopybook(CobolPreprocessor.Copybook copybook, ExecutionContext executionContext) {
-            copybook = copybook.withLst(ListUtils.map(copybook.getLst(), it -> visit(it, executionContext)));
-            return copybook;
+            return copybook.withLst(ListUtils.map(copybook.getLst(), it -> visit(it, executionContext)));
         }
 
         @Override
@@ -431,16 +432,19 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
 
         private ReplacementType init() {
             for (List<CobolPreprocessor.Word> words : from.values()) {
-                if (words.size() == 1 && to.size() == 1) {
-                    return ReplacementType.SINGLE_WORD;
-                } else if (!words.isEmpty() && words.size() == to.size()) {
-                    return ReplacementType.EQUAL;
-                } else if (words.size() < to.size()) {
-                    return ReplacementType.ADDITIVE;
-                } else if (words.size() > from.size()) {
-                    return ReplacementType.REDUCTIVE;
-                }
-            }
+				if (words.size() == 1 && to.size() == 1) {
+					return ReplacementType.SINGLE_WORD;
+				}
+				if (!words.isEmpty() && words.size() == to.size()) {
+					return ReplacementType.EQUAL;
+				}
+				if (words.size() < to.size()) {
+					return ReplacementType.ADDITIVE;
+				}
+				if (words.size() > from.size()) {
+					return ReplacementType.REDUCTIVE;
+				}
+			}
             return ReplacementType.UNKNOWN;
         }
 

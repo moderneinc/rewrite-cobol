@@ -7,19 +7,19 @@ package org.openrewrite.cobol.search;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
+import org.jspecify.annotations.Nullable;
 import org.openrewrite.*;
 import org.openrewrite.cobol.CobolPreprocessorVisitor;
 import org.openrewrite.cobol.NameVisitor;
 import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
-import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.jcl.JclIsoVisitor;
 import org.openrewrite.jcl.tree.Jcl;
 import org.openrewrite.marker.SearchResult;
 
 import java.util.regex.Pattern;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 @Value
 public class FindReference extends Recipe {
 
@@ -49,41 +49,43 @@ public class FindReference extends Recipe {
             private final Pattern pattern = Boolean.TRUE.equals(exactMatch) ? null : Pattern.compile(searchTerm.toLowerCase());
 
             @Override
-            public boolean isAcceptable(SourceFile sourceFile, ExecutionContext executionContext) {
-                return cobolReference.isAcceptable(sourceFile, executionContext) ||
-                       copybookReference.isAcceptable(sourceFile, executionContext) ||
-                       jclReference.isAcceptable(sourceFile, executionContext);
+            public boolean isAcceptable(SourceFile sourceFile, ExecutionContext ctx) {
+                return cobolReference.isAcceptable(sourceFile, ctx) ||
+                       copybookReference.isAcceptable(sourceFile, ctx) ||
+                       jclReference.isAcceptable(sourceFile, ctx);
             }
 
             @Override
-            public @Nullable Tree visit(@Nullable Tree tree, ExecutionContext executionContext) {
-                if (tree instanceof Cobol) {
-                    return cobolReference.visit(tree, executionContext);
-                } else if (tree instanceof CobolPreprocessor.Copybook) {
-                    return copybookReference.visit(tree, executionContext);
-                } else if (tree instanceof Jcl.CompilationUnit) {
-                    return jclReference.visit(tree, executionContext);
-                }
-                return super.visit(tree, executionContext);
-            }
+            public @Nullable Tree visit(@Nullable Tree tree, ExecutionContext ctx) {
+				if (tree instanceof Cobol) {
+					return cobolReference.visit(tree, ctx);
+				}
+				if (tree instanceof CobolPreprocessor.Copybook) {
+					return copybookReference.visit(tree, ctx);
+				}
+				if (tree instanceof Jcl.CompilationUnit) {
+					return jclReference.visit(tree, ctx);
+				}
+				return super.visit(tree, ctx);
+			}
 
             class CobolReference extends NameVisitor<ExecutionContext> {
                 @Override
-                public Cobol.Word visitWord(Cobol.Word word, ExecutionContext executionContext) {
+                public Cobol.Word visitWord(Cobol.Word word, ExecutionContext ctx) {
                     if (matches(word.getWord())) {
                         return SearchResult.found(word);
                     }
-                    return super.visitWord(word, executionContext);
+                    return super.visitWord(word, ctx);
                 }
             }
 
             class CopybookReference extends CobolPreprocessorVisitor<ExecutionContext> {
                 @Override
-                public CobolPreprocessor visitWord(CobolPreprocessor.Word word, ExecutionContext executionContext) {
+                public CobolPreprocessor visitWord(CobolPreprocessor.Word word, ExecutionContext ctx) {
                     if (matches(word.getCobolWord().getWord())) {
                         return SearchResult.found(word);
                     }
-                    return super.visitWord(word, executionContext);
+                    return super.visitWord(word, ctx);
                 }
             }
 

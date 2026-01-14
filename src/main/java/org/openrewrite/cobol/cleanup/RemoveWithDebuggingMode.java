@@ -7,13 +7,15 @@ package org.openrewrite.cobol.cleanup;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
+import org.jspecify.annotations.Nullable;
 import org.openrewrite.*;
 import org.openrewrite.cobol.CobolIsoVisitor;
 import org.openrewrite.cobol.format.RemoveWords;
 import org.openrewrite.cobol.format.ShiftSequenceAreas;
 import org.openrewrite.cobol.marker.CopiedWord;
-import org.openrewrite.cobol.tree.*;
-import org.openrewrite.internal.lang.Nullable;
+import org.openrewrite.cobol.tree.Cobol;
+import org.openrewrite.cobol.tree.CommentArea;
+import org.openrewrite.cobol.tree.Space;
 
 import java.time.Duration;
 import java.util.List;
@@ -21,7 +23,7 @@ import java.util.Set;
 
 import static java.util.Collections.singleton;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 @Value
 public class RemoveWithDebuggingMode extends Recipe {
 
@@ -51,12 +53,11 @@ public class RemoveWithDebuggingMode extends Recipe {
     public TreeVisitor<?, ExecutionContext> getVisitor() {
         return new CobolIsoVisitor<ExecutionContext>() {
 
-            @Nullable
-            private Cobol.Word endWord = null;
+			private Cobol.@Nullable Word endWord = null;
 
             @Override
-            public Cobol.Word visitWord(Cobol.Word word, ExecutionContext executionContext) {
-                Cobol.Word w = super.visitWord(word, executionContext);
+            public Cobol.Word visitWord(Cobol.Word word, ExecutionContext ctx) {
+                Cobol.Word w = super.visitWord(word, ctx);
                 if (endWord != null) {
                     Cursor parent = getCursor().getParent();
                     // This covers an unlikely case, and requires the cursor to have access to the CU.
@@ -71,8 +72,8 @@ public class RemoveWithDebuggingMode extends Recipe {
 
             @Override
             public Cobol.SourceComputerDefinition visitSourceComputerDefinition(Cobol.SourceComputerDefinition sourceComputerDefinition,
-                                                                                ExecutionContext executionContext) {
-                Cobol.SourceComputerDefinition s = super.visitSourceComputerDefinition(sourceComputerDefinition, executionContext);
+                                                                                ExecutionContext ctx) {
+                Cobol.SourceComputerDefinition s = super.visitSourceComputerDefinition(sourceComputerDefinition, ctx);
                 if (s.getDebuggingMode() != null) {
                     // Do not change copied or replaced code until the transformations are understood.
                     boolean isSupported = true;
@@ -102,7 +103,7 @@ public class RemoveWithDebuggingMode extends Recipe {
                             s = s.withDebuggingMode(null);
                         } else {
                             // Interim safe replace until we have auto-formatting.
-                            s = new RemoveWords(s.getDebuggingMode()).visitSourceComputerDefinition(s, executionContext);
+                            s = new RemoveWords(s.getDebuggingMode()).visitSourceComputerDefinition(s, ctx);
                         }
                     }
                 }
@@ -111,4 +112,3 @@ public class RemoveWithDebuggingMode extends Recipe {
         };
     }
 }
-

@@ -5,10 +5,9 @@
  */
 package org.openrewrite.cobol.tree;
 
-import org.openrewrite.internal.lang.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public interface CopybookSource {
-     @Nullable
-     CobolPreprocessor.Copybook getCopybook();
-     <C extends CobolPreprocessor> C withCopybook(@Nullable CobolPreprocessor.Copybook copybook);
+	CobolPreprocessor.@Nullable Copybook getCopybook();
+     <C extends CobolPreprocessor> C withCopybook(CobolPreprocessor.@Nullable Copybook copybook);
 }

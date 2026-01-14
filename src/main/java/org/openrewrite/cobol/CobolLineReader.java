@@ -7,7 +7,9 @@ package org.openrewrite.cobol;
 
 import org.openrewrite.cobol.internal.CobolDialect;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Scanner;
 
 import static org.openrewrite.cobol.CobolStringUtils.*;
 

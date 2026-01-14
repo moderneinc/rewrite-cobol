@@ -7,6 +7,7 @@ package org.openrewrite.cobol.search;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
+import org.jspecify.annotations.Nullable;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Option;
 import org.openrewrite.Recipe;
@@ -18,13 +19,12 @@ import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
 import org.openrewrite.cobol.tree.Replacement;
 import org.openrewrite.internal.ListUtils;
-import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.marker.SearchResult;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 @Value
 public class FindWord extends Recipe {
 
@@ -62,14 +62,14 @@ public class FindWord extends Recipe {
         }
 
         @Override
-        public Cobol.Word visitWord(Cobol.Word word, ExecutionContext executionContext) {
-            Cobol.Word w = super.visitWord(word, executionContext);
+        public Cobol.Word visitWord(Cobol.Word word, ExecutionContext ctx) {
+            Cobol.Word w = super.visitWord(word, ctx);
             AtomicBoolean hasCopyStatement = new AtomicBoolean(false);
             w = w.withPreprocessorStatements(ListUtils.map(w.getPreprocessorStatements(), it -> {
                 if (it instanceof CobolPreprocessor.CopyStatement && !hasCopyStatement.get()) {
                     hasCopyStatement.set(true);
                 }
-                return preprocessorSearch.visit(it, executionContext);
+                return preprocessorSearch.visit(it, ctx);
             }));
 
             if (hasCopyStatement.get() || w.getMarkers().findFirst(CopiedWord.class).isPresent()) {
@@ -79,7 +79,7 @@ public class FindWord extends Recipe {
             if (w.getReplacement() != null) {
                 if (w.getReplacement().getType() == Replacement.Type.EQUAL || w.getReplacement().getType() == Replacement.Type.REDUCTIVE) {
                     w = w.withReplacement(w.getReplacement().withOriginalWords(
-                            ListUtils.map(w.getReplacement().getOriginalWords(), it -> it.withOriginal(visitAndCast(it.getOriginal(), executionContext)))));
+                            ListUtils.map(w.getReplacement().getOriginalWords(), it -> it.withOriginal(visitAndCast(it.getOriginal(), ctx)))));
                 }
                 return w;
             }
@@ -92,7 +92,7 @@ public class FindWord extends Recipe {
 
         private class PreprocessorSearch extends CobolPreprocessorIsoVisitor<ExecutionContext> {
             @Override
-            public CobolPreprocessor.Word visitWord(CobolPreprocessor.Word word, ExecutionContext executionContext) {
+            public CobolPreprocessor.Word visitWord(CobolPreprocessor.Word word, ExecutionContext ctx) {
                 if (matches(word.getCobolWord().getWord())) {
                     return SearchResult.found(word);
                 }

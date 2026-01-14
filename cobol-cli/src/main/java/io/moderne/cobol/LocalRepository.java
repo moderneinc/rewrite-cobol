@@ -5,11 +5,9 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.fusesource.jansi.Ansi;
 import org.openrewrite.marker.GitProvenance;
-import picocli.CommandLine;
 
 import java.nio.file.Path;
 
-import static java.nio.file.Files.exists;
 import static org.fusesource.jansi.Ansi.ansi;
 
 @Data

@@ -20,7 +20,7 @@ import java.util.List;
 
 import static org.openrewrite.cobol.Assertions.cobol;
 
-public class FindIndicatorsTest extends CobolTest {
+class FindIndicatorsTest extends CobolTest {
 
     @Override
     public void defaults(RecipeSpec spec) {
@@ -30,8 +30,8 @@ public class FindIndicatorsTest extends CobolTest {
     private final TreeVisitor<Tree, List<SearchResult>> visitor = new TreeVisitor<>() {
         @Override
         public <M extends Marker> M visitMarker(Marker marker, List<SearchResult> p) {
-            if (marker instanceof SearchResult) {
-                p.add((SearchResult) marker);
+            if (marker instanceof SearchResult result) {
+                p.add(result);
             }
             return super.visitMarker(marker, p);
         }
