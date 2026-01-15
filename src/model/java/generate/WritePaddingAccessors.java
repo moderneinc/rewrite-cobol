@@ -5,6 +5,7 @@
  */
 package generate;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Recipe;
@@ -26,15 +27,11 @@ import java.util.StringJoiner;
  */
 @RequiredArgsConstructor
 public class WritePaddingAccessors extends Recipe {
-    @Override
-    public String getDisplayName() {
-        return "Write accessors for padded parts of the model";
-    }
+	@Getter
+	final String displayName = "Write accessors for padded parts of the model";
 
-    @Override
-    public String getDescription() {
-        return "Write accessors for padded parts of the model.";
-    }
+	@Getter
+	final String description = "Write accessors for padded parts of the model.";
 
     JavaParser.Builder<?, ?> parser = JavaParser.fromJavaVersion().classpath(JavaParser.runtimeClasspath());
 

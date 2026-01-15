@@ -117,13 +117,13 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
 		if (ctx.descLine() != null) {
 			return visit(ctx.descLine());
 		}
-		else if (ctx.overlibLine() != null) {
+		if (ctx.overlibLine() != null) {
 			return visit(ctx.overlibLine());
 		}
-		else if (ctx.schenvLine() != null) {
+		if (ctx.schenvLine() != null) {
 			return visit(ctx.schenvLine());
 		}
-		else if (ctx.setVarLine() != null) {
+		if (ctx.setVarLine() != null) {
 			return visit(ctx.setVarLine());
 		}
 		else if (ctx.ctbSetLine() != null) {

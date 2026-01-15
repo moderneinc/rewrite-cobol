@@ -1,0 +1,100 @@
+#
+# For commercial customers of Moderne Inc., this repository is licensed per the terms of our contract.
+#
+
+---
+type: specs.openrewrite.org/v1beta/example
+recipeName: org.openrewrite.cobol.cleanup.RemoveWithDebuggingMode
+examples:
+- description: '`RemoveWithDebuggingModeTest#removeWithDebuggingMode`'
+  parameters:
+  - 'true'
+  sources:
+  - before: |
+      000100 IDENTIFICATION DIVISION.                                         DB1014.2
+      000200 PROGRAM-ID.                                                      DB1014.2
+      000300     DB101A.                                                      DB1014.2
+      000400 ENVIRONMENT DIVISION.                                            DB1014.2
+      000500 CONFIGURATION SECTION.                                           DB1014.2
+      000600 SOURCE-COMPUTER.                                                 DB1014.2
+      000700     XXXXX082                                                     DB1014.2
+      000800         WITH DEBUGGING MODE.                                     DB1014.2
+      000900 OBJECT-COMPUTER.                                                 DB1014.2
+      001000     XXXXX083.                                                    DB1014.2
+    after: |
+      000100 IDENTIFICATION DIVISION.                                         DB1014.2
+      000200 PROGRAM-ID.                                                      DB1014.2
+      000300     DB101A.                                                      DB1014.2
+      000400 ENVIRONMENT DIVISION.                                            DB1014.2
+      000500 CONFIGURATION SECTION.                                           DB1014.2
+      000600 SOURCE-COMPUTER.                                                 DB1014.2
+      000700     XXXXX082.                                                    DB1014.2
+      000800 OBJECT-COMPUTER.                                                 DB1014.2
+      000900     XXXXX083.                                                    DB1014.2
+    language: cobol
+---
+type: specs.openrewrite.org/v1beta/example
+recipeName: org.openrewrite.cobol.search.FindCopybook
+examples:
+- description: '`FindCopybookTest#isUsedInCopyStatement`'
+  parameters:
+  - INCEPTION
+  - 'false'
+  sources:
+  - before: |
+      000000 IDENTIFICATION DIVISION.                                         *
+             PROGRAM-ID. IC109A.                                              *
+             DATA DIVISION.                                                   *
+             LINKAGE SECTION.                                                 *
+                 01  GRP-01.                                                  *
+                     COPY INCEPTION.                                          *
+    after: |
+      000000 IDENTIFICATION DIVISION.                                         *
+             PROGRAM-ID. IC109A.                                              *
+             DATA DIVISION.                                                   *
+             LINKAGE SECTION.                                                 *
+                 01  GRP-01.                                                  *
+                     COPY ~~>INCEPTION.                                          *
+    language: cobol
+---
+type: specs.openrewrite.org/v1beta/example
+recipeName: org.openrewrite.cobol.search.FindWord
+examples:
+- description: '`FindWordTest#cm102mExactMatch`'
+  parameters:
+  - CM102M
+  - 'true'
+  sources:
+  - before: |
+      000100 IDENTIFICATION DIVISION.                                         CM1024.2
+      000200 PROGRAM-ID.                                                      CM1024.2
+      000300     CM102M.                                                      CM1024.2
+      000400 AUTHOR.                                                          CM1024.2
+      000500     FEDERAL COMPILER TESTING CENTER.                             CM1024.2
+      000600 INSTALLATION.                                                    CM1024.2
+      000700     GENERAL SERVICES ADMINISTRATION                              CM1024.2
+      000800     AUTOMATED DATA AND TELECOMMUNICATION SERVICE.                CM1024.2
+      000900     SOFTWARE DEVELOPMENT OFFICE.                                 CM1024.2
+      001000     5203 LEESBURG PIKE  SUITE 1100                               CM1024.2
+      001100     FALLS CHURCH VIRGINIA 22041.                                 CM1024.2
+      001200                                                                  CM1024.2
+      001300     PHONE   (703) 756-6153                                       CM1024.2
+      001400                                                                  CM1024.2
+      001500     " HIGH       ".                                              CM1024.2
+    after: |
+      000100 IDENTIFICATION DIVISION.                                         CM1024.2
+      000200 PROGRAM-ID.                                                      CM1024.2
+      000300     ~~>CM102M.                                                      CM1024.2
+      000400 AUTHOR.                                                          CM1024.2
+      000500     FEDERAL COMPILER TESTING CENTER.                             CM1024.2
+      000600 INSTALLATION.                                                    CM1024.2
+      000700     GENERAL SERVICES ADMINISTRATION                              CM1024.2
+      000800     AUTOMATED DATA AND TELECOMMUNICATION SERVICE.                CM1024.2
+      000900     SOFTWARE DEVELOPMENT OFFICE.                                 CM1024.2
+      001000     5203 LEESBURG PIKE  SUITE 1100                               CM1024.2
+      001100     FALLS CHURCH VIRGINIA 22041.                                 CM1024.2
+      001200                                                                  CM1024.2
+      001300     PHONE   (703) 756-6153                                       CM1024.2
+      001400                                                                  CM1024.2
+      001500     " HIGH       ".                                              CM1024.2
+    language: cobol

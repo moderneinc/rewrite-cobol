@@ -5,6 +5,7 @@
  */
 package generate;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Recipe;
@@ -27,17 +28,13 @@ import static java.util.Objects.requireNonNull;
 public class WritePrinter extends Recipe {
     final List<J.ClassDeclaration> modelClasses;
 
-    @Override
-    public String getDisplayName() {
-        return "Write the boilerplate for `CobolPrinter`";
-    }
+	@Getter
+	final String displayName = "Write the boilerplate for `CobolPrinter`";
 
-    @Override
-    public String getDescription() {
-        return "Every print method starts with `visitSpace` then `visitMarkers`. " +
-                "Every model element is visited. An engineer must fill in the places " +
-                "where keywords are grammatically required.";
-    }
+	@Getter
+	final String description = "Every print method starts with `visitSpace` then `visitMarkers`. " +
+		"Every model element is visited. An engineer must fill in the places " +
+		"where keywords are grammatically required.";
 
     JavaParser.Builder<?, ?> parser = JavaParser.fromJavaVersion().classpath(JavaParser.runtimeClasspath());
 

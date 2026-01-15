@@ -5,6 +5,7 @@
  */
 package generate;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.ExecutionContext;
@@ -26,19 +27,15 @@ import java.util.StringJoiner;
 public class WriteModel extends Recipe {
     final List<J.ClassDeclaration> modelClasses;
 
-    @Override
-    public String getDisplayName() {
-        return "Write the AST model";
-    }
+	@Getter
+	final String displayName = "Write the AST model";
 
-    @Override
-    public String getDescription() {
-        return "Expand the model into an AST with Lombok annotations, Padding classes, etc.";
-    }
+	@Getter
+	final String description = "Expand the model into an AST with Lombok annotations, Padding classes, etc.";
 
     JavaParser.Builder<?, ?> parser = JavaParser.fromJavaVersion().classpath(JavaParser.runtimeClasspath());
 
-    JavaVisitor<ExecutionContext> writeModelClass = new JavaIsoVisitor<ExecutionContext>() {
+    JavaVisitor<ExecutionContext> writeModelClass = new JavaIsoVisitor<>() {
         final JavaTemplate valueModel = JavaTemplate.builder("" +
                 "@Value " +
                 "@EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true) " +

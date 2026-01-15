@@ -5,6 +5,7 @@
  */
 package generate;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Recipe;
@@ -28,15 +29,11 @@ import static java.util.Objects.requireNonNull;
 public class WriteVisitorMethods extends Recipe {
     final List<J.ClassDeclaration> modelClasses;
 
-    @Override
-    public String getDisplayName() {
-        return "Write the boilerplate for `CobolVisitor` and `CobolIsoVisitor`";
-    }
+	@Getter
+	final String displayName = "Write the boilerplate for `CobolVisitor` and `CobolIsoVisitor`";
 
-    @Override
-    public String getDescription() {
-        return "Write the boilerplate for `CobolVisitor` and `CobolIsoVisitor`.";
-    }
+	@Getter
+	final String description = "Write the boilerplate for `CobolVisitor` and `CobolIsoVisitor`.";
 
     @Override
     public JavaVisitor<ExecutionContext> getVisitor() {

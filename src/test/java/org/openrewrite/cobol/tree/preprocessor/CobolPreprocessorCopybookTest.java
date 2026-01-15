@@ -6,10 +6,8 @@
 package org.openrewrite.cobol.tree.preprocessor;
 
 import org.junit.jupiter.api.Test;
-import org.openrewrite.ExecutionContext;
 import org.openrewrite.Issue;
 import org.openrewrite.cobol.CobolTest;
-import org.openrewrite.cobol.internal.CobolPreprocessorPrinter;
 
 import static org.openrewrite.cobol.Assertions.copybook;
 

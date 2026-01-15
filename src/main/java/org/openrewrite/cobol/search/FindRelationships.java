@@ -5,6 +5,7 @@
  */
 package org.openrewrite.cobol.search;
 
+import lombok.Getter;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Recipe;
 import org.openrewrite.Tree;
@@ -41,15 +42,11 @@ import static org.openrewrite.cobol.table.CobolRelationships.ResourceType.*;
 public class FindRelationships extends Recipe {
     transient CobolRelationships cobolRelationships = new CobolRelationships(this);
 
-    @Override
-    public String getDisplayName() {
-        return "Find COBOL relationships";
-    }
+	@Getter
+	final String displayName = "Find COBOL relationships";
 
-    @Override
-    public String getDescription() {
-        return "Build a list of relationships for diagramming and exploration.";
-    }
+	@Getter
+	final String description = "Build a list of relationships for diagramming and exploration.";
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {
