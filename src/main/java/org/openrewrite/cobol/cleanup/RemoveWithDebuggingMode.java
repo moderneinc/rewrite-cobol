@@ -39,10 +39,7 @@ public class RemoveWithDebuggingMode extends Recipe {
 
     String description = "Remove debugging mode from SOURCE-COMPUTER paragraphs.";
 
-    @Override
-    public Set<String> getTags() {
-        return singleton("RSPEC-4057");
-    }
+	Set<String> tags = singleton("RSPEC-4057");
 
     @Override
     public Duration getEstimatedEffortPerOccurrence() {
