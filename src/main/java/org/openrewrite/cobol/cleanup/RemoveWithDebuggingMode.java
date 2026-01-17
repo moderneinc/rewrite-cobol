@@ -41,10 +41,7 @@ public class RemoveWithDebuggingMode extends Recipe {
 
 	Set<String> tags = singleton("RSPEC-4057");
 
-    @Override
-    public Duration getEstimatedEffortPerOccurrence() {
-        return Duration.ofMinutes(1_000_000);
-    }
+	Duration estimatedEffortPerOccurrence = Duration.ofMinutes(1_000_000);
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {
