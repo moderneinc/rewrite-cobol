@@ -53,9 +53,9 @@ dependencies {
     implementation("com.konghq:unirest-java:3.14.2")
     implementation("org.jline:jline:latest.release")
     implementation("org.fusesource.jansi:jansi:latest.release")
-    implementation("org.openrewrite:rewrite-polyglot:latest.integration")
-    implementation("org.openrewrite:rewrite-core:latest.integration")
-    implementation("org.openrewrite.recipe:rewrite-all:latest.integration")
+    implementation("org.openrewrite:rewrite-polyglot:latest.release")
+    implementation("org.openrewrite:rewrite-core:latest.release")
+    implementation("org.openrewrite.recipe:rewrite-all:latest.release")
     implementation(rootProject)
 
     testRuntimeOnly("io.moderne:moderne-ast-write:latest.release:obfuscated")
