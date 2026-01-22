@@ -3845,7 +3845,7 @@ public class CobolVisitor<P> extends TreeVisitor<Cobol, P> {
     public Cobol visitWord(Cobol.Word word, P p) {
         Cobol.Word w = word;
         // Preprocessed COBOL preservation.
-        w = w.withPreprocessorStatements(ListUtils.map(w.getPreprocessorStatements(), it -> getCobolPreprocessorVisitor().visit(it, p)));
+        w = w.withPreprocessorStatements(ListUtils.map(w.getPreprocessorStatements(), it -> getCobolPreprocessorVisitor().visitPreprocessorDirect(it, p)));
 
         if (word.getReplacement() != null) {
             if (word.getReplacement().getType() == Replacement.Type.EQUAL || word.getReplacement().getType() == Replacement.Type.REDUCTIVE) {

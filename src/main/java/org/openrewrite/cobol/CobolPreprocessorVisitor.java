@@ -23,6 +23,26 @@ public class CobolPreprocessorVisitor<P> extends TreeVisitor<CobolPreprocessor, 
         this.cobolVisitor = cobolVisitor;
     }
 
+    /**
+     * Visit a CobolPreprocessor tree directly, bypassing the
+     * {@link TreeVisitor#adapt(Class)} call in {@link CobolPreprocessor#accept(TreeVisitor, Object)}.
+     * This avoids ClassCastException when the visitor and tree are loaded by different
+     * classloaders (e.g., when running recipes through the Moderne CLI).
+     * <p>
+     * Use this method instead of {@link #visit(org.openrewrite.Tree, Object)} when you know
+     * the tree is a CobolPreprocessor and want to avoid classloader issues.
+     *
+     * @param tree the CobolPreprocessor tree to visit
+     * @param p the visitor context parameter
+     * @return the visited tree, or null if the input was null
+     */
+    public CobolPreprocessor visitPreprocessorDirect(CobolPreprocessor tree, P p) {
+        if (tree == null) {
+            return null;
+        }
+        return tree.acceptCobolPreprocessor(this, p);
+    }
+
     public CobolPreprocessor visitCharData(CobolPreprocessor.CharData charData, P p) {
         CobolPreprocessor.CharData c = charData;
         c = c.withPrefix(visitSpace(c.getPrefix(), Space.Location.CHAR_DATA_PREFIX, p));
