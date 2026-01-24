@@ -5,6 +5,7 @@
  */
 package org.openrewrite.cobol;
 
+import org.openrewrite.Tree;
 import org.openrewrite.TreeVisitor;
 import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
@@ -24,23 +25,40 @@ public class CobolPreprocessorVisitor<P> extends TreeVisitor<CobolPreprocessor, 
     }
 
     /**
-     * Visit a CobolPreprocessor tree directly, bypassing the
-     * {@link TreeVisitor#adapt(Class)} call in {@link CobolPreprocessor#accept(TreeVisitor, Object)}.
-     * This avoids ClassCastException when the visitor and tree are loaded by different
-     * classloaders (e.g., when running recipes through the Moderne CLI).
+     * Override adapt() to handle classloader isolation issues.
      * <p>
-     * Use this method instead of {@link #visit(org.openrewrite.Tree, Object)} when you know
-     * the tree is a CobolPreprocessor and want to avoid classloader issues.
-     *
-     * @param tree the CobolPreprocessor tree to visit
-     * @param p the visitor context parameter
-     * @return the visited tree, or null if the input was null
+     * When recipes are loaded by a child-first classloader (e.g., Moderne CLI's RecipeClassLoader),
+     * the {@code adaptTo} class parameter may be loaded by a different classloader than this visitor's
+     * class. Since Java class identity includes the classloader, {@code adaptTo.isAssignableFrom(getClass())}
+     * returns false even when the classes have the same name and this visitor IS a CobolPreprocessorVisitor.
+     * <p>
+     * This override checks class assignability by name to support cross-classloader scenarios.
      */
-    public CobolPreprocessor visitPreprocessorDirect(CobolPreprocessor tree, P p) {
-        if (tree == null) {
-            return null;
+    @Override
+    @SuppressWarnings("unchecked")
+    public <R extends Tree, V extends TreeVisitor<R, P>> V adapt(Class<? extends V> adaptTo) {
+        if (isAssignableByName(getClass(), adaptTo)) {
+            return (V) this;
         }
-        return tree.acceptCobolPreprocessor(this, p);
+        return super.adapt(adaptTo);
+    }
+
+    /**
+     * Check if {@code fromClass} is assignable to {@code toClass} by comparing class names
+     * up the inheritance hierarchy. This is used instead of {@code Class.isAssignableFrom()}
+     * to handle cross-classloader scenarios where the same class loaded by different
+     * classloaders would otherwise be considered incompatible.
+     */
+    private static boolean isAssignableByName(Class<?> fromClass, Class<?> toClass) {
+        String targetName = toClass.getName();
+        Class<?> current = fromClass;
+        while (current != null) {
+            if (current.getName().equals(targetName)) {
+                return true;
+            }
+            current = current.getSuperclass();
+        }
+        return false;
     }
 
     public CobolPreprocessor visitCharData(CobolPreprocessor.CharData charData, P p) {

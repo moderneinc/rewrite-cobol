@@ -49,12 +49,11 @@ public class FindCopybook extends Recipe {
                 Cobol.Word w = super.visitWord(word, ctx);
                 PreprocessorVisitor preprocessorVisitor = new PreprocessorVisitor(getCursor(), word.getWord());
                 return w.withPreprocessorStatements(ListUtils.map(w.getPreprocessorStatements(),
-                    ps -> preprocessorVisitor.visitPreprocessorDirect(ps, ctx)));
+                    ps -> preprocessorVisitor.visit(ps, ctx)));
             }
 
             /**
              * Visitor for CobolPreprocessor trees that finds copy statements and exec sql include statements.
-             * Uses {@link CobolPreprocessorIsoVisitor#visitPreprocessorDirect} to avoid classloader issues.
              */
             class PreprocessorVisitor extends CobolPreprocessorIsoVisitor<ExecutionContext> {
                 private final Cursor cursor;
@@ -147,7 +146,7 @@ public class FindCopybook extends Recipe {
                 public CobolPreprocessor.Copybook visitCopybook(CobolPreprocessor.Copybook copybook, ExecutionContext ctx) {
                     // Process nested copybooks by visiting their LST elements
                     return copybook.withLst(ListUtils.map(copybook.getLst(),
-                        element -> visitPreprocessorDirect(element, ctx)));
+                        element -> visit(element, ctx)));
                 }
             }
         });
