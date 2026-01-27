@@ -69,7 +69,7 @@ public class FindWord extends Recipe {
                 if (it instanceof CobolPreprocessor.CopyStatement && !hasCopyStatement.get()) {
                     hasCopyStatement.set(true);
                 }
-                return (CobolPreprocessor) preprocessorSearch.visit(it, ctx);
+                return preprocessorSearch.visit(it, ctx);
             }));
 
             if (hasCopyStatement.get() || w.getMarkers().findFirst(CopiedWord.class).isPresent()) {
