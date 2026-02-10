@@ -41,22 +41,6 @@ tasks.register<JavaExec>("generateAntlrSourcesControlM") {
     classpath = sourceSets["main"].runtimeClasspath
 }
 
-sourceSets {
-    create("model") {
-        compileClasspath += sourceSets.main.get().output
-        runtimeClasspath += sourceSets.main.get().output
-    }
-}
-
-val modelImplementation: Configuration by configurations.getting {
-    extendsFrom(configurations.implementation.get())
-}
-
-val modelAnnotationProcessor: Configuration by configurations.getting
-val modelCompileOnly: Configuration by configurations.getting
-
-configurations["modelRuntimeOnly"].extendsFrom(configurations.runtimeOnly.get())
-
 val latest = if (project.hasProperty("releasing")) {
     "latest.release"
 } else {
@@ -74,11 +58,6 @@ dependencies {
     implementation("io.micrometer:micrometer-core:1.9.+")
     implementation("io.github.classgraph:classgraph:latest.release")
     runtimeOnly("org.openrewrite.tools:java-object-diff:latest.release")
-
-    modelImplementation("org.openrewrite:rewrite-java-21")
-    modelAnnotationProcessor("org.projectlombok:lombok:latest.release")
-    modelCompileOnly("org.projectlombok:lombok:latest.release")
-    modelImplementation("ch.qos.logback:logback-classic:latest.release")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.14.0")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.14.0")
