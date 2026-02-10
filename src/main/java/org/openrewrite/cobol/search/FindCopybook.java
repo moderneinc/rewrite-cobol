@@ -16,6 +16,7 @@ import org.openrewrite.cobol.table.CopybookSource;
 import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
 import org.openrewrite.internal.ListUtils;
+import org.openrewrite.internal.StringUtils;
 import org.openrewrite.marker.SearchResult;
 
 @EqualsAndHashCode(callSuper = false)
@@ -82,7 +83,7 @@ public class FindCopybook extends Recipe {
                     }
 
                     if (!Boolean.TRUE.equals(onlyMissingCopybooks)) {
-                        if (copybookName == null || copybookName.isEmpty() ||
+                        if (StringUtils.isNullOrEmpty(copybookName) ||
                             copybookName.equals(c.getCopySource().getName().getCobolWord().getWord())) {
                             CobolPreprocessor.CopyStatement updated = c.withCopySource(
                                 c.getCopySource().withName(
@@ -121,7 +122,7 @@ public class FindCopybook extends Recipe {
                     }
 
                     if (!Boolean.TRUE.equals(onlyMissingCopybooks)) {
-                        if (copybookName == null || copybookName.isEmpty() ||
+                        if (StringUtils.isNullOrEmpty(copybookName) ||
                             copybookName.equals(i.getCopySource().getCobolWord().getWord())) {
                             CobolPreprocessor.ExecSqlIncludeStatement updated =
                                 i.withCopySource(SearchResult.found(i.getCopySource(), null));
