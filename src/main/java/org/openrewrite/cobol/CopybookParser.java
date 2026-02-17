@@ -15,8 +15,7 @@
  */
 package org.openrewrite.cobol;
 
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.*;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.InMemoryExecutionContext;
@@ -32,6 +31,7 @@ import org.openrewrite.internal.EncodingDetectingInputStream;
 import org.openrewrite.marker.Markers;
 import org.openrewrite.text.PlainText;
 import org.openrewrite.tree.ParseError;
+import org.openrewrite.tree.ParsingEventListener;
 import org.openrewrite.tree.ParsingExecutionContextView;
 
 import java.nio.file.Path;
@@ -56,11 +56,13 @@ public class CopybookParser implements Parser {
 
     @Override
     public Stream<SourceFile> parseInputs(Iterable<Input> sourceFiles, @Nullable Path relativeTo, ExecutionContext ctx) {
-        return acceptedInputs(sourceFiles).map(input -> parseInput(input, relativeTo, ctx));
+        ParsingEventListener parsingListener = ParsingExecutionContextView.view(ctx).getParsingListener();
+        return acceptedInputs(sourceFiles).map(input -> parseInput(input, relativeTo, ctx, parsingListener));
     }
 
-    private SourceFile parseInput(Input input, @Nullable Path relativeTo, ExecutionContext ctx) {
+    private SourceFile parseInput(Input input, @Nullable Path relativeTo, ExecutionContext ctx, ParsingEventListener parsingListener) {
         try {
+            parsingListener.startedParsing(input);
             EncodingDetectingInputStream is = input.getSource(ctx);
             String sourceStr = is.readFully();
 
@@ -77,9 +79,15 @@ public class CopybookParser implements Parser {
             );
 
             String prepareSource = new CobolLineReader().readLines(sourceStr, cobolDialect);
+
+            CobolPreprocessorLexer lexer = new CobolPreprocessorLexer(CharStreams.fromString(prepareSource));
+            lexer.removeErrorListeners();
+            lexer.addErrorListener(new ForwardingErrorListener(input.getPath(), ctx));
+
             org.openrewrite.cobol.internal.grammar.CobolPreprocessorParser parser =
-                    new org.openrewrite.cobol.internal.grammar.CobolPreprocessorParser(
-                            new CommonTokenStream(new CobolPreprocessorLexer(CharStreams.fromString(prepareSource))));
+                    new org.openrewrite.cobol.internal.grammar.CobolPreprocessorParser(new CommonTokenStream(lexer));
+            parser.removeErrorListeners();
+            parser.addErrorListener(new ForwardingErrorListener(input.getPath(), ctx));
 
             CobolPreprocessorParserVisitor parserVisitor = new CobolPreprocessorParserVisitor(
                     input.getRelativePath(relativeTo),
@@ -106,7 +114,7 @@ public class CopybookParser implements Parser {
                     preprocessedCU.getEof()
             );
 
-            ParsingExecutionContextView.view(ctx).getParsingListener().parsed(input, preprocessedCU);
+            parsingListener.parsed(input, preprocessedCU);
             return copybook;
         } catch (Throwable t) {
             ctx.getOnError().accept(t);
@@ -133,6 +141,23 @@ public class CopybookParser implements Parser {
     @Override
     public Path sourcePathFromSourceText(Path prefix, String sourceCode) {
         return prefix.resolve("file.CPY");
+    }
+
+    private static class ForwardingErrorListener extends BaseErrorListener {
+        private final Path sourcePath;
+        private final ExecutionContext ctx;
+
+        private ForwardingErrorListener(Path sourcePath, ExecutionContext ctx) {
+            this.sourcePath = sourcePath;
+            this.ctx = ctx;
+        }
+
+        @Override
+        public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,
+                                int line, int charPositionInLine, String msg, RecognitionException e) {
+            ctx.getOnError().accept(new CopybookParsingException(sourcePath,
+                    String.format("Syntax error in %s at line %d:%d %s.", sourcePath, line, charPositionInLine, msg), e));
+        }
     }
 
     public static CopybookParser.Builder builder() {

@@ -61,12 +61,12 @@ public class CobolParser implements Parser {
                 .copybooks(copybooks)
                 .build();
 
-        return acceptedInputs(sourceFiles).map(s -> parseInput(s, relativeTo, ctx, cobolPreprocessorParser));
+        ParsingEventListener parserListener = ParsingExecutionContextView.view(ctx).getParsingListener();
+        return acceptedInputs(sourceFiles).map(s -> parseInput(s, relativeTo, ctx, cobolPreprocessorParser, parserListener));
     }
 
     private SourceFile parseInput(Input input, @Nullable Path relativeTo, ExecutionContext ctx,
-                                  CobolPreprocessorParser cobolPreprocessorParser) {
-        ParsingEventListener parserListener = ParsingExecutionContextView.view(ctx).getParsingListener();
+                                  CobolPreprocessorParser cobolPreprocessorParser, ParsingEventListener parserListener) {
         try {
             parserListener.startedParsing(input);
             EncodingDetectingInputStream is = input.getSource(ctx);
@@ -82,12 +82,14 @@ public class CobolParser implements Parser {
             CobolPreprocessorOutputSourcePrinter<ExecutionContext> printWithoutColumns = new CobolPreprocessorOutputSourcePrinter<>(cobolDialect, false);
             printWithoutColumns.visit(preprocessedCU, cobolParserOutput);
 
+            CobolLexer lexer = new CobolLexer(CharStreams.fromString(cobolParserOutput.getOut()));
+            lexer.removeErrorListeners();
+            lexer.addErrorListener(new ForwardingErrorListener(input.getPath(), ctx));
+
             org.openrewrite.cobol.internal.grammar.CobolParser parser =
-                    new org.openrewrite.cobol.internal.grammar.CobolParser(
-                            new CommonTokenStream(new CobolLexer(CharStreams.fromString(cobolParserOutput.getOut())))) {{
+                    new org.openrewrite.cobol.internal.grammar.CobolParser(new CommonTokenStream(lexer)) {{
                         _interp = new TimeLimitingParserATNSimulator(this, _ATN, _decisionToDFA, _sharedContextCache);
                     }};
-
             parser.removeErrorListeners();
             parser.addErrorListener(new ForwardingErrorListener(input.getPath(), ctx));
 
