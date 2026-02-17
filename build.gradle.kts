@@ -2,7 +2,7 @@ plugins {
     id("org.openrewrite.build.root") version("latest.release")
     id("org.openrewrite.build.language-library") version("latest.release")
     id("com.netflix.nebula.integtest-standalone") version "10.1.5"
-    id("org.openrewrite.build.moderne-proprietary-license") version "latest.release"
+    id("org.openrewrite.build.moderne-source-available-license") version "latest.release"
 }
 
 group = "org.openrewrite"
@@ -17,6 +17,8 @@ tasks.register<JavaExec>("generateAntlrSourcesCobol") {
     ) + fileTree("src/main/antlr-cobol").matching { include("**/*.g4") }.map { it.path }
 
     classpath = sourceSets["main"].runtimeClasspath
+
+    finalizedBy("licenseFormat")
 }
 
 tasks.register<JavaExec>("generateAntlrSourcesJcl") {
@@ -28,6 +30,8 @@ tasks.register<JavaExec>("generateAntlrSourcesJcl") {
     ) + fileTree("src/main/antlr-jcl").matching { include("**/*.g4") }.map { it.path }
 
     classpath = sourceSets["main"].runtimeClasspath
+
+    finalizedBy("licenseFormat")
 }
 
 tasks.register<JavaExec>("generateAntlrSourcesControlM") {
@@ -39,6 +43,8 @@ tasks.register<JavaExec>("generateAntlrSourcesControlM") {
     ) + fileTree("src/main/antlr-controlm").matching { include("**/*.g4") }.map { it.path }
 
     classpath = sourceSets["main"].runtimeClasspath
+
+    finalizedBy("licenseFormat")
 }
 
 val latest = if (project.hasProperty("releasing")) {
