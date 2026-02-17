@@ -17,6 +17,8 @@ tasks.register<JavaExec>("generateAntlrSourcesCobol") {
     ) + fileTree("src/main/antlr-cobol").matching { include("**/*.g4") }.map { it.path }
 
     classpath = sourceSets["main"].runtimeClasspath
+
+    finalizedBy("licenseFormat")
 }
 
 tasks.register<JavaExec>("generateAntlrSourcesJcl") {
@@ -28,6 +30,8 @@ tasks.register<JavaExec>("generateAntlrSourcesJcl") {
     ) + fileTree("src/main/antlr-jcl").matching { include("**/*.g4") }.map { it.path }
 
     classpath = sourceSets["main"].runtimeClasspath
+
+    finalizedBy("licenseFormat")
 }
 
 tasks.register<JavaExec>("generateAntlrSourcesControlM") {
@@ -39,6 +43,8 @@ tasks.register<JavaExec>("generateAntlrSourcesControlM") {
     ) + fileTree("src/main/antlr-controlm").matching { include("**/*.g4") }.map { it.path }
 
     classpath = sourceSets["main"].runtimeClasspath
+
+    finalizedBy("licenseFormat")
 }
 
 val latest = if (project.hasProperty("releasing")) {
