@@ -15,6 +15,7 @@
  */
 package org.openrewrite.cobol;
 
+import org.openrewrite.Tree;
 import org.openrewrite.TreeVisitor;
 import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
@@ -31,6 +32,43 @@ public class CobolPreprocessorVisitor<P> extends TreeVisitor<CobolPreprocessor, 
 
     public CobolPreprocessorVisitor(CobolVisitor<P> cobolVisitor) {
         this.cobolVisitor = cobolVisitor;
+    }
+
+    /**
+     * Override adapt() to handle classloader isolation issues.
+     * <p>
+     * When recipes are loaded by a child-first classloader (e.g., Moderne CLI's RecipeClassLoader),
+     * the {@code adaptTo} class parameter may be loaded by a different classloader than this visitor's
+     * class. Since Java class identity includes the classloader, {@code adaptTo.isAssignableFrom(getClass())}
+     * returns false even when the classes have the same name and this visitor IS a CobolPreprocessorVisitor.
+     * <p>
+     * This override checks class assignability by name to support cross-classloader scenarios.
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public <R extends Tree, V extends TreeVisitor<R, P>> V adapt(Class<? extends V> adaptTo) {
+        if (isAssignableByName(getClass(), adaptTo)) {
+            return (V) this;
+        }
+        return super.adapt(adaptTo);
+    }
+
+    /**
+     * Check if {@code fromClass} is assignable to {@code toClass} by comparing class names
+     * up the inheritance hierarchy. This is used instead of {@code Class.isAssignableFrom()}
+     * to handle cross-classloader scenarios where the same class loaded by different
+     * classloaders would otherwise be considered incompatible.
+     */
+    private static boolean isAssignableByName(Class<?> fromClass, Class<?> toClass) {
+        String targetName = toClass.getName();
+        Class<?> current = fromClass;
+        while (current != null) {
+            if (current.getName().equals(targetName)) {
+                return true;
+            }
+            current = current.getSuperclass();
+        }
+        return false;
     }
 
     public CobolPreprocessor visitCharData(CobolPreprocessor.CharData charData, P p) {

@@ -27,7 +27,6 @@ import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.CommentArea;
 import org.openrewrite.cobol.tree.Space;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.Set;
 
@@ -51,7 +50,6 @@ public class RemoveWithDebuggingMode extends Recipe {
 
 	Set<String> tags = singleton("RSPEC-4057");
 
-	Duration estimatedEffortPerOccurrence = Duration.ofMinutes(1_000_000);
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {

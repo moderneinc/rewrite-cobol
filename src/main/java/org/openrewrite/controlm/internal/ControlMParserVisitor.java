@@ -142,18 +142,16 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
 		else if (ctx.docLine() != null) {
 			return visit(ctx.docLine());
 		}
-		else {
-			Space prefix = whitespace();
-			Markers markers = Markers.EMPTY;
-			markers = markers.addIfAbsent(mapColumn(Column.Location.START));
-			markers = markers.addIfAbsent(mapColumn(Column.Location.END));
-			return new ControlM.Line(
-				randomId(),
-				prefix,
-				markers,
-				emptyList()
-			);
-		}
+		Space prefix = whitespace();
+		Markers markers = Markers.EMPTY;
+		markers = markers.addIfAbsent(mapColumn(Column.Location.START));
+		markers = markers.addIfAbsent(mapColumn(Column.Location.END));
+		return new ControlM.Line(
+			randomId(),
+			prefix,
+			markers,
+			emptyList()
+		);
 	}
 
     @Override
