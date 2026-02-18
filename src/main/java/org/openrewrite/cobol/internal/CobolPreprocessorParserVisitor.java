@@ -963,6 +963,9 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
 
 			String current = source.substring(cursor);
 			int newLinePos = current.indexOf("\n");
+			if (newLinePos > 0 && current.charAt(newLinePos - 1) == '\r') {
+				newLinePos--;
+			}
 			int endPos = (nextCommentArea != null && nextCommentArea < (newLinePos + cursor)) ? nextCommentArea : (newLinePos + cursor);
 
 			current = source.substring(cursor, endPos).trim();
@@ -1006,6 +1009,9 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
                 }
 
                 int newLinePos = cursor + (source.substring(cursor).contains("\n") ? source.substring(cursor).indexOf("\n") : source.substring(cursor).length());
+                if (newLinePos > cursor && source.charAt(newLinePos - 1) == '\r') {
+                    newLinePos--;
+                }
                 int endOfContentArea = cursor - cobolDialect.getColumns().getIndicatorArea() - 1 + cobolDialect.getColumns().getOtherArea();
                 String contentArea = source.substring(cursor, Math.min(newLinePos, endOfContentArea));
                 if (!(isCommentIndicator(indicatorArea) || contentArea.trim().isEmpty())) {
