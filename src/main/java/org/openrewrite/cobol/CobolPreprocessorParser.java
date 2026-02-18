@@ -71,11 +71,15 @@ public class CobolPreprocessorParser implements Parser {
                         String sourceStr = is.readFully();
 
                         String prepareSource = new CobolLineReader().readLines(sourceStr, cobolDialect);
+
+                        CobolPreprocessorLexer lexer = new CobolPreprocessorLexer(CharStreams.fromString(prepareSource));
+                        lexer.removeErrorListeners();
+                        lexer.addErrorListener(new ForwardingErrorListener(sourceFile.getPath()));
+
                         org.openrewrite.cobol.internal.grammar.CobolPreprocessorParser parser =
-                                new org.openrewrite.cobol.internal.grammar.CobolPreprocessorParser(
-                                        new CommonTokenStream(new CobolPreprocessorLexer(CharStreams.fromString(prepareSource))));
+                                new org.openrewrite.cobol.internal.grammar.CobolPreprocessorParser(new CommonTokenStream(lexer));
                         parser.removeErrorListeners();
-                        parser.addErrorListener(new ForwardingErrorListener(sourceFile.getPath(), ctx));
+                        parser.addErrorListener(new ForwardingErrorListener(sourceFile.getPath()));
 
                         CobolPreprocessorParserVisitor parserVisitor = new CobolPreprocessorParserVisitor(
                                 sourceFile.getRelativePath(relativeTo),
@@ -133,18 +137,16 @@ public class CobolPreprocessorParser implements Parser {
 
     private static class ForwardingErrorListener extends BaseErrorListener {
         private final Path sourcePath;
-        private final ExecutionContext ctx;
 
-        private ForwardingErrorListener(Path sourcePath, ExecutionContext ctx) {
+        private ForwardingErrorListener(Path sourcePath) {
             this.sourcePath = sourcePath;
-            this.ctx = ctx;
         }
 
         @Override
         public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,
                                 int line, int charPositionInLine, String msg, RecognitionException e) {
-            ctx.getOnError().accept(new CobolParsingException(sourcePath,
-                    String.format("Syntax error in %s at line %d:%d %s.", sourcePath, line, charPositionInLine, msg), e));
+            throw new CobolParsingException(sourcePath,
+                    String.format("Syntax error in %s at line %d:%d %s.", sourcePath, line, charPositionInLine, msg), e);
         }
     }
 
