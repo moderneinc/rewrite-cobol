@@ -82,12 +82,12 @@ public class CopybookParser implements Parser {
 
             CobolPreprocessorLexer lexer = new CobolPreprocessorLexer(CharStreams.fromString(prepareSource));
             lexer.removeErrorListeners();
-            lexer.addErrorListener(new ForwardingErrorListener(input.getPath(), ctx));
+            lexer.addErrorListener(new ForwardingErrorListener(input.getPath()));
 
             org.openrewrite.cobol.internal.grammar.CobolPreprocessorParser parser =
                     new org.openrewrite.cobol.internal.grammar.CobolPreprocessorParser(new CommonTokenStream(lexer));
             parser.removeErrorListeners();
-            parser.addErrorListener(new ForwardingErrorListener(input.getPath(), ctx));
+            parser.addErrorListener(new ForwardingErrorListener(input.getPath()));
 
             CobolPreprocessorParserVisitor parserVisitor = new CobolPreprocessorParserVisitor(
                     input.getRelativePath(relativeTo),
@@ -145,18 +145,16 @@ public class CopybookParser implements Parser {
 
     private static class ForwardingErrorListener extends BaseErrorListener {
         private final Path sourcePath;
-        private final ExecutionContext ctx;
 
-        private ForwardingErrorListener(Path sourcePath, ExecutionContext ctx) {
+        private ForwardingErrorListener(Path sourcePath) {
             this.sourcePath = sourcePath;
-            this.ctx = ctx;
         }
 
         @Override
         public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,
                                 int line, int charPositionInLine, String msg, RecognitionException e) {
-            ctx.getOnError().accept(new CopybookParsingException(sourcePath,
-                    String.format("Syntax error in %s at line %d:%d %s.", sourcePath, line, charPositionInLine, msg), e));
+            throw new CopybookParsingException(sourcePath,
+                    String.format("Syntax error in %s at line %d:%d %s.", sourcePath, line, charPositionInLine, msg), e);
         }
     }
 

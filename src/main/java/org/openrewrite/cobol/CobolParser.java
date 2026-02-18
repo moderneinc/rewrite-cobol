@@ -88,7 +88,7 @@ public class CobolParser implements Parser {
                         _interp = new TimeLimitingParserATNSimulator(this, _ATN, _decisionToDFA, _sharedContextCache);
                     }};
             parser.removeErrorListeners();
-            parser.addErrorListener(new ForwardingErrorListener(input.getPath(), ctx));
+            parser.addErrorListener(new ForwardingErrorListener(input.getPath()));
 
             // Print the pre-processed code to parse COBOL.
             PrintOutputCapture<ExecutionContext> sourceOutput = new PrintOutputCapture<>(new InMemoryExecutionContext());
@@ -143,18 +143,16 @@ public class CobolParser implements Parser {
 
     private static class ForwardingErrorListener extends BaseErrorListener {
         private final Path sourcePath;
-        private final ExecutionContext ctx;
 
-        private ForwardingErrorListener(Path sourcePath, ExecutionContext ctx) {
+        private ForwardingErrorListener(Path sourcePath) {
             this.sourcePath = sourcePath;
-            this.ctx = ctx;
         }
 
         @Override
         public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,
                                 int line, int charPositionInLine, String msg, RecognitionException e) {
-            ctx.getOnError().accept(new CobolParsingException(sourcePath,
-                    String.format("Syntax error in %s at line %d:%d %s.", sourcePath, line, charPositionInLine, msg), e));
+            throw new CobolParsingException(sourcePath,
+                    String.format("Syntax error in %s at line %d:%d %s.", sourcePath, line, charPositionInLine, msg), e);
         }
     }
 

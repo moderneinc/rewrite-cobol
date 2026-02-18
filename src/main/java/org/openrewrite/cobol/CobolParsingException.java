@@ -17,7 +17,7 @@ package org.openrewrite.cobol;
 
 import java.nio.file.Path;
 
-public class CobolParsingException extends Exception {
+public class CobolParsingException extends RuntimeException {
     private final Path sourcePath;
 
     public CobolParsingException(Path sourcePath, String message, Throwable t) {

@@ -2,7 +2,7 @@ package org.openrewrite.cobol;
 
 import java.nio.file.Path;
 
-public class CopybookParsingException extends Exception {
+public class CopybookParsingException extends RuntimeException {
     private final Path sourcePath;
 
     public CopybookParsingException(Path sourcePath, String message, Throwable t) {
