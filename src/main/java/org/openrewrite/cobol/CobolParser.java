@@ -82,12 +82,9 @@ public class CobolParser implements Parser {
             CobolPreprocessorOutputSourcePrinter<ExecutionContext> printWithoutColumns = new CobolPreprocessorOutputSourcePrinter<>(cobolDialect, false);
             printWithoutColumns.visit(preprocessedCU, cobolParserOutput);
 
-            CobolLexer lexer = new CobolLexer(CharStreams.fromString(cobolParserOutput.getOut()));
-            lexer.removeErrorListeners();
-            lexer.addErrorListener(new ForwardingErrorListener(input.getPath(), ctx));
-
             org.openrewrite.cobol.internal.grammar.CobolParser parser =
-                    new org.openrewrite.cobol.internal.grammar.CobolParser(new CommonTokenStream(lexer)) {{
+                    new org.openrewrite.cobol.internal.grammar.CobolParser(
+                            new CommonTokenStream(new CobolLexer(CharStreams.fromString(cobolParserOutput.getOut())))) {{
                         _interp = new TimeLimitingParserATNSimulator(this, _ATN, _decisionToDFA, _sharedContextCache);
                     }};
             parser.removeErrorListeners();

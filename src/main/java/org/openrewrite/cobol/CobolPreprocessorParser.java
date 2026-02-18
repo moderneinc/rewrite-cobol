@@ -71,9 +71,13 @@ public class CobolPreprocessorParser implements Parser {
                         String sourceStr = is.readFully();
 
                         String prepareSource = new CobolLineReader().readLines(sourceStr, cobolDialect);
+
+                        CobolPreprocessorLexer lexer = new CobolPreprocessorLexer(CharStreams.fromString(prepareSource));
+                        lexer.removeErrorListeners();
+                        lexer.addErrorListener(new ForwardingErrorListener(sourceFile.getPath(), ctx));
+
                         org.openrewrite.cobol.internal.grammar.CobolPreprocessorParser parser =
-                                new org.openrewrite.cobol.internal.grammar.CobolPreprocessorParser(
-                                        new CommonTokenStream(new CobolPreprocessorLexer(CharStreams.fromString(prepareSource))));
+                                new org.openrewrite.cobol.internal.grammar.CobolPreprocessorParser(new CommonTokenStream(lexer));
                         parser.removeErrorListeners();
                         parser.addErrorListener(new ForwardingErrorListener(sourceFile.getPath(), ctx));
 
