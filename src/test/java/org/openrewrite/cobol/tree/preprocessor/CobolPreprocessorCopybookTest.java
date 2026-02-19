@@ -26,14 +26,12 @@ import org.openrewrite.tree.ParseError;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openrewrite.cobol.Assertions.copybook;
 
@@ -410,7 +408,7 @@ class CobolPreprocessorCopybookTest extends CobolTest {
     @Test
     void syntaxErrorProducesParseErrorWithoutStoppingStream() {
         CobolParser parser = CobolParser.builder()
-                .copybooks(Collections.emptyList())
+                .copybooks(emptyList())
                 .timeout(Duration.ofSeconds(10))
                 .build();
 
@@ -426,17 +424,17 @@ class CobolPreprocessorCopybookTest extends CobolTest {
                 000002 IT SHOULD CAUSE A PARSE ERROR.
                 """;
 
-        List<Parser.Input> inputs = Arrays.asList(
-                new Parser.Input(Paths.get("valid1.cbl"), () -> new ByteArrayInputStream(validCobol.getBytes(StandardCharsets.UTF_8))),
-                new Parser.Input(Paths.get("invalid.cbl"), () -> new ByteArrayInputStream(invalidCobol.getBytes(StandardCharsets.UTF_8))),
-                new Parser.Input(Paths.get("valid2.cbl"), () -> new ByteArrayInputStream(validCobol.getBytes(StandardCharsets.UTF_8)))
+        List<Parser.Input> inputs = List.of(
+                new Parser.Input(Path.of("valid1.cbl"), () -> new ByteArrayInputStream(validCobol.getBytes(StandardCharsets.UTF_8))),
+                new Parser.Input(Path.of("invalid.cbl"), () -> new ByteArrayInputStream(invalidCobol.getBytes(StandardCharsets.UTF_8))),
+                new Parser.Input(Path.of("valid2.cbl"), () -> new ByteArrayInputStream(validCobol.getBytes(StandardCharsets.UTF_8)))
         );
 
         List<Throwable> errors = new ArrayList<>();
         InMemoryExecutionContext ctx = new InMemoryExecutionContext(errors::add);
 
         List<SourceFile> results = parser.parseInputs(inputs, null, ctx)
-                .collect(Collectors.toList());
+                .toList();
 
         assertThat(results).hasSize(3);
         assertThat(results.get(1)).isInstanceOf(ParseError.class);

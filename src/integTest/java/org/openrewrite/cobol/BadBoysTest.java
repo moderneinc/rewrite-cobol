@@ -24,7 +24,7 @@ import org.openrewrite.cobol.internal.CobolPreprocessorOutputSourcePrinter;
 
 import static org.openrewrite.cobol.Assertions.preprocessor;
 
-public class BadBoysTest extends CobolTest {
+class BadBoysTest extends CobolTest {
 
     @Test
     void NC246A() {
@@ -36,7 +36,6 @@ public class BadBoysTest extends CobolTest {
                 PrintOutputCapture<ExecutionContext> cobolParserOutput = new PrintOutputCapture<>(new InMemoryExecutionContext());
                 CobolPreprocessorOutputSourcePrinter<ExecutionContext> printWithoutColumns = new CobolPreprocessorOutputSourcePrinter<>(CobolDialect.ibmAnsi85(), false);
                 printWithoutColumns.visit(cu, cobolParserOutput);
-                System.out.println(cobolParserOutput.getOut());
             }))
         );
     }
