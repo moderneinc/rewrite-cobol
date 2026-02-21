@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.openrewrite.Tree;
 import org.openrewrite.TreeVisitor;
 import org.openrewrite.cobol.CobolTest;
+import org.openrewrite.cobol.table.IndicatorSearchResult;
 import org.openrewrite.config.CompositeRecipe;
 import org.openrewrite.marker.Marker;
 import org.openrewrite.marker.SearchResult;
@@ -28,6 +29,7 @@ import org.openrewrite.test.RecipeSpec;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.openrewrite.cobol.Assertions.cobol;
 
 class FindIndicatorsTest extends CobolTest {
@@ -50,7 +52,11 @@ class FindIndicatorsTest extends CobolTest {
     @Test
     void sm206a() {
         rewriteRun(
-          spec -> spec.recipe(new CompositeRecipe(List.of(new FindIndicators("S"), new FindIndicators("Y")))),
+          spec -> spec.recipe(new CompositeRecipe(List.of(new FindIndicators("S"), new FindIndicators("Y"))))
+              .dataTable(IndicatorSearchResult.Row.class, rows ->
+                  assertThat(rows).isNotEmpty()
+                      .extracting(IndicatorSearchResult.Row::getIndicator)
+                      .containsOnly("S", "Y")),
           cobol(getNistResource("SM206A.CBL"),
             """
               000100 IDENTIFICATION DIVISION.                                         SM2064.2
