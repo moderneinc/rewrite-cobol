@@ -25,6 +25,7 @@ import org.openrewrite.TreeVisitor;
 import org.openrewrite.cobol.CobolPreprocessorIsoVisitor;
 import org.openrewrite.cobol.NameVisitor;
 import org.openrewrite.cobol.marker.CopiedWord;
+import org.openrewrite.cobol.table.WordSearchResult;
 import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
 import org.openrewrite.cobol.tree.Replacement;
@@ -49,24 +50,28 @@ public class FindWord extends Recipe {
             example = "true")
     Boolean exactMatch;
 
+    transient WordSearchResult wordSearchResult = new WordSearchResult(this);
+
     String displayName = "Find matching words in the source code";
 
     String description = "Search for COBOL words based on a search term.";
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {
-        return new SearchForWord(searchTerm, exactMatch);
+        return new SearchForWord(searchTerm, exactMatch, wordSearchResult);
     }
 
     private static class SearchForWord extends NameVisitor<ExecutionContext> {
         private final PreprocessorSearch preprocessorSearch;
         private final String searchTerm;
+        private final WordSearchResult wordSearchResult;
 
         @Nullable
         private final Pattern pattern;
 
-        public SearchForWord(String searchTerm, @Nullable Boolean exactMatch) {
+        public SearchForWord(String searchTerm, @Nullable Boolean exactMatch, WordSearchResult wordSearchResult) {
             this.searchTerm = searchTerm;
+            this.wordSearchResult = wordSearchResult;
             pattern = Boolean.TRUE.equals(exactMatch) ? null : Pattern.compile(searchTerm.toLowerCase());
             preprocessorSearch = new PreprocessorSearch();
         }
@@ -79,7 +84,7 @@ public class FindWord extends Recipe {
                 if (it instanceof CobolPreprocessor.CopyStatement && !hasCopyStatement.get()) {
                     hasCopyStatement.set(true);
                 }
-                return preprocessorSearch.visit(it, ctx);
+                return preprocessorSearch.visit(it, ctx, getCursor().getParentOrThrow());
             }));
 
             if (hasCopyStatement.get() || w.getMarkers().findFirst(CopiedWord.class).isPresent()) {
@@ -95,6 +100,9 @@ public class FindWord extends Recipe {
             }
 
             if (matches(w.getWord())) {
+                wordSearchResult.insertRow(ctx, new WordSearchResult.Row(
+                        getCursor().firstEnclosingOrThrow(Cobol.CompilationUnit.class).getSourcePath().toString(),
+                        w.getWord()));
                 return SearchResult.found(word);
             }
             return w;
@@ -104,6 +112,9 @@ public class FindWord extends Recipe {
             @Override
             public CobolPreprocessor.Word visitWord(CobolPreprocessor.Word word, ExecutionContext ctx) {
                 if (matches(word.getCobolWord().getWord())) {
+                    wordSearchResult.insertRow(ctx, new WordSearchResult.Row(
+                            getCursor().firstEnclosingOrThrow(Cobol.CompilationUnit.class).getSourcePath().toString(),
+                            word.getCobolWord().getWord()));
                     return SearchResult.found(word);
                 }
                 return word;

@@ -22,6 +22,7 @@ import org.openrewrite.Option;
 import org.openrewrite.Recipe;
 import org.openrewrite.TreeVisitor;
 import org.openrewrite.cobol.CobolIsoVisitor;
+import org.openrewrite.cobol.table.IndicatorSearchResult;
 import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.marker.SearchResult;
 
@@ -36,31 +37,29 @@ public class FindIndicators extends Recipe {
             example = "D")
     String indicator;
 
+    transient IndicatorSearchResult indicatorSearchResult = new IndicatorSearchResult(this);
+
     String displayName = "Find indicators";
 
     String description = "Find matching indicators. Currently, this recipe will not mark indicators on copybook code.";
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {
-        return new AddSearchResult(indicator);
-    }
-
-    private static class AddSearchResult extends CobolIsoVisitor<ExecutionContext> {
-        private final String indicator;
-
-        public AddSearchResult(String indicator) {
-            this.indicator = indicator;
-        }
-
-
-        @Override
-        public Cobol.Word visitWord(Cobol.Word word, ExecutionContext ctx) {
-            if (word.getIndicatorArea() != null && word.getIndicatorArea().getIndicator().equals(indicator)) {
-                word = word.withIndicatorArea(
-                        word.getIndicatorArea().withMarkers(
-                                word.getIndicatorArea().getMarkers().addIfAbsent(new SearchResult(randomId(), null))));
+        return new CobolIsoVisitor<ExecutionContext>() {
+            @Override
+            public Cobol.Word visitWord(Cobol.Word word, ExecutionContext ctx) {
+                if (word.getIndicatorArea() != null && word.getIndicatorArea().getIndicator().equals(indicator)) {
+                    indicatorSearchResult.insertRow(ctx, new IndicatorSearchResult.Row(
+                            getCursor().firstEnclosingOrThrow(Cobol.CompilationUnit.class).getSourcePath().toString(),
+                            word.getIndicatorArea().getIndicator(),
+                            word.getWord()));
+                    return word.withIndicatorArea(
+                            word.getIndicatorArea().withMarkers(
+                                    word.getIndicatorArea().getMarkers().addIfAbsent(new SearchResult(randomId(), null))));
+                }
+                return word;
             }
-            return word;
-        }
+        };
     }
+
 }

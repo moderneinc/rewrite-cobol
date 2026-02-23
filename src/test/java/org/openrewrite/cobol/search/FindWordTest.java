@@ -20,6 +20,7 @@ import org.openrewrite.DocumentExample;
 import org.openrewrite.Tree;
 import org.openrewrite.TreeVisitor;
 import org.openrewrite.cobol.CobolTest;
+import org.openrewrite.cobol.table.WordSearchResult;
 import org.openrewrite.marker.Marker;
 import org.openrewrite.marker.SearchResult;
 import org.openrewrite.test.RecipeSpec;
@@ -48,6 +49,10 @@ class FindWordTest extends CobolTest {
 
 	@DocumentExample @Test void cm102mExactMatch() {
         rewriteRun(
+          spec -> spec.dataTable(WordSearchResult.Row.class, rows ->
+              assertThat(rows).singleElement()
+                  .extracting(WordSearchResult.Row::getMatchedWord)
+                  .isEqualTo("CM102M")),
           cobol(
             """
               000100 IDENTIFICATION DIVISION.                                         CM1024.2
@@ -101,7 +106,11 @@ class FindWordTest extends CobolTest {
     @Test
     void sm101A() {
         rewriteRun(
-          spec -> spec.recipe(new FindWord("PROC-2", true)),
+          spec -> spec.recipe(new FindWord("PROC-2", true))
+              .dataTable(WordSearchResult.Row.class, rows ->
+                  assertThat(rows).hasSize(3)
+                      .extracting(WordSearchResult.Row::getMatchedWord)
+                      .containsOnly("PROC-2")),
           cobol(
             getNistResource("SM101A.CBL"),
             sm101A, spec -> spec.afterRecipe(cu -> {
@@ -115,7 +124,9 @@ class FindWordTest extends CobolTest {
     @Test
     void cm102mPartialMatch() {
         rewriteRun(
-          spec -> spec.recipe(new FindWord("cm.*", false)),
+          spec -> spec.recipe(new FindWord("cm.*", false))
+              .dataTable(WordSearchResult.Row.class, rows ->
+                  assertThat(rows).hasSize(39)),
           cobol(
             """
               000100 IDENTIFICATION DIVISION.                                         CM1024.2

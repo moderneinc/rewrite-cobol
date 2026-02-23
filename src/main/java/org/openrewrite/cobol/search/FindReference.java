@@ -21,6 +21,7 @@ import org.jspecify.annotations.Nullable;
 import org.openrewrite.*;
 import org.openrewrite.cobol.CobolPreprocessorVisitor;
 import org.openrewrite.cobol.NameVisitor;
+import org.openrewrite.cobol.table.ReferenceSearchResult;
 import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
 import org.openrewrite.jcl.JclIsoVisitor;
@@ -43,6 +44,8 @@ public class FindReference extends Recipe {
             description = "Search for a word based on an exact match of the search term.",
             example = "true")
     Boolean exactMatch;
+
+    transient ReferenceSearchResult referenceSearchResult = new ReferenceSearchResult(this);
 
     String displayName = "Find matching identifiers in COBOL, copybooks, and JCL";
 
@@ -68,13 +71,13 @@ public class FindReference extends Recipe {
             @Override
             public @Nullable Tree visit(@Nullable Tree tree, ExecutionContext ctx) {
 				if (tree instanceof Cobol) {
-					return cobolReference.visit(tree, ctx);
+					return cobolReference.visit(tree, ctx, getCursor().getParentOrThrow());
 				}
 				if (tree instanceof CobolPreprocessor.Copybook) {
-					return copybookReference.visit(tree, ctx);
+					return copybookReference.visit(tree, ctx, getCursor().getParentOrThrow());
 				}
 				if (tree instanceof Jcl.CompilationUnit) {
-					return jclReference.visit(tree, ctx);
+					return jclReference.visit(tree, ctx, getCursor().getParentOrThrow());
 				}
 				return super.visit(tree, ctx);
 			}
@@ -83,6 +86,10 @@ public class FindReference extends Recipe {
                 @Override
                 public Cobol.Word visitWord(Cobol.Word word, ExecutionContext ctx) {
                     if (matches(word.getWord())) {
+                        referenceSearchResult.insertRow(ctx, new ReferenceSearchResult.Row(
+                                getCursor().firstEnclosingOrThrow(Cobol.CompilationUnit.class).getSourcePath().toString(),
+                                ReferenceSearchResult.SourceType.COBOL,
+                                word.getWord()));
                         return SearchResult.found(word);
                     }
                     return super.visitWord(word, ctx);
@@ -90,9 +97,21 @@ public class FindReference extends Recipe {
             }
 
             class CopybookReference extends CobolPreprocessorVisitor<ExecutionContext> {
+                private String sourcePath = "";
+
+                @Override
+                public CobolPreprocessor visitCopybook(CobolPreprocessor.Copybook copybook, ExecutionContext ctx) {
+                    sourcePath = copybook.getSourcePath().toString();
+                    return super.visitCopybook(copybook, ctx);
+                }
+
                 @Override
                 public CobolPreprocessor visitWord(CobolPreprocessor.Word word, ExecutionContext ctx) {
                     if (matches(word.getCobolWord().getWord())) {
+                        referenceSearchResult.insertRow(ctx, new ReferenceSearchResult.Row(
+                                sourcePath,
+                                ReferenceSearchResult.SourceType.COPYBOOK,
+                                word.getCobolWord().getWord()));
                         return SearchResult.found(word);
                     }
                     return super.visitWord(word, ctx);
