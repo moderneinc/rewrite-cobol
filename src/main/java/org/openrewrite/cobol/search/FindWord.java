@@ -84,7 +84,7 @@ public class FindWord extends Recipe {
                 if (it instanceof CobolPreprocessor.CopyStatement && !hasCopyStatement.get()) {
                     hasCopyStatement.set(true);
                 }
-                return preprocessorSearch.visit(it, ctx);
+                return preprocessorSearch.visit(it, ctx, getCursor().getParentOrThrow());
             }));
 
             if (hasCopyStatement.get() || w.getMarkers().findFirst(CopiedWord.class).isPresent()) {
@@ -113,7 +113,7 @@ public class FindWord extends Recipe {
             public CobolPreprocessor.Word visitWord(CobolPreprocessor.Word word, ExecutionContext ctx) {
                 if (matches(word.getCobolWord().getWord())) {
                     wordSearchResult.insertRow(ctx, new WordSearchResult.Row(
-                            SearchForWord.this.getCursor().firstEnclosingOrThrow(Cobol.CompilationUnit.class).getSourcePath().toString(),
+                            getCursor().firstEnclosingOrThrow(Cobol.CompilationUnit.class).getSourcePath().toString(),
                             word.getCobolWord().getWord()));
                     return SearchResult.found(word);
                 }

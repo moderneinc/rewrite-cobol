@@ -71,13 +71,13 @@ public class FindReference extends Recipe {
             @Override
             public @Nullable Tree visit(@Nullable Tree tree, ExecutionContext ctx) {
 				if (tree instanceof Cobol) {
-					return cobolReference.visit(tree, ctx);
+					return cobolReference.visit(tree, ctx, getCursor().getParentOrThrow());
 				}
 				if (tree instanceof CobolPreprocessor.Copybook) {
-					return copybookReference.visit(tree, ctx);
+					return copybookReference.visit(tree, ctx, getCursor().getParentOrThrow());
 				}
 				if (tree instanceof Jcl.CompilationUnit) {
-					return jclReference.visit(tree, ctx);
+					return jclReference.visit(tree, ctx, getCursor().getParentOrThrow());
 				}
 				return super.visit(tree, ctx);
 			}

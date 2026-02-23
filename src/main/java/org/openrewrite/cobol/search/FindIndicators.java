@@ -45,30 +45,21 @@ public class FindIndicators extends Recipe {
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {
-        return new AddSearchResult(indicator, indicatorSearchResult);
-    }
-
-    private static class AddSearchResult extends CobolIsoVisitor<ExecutionContext> {
-        private final String indicator;
-        private final IndicatorSearchResult indicatorSearchResult;
-
-        public AddSearchResult(String indicator, IndicatorSearchResult indicatorSearchResult) {
-            this.indicator = indicator;
-            this.indicatorSearchResult = indicatorSearchResult;
-        }
-
-        @Override
-        public Cobol.Word visitWord(Cobol.Word word, ExecutionContext ctx) {
-            if (word.getIndicatorArea() != null && word.getIndicatorArea().getIndicator().equals(indicator)) {
-                indicatorSearchResult.insertRow(ctx, new IndicatorSearchResult.Row(
-                        getCursor().firstEnclosingOrThrow(Cobol.CompilationUnit.class).getSourcePath().toString(),
-                        word.getIndicatorArea().getIndicator(),
-                        word.getWord()));
-                word = word.withIndicatorArea(
-                        word.getIndicatorArea().withMarkers(
-                                word.getIndicatorArea().getMarkers().addIfAbsent(new SearchResult(randomId(), null))));
+        return new CobolIsoVisitor<ExecutionContext>() {
+            @Override
+            public Cobol.Word visitWord(Cobol.Word word, ExecutionContext ctx) {
+                if (word.getIndicatorArea() != null && word.getIndicatorArea().getIndicator().equals(indicator)) {
+                    indicatorSearchResult.insertRow(ctx, new IndicatorSearchResult.Row(
+                            getCursor().firstEnclosingOrThrow(Cobol.CompilationUnit.class).getSourcePath().toString(),
+                            word.getIndicatorArea().getIndicator(),
+                            word.getWord()));
+                    return word.withIndicatorArea(
+                            word.getIndicatorArea().withMarkers(
+                                    word.getIndicatorArea().getMarkers().addIfAbsent(new SearchResult(randomId(), null))));
+                }
+                return word;
             }
-            return word;
-        }
+        };
     }
+
 }
