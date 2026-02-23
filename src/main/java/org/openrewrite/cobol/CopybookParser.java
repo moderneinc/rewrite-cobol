@@ -68,7 +68,7 @@ public class CopybookParser implements Parser {
 
             PlainText plainText = new PlainText(
                     randomId(),
-                    input.getPath(),
+                    input.getRelativePath(relativeTo),
                     Markers.EMPTY,
                     is.getCharset().name(),
                     is.isCharsetBomMarked(),
