@@ -17,6 +17,7 @@ package org.openrewrite.cobol.search;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.openrewrite.DocumentExample;
 import org.openrewrite.Tree;
 import org.openrewrite.TreeVisitor;
 import org.openrewrite.cobol.CobolTest;
@@ -49,8 +50,8 @@ class FindIndicatorsTest extends CobolTest {
         }
     };
 
-    @Test
-    void sm206a() {
+	@DocumentExample @Test
+	void sm206a() {
         rewriteRun(
           spec -> spec.recipe(new CompositeRecipe(List.of(new FindIndicators("S"), new FindIndicators("Y"))))
               .dataTable(IndicatorSearchResult.Row.class, rows ->
