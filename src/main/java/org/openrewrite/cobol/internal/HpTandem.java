@@ -15,6 +15,8 @@
  */
 package org.openrewrite.cobol.internal;
 
+import lombok.Getter;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -32,7 +34,8 @@ public class HpTandem implements CobolDialect {
 
     private final Set<String> separators;
     private final Set<Character> commentIndicators;
-    private final Columns columns;
+	@Getter
+	private final Columns columns;
 
     private HpTandem() {
         // Currently unknown.
@@ -49,10 +52,5 @@ public class HpTandem implements CobolDialect {
     @Override
     public Collection<Character> getCommentIndicators() {
         return commentIndicators;
-    }
-
-    @Override
-    public Columns getColumns() {
-        return columns;
     }
 }

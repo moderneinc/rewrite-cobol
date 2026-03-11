@@ -15,6 +15,8 @@
  */
 package org.openrewrite.cobol;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import org.antlr.v4.runtime.*;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.ExecutionContext;
@@ -45,14 +47,11 @@ import static org.openrewrite.Tree.randomId;
 /**
  * Read preprocessed COBOL and execute preprocessor commands.
  */
+@RequiredArgsConstructor
 public class CopybookParser implements Parser {
     public static final List<String> COPYBOOK_FILE_EXTENSIONS = singletonList(".cpy");
 
     private final CobolDialect cobolDialect;
-
-    public CopybookParser(CobolDialect cobolDialect) {
-        this.cobolDialect = cobolDialect;
-    }
 
     @Override
     public Stream<SourceFile> parseInputs(Iterable<Input> sourceFiles, @Nullable Path relativeTo, ExecutionContext ctx) {
@@ -143,12 +142,9 @@ public class CopybookParser implements Parser {
         return prefix.resolve("file.CPY");
     }
 
-    private static class ForwardingErrorListener extends BaseErrorListener {
+	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+	private static class ForwardingErrorListener extends BaseErrorListener {
         private final Path sourcePath;
-
-        private ForwardingErrorListener(Path sourcePath) {
-            this.sourcePath = sourcePath;
-        }
 
         @Override
         public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,

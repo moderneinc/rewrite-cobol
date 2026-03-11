@@ -15,7 +15,10 @@
  */
 package org.openrewrite.controlm.tree;
 
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.With;
 import org.jspecify.annotations.Nullable;
@@ -36,18 +39,12 @@ public class ControlMLeftPadded<T> {
         return withElement(map.apply(element));
     }
 
-    public enum Location {
+	@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+	public enum Location {
         SET_VAR_INITIALIZER(Space.Location.SET_VAR_INITIALIZER);
 
-        private final Space.Location beforeLocation;
-
-        Location(Space.Location beforeLocation) {
-            this.beforeLocation = beforeLocation;
-        }
-
-        public Space.Location getBeforeLocation() {
-            return beforeLocation;
-        }
+		@Getter
+		private final Space.Location beforeLocation;
     }
 
 	public static <T> @Nullable ControlMLeftPadded<T> withElement(@Nullable ControlMLeftPadded<T> before, @Nullable T element) {

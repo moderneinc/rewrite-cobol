@@ -15,13 +15,13 @@
  */
 package org.openrewrite.cobol;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.openrewrite.cobol.internal.CobolDialect;
 import org.openrewrite.internal.StringUtils;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CobolPrinterUtils {
-
-    private CobolPrinterUtils() {
-    }
 
     public static int getInsertIndex(String output) {
         int insertIndex = output.lastIndexOf("\n");

@@ -15,6 +15,7 @@
  */
 package org.openrewrite.controlm.internal;
 
+import lombok.RequiredArgsConstructor;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.jspecify.annotations.Nullable;
@@ -39,6 +40,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.openrewrite.Tree.randomId;
 
+@RequiredArgsConstructor
 public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
 
     private final Path path;
@@ -48,18 +50,6 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
     private final boolean charsetBomMarked;
 
     private int cursor = 0;
-
-    public ControlMParserVisitor(Path path,
-                            @Nullable FileAttributes fileAttributes,
-                            String source,
-                            Charset charset,
-                            boolean charsetBomMarked) {
-        this.path = path;
-        this.fileAttributes = fileAttributes;
-        this.source = source;
-        this.charset = charset;
-        this.charsetBomMarked = charsetBomMarked;
-    }
 
 	public <T> @Nullable T visitNullable(@Nullable ParseTree tree) {
         if (tree == null) {

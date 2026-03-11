@@ -15,7 +15,9 @@
  */
 package org.openrewrite.cobol.search;
 
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.*;
@@ -63,17 +65,13 @@ public class FindCopybook extends Recipe {
                     ps -> preprocessorVisitor.visit(ps, ctx)));
             }
 
-            /**
-             * Visitor for CobolPreprocessor trees that finds copy statements and exec sql include statements.
-             */
-            class PreprocessorVisitor extends CobolPreprocessorIsoVisitor<ExecutionContext> {
+			/**
+			  Visitor for CobolPreprocessor trees that finds copy statements and exec sql include statements.
+			 */
+			@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+			class PreprocessorVisitor extends CobolPreprocessorIsoVisitor<ExecutionContext> {
                 private final Cursor cursor;
                 private final String wordContext;
-
-                PreprocessorVisitor(Cursor cursor, String wordContext) {
-                    this.cursor = cursor;
-                    this.wordContext = wordContext;
-                }
 
                 @Override
                 public CobolPreprocessor.CopyStatement visitCopyStatement(CobolPreprocessor.CopyStatement copyStatement, ExecutionContext ctx) {

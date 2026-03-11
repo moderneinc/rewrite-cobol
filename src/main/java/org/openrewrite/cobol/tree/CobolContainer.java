@@ -16,6 +16,8 @@
 package org.openrewrite.cobol.tree;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.internal.ListUtils;
@@ -31,26 +33,22 @@ import static java.util.Collections.emptyList;
  *
  * @param <T> The type of the inner list of elements.
  */
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class CobolContainer<T> {
     private transient Padding<T> padding;
 
     private static final CobolContainer<?> EMPTY = new CobolContainer<>(Space.EMPTY, null, emptyList(), Markers.EMPTY);
 
-    private final Space before;
+	@Getter
+	private final Space before;
 
-    @Nullable
-    private final CobolLeftPadded<String> preposition;
+	@Getter
+	@Nullable
+	private final CobolLeftPadded<String> preposition;
 
     private final List<CobolRightPadded<T>> elements;
-    private final Markers markers;
-
-    private CobolContainer(Space before, @Nullable CobolLeftPadded<String> preposition,
-                           List<CobolRightPadded<T>> elements, Markers markers) {
-        this.before = before;
-        this.preposition = preposition;
-        this.elements = elements;
-        this.markers = markers;
-    }
+	@Getter
+	private final Markers markers;
 
     public static <T> CobolContainer<T> build(List<CobolRightPadded<T>> elements) {
         return build(Space.EMPTY, null, elements, Markers.EMPTY);
@@ -86,20 +84,8 @@ public class CobolContainer<T> {
         return this.markers == markers ? this : build(before, preposition, elements, markers);
     }
 
-	public @Nullable CobolLeftPadded<String> getPreposition() {
-        return preposition;
-    }
-
-    public Markers getMarkers() {
-        return markers;
-    }
-
     public List<T> getElements() {
         return CobolRightPadded.getElements(elements);
-    }
-
-    public Space getBefore() {
-        return before;
     }
 
     public CobolContainer<T> map(UnaryOperator<T> map) {

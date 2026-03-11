@@ -17,6 +17,8 @@ package org.openrewrite.cobol;
 
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.InMemoryExecutionContext;
@@ -34,9 +36,8 @@ import java.util.function.Consumer;
 
 import static java.util.stream.Collectors.toList;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PreprocessorAssertions {
-    private PreprocessorAssertions() {
-    }
 
     static void customizeExecutionContext(ExecutionContext ctx) {
     }

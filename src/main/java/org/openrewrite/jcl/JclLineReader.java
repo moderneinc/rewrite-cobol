@@ -15,7 +15,9 @@
  */
 package org.openrewrite.jcl;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -164,8 +166,9 @@ public class JclLineReader {
 		return LineType.UNKNOWN;
 	}
 
-    @Getter
-    private enum LineType {
+	@Getter
+	@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+	private enum LineType {
         JCL_STATEMENT("//"),
         JCL("//"),
         JES2("/*"),
@@ -174,10 +177,6 @@ public class JclLineReader {
         UNKNOWN("");
 
         private final String prefix;
-
-        LineType(String prefix) {
-            this.prefix = prefix;
-        }
     }
 
     private enum JclLineContext {

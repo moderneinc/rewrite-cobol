@@ -15,6 +15,7 @@
  */
 package org.openrewrite.cobol.search;
 
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.jspecify.annotations.Nullable;
@@ -26,16 +27,13 @@ import org.openrewrite.marker.SearchResult;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Value
 public class UsesCopybook extends CobolIsoVisitor<ExecutionContext> {
 
     @Nullable
     String copybookName;
-
-    public UsesCopybook(@Nullable String copybookName) {
-        this.copybookName = copybookName;
-    }
 
     @Override
     public Cobol.CompilationUnit visitCompilationUnit(Cobol.CompilationUnit compilationUnit, ExecutionContext ctx) {

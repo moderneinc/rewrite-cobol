@@ -15,6 +15,7 @@
  */
 package org.openrewrite.cobol;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.*;
@@ -141,12 +142,9 @@ public class CobolParser implements Parser {
         return prefix.resolve("file.CBL");
     }
 
-    private static class ForwardingErrorListener extends BaseErrorListener {
+	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+	private static class ForwardingErrorListener extends BaseErrorListener {
         private final Path sourcePath;
-
-        private ForwardingErrorListener(Path sourcePath) {
-            this.sourcePath = sourcePath;
-        }
 
         @Override
         public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,
