@@ -42,7 +42,7 @@ public class CobolContainer<T> {
 	@Getter
 	private final Space before;
 
-	@Getter(onMethod_ = {@Nullable})
+	@Getter
 	@Nullable
 	private final CobolLeftPadded<String> preposition;
 
