@@ -15,6 +15,8 @@
  */
 package org.openrewrite.jcl.tree;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.jcl.JclIsoVisitor;
@@ -26,10 +28,8 @@ import java.util.function.Consumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ParserAssertions {
-
-    private ParserAssertions() {
-    }
 
     static void customizeExecutionContext(ExecutionContext ctx) {
     }

@@ -15,6 +15,7 @@
  */
 package org.openrewrite.cobol.format;
 
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.openrewrite.ExecutionContext;
@@ -33,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+@AllArgsConstructor
 @Incubating(since = "0.0")
 @EqualsAndHashCode(callSuper = true)
 @Value
@@ -42,10 +44,6 @@ public class RemoveWords extends CobolIsoVisitor<ExecutionContext> {
 
     public RemoveWords(Cobol tree) {
         this.removeWords = FindWords.find(tree);
-    }
-
-    public RemoveWords(List<Cobol.Word> removeWords) {
-        this.removeWords = removeWords;
     }
 
     @Override

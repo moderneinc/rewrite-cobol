@@ -15,16 +15,16 @@
  */
 package org.openrewrite.cobol.search;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.openrewrite.cobol.CobolIsoVisitor;
 import org.openrewrite.cobol.tree.Cobol;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class FindWords {
-
-    private FindWords() {
-    }
 
     public static List<Cobol.Word> find(Cobol cobol) {
         CobolIsoVisitor<List<Cobol.Word>> visitor = new CobolIsoVisitor<List<Cobol.Word>>() {

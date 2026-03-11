@@ -15,6 +15,7 @@
  */
 package org.openrewrite.jcl.internal;
 
+import lombok.RequiredArgsConstructor;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -37,6 +38,7 @@ import java.util.List;
 import static org.openrewrite.Tree.randomId;
 import static org.openrewrite.jcl.tree.Space.EMPTY;
 
+@RequiredArgsConstructor
 public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
 
     private final Path path;
@@ -46,18 +48,6 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
     private final boolean charsetBomMarked;
 
     private int cursor = 0;
-
-    public JclParserVisitor(Path path,
-                            @Nullable FileAttributes fileAttributes,
-                            String source,
-                            Charset charset,
-                            boolean charsetBomMarked) {
-        this.path = path;
-        this.fileAttributes = fileAttributes;
-        this.source = source;
-        this.charset = charset;
-        this.charsetBomMarked = charsetBomMarked;
-    }
 
     public <T> T visit(@Nullable ParseTree... trees) {
         for (ParseTree tree : trees) {

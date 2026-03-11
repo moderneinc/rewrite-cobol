@@ -15,6 +15,7 @@
  */
 package org.openrewrite.cobol;
 
+import lombok.AllArgsConstructor;
 import org.openrewrite.Tree;
 import org.openrewrite.TreeVisitor;
 import org.openrewrite.cobol.tree.Cobol;
@@ -22,16 +23,13 @@ import org.openrewrite.cobol.tree.CobolPreprocessor;
 import org.openrewrite.cobol.tree.Space;
 import org.openrewrite.internal.ListUtils;
 
+@AllArgsConstructor
 public class CobolPreprocessorVisitor<P> extends TreeVisitor<CobolPreprocessor, P> {
 
     protected CobolVisitor<P> cobolVisitor;
 
     public CobolPreprocessorVisitor() {
         this.cobolVisitor = new CobolVisitor<>();
-    }
-
-    public CobolPreprocessorVisitor(CobolVisitor<P> cobolVisitor) {
-        this.cobolVisitor = cobolVisitor;
     }
 
     /**

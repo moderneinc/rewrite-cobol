@@ -15,6 +15,10 @@
  */
 package org.openrewrite.cobol.internal;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 import java.util.Collection;
 
 public interface CobolDialect {
@@ -30,7 +34,8 @@ public interface CobolDialect {
         return HpTandem.getInstance();
     }
 
-    enum Columns {
+	@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+	enum Columns {
 
         /**
          * Fixed format, standard ANSI / IBM reference. Each line 80 chars.<br />
@@ -52,35 +57,13 @@ public interface CobolDialect {
          */
         HP_TANDEM(Integer.MIN_VALUE, 0, 1, 5);
 
-        private final int sequenceArea;
-        private final int indicatorArea;
-        private final int contentArea;
-        private final int otherArea;
-
-        Columns(int sequenceArea,
-                int indicatorArea,
-                int contentArea,
-                int otherArea) {
-            this.sequenceArea = sequenceArea;
-            this.indicatorArea = indicatorArea;
-            this.contentArea = contentArea;
-            this.otherArea = otherArea;
-        }
-
-        public int getSequenceArea() {
-            return sequenceArea;
-        }
-
-        public int getIndicatorArea() {
-            return indicatorArea;
-        }
-
-        public int getContentArea() {
-            return contentArea;
-        }
-
-        public int getOtherArea() {
-            return otherArea;
-        }
+		@Getter
+		private final int sequenceArea;
+		@Getter
+		private final int indicatorArea;
+		@Getter
+		private final int contentArea;
+		@Getter
+		private final int otherArea;
     }
 }

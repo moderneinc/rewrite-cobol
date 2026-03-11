@@ -15,6 +15,8 @@
  */
 package org.openrewrite.jcl;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.jcl.tree.Jcl;
@@ -23,9 +25,8 @@ import org.openrewrite.test.SourceSpecs;
 
 import java.util.function.Consumer;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Assertions {
-    private Assertions() {
-    }
 
     static void customizeExecutionContext(ExecutionContext ctx) {
     }

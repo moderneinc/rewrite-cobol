@@ -15,12 +15,13 @@
  */
 package org.openrewrite.cobol;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CobolStringUtils {
 
     private static final String EMPTY_STRING = "";
-
-    private CobolStringUtils() {
-    }
 
     public static String trimLeadingChar(String contentArea) {
         return contentArea.substring(1);

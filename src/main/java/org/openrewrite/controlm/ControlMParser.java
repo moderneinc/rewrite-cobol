@@ -17,6 +17,8 @@ package org.openrewrite.controlm;
 
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Timer;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import org.antlr.v4.runtime.*;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.ExecutionContext;
@@ -87,14 +89,10 @@ public class ControlMParser implements Parser {
         return prefix.resolve("file.ctms");
     }
 
-    private static class ForwardingErrorListener extends BaseErrorListener {
+	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+	private static class ForwardingErrorListener extends BaseErrorListener {
         private final Path sourcePath;
         private final ExecutionContext ctx;
-
-        private ForwardingErrorListener(Path sourcePath, ExecutionContext ctx) {
-            this.sourcePath = sourcePath;
-            this.ctx = ctx;
-        }
 
         @Override
         public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,

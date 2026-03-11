@@ -15,6 +15,8 @@
  */
 package org.openrewrite.cobol.internal;
 
+import lombok.Getter;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -30,7 +32,8 @@ public class IbmAnsi85 implements CobolDialect {
 
     private final Set<String> separators;
     private final Set<Character> commentIndicators;
-    private final Columns columns;
+	@Getter
+	private final Columns columns;
 
     private IbmAnsi85() {
         this.separators = new HashSet<>(Arrays.asList(",\r\n", ",\n", ";\r\n", ";\n", ", ", "; "));
@@ -46,10 +49,5 @@ public class IbmAnsi85 implements CobolDialect {
     @Override
     public Collection<Character> getCommentIndicators() {
         return commentIndicators;
-    }
-
-    @Override
-    public Columns getColumns() {
-        return columns;
     }
 }

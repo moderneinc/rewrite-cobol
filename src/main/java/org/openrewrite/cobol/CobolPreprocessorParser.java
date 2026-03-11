@@ -17,6 +17,10 @@ package org.openrewrite.cobol;
 
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Timer;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.antlr.v4.runtime.*;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.ExecutionContext;
@@ -44,17 +48,13 @@ import static java.util.Collections.singletonList;
 /**
  * Read preprocessed COBOL and execute preprocessor commands.
  */
+@AllArgsConstructor
 public class CobolPreprocessorParser implements Parser {
     private static final List<String> COBOL_FILE_EXTENSIONS = singletonList(".cbl");
 
     private final CobolDialect cobolDialect;
-    private List<SourceFile> copybooks;
-
-    public CobolPreprocessorParser(CobolDialect cobolDialect,
-                                   List<SourceFile> copybooks) {
-        this.cobolDialect = cobolDialect;
-        this.copybooks = copybooks;
-    }
+	@Setter
+	private List<SourceFile> copybooks;
 
     @Override
     public Stream<SourceFile> parseInputs(Iterable<org.openrewrite.Parser.Input> sourceFiles, @Nullable Path relativeTo, ExecutionContext ctx) {
@@ -115,10 +115,6 @@ public class CobolPreprocessorParser implements Parser {
                 });
     }
 
-    public void setCopybooks(List<SourceFile> copybooks) {
-        this.copybooks = copybooks;
-    }
-
     @Override
     public boolean accept(Path path) {
         String s = path.toString().toLowerCase();
@@ -135,12 +131,9 @@ public class CobolPreprocessorParser implements Parser {
         return prefix.resolve("file.CBL");
     }
 
-    private static class ForwardingErrorListener extends BaseErrorListener {
+	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+	private static class ForwardingErrorListener extends BaseErrorListener {
         private final Path sourcePath;
-
-        private ForwardingErrorListener(Path sourcePath) {
-            this.sourcePath = sourcePath;
-        }
 
         @Override
         public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,

@@ -15,6 +15,8 @@
  */
 package org.openrewrite.cobol;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
@@ -23,9 +25,8 @@ import org.openrewrite.test.SourceSpecs;
 
 import java.util.function.Consumer;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CopybookAssertions {
-    private CopybookAssertions() {
-    }
 
     static void customizeExecutionContext(ExecutionContext ctx) {
     }

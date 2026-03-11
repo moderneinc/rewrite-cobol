@@ -15,6 +15,7 @@
  */
 package org.openrewrite.cobol.internal;
 
+import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
 import org.openrewrite.PrintOutputCapture;
@@ -39,16 +40,13 @@ import java.util.function.UnaryOperator;
  * <p>
  * Note: All the logic to print column areas exists in visitWord.
  */
+@RequiredArgsConstructor
 public class CobolSourcePrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
     public static final UnaryOperator<String> COBOL_MARKER_WRAPPER =
             out -> "~~" + out + (out.isEmpty() ? "" : "~~") + ">";
 
     private int originalReplaceLength;
     private final boolean printColumns;
-
-    public CobolSourcePrinter(boolean printColumns) {
-        this.printColumns = printColumns;
-    }
 
     @Override
     protected CobolPreprocessorVisitor<PrintOutputCapture<P>> getCobolPreprocessorVisitor() {

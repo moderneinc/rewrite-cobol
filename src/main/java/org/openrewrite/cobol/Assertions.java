@@ -17,6 +17,8 @@ package org.openrewrite.cobol;
 
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.*;
 import org.openrewrite.cobol.internal.CobolPrinter;
@@ -36,9 +38,8 @@ import java.util.function.Consumer;
 
 import static java.util.stream.Collectors.toList;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Assertions {
-    private Assertions() {
-    }
 
     static void customizeExecutionContext(ExecutionContext ctx) {
     }

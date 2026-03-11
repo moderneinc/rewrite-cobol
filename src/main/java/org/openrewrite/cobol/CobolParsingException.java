@@ -15,17 +15,16 @@
  */
 package org.openrewrite.cobol;
 
+import lombok.Getter;
+
 import java.nio.file.Path;
 
 public class CobolParsingException extends RuntimeException {
-    private final Path sourcePath;
+	@Getter
+	private final Path sourcePath;
 
     public CobolParsingException(Path sourcePath, String message, Throwable t) {
         super(message, t);
         this.sourcePath = sourcePath;
-    }
-
-    public Path getSourcePath() {
-        return sourcePath;
     }
 }

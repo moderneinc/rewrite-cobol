@@ -15,17 +15,16 @@
  */
 package org.openrewrite.controlm;
 
+import lombok.Getter;
+
 import java.nio.file.Path;
 
 public class ControlMParsingException extends Exception {
-    private final Path sourcePath;
+	@Getter
+	private final Path sourcePath;
 
     public ControlMParsingException(Path sourcePath, String message, Throwable t) {
         super(message, t);
         this.sourcePath = sourcePath;
-    }
-
-    public Path getSourcePath() {
-        return sourcePath;
     }
 }

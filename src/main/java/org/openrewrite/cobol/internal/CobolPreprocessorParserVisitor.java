@@ -15,6 +15,7 @@
  */
 package org.openrewrite.cobol.internal;
 
+import lombok.RequiredArgsConstructor;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -38,6 +39,7 @@ import static org.openrewrite.cobol.internal.CobolGrammarToken.COMMENT_ENTRY;
 import static org.openrewrite.cobol.internal.CobolGrammarToken.END_OF_FILE;
 import static org.openrewrite.cobol.tree.Space.EMPTY;
 
+@RequiredArgsConstructor
 public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor<Object> {
 
     private final Path path;
@@ -57,16 +59,6 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
 
     private final Set<Character> commentIndicators = new HashSet<>();
     private int cursor = 0;
-
-    public CobolPreprocessorParserVisitor(Path path, @Nullable FileAttributes fileAttributes,
-                                          String source, Charset charset, boolean charsetBomMarked, CobolDialect cobolDialect) {
-        this.path = path;
-        this.fileAttributes = fileAttributes;
-        this.source = source;
-        this.charset = charset;
-        this.charsetBomMarked = charsetBomMarked;
-        this.cobolDialect = cobolDialect;
-    }
 
     public <T> T visit(@Nullable ParseTree... trees) {
         for (ParseTree tree : trees) {

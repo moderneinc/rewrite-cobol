@@ -15,6 +15,7 @@
  */
 package org.openrewrite.cobol;
 
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.openrewrite.ExecutionContext;
@@ -32,15 +33,12 @@ import static java.util.Collections.singletonList;
 import static org.openrewrite.Tree.randomId;
 import static org.openrewrite.cobol.tree.Space.EMPTY;
 
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Value
 public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> {
 
     Map<String, Replacement> replaceMap;
-
-    public PreprocessReplaceVisitor(Map<String, Replacement> replaceMap) {
-        this.replaceMap = replaceMap;
-    }
 
     @Override
     public CobolPreprocessor.CopyStatement visitCopyStatement(CobolPreprocessor.CopyStatement copyStatement, P p) {
