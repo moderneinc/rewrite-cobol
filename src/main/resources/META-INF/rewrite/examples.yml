@@ -828,3 +828,19 @@ examples:
       071000 CCVS-999999.                                                     SM2064.2
       071100     GO TO CLOSE-FILES.                                           SM2064.2
     language: cobol
+---
+type: specs.openrewrite.org/v1beta/example
+recipeName: org.openrewrite.jcl.search.FindWord
+examples:
+- description: '`FindWordTest#exactMatch`'
+  parameters:
+  - DD
+  - 'true'
+  sources:
+  - before: |
+      //JOB1 JOB ,'H.H. MORRILL'
+      //SYSPRINT DD SYSOUT=*
+    after: |
+      //JOB1 JOB ,'H.H. MORRILL'
+      //SYSPRINT ~~>DD SYSOUT=*
+    language: jcl
