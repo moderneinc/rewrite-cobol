@@ -291,7 +291,7 @@ class CobolParserAnsi85DivisionTest extends CobolTest {
               %s
               """.formatted(input),
             spec -> spec.afterRecipe(cu -> {
-                AtomicInteger count = new AtomicInteger();
+                var count = new AtomicInteger();
                 new CobolIsoVisitor<AtomicInteger>() {
                     @Override
                     public Cobol.Word visitWord(Cobol.Word word, AtomicInteger atomicInteger) {

@@ -59,9 +59,9 @@ public class CobolPreprocessorCopyTest extends CobolTest {
                 assertThat(copyStatement.getCopybook().getSourcePath()).isNotNull();
                 CobolPreprocessor.Copybook copybook = copyStatement.getCopybook();
 
-                PrintOutputCapture<ExecutionContext> output = new PrintOutputCapture<>(new InMemoryExecutionContext());
-                CobolPreprocessorOutputSourcePrinter<ExecutionContext> printer =
-                  new CobolPreprocessorOutputSourcePrinter<>(CobolDialect.ibmAnsi85(), true);
+                var output = new PrintOutputCapture<ExecutionContext>(new InMemoryExecutionContext());
+                var printer =
+                  new CobolPreprocessorOutputSourcePrinter<ExecutionContext>(CobolDialect.ibmAnsi85(), true);
                 printer.visit(copybook, output);
 
                 String source = getSource(copybook.getSourcePath().toString());

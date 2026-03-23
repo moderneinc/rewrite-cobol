@@ -33,8 +33,8 @@ class BadBoysTest extends CobolTest {
           preprocessor(
             getNistResource("NC246A.CBL"),
             spec -> spec.beforeRecipe(cu -> {
-                PrintOutputCapture<ExecutionContext> cobolParserOutput = new PrintOutputCapture<>(new InMemoryExecutionContext());
-                CobolPreprocessorOutputSourcePrinter<ExecutionContext> printWithoutColumns = new CobolPreprocessorOutputSourcePrinter<>(CobolDialect.ibmAnsi85(), false);
+                var cobolParserOutput = new PrintOutputCapture<ExecutionContext>(new InMemoryExecutionContext());
+                var printWithoutColumns = new CobolPreprocessorOutputSourcePrinter<ExecutionContext>(CobolDialect.ibmAnsi85(), false);
                 printWithoutColumns.visit(cu, cobolParserOutput);
             }))
         );

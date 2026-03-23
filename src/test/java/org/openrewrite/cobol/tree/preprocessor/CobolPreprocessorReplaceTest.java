@@ -59,8 +59,8 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                 assertThat(statements.size()).isEqualTo(1);
 
                 CobolPreprocessor.CopyStatement issue38 = statements.getFirst();
-                PrintOutputCapture<ExecutionContext> outputCapture =
-                  new PrintOutputCapture<>(new InMemoryExecutionContext());
+                var outputCapture =
+                  new PrintOutputCapture<ExecutionContext>(new InMemoryExecutionContext());
                 printer.visit(issue38, outputCapture);
                 String result =
                   trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
@@ -87,8 +87,8 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                 assertThat(statements.size()).isEqualTo(8);
 
                 CobolPreprocessor.CopyStatement k1fda = statements.getFirst();
-                PrintOutputCapture<ExecutionContext> outputCapture =
-                    new PrintOutputCapture<>(new InMemoryExecutionContext());
+                var outputCapture =
+                    new PrintOutputCapture<ExecutionContext>(new InMemoryExecutionContext());
                 printer.visit(k1fda, outputCapture);
                 String result =
                     trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
@@ -199,8 +199,8 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                   assertThat(statements.size()).isEqualTo(3);
 
                   CobolPreprocessor.CopyStatement k2sea = statements.getFirst();
-                  PrintOutputCapture<ExecutionContext> outputCapture =
-                          new PrintOutputCapture<>(new InMemoryExecutionContext());
+                  var outputCapture =
+                          new PrintOutputCapture<ExecutionContext>(new InMemoryExecutionContext());
                   printer.visit(k2sea, outputCapture);
                   String result =
                           trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
@@ -271,8 +271,8 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                   assertThat(statements.size()).isEqualTo(3);
 
                   CobolPreprocessor.CopyStatement k3snb = statements.getFirst();
-                  PrintOutputCapture<ExecutionContext> outputCapture =
-                          new PrintOutputCapture<>(new InMemoryExecutionContext());
+                  var outputCapture =
+                          new PrintOutputCapture<ExecutionContext>(new InMemoryExecutionContext());
                   printer.visit(k3snb, outputCapture);
                   String result =
                           trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
@@ -324,8 +324,8 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                   assertThat(statements.size()).isEqualTo(2);
 
                   CobolPreprocessor.CopyStatement k5sdb = statements.getFirst();
-                  PrintOutputCapture<ExecutionContext> outputCapture =
-                          new PrintOutputCapture<>(new InMemoryExecutionContext());
+                  var outputCapture =
+                          new PrintOutputCapture<ExecutionContext>(new InMemoryExecutionContext());
                   printer.visit(k5sdb, outputCapture);
                   String result =
                           trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
@@ -368,8 +368,8 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                   assertThat(statements.size()).isEqualTo(9);
 
                   CobolPreprocessor.CopyStatement kp001 = statements.getFirst();
-                  PrintOutputCapture<ExecutionContext> outputCapture =
-                          new PrintOutputCapture<>(new InMemoryExecutionContext());
+                  var outputCapture =
+                          new PrintOutputCapture<ExecutionContext>(new InMemoryExecutionContext());
                   printer.visit(kp001, outputCapture);
                   String result =
                           trimTrailingSpaces(StringUtils.trimIndentPreserveCRLF(outputCapture.getOut()));
@@ -479,10 +479,10 @@ class CobolPreprocessorReplaceTest extends CobolTest {
           cobolPreprocessorCopy(
             getNistResource("SM208A.CBL"),
             spec -> spec.afterRecipe(cu -> {
-                  PrintOutputCapture<ExecutionContext> outputCapture =
-                          new PrintOutputCapture<>(new InMemoryExecutionContext());
-                  CobolPreprocessorPrinter<ExecutionContext> postProcessPrinter =
-                          new CobolPreprocessorPrinter<>(false, true);
+                  var outputCapture =
+                          new PrintOutputCapture<ExecutionContext>(new InMemoryExecutionContext());
+                  var postProcessPrinter =
+                          new CobolPreprocessorPrinter<ExecutionContext>(false, true);
                   postProcessPrinter.visit(cu, outputCapture);
                   String result = StringUtils.trimIndentPreserveCRLF(outputCapture.getOut());
                   assertThat(result).isEqualTo(

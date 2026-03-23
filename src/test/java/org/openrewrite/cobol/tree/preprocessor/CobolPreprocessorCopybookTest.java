@@ -431,7 +431,7 @@ class CobolPreprocessorCopybookTest extends CobolTest {
         );
 
         List<Throwable> errors = new ArrayList<>();
-        InMemoryExecutionContext ctx = new InMemoryExecutionContext(errors::add);
+        var ctx = new InMemoryExecutionContext(errors::add);
 
         List<SourceFile> results = parser.parseInputs(inputs, null, ctx)
                 .toList();
