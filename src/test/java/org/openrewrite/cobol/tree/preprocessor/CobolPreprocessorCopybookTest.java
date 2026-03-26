@@ -412,14 +412,14 @@ class CobolPreprocessorCopybookTest extends CobolTest {
                 .timeout(Duration.ofSeconds(10))
                 .build();
 
-        String validCobol = """
+        var validCobol = """
                 000001 IDENTIFICATION DIVISION.
                 000002 PROGRAM-ID. HELLO.
                 000003 PROCEDURE DIVISION.
                 000004     STOP RUN.
                 """;
 
-        String invalidCobol = """
+        var invalidCobol = """
                 000001 BLAH BLAH THIS IS NOT A VALID COBOL PROGRAM.
                 000002 IT SHOULD CAUSE A PARSE ERROR.
                 """;
