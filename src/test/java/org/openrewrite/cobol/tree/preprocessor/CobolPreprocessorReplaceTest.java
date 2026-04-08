@@ -56,7 +56,7 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                   .filter(CobolPreprocessor.CopyStatement.class::isInstance)
                   .map(CobolPreprocessor.CopyStatement.class::cast)
                   .toList();
-                assertThat(statements.size()).isEqualTo(1);
+				assertThat(statements).hasSize(1);
 
                 CobolPreprocessor.CopyStatement issue38 = statements.getFirst();
                 var outputCapture =
@@ -84,7 +84,7 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                         .filter(CobolPreprocessor.CopyStatement.class::isInstance)
                         .map(CobolPreprocessor.CopyStatement.class::cast)
                         .toList();
-                assertThat(statements.size()).isEqualTo(8);
+				assertThat(statements).hasSize(8);
 
                 CobolPreprocessor.CopyStatement k1fda = statements.getFirst();
                 var outputCapture =
@@ -196,7 +196,7 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                           .filter(CobolPreprocessor.CopyStatement.class::isInstance)
                           .map(CobolPreprocessor.CopyStatement.class::cast)
                           .toList();
-                  assertThat(statements.size()).isEqualTo(3);
+				assertThat(statements).hasSize(3);
 
                   CobolPreprocessor.CopyStatement k2sea = statements.getFirst();
                   var outputCapture =
@@ -268,7 +268,7 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                           .filter(CobolPreprocessor.CopyStatement.class::isInstance)
                           .map(CobolPreprocessor.CopyStatement.class::cast)
                           .toList();
-                  assertThat(statements.size()).isEqualTo(3);
+				assertThat(statements).hasSize(3);
 
                   CobolPreprocessor.CopyStatement k3snb = statements.getFirst();
                   var outputCapture =
@@ -321,7 +321,7 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                           .filter(CobolPreprocessor.CopyStatement.class::isInstance)
                           .map(CobolPreprocessor.CopyStatement.class::cast)
                           .toList();
-                  assertThat(statements.size()).isEqualTo(2);
+				assertThat(statements).hasSize(2);
 
                   CobolPreprocessor.CopyStatement k5sdb = statements.getFirst();
                   var outputCapture =
@@ -365,7 +365,7 @@ class CobolPreprocessorReplaceTest extends CobolTest {
                           .filter(CobolPreprocessor.CopyStatement.class::isInstance)
                           .map(CobolPreprocessor.CopyStatement.class::cast)
                           .toList();
-                  assertThat(statements.size()).isEqualTo(9);
+				assertThat(statements).hasSize(9);
 
                   CobolPreprocessor.CopyStatement kp001 = statements.getFirst();
                   var outputCapture =

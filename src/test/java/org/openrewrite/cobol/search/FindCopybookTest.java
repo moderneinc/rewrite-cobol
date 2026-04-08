@@ -43,8 +43,8 @@ class FindCopybookTest extends CobolTest {
 	@DocumentExample @Test void isUsedInCopyStatement() {
         rewriteRun(
           spec -> spec.recipe(new FindCopybook("INCEPTION", false)).dataTable(Row.class, rows -> {
-              assertThat(rows.stream().map(CopybookSource.Row::getCopybookName)).containsOnly("INCEPTION");
-              assertThat(rows.stream().map(Row::getResolutionStatus)).containsOnly(RESOLVED);
+              assertThat(rows).extracting(CopybookSource.Row::getCopybookName).containsOnly("INCEPTION");
+              assertThat(rows).extracting(Row::getResolutionStatus).containsOnly(RESOLVED);
           }),
           cobol(
             """
@@ -97,8 +97,8 @@ class FindCopybookTest extends CobolTest {
     void findMissingCopybookInCopySource(String input) {
         rewriteRun(
           spec -> spec.recipe(new FindCopybook(null, true)).dataTable(Row.class, rows -> {
-              assertThat(rows.stream().map(CopybookSource.Row::getCopybookName)).containsOnly("MISSING");
-              assertThat(rows.stream().map(Row::getResolutionStatus)).containsOnly(MISSING_SOURCE);
+              assertThat(rows).extracting(CopybookSource.Row::getCopybookName).containsOnly("MISSING");
+              assertThat(rows).extracting(Row::getResolutionStatus).containsOnly(MISSING_SOURCE);
           }),
           cobol(
             """
@@ -145,8 +145,8 @@ class FindCopybookTest extends CobolTest {
     void onlyFindMissingCopybooks(String input) {
         rewriteRun(
           spec -> spec.recipe(new FindCopybook(null, true)).dataTable(Row.class, rows -> {
-              assertThat(rows.stream().map(CopybookSource.Row::getCopybookName)).containsOnly("MISSING");
-              assertThat(rows.stream().map(Row::getResolutionStatus)).containsOnly(MISSING_SOURCE);
+              assertThat(rows).extracting(CopybookSource.Row::getCopybookName).containsOnly("MISSING");
+              assertThat(rows).extracting(Row::getResolutionStatus).containsOnly(MISSING_SOURCE);
           }),
           cobol(
             """
@@ -177,8 +177,8 @@ class FindCopybookTest extends CobolTest {
     void isUsedInIncludeStatement() {
         rewriteRun(
           spec -> spec.recipe(new FindCopybook("INCEPTION", false)).dataTable(Row.class, rows -> {
-              assertThat(rows.stream().map(CopybookSource.Row::getCopybookName)).containsOnly("INCEPTION");
-              assertThat(rows.stream().map(Row::getResolutionStatus)).containsOnly(RESOLVED);
+              assertThat(rows).extracting(CopybookSource.Row::getCopybookName).containsOnly("INCEPTION");
+              assertThat(rows).extracting(Row::getResolutionStatus).containsOnly(RESOLVED);
           }),
           cobol(
             """
@@ -205,9 +205,9 @@ class FindCopybookTest extends CobolTest {
     void sm206a() {
         rewriteRun(
           spec -> spec.dataTable(Row.class, rows -> {
-              assertThat(rows.stream().map(Row::getCopybookName))
+              assertThat(rows).extracting(Row::getCopybookName)
                 .containsExactly(IntStream.range(1, 10).mapToObj(n -> "KP00" + n).toArray(String[]::new));
-              assertThat(rows.stream().map(Row::getResolutionStatus)).containsOnly(RESOLVED);
+              assertThat(rows).extracting(Row::getResolutionStatus).containsOnly(RESOLVED);
           }),
           cobol(
             getNistResource("SM206A.CBL"),

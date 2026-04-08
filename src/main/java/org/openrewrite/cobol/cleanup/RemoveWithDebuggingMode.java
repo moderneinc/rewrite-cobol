@@ -105,7 +105,7 @@ public class RemoveWithDebuggingMode extends Recipe {
                             s = s.withDebuggingMode(null);
                         } else {
                             // Interim safe replace until we have auto-formatting.
-                            s = new RemoveWords(s.getDebuggingMode()).visitSourceComputerDefinition(s, ctx);
+                            s = (Cobol.SourceComputerDefinition) new RemoveWords(s.getDebuggingMode()).visit(s, ctx, getCursor().getParentTreeCursor());
                         }
                     }
                 }

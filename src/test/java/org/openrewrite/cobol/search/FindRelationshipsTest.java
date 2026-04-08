@@ -41,10 +41,10 @@ class FindRelationshipsTest extends CobolTest {
 	@DocumentExample @Test void IC201A() {
         rewriteRun(
           spec -> spec.dataTable(Row.class, rows -> {
-              assertThat(rows.stream().map(Row::getDependent)).contains("IC201A", "LINKEDIT1", "BINDCARDPACKAGE", "BINDCARDPLAN");
-              assertThat(rows.stream().map(Row::getDependency)).contains("IC202A", "IC201A", "LINKEDIT1");
-              assertThat(rows.stream().map(Row::getDependencyType)).contains(COBOL, COBOL, LINKEDIT);
-              assertThat(rows.stream().map(Row::getAction)).contains(CALL, INCLUDE, PLAN, MEMBER);
+              assertThat(rows).extracting(Row::getDependent).contains("IC201A", "LINKEDIT1", "BINDCARDPACKAGE", "BINDCARDPLAN");
+              assertThat(rows).extracting(Row::getDependency).contains("IC202A", "IC201A", "LINKEDIT1");
+              assertThat(rows).extracting(Row::getDependencyType).contains(COBOL, COBOL, LINKEDIT);
+              assertThat(rows).extracting(Row::getAction).contains(CALL, INCLUDE, PLAN, MEMBER);
           }),
           cobol(
             getNistResource("IC201A.CBL"),
@@ -89,11 +89,11 @@ class FindRelationshipsTest extends CobolTest {
     void includeCopybookWithCopyAndInclude() {
         rewriteRun(
           spec -> spec.dataTable(Row.class, rows -> {
-              assertThat(rows.stream().map(Row::getDependent)).contains("USE_COPY_AND_INCLUDE", "EXEC_SQL_INCLUDE");
-              assertThat(rows.stream().map(Row::getDependentType)).contains(COPYBOOK, COBOL);
-              assertThat(rows.stream().map(Row::getAction)).contains(INCLUDE, COPY);
-              assertThat(rows.stream().map(Row::getDependency)).contains("USE_COPY_AND_INCLUDE", "EMPTY_COPY", "EMPTY_INCLUDE");
-              assertThat(rows.stream().map(Row::getDependencyType)).contains(COPYBOOK);
+              assertThat(rows).extracting(Row::getDependent).contains("USE_COPY_AND_INCLUDE", "EXEC_SQL_INCLUDE");
+              assertThat(rows).extracting(Row::getDependentType).contains(COPYBOOK, COBOL);
+              assertThat(rows).extracting(Row::getAction).contains(INCLUDE, COPY);
+              assertThat(rows).extracting(Row::getDependency).contains("USE_COPY_AND_INCLUDE", "EMPTY_COPY", "EMPTY_INCLUDE");
+              assertThat(rows).extracting(Row::getDependencyType).contains(COPYBOOK);
           }),
           cobol(
             """
@@ -126,12 +126,12 @@ class FindRelationshipsTest extends CobolTest {
     void execSqlCreateTable() {
         rewriteRun(
           spec -> spec.dataTable(Row.class, rows -> {
-              assertThat(rows.stream().map(Row::getDependent)).contains("DECLARE_TABLE_2", "EXEC_SQL_CREATE");
-              assertThat(rows.stream().map(Row::getDependentType)).contains(COPYBOOK, COBOL);
-              assertThat(rows.stream().map(Row::getAction)).contains(INCLUDE, ACCESS);
-              assertThat(rows.stream().map(Row::getDependency)).contains("DECLARE_PROD_TBL_02", "PROD_TBL_01", "PROD_TBL_02");
-              assertThat(rows.stream().map(Row::getDependencyType)).contains(SQL_TABLE, COPYBOOK);
-              assertThat(rows.stream().map(Row::getActionMetadata)).contains("CREATE");
+              assertThat(rows).extracting(Row::getDependent).contains("DECLARE_TABLE_2", "EXEC_SQL_CREATE");
+              assertThat(rows).extracting(Row::getDependentType).contains(COPYBOOK, COBOL);
+              assertThat(rows).extracting(Row::getAction).contains(INCLUDE, ACCESS);
+              assertThat(rows).extracting(Row::getDependency).contains("DECLARE_PROD_TBL_02", "PROD_TBL_01", "PROD_TBL_02");
+              assertThat(rows).extracting(Row::getDependencyType).contains(SQL_TABLE, COPYBOOK);
+              assertThat(rows).extracting(Row::getActionMetadata).contains("CREATE");
           }),
           cobol(
             """
@@ -172,12 +172,12 @@ class FindRelationshipsTest extends CobolTest {
     void execSqlReadTable() {
         rewriteRun(
           spec -> spec.dataTable(Row.class, rows -> {
-              assertThat(rows.stream().map(Row::getDependent)).contains("DECLARE_TABLE_2", "DECLARE_TABLE_3", "EXEC_SQL_READ");
-              assertThat(rows.stream().map(Row::getDependentType)).contains(COPYBOOK, COBOL);
-              assertThat(rows.stream().map(Row::getAction)).contains(INCLUDE, ACCESS);
-              assertThat(rows.stream().map(Row::getDependency)).contains("DECLARE_TABLE_2", "DECLARE_TABLE_3", "PROD_TBL_02", "PROD_TBL_03");
-              assertThat(rows.stream().map(Row::getDependencyType)).contains(SQL_TABLE, COPYBOOK);
-              assertThat(rows.stream().map(Row::getActionMetadata)).contains("CREATE", "READ");
+              assertThat(rows).extracting(Row::getDependent).contains("DECLARE_TABLE_2", "DECLARE_TABLE_3", "EXEC_SQL_READ");
+              assertThat(rows).extracting(Row::getDependentType).contains(COPYBOOK, COBOL);
+              assertThat(rows).extracting(Row::getAction).contains(INCLUDE, ACCESS);
+              assertThat(rows).extracting(Row::getDependency).contains("DECLARE_TABLE_2", "DECLARE_TABLE_3", "PROD_TBL_02", "PROD_TBL_03");
+              assertThat(rows).extracting(Row::getDependencyType).contains(SQL_TABLE, COPYBOOK);
+              assertThat(rows).extracting(Row::getActionMetadata).contains("CREATE", "READ");
           }),
           cobol(
             """
@@ -239,12 +239,12 @@ class FindRelationshipsTest extends CobolTest {
     void execSqlUpdateTable() {
         rewriteRun(
           spec -> spec.dataTable(Row.class, rows -> {
-              assertThat(rows.stream().map(Row::getDependent)).contains("DECLARE_TABLE_2", "EXEC_SQL_UPDATE");
-              assertThat(rows.stream().map(Row::getDependentType)).contains(COPYBOOK, COBOL);
-              assertThat(rows.stream().map(Row::getAction)).contains(INCLUDE, ACCESS);
-              assertThat(rows.stream().map(Row::getDependency)).contains("DECLARE_TABLE_2", "PROD_TBL_02");
-              assertThat(rows.stream().map(Row::getDependencyType)).contains(SQL_TABLE, COPYBOOK);
-              assertThat(rows.stream().map(Row::getActionMetadata)).contains("CREATE", "INSERT", "UPDATE");
+              assertThat(rows).extracting(Row::getDependent).contains("DECLARE_TABLE_2", "EXEC_SQL_UPDATE");
+              assertThat(rows).extracting(Row::getDependentType).contains(COPYBOOK, COBOL);
+              assertThat(rows).extracting(Row::getAction).contains(INCLUDE, ACCESS);
+              assertThat(rows).extracting(Row::getDependency).contains("DECLARE_TABLE_2", "PROD_TBL_02");
+              assertThat(rows).extracting(Row::getDependencyType).contains(SQL_TABLE, COPYBOOK);
+              assertThat(rows).extracting(Row::getActionMetadata).contains("CREATE", "INSERT", "UPDATE");
           }),
           cobol(
             """
@@ -299,12 +299,12 @@ class FindRelationshipsTest extends CobolTest {
     void execSqlDeleteTable() {
         rewriteRun(
           spec -> spec.dataTable(Row.class, rows -> {
-              assertThat(rows.stream().map(Row::getDependent)).contains("DECLARE_TABLE_2", "EXEC_SQL_DELETE");
-              assertThat(rows.stream().map(Row::getDependentType)).contains(COPYBOOK, COBOL);
-              assertThat(rows.stream().map(Row::getAction)).contains(INCLUDE, ACCESS);
-              assertThat(rows.stream().map(Row::getDependency)).contains("DECLARE_TABLE_2", "PROD_TBL_02");
-              assertThat(rows.stream().map(Row::getDependencyType)).contains(SQL_TABLE, COPYBOOK);
-              assertThat(rows.stream().map(Row::getActionMetadata)).contains("CREATE", "DELETE");
+              assertThat(rows).extracting(Row::getDependent).contains("DECLARE_TABLE_2", "EXEC_SQL_DELETE");
+              assertThat(rows).extracting(Row::getDependentType).contains(COPYBOOK, COBOL);
+              assertThat(rows).extracting(Row::getAction).contains(INCLUDE, ACCESS);
+              assertThat(rows).extracting(Row::getDependency).contains("DECLARE_TABLE_2", "PROD_TBL_02");
+              assertThat(rows).extracting(Row::getDependencyType).contains(SQL_TABLE, COPYBOOK);
+              assertThat(rows).extracting(Row::getActionMetadata).contains("CREATE", "DELETE");
           }),
           cobol(
             """
@@ -350,11 +350,11 @@ class FindRelationshipsTest extends CobolTest {
     void aCopyInACopy() {
         rewriteRun(
           spec -> spec.dataTable(Row.class, rows -> {
-              assertThat(rows.stream().map(Row::getDependent)).contains("IC109A", "INCEPTION", "INCEPTION_2");
-              assertThat(rows.stream().map(Row::getDependentType)).contains(COBOL, COPYBOOK);
-              assertThat(rows.stream().map(Row::getAction)).contains(COPY);
-              assertThat(rows.stream().map(Row::getDependency)).contains("INCEPTION", "INCEPTION_2", "INCEPTION_3");
-              assertThat(rows.stream().map(Row::getDependencyType)).contains(COPYBOOK);
+              assertThat(rows).extracting(Row::getDependent).contains("IC109A", "INCEPTION", "INCEPTION_2");
+              assertThat(rows).extracting(Row::getDependentType).contains(COBOL, COPYBOOK);
+              assertThat(rows).extracting(Row::getAction).contains(COPY);
+              assertThat(rows).extracting(Row::getDependency).contains("INCEPTION", "INCEPTION_2", "INCEPTION_3");
+              assertThat(rows).extracting(Row::getDependencyType).contains(COPYBOOK);
           }),
           cobol(
             """
@@ -375,12 +375,12 @@ class FindRelationshipsTest extends CobolTest {
         // Ensure cursors are not detected as SQL tables.
         rewriteRun(
           spec -> spec.dataTable(Row.class, rows -> {
-              assertThat(rows.stream().map(Row::getDependent)).contains("DECLARE_TABLE_2", "EXEC_SQL_CREATE");
-              assertThat(rows.stream().map(Row::getDependentType)).contains(COPYBOOK, COBOL);
-              assertThat(rows.stream().map(Row::getAction)).contains(INCLUDE, ACCESS);
-              assertThat(rows.stream().map(Row::getDependency)).contains("DECLARE_PROD_TBL_02", "PROD_TBL_01", "PROD_TBL_02");
-              assertThat(rows.stream().map(Row::getDependencyType)).contains(SQL_TABLE, COPYBOOK);
-              assertThat(rows.stream().map(Row::getActionMetadata)).contains("CREATE", "READ");
+              assertThat(rows).extracting(Row::getDependent).contains("DECLARE_TABLE_2", "EXEC_SQL_CREATE");
+              assertThat(rows).extracting(Row::getDependentType).contains(COPYBOOK, COBOL);
+              assertThat(rows).extracting(Row::getAction).contains(INCLUDE, ACCESS);
+              assertThat(rows).extracting(Row::getDependency).contains("DECLARE_PROD_TBL_02", "PROD_TBL_01", "PROD_TBL_02");
+              assertThat(rows).extracting(Row::getDependencyType).contains(SQL_TABLE, COPYBOOK);
+              assertThat(rows).extracting(Row::getActionMetadata).contains("CREATE", "READ");
           }),
           cobol(
             """
@@ -440,12 +440,12 @@ class FindRelationshipsTest extends CobolTest {
         // Ensure cursors are not detected as SQL tables.
         rewriteRun(
           spec -> spec.dataTable(Row.class, rows -> {
-              assertThat(rows.stream().map(Row::getDependent)).contains("DECLARE_TABLE_2", "EXEC_SQL_READ");
-              assertThat(rows.stream().map(Row::getDependentType)).contains(COPYBOOK, COBOL);
-              assertThat(rows.stream().map(Row::getAction)).contains(INCLUDE, ACCESS);
-              assertThat(rows.stream().map(Row::getDependency)).contains("DECLARE_TABLE_2", "PROD_TBL_02");
-              assertThat(rows.stream().map(Row::getDependencyType)).contains(SQL_TABLE, COPYBOOK);
-              assertThat(rows.stream().map(Row::getActionMetadata)).contains("CREATE", "READ");
+              assertThat(rows).extracting(Row::getDependent).contains("DECLARE_TABLE_2", "EXEC_SQL_READ");
+              assertThat(rows).extracting(Row::getDependentType).contains(COPYBOOK, COBOL);
+              assertThat(rows).extracting(Row::getAction).contains(INCLUDE, ACCESS);
+              assertThat(rows).extracting(Row::getDependency).contains("DECLARE_TABLE_2", "PROD_TBL_02");
+              assertThat(rows).extracting(Row::getDependencyType).contains(SQL_TABLE, COPYBOOK);
+              assertThat(rows).extracting(Row::getActionMetadata).contains("CREATE", "READ");
           }),
           cobol(
             """
@@ -510,12 +510,12 @@ class FindRelationshipsTest extends CobolTest {
     void SM206A() {
         rewriteRun(
           spec -> spec.dataTable(Row.class, rows -> {
-              assertThat(rows.stream().map(Row::getDependent)).containsOnly("SM206A");
-              assertThat(rows.stream().map(Row::getDependency))
+              assertThat(rows).extracting(Row::getDependent).containsOnly("SM206A");
+              assertThat(rows).extracting(Row::getDependency)
                 .containsExactly(IntStream.range(1, 10).mapToObj(n -> "KP00" + n).toArray(String[]::new));
-              assertThat(rows.stream().map(Row::isDependencyMissing)).containsOnly(false);
-              assertThat(rows.stream().map(Row::getDependencyType)).containsOnly(COPYBOOK);
-              assertThat(rows.stream().map(Row::getAction)).containsOnly(COPY);
+              assertThat(rows).extracting(Row::isDependencyMissing).containsOnly(false);
+              assertThat(rows).extracting(Row::getDependencyType).containsOnly(COPYBOOK);
+              assertThat(rows).extracting(Row::getAction).containsOnly(COPY);
           }),
           cobol(
             getNistResource("SM206A.CBL"),
@@ -528,11 +528,11 @@ class FindRelationshipsTest extends CobolTest {
     void controlMScheduleToJcl() {
         rewriteRun(
           spec -> spec.dataTable(Row.class, rows -> {
-              assertThat(rows.stream().map(Row::getDependent)).containsOnly("CTM_SCHEDULE", "JOBNAME1", "JOBNAME2", "JOBNAME3", "JOBNAME4");
-              assertThat(rows.stream().map(Row::getDependentType)).contains(CONTROL_M_SCHEDULE);
-              assertThat(rows.stream().map(Row::getAction)).contains(TRIGGERS);
-              assertThat(rows.stream().map(Row::getDependency)).contains("JCL_JOB", "CTM_SCHEDULE");
-              assertThat(rows.stream().map(Row::getDependencyType)).contains(JCL, CONTROL_M_SCHEDULE);
+              assertThat(rows).extracting(Row::getDependent).containsOnly("CTM_SCHEDULE", "JOBNAME1", "JOBNAME2", "JOBNAME3", "JOBNAME4");
+              assertThat(rows).extracting(Row::getDependentType).contains(CONTROL_M_SCHEDULE);
+              assertThat(rows).extracting(Row::getAction).contains(TRIGGERS);
+              assertThat(rows).extracting(Row::getDependency).contains("JCL_JOB", "CTM_SCHEDULE");
+              assertThat(rows).extracting(Row::getDependencyType).contains(JCL, CONTROL_M_SCHEDULE);
           }),
           controlM(
             """

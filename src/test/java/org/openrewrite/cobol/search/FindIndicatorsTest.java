@@ -15,7 +15,6 @@
  */
 package org.openrewrite.cobol.search;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.openrewrite.DocumentExample;
 import org.openrewrite.Tree;
@@ -775,7 +774,7 @@ class FindIndicatorsTest extends CobolTest {
             spec -> spec.afterRecipe(cu -> {
                 List<SearchResult> searchResults = new ArrayList<>(11);
                 visitor.visit(cu, searchResults);
-                Assertions.assertThat(searchResults).hasSize(11);
+                assertThat(searchResults).hasSize(11);
             })
           )
         );
