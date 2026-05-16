@@ -772,7 +772,7 @@ class FindIndicatorsTest extends CobolTest {
               071100     GO TO CLOSE-FILES.                                           SM2064.2
               """,
             spec -> spec.afterRecipe(cu -> {
-                List<SearchResult> searchResults = new ArrayList<>(11);
+                var searchResults = new ArrayList<SearchResult>(11);
                 visitor.visit(cu, searchResults);
                 assertThat(searchResults).hasSize(11);
             })

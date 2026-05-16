@@ -83,7 +83,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     private String copyUuidComment = null;
     private String copybookNotFoundComment = null;
 
-    private final Stack<CopiedWord> copiedWordStack = new Stack<>();
+    private final Deque<CopiedWord> copiedWordStack = new ArrayDeque<>();
 
     private String replaceStartComment = null;
     private String replaceStopComment = null;
@@ -3192,7 +3192,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 (Cobol.ProcedureName) visit(ctx.procedureName(0)),
                 ctx.THROUGH() != null ? (Cobol.Word) visit(ctx.THROUGH()) :
                         ctx.THRU() != null ? (Cobol.Word) visit(ctx.THRU()) : null,
-                (ctx.procedureName().size() > 1) ? (Cobol.ProcedureName) visit(ctx.procedureName(1)) : null,
+                ctx.procedureName().size() > 1 ? (Cobol.ProcedureName) visit(ctx.procedureName(1)) : null,
                 visitNullable(ctx.performType())
         );
     }
@@ -3388,7 +3388,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
 				EMPTY,
 				Markers.EMPTY,
 				visitNullable(ctx.OPTIONAL()),
-				(ctx.identifier() == null) ? (Name) visit(ctx.fileName()) : (Name) visit(ctx.identifier())
+				ctx.identifier() == null ? (Name) visit(ctx.fileName()) : (Name) visit(ctx.identifier())
 			);
 		}
 		return new Cobol.ProcedureDivisionByReference(
@@ -5891,7 +5891,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         // |      | |~~~ Added WS to align next word ~~~ |~~ actual prefix ~~|CurrentWord  | `nextIndex` set the position where the whitespace of the current word starts.
         // |      |*| Template end.                                                        |
         if (!isColumnArea && nextIndex != null && nextIndex > 0) {
-            int totalWhitespace = (delimIndex - cursor);
+            int totalWhitespace = delimIndex - cursor;
             int prefixCount = nextIndex > totalWhitespace ? nextIndex - totalWhitespace : totalWhitespace - nextIndex;
             int templateWhitespace = totalWhitespace - prefixCount;
             this.cursor += templateWhitespace;
@@ -6191,7 +6191,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
 
             String current = source.substring(cursor);
             int newLinePos = current.indexOf("\n");
-            int endPos = (nextCommentArea != null && nextCommentArea < (newLinePos + cursor)) ? nextCommentArea : (newLinePos + cursor);
+            int endPos = nextCommentArea != null && nextCommentArea < (newLinePos + cursor) ? nextCommentArea : (newLinePos + cursor);
 
             current = source.substring(cursor, endPos).trim();
             // There are two types of continuations.

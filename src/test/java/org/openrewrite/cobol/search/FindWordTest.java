@@ -89,7 +89,7 @@ class FindWordTest extends CobolTest {
               001500     " HIGH       ".                                              CM1024.2
               """,
             spec -> spec.afterRecipe(cu -> {
-                List<SearchResult> searchResults = new ArrayList<>(1);
+                var searchResults = new ArrayList<SearchResult>(1);
                 visitor.visit(cu, searchResults);
                 assertThat(searchResults).hasSize(1);
             }))
@@ -114,7 +114,7 @@ class FindWordTest extends CobolTest {
           cobol(
             getNistResource("SM101A.CBL"),
             sm101A, spec -> spec.afterRecipe(cu -> {
-                List<SearchResult> searchResults = new ArrayList<>(3);
+                var searchResults = new ArrayList<SearchResult>(3);
                 visitor.visit(cu, searchResults);
                 assertThat(searchResults).hasSize(3);
             }))
@@ -789,7 +789,7 @@ class FindWordTest extends CobolTest {
               089500     XXXXX033.                                                    CM1024.2
               """,
             spec -> spec.afterRecipe(cu -> {
-                List<SearchResult> searchResults = new ArrayList<>(39);
+                var searchResults = new ArrayList<SearchResult>(39);
                 visitor.visit(cu, searchResults);
                 assertThat(searchResults).hasSize(39);
             })

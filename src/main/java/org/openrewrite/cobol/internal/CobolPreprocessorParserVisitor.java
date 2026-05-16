@@ -958,7 +958,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
 			if (newLinePos > 0 && current.charAt(newLinePos - 1) == '\r') {
 				newLinePos--;
 			}
-			int endPos = (nextCommentArea != null && nextCommentArea < (newLinePos + cursor)) ? nextCommentArea : (newLinePos + cursor);
+			int endPos = nextCommentArea != null && nextCommentArea < (newLinePos + cursor) ? nextCommentArea : (newLinePos + cursor);
 
 			current = source.substring(cursor, endPos).trim();
 			isContinued = !current.startsWith(text);

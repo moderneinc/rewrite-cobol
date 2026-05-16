@@ -31,7 +31,6 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openrewrite.cobol.Assertions.copybook;
 
@@ -408,7 +407,7 @@ class CobolPreprocessorCopybookTest extends CobolTest {
     @Test
     void syntaxErrorProducesParseErrorWithoutStoppingStream() {
         CobolParser parser = CobolParser.builder()
-                .copybooks(emptyList())
+                .copybooks(List.of())
                 .timeout(Duration.ofSeconds(10))
                 .build();
 
@@ -424,13 +423,13 @@ class CobolPreprocessorCopybookTest extends CobolTest {
                 000002 IT SHOULD CAUSE A PARSE ERROR.
                 """;
 
-        List<Parser.Input> inputs = List.of(
+        var inputs = List.of(
                 new Parser.Input(Path.of("valid1.cbl"), () -> new ByteArrayInputStream(validCobol.getBytes(StandardCharsets.UTF_8))),
                 new Parser.Input(Path.of("invalid.cbl"), () -> new ByteArrayInputStream(invalidCobol.getBytes(StandardCharsets.UTF_8))),
                 new Parser.Input(Path.of("valid2.cbl"), () -> new ByteArrayInputStream(validCobol.getBytes(StandardCharsets.UTF_8)))
         );
 
-        List<Throwable> errors = new ArrayList<>();
+        var errors = new ArrayList<Throwable>();
         var ctx = new InMemoryExecutionContext(errors::add);
 
         List<SourceFile> results = parser.parseInputs(inputs, null, ctx)

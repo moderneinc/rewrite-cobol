@@ -168,7 +168,7 @@ public class JCLParser extends Parser {
 			setState(51);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (((_la) & ~0x3f) == 0 && ((1L << _la) & 7381649408L) != 0) {
+			while ((_la & ~0x3f) == 0 && ((1L << _la) & 7381649408L) != 0) {
 				{
 				{
 				setState(48);

@@ -24,10 +24,7 @@ import org.openrewrite.cobol.tree.CobolPreprocessor;
 import org.openrewrite.internal.ListUtils;
 import org.openrewrite.tree.ParseError;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 import static org.openrewrite.Tree.randomId;
 
@@ -37,7 +34,7 @@ public class PreprocessCopyVisitor<P> extends CobolPreprocessorIsoVisitor<P> {
 
     Map<String, SourceFile> copybooks = new HashMap<>();
     Map<String, CobolPreprocessor> preprocessorMap;
-    Stack<String> copyStack = new Stack<>();
+    Deque<String> copyStack = new ArrayDeque<>();
 
     public PreprocessCopyVisitor(Map<String, CobolPreprocessor> preprocessorMap,
                                  List<SourceFile> copybooks) {

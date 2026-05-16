@@ -163,7 +163,7 @@ public class ControlMVisitor<P> extends TreeVisitor<ControlM, P> {
             return null;
         }
 
-        return (before == left.getBefore() && t == left.getElement()) ? left : new ControlMLeftPadded<>(before, t, left.getMarkers());
+        return before == left.getBefore() && t == left.getElement() ? left : new ControlMLeftPadded<>(before, t, left.getMarkers());
     }
 
 

@@ -237,7 +237,7 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
             p.append("\n");
         }
 
-        addStopComment(getCopyStopComment(), ((CobolPreprocessor) copybookSource), curIndex, p);
+        addStopComment(getCopyStopComment(), (CobolPreprocessor) copybookSource, curIndex, p);
     }
 
     @Override
@@ -507,7 +507,7 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
         // Additive replacement like PIC to PICTURE.
         if (isLongerWord) {
             if (isContinuedLiteral) {
-                int numberOfSpaces = (curIndex == 0 ? cobolDialect.getColumns().getContentArea() : curIndex);
+                int numberOfSpaces = curIndex == 0 ? cobolDialect.getColumns().getContentArea() : curIndex;
                 String afterStop = getColumnAlignmentAfterStop(numberOfSpaces);
                 p.append(afterStop);
                 p.append(StringUtils.repeat(" ", numberOfSpaces));
@@ -592,7 +592,7 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
                 String replaced = word.print(getCursor());
                 numberOfSpaces = getCurrentIndex(replaced);
             } else {
-                numberOfSpaces = (curIndex == 0 ? cobolDialect.getColumns().getContentArea() : curIndex);
+                numberOfSpaces = curIndex == 0 ? cobolDialect.getColumns().getContentArea() : curIndex;
             }
 
             String afterStop = getColumnAlignmentAfterStop(numberOfSpaces);

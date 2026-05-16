@@ -353,7 +353,7 @@ public class CobolPreprocessorParser extends Parser {
 			setState(82);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & -2310346608841326594L) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & -16449L) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & -576460752303423489L) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & -18084767253659649L) != 0) || ((((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & 2541345570543L) != 0)) {
+			while (((_la & ~0x3f) == 0 && ((1L << _la) & -2310346608841326594L) != 0) || (((_la - 64) & ~0x3f) == 0 && ((1L << (_la - 64)) & -16449L) != 0) || (((_la - 128) & ~0x3f) == 0 && ((1L << (_la - 128)) & -576460752303423489L) != 0) || (((_la - 192) & ~0x3f) == 0 && ((1L << (_la - 192)) & -18084767253659649L) != 0) || (((_la - 256) & ~0x3f) == 0 && ((1L << (_la - 256)) & 2541345570543L) != 0)) {
 				{
 				setState(80);
 				_errHandler.sync(this);
@@ -817,7 +817,7 @@ public class CobolPreprocessorParser extends Parser {
 			setState(106);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & -639230256804891194L) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & -5339311376243L) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & -144121922584707089L) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & -6946732225628997889L) != 0) || ((((_la - 258)) & ~0x3f) == 0 && ((1L << (_la - 258)) & 77094863L) != 0)) {
+			while (((_la & ~0x3f) == 0 && ((1L << _la) & -639230256804891194L) != 0) || (((_la - 64) & ~0x3f) == 0 && ((1L << (_la - 64)) & -5339311376243L) != 0) || (((_la - 128) & ~0x3f) == 0 && ((1L << (_la - 128)) & -144121922584707089L) != 0) || (((_la - 192) & ~0x3f) == 0 && ((1L << (_la - 192)) & -6946732225628997889L) != 0) || (((_la - 258) & ~0x3f) == 0 && ((1L << (_la - 258)) & 77094863L) != 0)) {
 				{
 				{
 				setState(101);
@@ -1607,7 +1607,7 @@ public class CobolPreprocessorParser extends Parser {
 				match(LPARENCHAR);
 				setState(182);
 				_la = _input.LA(1);
-				if ( !(((((_la - 271)) & ~0x3f) == 0 && ((1L << (_la - 271)) & 905L) != 0)) ) {
+				if ( !(((_la - 271) & ~0x3f) == 0 && ((1L << (_la - 271)) & 905L) != 0) ) {
 				_errHandler.recoverInline(this);
 				}
 				else {
@@ -1624,7 +1624,7 @@ public class CobolPreprocessorParser extends Parser {
 					match(COMMACHAR);
 					setState(184);
 					_la = _input.LA(1);
-					if ( !(((((_la - 271)) & ~0x3f) == 0 && ((1L << (_la - 271)) & 905L) != 0)) ) {
+					if ( !(((_la - 271) & ~0x3f) == 0 && ((1L << (_la - 271)) & 905L) != 0) ) {
 					_errHandler.recoverInline(this);
 					}
 					else {
@@ -1648,7 +1648,7 @@ public class CobolPreprocessorParser extends Parser {
 				match(LPARENCHAR);
 				setState(190);
 				_la = _input.LA(1);
-				if ( !(((((_la - 273)) & ~0x3f) == 0 && ((1L << (_la - 273)) & 7L) != 0)) ) {
+				if ( !(((_la - 273) & ~0x3f) == 0 && ((1L << (_la - 273)) & 7L) != 0) ) {
 				_errHandler.recoverInline(this);
 				}
 				else {
@@ -1665,7 +1665,7 @@ public class CobolPreprocessorParser extends Parser {
 					match(COMMACHAR);
 					setState(192);
 					_la = _input.LA(1);
-					if ( !(_la==DD || _la==NN || ((((_la - 242)) & ~0x3f) == 0 && ((1L << (_la - 242)) & 86167781377L) != 0)) ) {
+					if ( !(_la==DD || _la==NN || (((_la - 242) & ~0x3f) == 0 && ((1L << (_la - 242)) & 86167781377L) != 0)) ) {
 					_errHandler.recoverInline(this);
 					}
 					else {
@@ -1732,7 +1732,7 @@ public class CobolPreprocessorParser extends Parser {
 				match(LPARENCHAR);
 				setState(204);
 				_la = _input.LA(1);
-				if ( !(((((_la - 29)) & ~0x3f) == 0 && ((1L << (_la - 29)) & 61572657446913L) != 0) || _la==UE) ) {
+				if ( !((((_la - 29) & ~0x3f) == 0 && ((1L << (_la - 29)) & 61572657446913L) != 0) || _la==UE) ) {
 				_errHandler.recoverInline(this);
 				}
 				else {
@@ -1918,7 +1918,7 @@ public class CobolPreprocessorParser extends Parser {
 				match(LPARENCHAR);
 				setState(243);
 				_la = _input.LA(1);
-				if ( !(((((_la - 29)) & ~0x3f) == 0 && ((1L << (_la - 29)) & 35184374185985L) != 0)) ) {
+				if ( !(((_la - 29) & ~0x3f) == 0 && ((1L << (_la - 29)) & 35184374185985L) != 0) ) {
 				_errHandler.recoverInline(this);
 				}
 				else {
@@ -2001,7 +2001,7 @@ public class CobolPreprocessorParser extends Parser {
 					match(LPARENCHAR);
 					setState(254);
 					_la = _input.LA(1);
-					if ( !(((((_la - 271)) & ~0x3f) == 0 && ((1L << (_la - 271)) & 641L) != 0)) ) {
+					if ( !(((_la - 271) & ~0x3f) == 0 && ((1L << (_la - 271)) & 641L) != 0) ) {
 					_errHandler.recoverInline(this);
 					}
 					else {
@@ -2792,7 +2792,7 @@ public class CobolPreprocessorParser extends Parser {
 				match(LPARENCHAR);
 				setState(356);
 				_la = _input.LA(1);
-				if ( !(_la==CO || _la==COMPAT || ((((_la - 86)) & ~0x3f) == 0 && ((1L << (_la - 86)) & 2071L) != 0) || ((((_la - 257)) & ~0x3f) == 0 && ((1L << (_la - 257)) & 4456449L) != 0)) ) {
+				if ( !(_la==CO || _la==COMPAT || (((_la - 86) & ~0x3f) == 0 && ((1L << (_la - 86)) & 2071L) != 0) || (((_la - 257) & ~0x3f) == 0 && ((1L << (_la - 257)) & 4456449L) != 0)) ) {
 				_errHandler.recoverInline(this);
 				}
 				else {
@@ -3100,11 +3100,11 @@ public class CobolPreprocessorParser extends Parser {
 					setState(413);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
-					if (((((_la - 169)) & ~0x3f) == 0 && ((1L << (_la - 169)) & 216172782113783811L) != 0)) {
+					if (((_la - 169) & ~0x3f) == 0 && ((1L << (_la - 169)) & 216172782113783811L) != 0) {
 						{
 						setState(412);
 						_la = _input.LA(1);
-						if ( !(((((_la - 169)) & ~0x3f) == 0 && ((1L << (_la - 169)) & 216172782113783811L) != 0)) ) {
+						if ( !(((_la - 169) & ~0x3f) == 0 && ((1L << (_la - 169)) & 216172782113783811L) != 0) ) {
 						_errHandler.recoverInline(this);
 						}
 						else {
@@ -3223,7 +3223,7 @@ public class CobolPreprocessorParser extends Parser {
 				match(LPARENCHAR);
 				setState(437);
 				_la = _input.LA(1);
-				if ( !(_la==COMPAT || ((((_la - 262)) & ~0x3f) == 0 && ((1L << (_la - 262)) & 524417L) != 0)) ) {
+				if ( !(_la==COMPAT || (((_la - 262) & ~0x3f) == 0 && ((1L << (_la - 262)) & 524417L) != 0)) ) {
 				_errHandler.recoverInline(this);
 				}
 				else {
@@ -3938,7 +3938,7 @@ public class CobolPreprocessorParser extends Parser {
 			setState(498);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==IN || ((((_la - 200)) & ~0x3f) == 0 && ((1L << (_la - 200)) & 70368748371977L) != 0)) {
+			while (_la==IN || (((_la - 200) & ~0x3f) == 0 && ((1L << (_la - 200)) & 70368748371977L) != 0)) {
 				{
 				{
 				setState(494);
@@ -5174,7 +5174,7 @@ public class CobolPreprocessorParser extends Parser {
 				setState(539);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & -2346656880870555650L) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & -16449L) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & -576460752303423489L) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & -2324912939422711809L) != 0) || ((((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & 2541882441455L) != 0) );
+			} while ( ((_la & ~0x3f) == 0 && ((1L << _la) & -2346656880870555650L) != 0) || (((_la - 64) & ~0x3f) == 0 && ((1L << (_la - 64)) & -16449L) != 0) || (((_la - 128) & ~0x3f) == 0 && ((1L << (_la - 128)) & -576460752303423489L) != 0) || (((_la - 192) & ~0x3f) == 0 && ((1L << (_la - 192)) & -2324912939422711809L) != 0) || (((_la - 256) & ~0x3f) == 0 && ((1L << (_la - 256)) & 2541882441455L) != 0) );
 			setState(541);
 			match(DOT);
 			}
@@ -6263,7 +6263,7 @@ public class CobolPreprocessorParser extends Parser {
 			{
 			setState(588);
 			_la = _input.LA(1);
-			if ( !(((((_la - 239)) & ~0x3f) == 0 && ((1L << (_la - 239)) & 7L) != 0)) ) {
+			if ( !(((_la - 239) & ~0x3f) == 0 && ((1L << (_la - 239)) & 7L) != 0) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -6393,7 +6393,7 @@ public class CobolPreprocessorParser extends Parser {
 			setState(599);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & -2346656880870555650L) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & -16449L) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & -576460752303423489L) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & -2324912939422711809L) != 0) || ((((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & 2541345570543L) != 0)) {
+			if (((_la & ~0x3f) == 0 && ((1L << _la) & -2346656880870555650L) != 0) || (((_la - 64) & ~0x3f) == 0 && ((1L << (_la - 64)) & -16449L) != 0) || (((_la - 128) & ~0x3f) == 0 && ((1L << (_la - 128)) & -576460752303423489L) != 0) || (((_la - 192) & ~0x3f) == 0 && ((1L << (_la - 192)) & -2324912939422711809L) != 0) || (((_la - 256) & ~0x3f) == 0 && ((1L << (_la - 256)) & 2541345570543L) != 0)) {
 				{
 				setState(598);
 				charData();
@@ -6828,7 +6828,7 @@ public class CobolPreprocessorParser extends Parser {
 				setState(613);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & -2346656880837001218L) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & -16449L) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & -576460752303423489L) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & -2324912938885840897L) != 0) || ((((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & 2541345570543L) != 0) );
+			} while ( ((_la & ~0x3f) == 0 && ((1L << _la) & -2346656880837001218L) != 0) || (((_la - 64) & ~0x3f) == 0 && ((1L << (_la - 64)) & -16449L) != 0) || (((_la - 128) & ~0x3f) == 0 && ((1L << (_la - 128)) & -576460752303423489L) != 0) || (((_la - 192) & ~0x3f) == 0 && ((1L << (_la - 192)) & -2324912938885840897L) != 0) || (((_la - 256) & ~0x3f) == 0 && ((1L << (_la - 256)) & 2541345570543L) != 0) );
 			}
 		}
 		catch (RecognitionException re) {
@@ -7995,7 +7995,7 @@ public class CobolPreprocessorParser extends Parser {
 			setState(652);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & -2346656880870555650L) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & -33570881L) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & -576460752303423489L) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & -2324912943717679105L) != 0) || ((((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & 32547798767L) != 0)) {
+			while (((_la & ~0x3f) == 0 && ((1L << _la) & -2346656880870555650L) != 0) || (((_la - 64) & ~0x3f) == 0 && ((1L << (_la - 64)) & -33570881L) != 0) || (((_la - 128) & ~0x3f) == 0 && ((1L << (_la - 128)) & -576460752303423489L) != 0) || (((_la - 192) & ~0x3f) == 0 && ((1L << (_la - 192)) & -2324912943717679105L) != 0) || (((_la - 256) & ~0x3f) == 0 && ((1L << (_la - 256)) & 32547798767L) != 0)) {
 				{
 				{
 				setState(644);
@@ -8666,7 +8666,7 @@ public class CobolPreprocessorParser extends Parser {
 			{
 			setState(661);
 			_la = _input.LA(1);
-			if ( !(((((_la - 287)) & ~0x3f) == 0 && ((1L << (_la - 287)) & 7L) != 0)) ) {
+			if ( !(((_la - 287) & ~0x3f) == 0 && ((1L << (_la - 287)) & 7L) != 0) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -9087,7 +9087,7 @@ public class CobolPreprocessorParser extends Parser {
 			{
 			setState(670);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & -2346656880870555650L) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & -33570881L) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & -576460752303423489L) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & -2324912943717679105L) != 0) || ((((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & 335544047L) != 0)) ) {
+			if ( !(((_la & ~0x3f) == 0 && ((1L << _la) & -2346656880870555650L) != 0) || (((_la - 64) & ~0x3f) == 0 && ((1L << (_la - 64)) & -33570881L) != 0) || (((_la - 128) & ~0x3f) == 0 && ((1L << (_la - 128)) & -576460752303423489L) != 0) || (((_la - 192) & ~0x3f) == 0 && ((1L << (_la - 192)) & -2324912943717679105L) != 0) || (((_la - 256) & ~0x3f) == 0 && ((1L << (_la - 256)) & 335544047L) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
