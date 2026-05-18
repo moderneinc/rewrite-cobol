@@ -1,0 +1,25 @@
+Package name,Afferent coupling (Ca),Efferent coupling (Ce),Instability,Abstractness,Distance from main sequence,In cycle,Cycle members
+org.openrewrite.cobol.tree.cobol,0,3,1.0,0.0,0.0,false,
+org.openrewrite.jcl.search,0,3,1.0,0.0,0.0,false,
+org.openrewrite.jcl.marker,1,1,0.5,0.0,0.5,true,"org.openrewrite.jcl,org.openrewrite.jcl.internal,org.openrewrite.jcl.marker,org.openrewrite.jcl.tree"
+org.openrewrite.controlm.marker,1,1,0.5,0.0,0.5,true,"org.openrewrite.controlm,org.openrewrite.controlm.internal,org.openrewrite.controlm.marker,org.openrewrite.controlm.tree"
+org.openrewrite.jcl.table,1,0,0.0,0.0,1.0,false,
+org.openrewrite.cobol.markers,0,1,1.0,0.0,0.0,false,
+org.openrewrite.cobol.search,1,7,0.875,0.0,0.125,false,
+org.openrewrite.jcl.internal,1,4,0.8,0.0,0.19999999999999996,true,"org.openrewrite.jcl,org.openrewrite.jcl.internal,org.openrewrite.jcl.marker,org.openrewrite.jcl.tree"
+org.openrewrite.cobol.cleanup,0,4,1.0,0.0,0.0,false,
+org.openrewrite.cobol.tree,9,2,0.18181818181818182,0.027559055118110236,0.7906227630637079,true,"org.openrewrite.cobol,org.openrewrite.cobol.internal,org.openrewrite.cobol.marker,org.openrewrite.cobol.tree"
+org.openrewrite.cobol.format,1,4,0.8,0.0,0.19999999999999996,false,
+org.openrewrite.controlm.internal,1,4,0.8,0.0,0.19999999999999996,true,"org.openrewrite.controlm,org.openrewrite.controlm.internal,org.openrewrite.controlm.marker,org.openrewrite.controlm.tree"
+org.openrewrite.jcl.internal.grammar,2,0,0.0,0.06666666666666667,0.9333333333333333,false,
+org.openrewrite.controlm.tree,4,2,0.3333333333333333,0.08333333333333333,0.5833333333333334,true,"org.openrewrite.controlm,org.openrewrite.controlm.internal,org.openrewrite.controlm.marker,org.openrewrite.controlm.tree"
+org.openrewrite.controlm.internal.grammar,2,0,0.0,0.041666666666666664,0.9583333333333334,false,
+org.openrewrite.cobol.table,1,0,0.0,0.0,1.0,false,
+org.openrewrite.jcl.tree,4,2,0.3333333333333333,0.175,0.4916666666666667,true,"org.openrewrite.jcl,org.openrewrite.jcl.internal,org.openrewrite.jcl.marker,org.openrewrite.jcl.tree"
+org.openrewrite.cobol,7,4,0.36363636363636365,0.029411764705882353,0.606951871657754,true,"org.openrewrite.cobol,org.openrewrite.cobol.internal,org.openrewrite.cobol.marker,org.openrewrite.cobol.tree"
+org.openrewrite.cobol.internal,4,4,0.5,0.08333333333333333,0.41666666666666663,true,"org.openrewrite.cobol,org.openrewrite.cobol.internal,org.openrewrite.cobol.marker,org.openrewrite.cobol.tree"
+org.openrewrite.jcl,4,2,0.3333333333333333,0.0,0.6666666666666667,true,"org.openrewrite.jcl,org.openrewrite.jcl.internal,org.openrewrite.jcl.marker,org.openrewrite.jcl.tree"
+org.openrewrite.controlm,3,2,0.4,0.0,0.6,true,"org.openrewrite.controlm,org.openrewrite.controlm.internal,org.openrewrite.controlm.marker,org.openrewrite.controlm.tree"
+org.openrewrite.cobol.marker,5,1,0.16666666666666666,0.0,0.8333333333333334,true,"org.openrewrite.cobol,org.openrewrite.cobol.internal,org.openrewrite.cobol.marker,org.openrewrite.cobol.tree"
+org.openrewrite.cobol.internal.grammar,2,0,0.0,0.0061633281972265025,0.9938366718027735,false,
+org.openrewrite.cobol.tree.preprocessor,0,3,1.0,0.0,0.0,false,
