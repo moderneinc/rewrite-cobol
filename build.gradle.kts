@@ -64,11 +64,7 @@ dependencies {
     implementation("io.micrometer:micrometer-core:1.9.+")
     implementation("io.github.classgraph:classgraph:latest.release")
     runtimeOnly("org.openrewrite.tools:java-object-diff:latest.release")
-
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.14.0")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:5.14.0")
     testImplementation("org.junit-pioneer:junit-pioneer:2.3.0")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.14.0")
 
     testImplementation("org.openrewrite:rewrite-test")
     testImplementation("org.assertj:assertj-core:latest.release")
