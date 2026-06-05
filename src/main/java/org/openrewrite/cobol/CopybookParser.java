@@ -37,6 +37,7 @@ import org.openrewrite.tree.ParsingEventListener;
 import org.openrewrite.tree.ParsingExecutionContextView;
 
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -49,7 +50,7 @@ import static org.openrewrite.Tree.randomId;
  */
 @RequiredArgsConstructor
 public class CopybookParser implements Parser {
-    public static final List<String> COPYBOOK_FILE_EXTENSIONS = singletonList(".cpy");
+    public static final List<String> COPYBOOK_FILE_EXTENSIONS = Arrays.asList(".cpy", ".dcl");
 
     private final CobolDialect cobolDialect;
 
