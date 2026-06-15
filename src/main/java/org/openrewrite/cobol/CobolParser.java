@@ -160,57 +160,12 @@ public class CobolParser implements Parser {
     }
 
     public static class Builder extends org.openrewrite.Parser.Builder {
-
-        /**
-         * The timeout applied to parsing a single COBOL source file when none is configured.
-         */
-        public static final Duration DEFAULT_TIMEOUT = Duration.ofMinutes(10);
-
-        /**
-         * The maximum timeout a user may configure. Mirrors the {@code Duration.ofDays(1)} ceiling the Moderne CLI
-         * applies to build timeouts for other languages. Like the CLI, a configured value above this is rejected
-         * (the {@link #DEFAULT_TIMEOUT} is used instead) rather than clamped.
-         */
-        public static final Duration MAX_TIMEOUT = Duration.ofDays(1);
-
-        /**
-         * System property used to override {@link #DEFAULT_TIMEOUT} without code changes. The key mirrors the
-         * {@code <tool>.build.timeout} convention used by the Moderne CLI for other languages (e.g.
-         * {@code maven.build.timeout}). The value is either an ISO-8601 duration (e.g. {@code PT30S}, {@code PT2M})
-         * or a plain number of seconds (e.g. {@code 30}).
-         */
-        public static final String TIMEOUT_PROPERTY = "cobol.build.timeout";
-
         private CobolDialect cobolDialect = CobolDialect.ibmAnsi85();
         private List<SourceFile> copybooks = emptyList();
-        private Duration timeout = configureTimeout();
+        private Duration timeout = Duration.ofMinutes(10);
 
         public Builder() {
             super(Cobol.CompilationUnit.class);
-        }
-
-        /**
-         * Resolves the parsing timeout from {@link #TIMEOUT_PROPERTY}, returning {@link #DEFAULT_TIMEOUT} when it is
-         * not set, cannot be parsed, or exceeds {@link #MAX_TIMEOUT}. Mirrors the Moderne CLI, which rejects an
-         * out-of-range timeout rather than clamping it.
-         */
-        static Duration configureTimeout() {
-            String configured = System.getProperty(TIMEOUT_PROPERTY);
-            if (configured != null && !configured.isEmpty()) {
-                try {
-                    // Accept a plain number of seconds (e.g. "30") or an ISO-8601 duration (e.g. "PT30S").
-                    Duration parsed = configured.chars().allMatch(Character::isDigit) ?
-                            Duration.ofSeconds(Long.parseLong(configured)) :
-                            Duration.parse(configured);
-                    // Like the CLI, reject an out-of-range value rather than clamping it.
-                    if (parsed.compareTo(MAX_TIMEOUT) <= 0) {
-                        return parsed;
-                    }
-                } catch (RuntimeException ignored) {
-                    // Fall through to the default when the configured value is not a valid duration.
-                }
-            }
-            return DEFAULT_TIMEOUT;
         }
 
         public Builder timeout(Duration timeout) {
