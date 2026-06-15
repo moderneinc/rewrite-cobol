@@ -48,6 +48,35 @@ class CobolParserCopyTest extends CobolTest {
         );
     }
 
+    @Test
+    void execSqlIncludeDclgenMember() {
+        rewriteRun(
+          cobolPostProcess(
+            """
+              000000* Prevent trim
+                     IDENTIFICATION DIVISION.
+                     PROGRAM-ID. MGSECLDL.
+                     DATA DIVISION.
+                     WORKING-STORAGE SECTION.
+                     EXEC SQL INCLUDE MGSACATG END-EXEC.
+                     PROCEDURE DIVISION.
+                         STOP RUN.
+              """,
+            """
+              IDENTIFICATION DIVISION.
+              PROGRAM-ID. MGSECLDL.
+              DATA DIVISION.
+              WORKING-STORAGE SECTION.
+                  01  DCLSAMPLE-TABLE.
+                      10 COL-A              PIC X(3).
+                      10 COL-B              PIC X(30).
+              PROCEDURE DIVISION.
+                  STOP RUN.
+              """
+          )
+        );
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {
       "COPY TRAILING_WHITESPACE.",

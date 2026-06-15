@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
@@ -255,7 +256,10 @@ public class Assertions {
 
     private static List<SourceFile> getCopybookSources() {
         try (ScanResult scan = new ClassGraph().scan()) {
-            List<Parser.Input> copyInputs = scan.getResourcesWithExtension("cpy").stream()
+            // .cpy copybooks and .dcl DCLGEN members are both resolvable via COPY / EXEC SQL INCLUDE.
+            List<Parser.Input> copyInputs = Stream.concat(
+                            scan.getResourcesWithExtension("cpy").stream(),
+                            scan.getResourcesWithExtension("dcl").stream())
                     .map(res -> new Parser.Input(Paths.get(res.getPath()), () -> {
                         try {
                             return new ByteArrayInputStream(res.getContentAsString().getBytes());
