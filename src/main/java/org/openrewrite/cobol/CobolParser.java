@@ -162,7 +162,7 @@ public class CobolParser implements Parser {
     public static class Builder extends org.openrewrite.Parser.Builder {
         private CobolDialect cobolDialect = CobolDialect.ibmAnsi85();
         private List<SourceFile> copybooks = emptyList();
-        private Duration timeout = Duration.ofSeconds(10);
+        private Duration timeout = Duration.ofMinutes(10);
 
         public Builder() {
             super(Cobol.CompilationUnit.class);
