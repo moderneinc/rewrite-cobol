@@ -18,6 +18,7 @@ package org.openrewrite.jcl;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Timer;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.antlr.v4.runtime.*;
 import org.jspecify.annotations.Nullable;
@@ -35,9 +36,19 @@ import org.openrewrite.tree.ParsingEventListener;
 import org.openrewrite.tree.ParsingExecutionContextView;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.stream.Stream;
 
+import static java.util.Collections.emptyList;
+
+@AllArgsConstructor
 public class JclParser implements Parser {
+
+    /**
+     * External PDS members (e.g. {@code .prm} files) referenced by SYSIN/SYSTSIN and other
+     * input control DD statements, supplied out-of-band and resolved by member name.
+     */
+    private final List<SourceFile> parmMembers;
 
     @Override
     public Stream<SourceFile> parseInputs(Iterable<Input> sourceFiles, @Nullable Path relativeTo, ExecutionContext ctx) {
@@ -69,6 +80,11 @@ public class JclParser implements Parser {
                                 is.getCharset(),
                                 is.isCharsetBomMarked()
                         ).visitCompilationUnit(parser.compilationUnit());
+
+                        if (!parmMembers.isEmpty()) {
+                            cu = new ExpandExternalSysinVisitor<ExecutionContext>(parmMembers)
+                                    .visitCompilationUnit(cu, ctx);
+                        }
 
                         sample.stop(MetricsHelper.successTags(timer).register(Metrics.globalRegistry));
                         parsingListener.parsed(sourceFile, cu);
@@ -109,13 +125,20 @@ public class JclParser implements Parser {
     }
 
     public static class Builder extends org.openrewrite.Parser.Builder {
+        private List<SourceFile> parmMembers = emptyList();
+
         public Builder() {
             super(Jcl.CompilationUnit.class);
         }
 
+        public Builder parmMembers(List<SourceFile> parmMembers) {
+            this.parmMembers = parmMembers;
+            return this;
+        }
+
         @Override
         public JclParser build() {
-            return new JclParser();
+            return new JclParser(parmMembers);
         }
 
         @Override

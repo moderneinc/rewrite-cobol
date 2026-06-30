@@ -20,6 +20,7 @@ import org.openrewrite.Cursor;
 import org.openrewrite.PrintOutputCapture;
 import org.openrewrite.jcl.JclVisitor;
 import org.openrewrite.jcl.marker.CommentArea;
+import org.openrewrite.jcl.marker.GeneratedParmContent;
 import org.openrewrite.jcl.marker.TrailingComment;
 import org.openrewrite.jcl.tree.Jcl;
 import org.openrewrite.jcl.tree.Space;
@@ -59,6 +60,10 @@ public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
 
     @Override
     public Jcl visitDataDefinitionStream(Jcl.DataDefinitionStream ddStream, PrintOutputCapture<P> p) {
+        if (ddStream.getMarkers().findFirst(GeneratedParmContent.class).isPresent()) {
+            // Content grafted from an external PDS member; not part of the original source.
+            return ddStream;
+        }
         beforeSyntax(ddStream, Space.Location.DATA_DEFINITION_STREAM_PREFIX, p);
         visit(ddStream.getWord(), p);
         afterSyntax(ddStream, p);
