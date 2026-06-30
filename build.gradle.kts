@@ -8,6 +8,8 @@ plugins {
 group = "org.openrewrite"
 description = "Rewrite support for the COBOL language"
 
+val antlr by configurations.creating
+
 tasks.register<JavaExec>("generateAntlrSourcesCobol") {
     mainClass.set("org.antlr.v4.Tool")
     args = listOf(
@@ -16,7 +18,7 @@ tasks.register<JavaExec>("generateAntlrSourcesCobol") {
         "-visitor"
     ) + fileTree("src/main/antlr-cobol").matching { include("**/*.g4") }.map { it.path }
 
-    classpath = sourceSets["main"].runtimeClasspath
+    classpath = configurations["antlr"]
 
     finalizedBy("licenseFormat")
 }
@@ -29,7 +31,7 @@ tasks.register<JavaExec>("generateAntlrSourcesJcl") {
             "-visitor"
     ) + fileTree("src/main/antlr-jcl").matching { include("**/*.g4") }.map { it.path }
 
-    classpath = sourceSets["main"].runtimeClasspath
+    classpath = configurations["antlr"]
 
     finalizedBy("licenseFormat")
 }
@@ -42,7 +44,7 @@ tasks.register<JavaExec>("generateAntlrSourcesControlM") {
         "-visitor"
     ) + fileTree("src/main/antlr-controlm").matching { include("**/*.g4") }.map { it.path }
 
-    classpath = sourceSets["main"].runtimeClasspath
+    classpath = configurations["antlr"]
 
     finalizedBy("licenseFormat")
 }
@@ -60,7 +62,8 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:latest.release")
     implementation(platform("org.openrewrite:rewrite-bom:${latest}"))
     implementation("org.openrewrite:rewrite-core")
-    implementation("org.antlr:antlr4:4.13.2")
+    antlr("org.antlr:antlr4:4.13.2")
+    implementation("org.antlr:antlr4-runtime:4.13.2")
     implementation("io.micrometer:micrometer-core:1.9.+")
     implementation("io.github.classgraph:classgraph:latest.release")
     runtimeOnly("org.openrewrite.tools:java-object-diff:latest.release")
