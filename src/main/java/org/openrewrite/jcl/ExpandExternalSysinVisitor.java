@@ -215,9 +215,8 @@ public class ExpandExternalSysinVisitor<P> extends JclIsoVisitor<P> {
     }
 
     /**
-     * Tokenizes raw member content into its whitespace-delimited words. Done once per member (at
-     * visitor construction), never per JCL source. The grafted content is not printed, so only the
-     * words are kept — their surrounding whitespace is discarded.
+     * Tokenizes raw member content into its whitespace-delimited words. The grafted content is not
+     * printed, so only the words are kept — their surrounding whitespace is discarded.
      * <p>
      * Only columns 1–72 of each line are tokenized; the identification/sequence-number area
      * in columns 73–80 of fixed-form PDS members is ignored, consistent with how the JCL
