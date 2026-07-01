@@ -35,8 +35,14 @@ import org.openrewrite.tree.ParseError;
 import org.openrewrite.tree.ParsingEventListener;
 import org.openrewrite.tree.ParsingExecutionContextView;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
@@ -45,16 +51,23 @@ import static java.util.Collections.emptyList;
 public class JclParser implements Parser {
 
     /**
-     * External PDS members (e.g. {@code .prm} files) referenced by SYSIN/SYSTSIN and other
-     * input control DD statements, supplied out-of-band and resolved by member name.
+     * Paths to external PDS members (e.g. {@code .prm} files) referenced by SYSIN/SYSTSIN and
+     * other input control DD statements, supplied out-of-band and resolved by member name (the
+     * file name without its extension). Passing paths rather than parsed sources lets the parser
+     * read and tokenize each member exactly once, then reuse that across all JCL sources.
      */
-    private final List<SourceFile> parmMembers;
+    private final List<Path> parmMembers;
 
     @Override
     public Stream<SourceFile> parseInputs(Iterable<Input> sourceFiles, @Nullable Path relativeTo, ExecutionContext ctx) {
         ParsingExecutionContextView pctx = ParsingExecutionContextView.view(ctx);
         ParsingEventListener parsingListener = pctx.getParsingListener();
         Stream<Input> accepted = acceptedInputs(sourceFiles);
+
+        // Read and tokenize the external members once, then reuse the same expander across every
+        // JCL source rather than rebuilding it (and re-tokenizing every member) per source.
+        ExpandExternalSysinVisitor<ExecutionContext> sysinExpander = parmMembers.isEmpty() ? null :
+                new ExpandExternalSysinVisitor<>(readParmMembers(parmMembers, ctx));
 
         return accepted
                 .map(sourceFile -> {
@@ -81,9 +94,8 @@ public class JclParser implements Parser {
                                 is.isCharsetBomMarked()
                         ).visitCompilationUnit(parser.compilationUnit());
 
-                        if (!parmMembers.isEmpty()) {
-                            cu = new ExpandExternalSysinVisitor<ExecutionContext>(parmMembers)
-                                    .visitCompilationUnit(cu, ctx);
+                        if (sysinExpander != null) {
+                            cu = sysinExpander.visitCompilationUnit(cu, ctx);
                         }
 
                         sample.stop(MetricsHelper.successTags(timer).register(Metrics.globalRegistry));
@@ -94,6 +106,27 @@ public class JclParser implements Parser {
                         return ParseError.build(this, sourceFile, relativeTo, pctx, t);
                     }
                 });
+    }
+
+    /**
+     * Reads each member path once into a member-name-keyed map of raw content. The member name is
+     * the file name without its extension (e.g. {@code MGSLAP8F.prm} resolves a DD referencing
+     * {@code dataset(MGSLAP8F)}), matched case-insensitively. Unreadable members are reported to
+     * the context and skipped so a single bad member does not fail the whole parse.
+     */
+    private static Map<String, String> readParmMembers(List<Path> paths, ExecutionContext ctx) {
+        Map<String, String> members = new HashMap<>();
+        for (Path path : paths) {
+            String fileName = path.getFileName().toString();
+            int dot = fileName.indexOf('.');
+            String key = (dot < 0 ? fileName : fileName.substring(0, dot)).toUpperCase(Locale.ROOT);
+            try (InputStream in = Files.newInputStream(path)) {
+                members.putIfAbsent(key, new EncodingDetectingInputStream(in).readFully());
+            } catch (IOException e) {
+                ctx.getOnError().accept(e);
+            }
+        }
+        return members;
     }
 
     @Override
@@ -125,13 +158,13 @@ public class JclParser implements Parser {
     }
 
     public static class Builder extends org.openrewrite.Parser.Builder {
-        private List<SourceFile> parmMembers = emptyList();
+        private List<Path> parmMembers = emptyList();
 
         public Builder() {
             super(Jcl.CompilationUnit.class);
         }
 
-        public Builder parmMembers(List<SourceFile> parmMembers) {
+        public Builder parmMembers(List<Path> parmMembers) {
             this.parmMembers = parmMembers;
             return this;
         }

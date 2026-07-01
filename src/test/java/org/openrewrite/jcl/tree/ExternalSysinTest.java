@@ -18,13 +18,13 @@ package org.openrewrite.jcl.tree;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.openrewrite.SourceFile;
 import org.openrewrite.jcl.marker.GeneratedParmContent;
 import org.openrewrite.jcl.marker.ParmMember;
 import org.openrewrite.jcl.tree.Jcl.DataDefinitionStream;
 import org.openrewrite.jcl.tree.Jcl.JclStatement;
 import org.openrewrite.test.RewriteTest;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,7 +36,7 @@ import static org.openrewrite.jcl.tree.ParserAssertions.parmMember;
 
 class ExternalSysinTest implements RewriteTest {
 
-    private static final List<SourceFile> SORT_MEMBER = singletonList(parmMember("MGSLAP8F",
+    private static final List<Path> SORT_MEMBER = singletonList(parmMember("MGSLAP8F",
             """
               SORT FIELDS=(8,2,PD,A,10,4,PD,A,14,2,PD,A,16,1,CH,A)
               """));
@@ -320,7 +320,7 @@ class ExternalSysinTest implements RewriteTest {
 
     @Test
     void concatenatedDdsEachExpand() {
-        List<SourceFile> members = List.of(
+        List<Path> members = List.of(
           parmMember("MGSLAP8F", "SORT FIELDS=(1,2,CH,A)\n"),
           parmMember("MGSLAP9G", "MERGE FIELDS=(3,4,CH,A)\n"));
         rewriteRun(

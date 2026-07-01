@@ -19,22 +19,20 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.ExecutionContext;
-import org.openrewrite.SourceFile;
 import org.openrewrite.jcl.JclIsoVisitor;
 import org.openrewrite.jcl.JclParser;
-import org.openrewrite.marker.Markers;
 import org.openrewrite.test.SourceSpec;
 import org.openrewrite.test.SourceSpecs;
-import org.openrewrite.text.PlainText;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.openrewrite.Tree.randomId;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ParserAssertions {
@@ -43,15 +41,24 @@ public class ParserAssertions {
     }
 
     /**
-     * Builds an external PDS member source (e.g. a {@code .prm} member) keyed by member name,
-     * for resolution by {@link org.openrewrite.jcl.ExpandExternalSysinVisitor}.
+     * Writes an external PDS member (e.g. a {@code .prm} member) to a temp file named by member
+     * name and returns its path, for resolution by
+     * {@link org.openrewrite.jcl.ExpandExternalSysinVisitor}.
      */
-    public static SourceFile parmMember(String memberName, String content) {
-        return new PlainText(randomId(), Paths.get(memberName + ".prm"), Markers.EMPTY,
-                StandardCharsets.UTF_8.name(), false, null, null, content, emptyList());
+    public static Path parmMember(String memberName, String content) {
+        try {
+            Path dir = Files.createTempDirectory("jcl-parm");
+            dir.toFile().deleteOnExit();
+            Path file = dir.resolve(memberName + ".prm");
+            Files.write(file, content.getBytes(StandardCharsets.UTF_8));
+            file.toFile().deleteOnExit();
+            return file;
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
-    public static SourceSpecs jcl(@Nullable String before, List<SourceFile> parmMembers,
+    public static SourceSpecs jcl(@Nullable String before, List<Path> parmMembers,
                                   Consumer<SourceSpec<Jcl.CompilationUnit>> spec) {
         SourceSpec<Jcl.CompilationUnit> jcl = new SourceSpec<>(
                 Jcl.CompilationUnit.class, null, JclParser.builder().parmMembers(parmMembers), before,
