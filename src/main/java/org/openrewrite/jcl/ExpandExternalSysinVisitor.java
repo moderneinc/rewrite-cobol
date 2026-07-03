@@ -16,14 +16,12 @@
 package org.openrewrite.jcl;
 
 import org.jspecify.annotations.Nullable;
-import org.openrewrite.SourceFile;
 import org.openrewrite.jcl.marker.GeneratedParmContent;
 import org.openrewrite.jcl.marker.ParmMember;
 import org.openrewrite.jcl.tree.Jcl;
 import org.openrewrite.jcl.tree.Space;
 import org.openrewrite.jcl.tree.Statement;
 import org.openrewrite.marker.Markers;
-import org.openrewrite.text.PlainText;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -60,15 +58,11 @@ public class ExpandExternalSysinVisitor<P> extends JclIsoVisitor<P> {
             "ENDCNTL", "DD", "EXEC", "EXPORT", "IF", "INCLUDE", "NOTIFY", "OUTPUT", "PEND", "PROC",
             "SCHEDULE", "SET", "XMIT"));
 
-    private final Map<String, SourceFile> parmMembers = new HashMap<>();
+    private final Map<String, List<String>> parmMembers = new HashMap<>();
 
-    public ExpandExternalSysinVisitor(List<SourceFile> parmMembers) {
-        parmMembers.forEach(it -> {
-            String fileName = it.getSourcePath().getFileName().toString();
-            int dot = fileName.indexOf('.');
-            String key = (dot < 0 ? fileName : fileName.substring(0, dot)).toUpperCase(Locale.ROOT);
-            this.parmMembers.putIfAbsent(key, it);
-        });
+    public ExpandExternalSysinVisitor(Map<String, String> memberContents) {
+        memberContents.forEach((memberName, content) ->
+                parmMembers.putIfAbsent(memberName.toUpperCase(Locale.ROOT), tokenize(content)));
     }
 
     @Override
@@ -197,36 +191,52 @@ public class ExpandExternalSysinVisitor<P> extends JclIsoVisitor<P> {
     }
 
     /**
-     * Tokenizes the resolved member content into {@link Jcl.DataDefinitionStream} nodes —
-     * one per whitespace-delimited word, matching how an inline {@code DD *} stream is
-     * represented — each tagged with {@link GeneratedParmContent}.
+     * Instantiates fresh {@link Jcl.DataDefinitionStream} nodes from the member's pre-tokenized
+     * words — one per whitespace-delimited word, matching how an inline {@code DD *} stream is
+     * represented — each tagged with {@link GeneratedParmContent}. New tree/marker ids are minted
+     * per graft so the same member can be expanded into multiple JCL sources without id collisions.
+     * <p>
+     * The grafted nodes are never printed (the {@code JclPrinter} skips {@link GeneratedParmContent}),
+     * so their whitespace is irrelevant and simply {@link Space#EMPTY}.
+     */
+    private static List<Statement> buildStreamNodes(@Nullable List<String> words, String memberName) {
+        if (words == null) {
+            return Collections.emptyList();
+        }
+        List<Statement> nodes = new ArrayList<>(words.size());
+        for (String word : words) {
+            nodes.add(new Jcl.DataDefinitionStream(
+                    randomId(),
+                    Space.EMPTY,
+                    Markers.EMPTY.addIfAbsent(new GeneratedParmContent(randomId(), memberName)),
+                    new Jcl.Word(randomId(), Space.EMPTY, Markers.EMPTY, word)));
+        }
+        return nodes;
+    }
+
+    /**
+     * Tokenizes raw member content into its whitespace-delimited words. The grafted content is not
+     * printed, so only the words are kept — their surrounding whitespace is discarded.
      * <p>
      * Only columns 1–72 of each line are tokenized; the identification/sequence-number area
      * in columns 73–80 of fixed-form PDS members is ignored, consistent with how the JCL
      * line reader treats columns beyond 72.
      */
-    private static List<Statement> buildStreamNodes(@Nullable SourceFile member, String memberName) {
-        List<Statement> nodes = new ArrayList<>();
-        if (!(member instanceof PlainText)) {
-            return nodes;
-        }
-        String[] lines = ((PlainText) member).getText().split("\n", -1);
-        for (int li = 0; li < lines.length; li++) {
-            String line = lines[li];
+    private static List<String> tokenize(String content) {
+        List<String> words = new ArrayList<>();
+        for (String rawLine : content.split("\n", -1)) {
+            String line = rawLine;
             if (line.endsWith("\r")) {
                 line = line.substring(0, line.length() - 1);
             }
             if (line.length() > 72) {
                 line = line.substring(0, 72);
             }
-            boolean firstOnLine = true;
             int idx = 0;
             while (idx < line.length()) {
-                int wsStart = idx;
                 while (idx < line.length() && Character.isWhitespace(line.charAt(idx))) {
                     idx++;
                 }
-                String ws = line.substring(wsStart, idx);
                 if (idx >= line.length()) {
                     break;
                 }
@@ -234,16 +244,10 @@ public class ExpandExternalSysinVisitor<P> extends JclIsoVisitor<P> {
                 while (idx < line.length() && !Character.isWhitespace(line.charAt(idx))) {
                     idx++;
                 }
-                String prefix = (li > 0 && firstOnLine ? "\n" : "") + ws;
-                nodes.add(new Jcl.DataDefinitionStream(
-                        randomId(),
-                        Space.build(prefix),
-                        Markers.EMPTY.addIfAbsent(new GeneratedParmContent(randomId(), memberName)),
-                        new Jcl.Word(randomId(), Space.EMPTY, Markers.EMPTY, line.substring(textStart, idx))));
-                firstOnLine = false;
+                words.add(line.substring(textStart, idx));
             }
         }
-        return nodes;
+        return words;
     }
 
     /**
