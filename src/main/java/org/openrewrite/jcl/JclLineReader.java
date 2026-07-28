@@ -144,7 +144,7 @@ public class JclLineReader {
     }
 
     private static LineType getLineType(String line) {
-		char c0 = !line.isEmpty() ? line.charAt(0) : '~';
+		char c0 = line.isEmpty() ? '~' : line.charAt(0);
 		char c1 = line.length() > 1 ? line.charAt(1) : '~';
 		char c2 = line.length() > 2 ? line.charAt(2) : '~';
 		char c3 = line.length() > 3 ? line.charAt(3) : '~';

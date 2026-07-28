@@ -71,45 +71,45 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     private final NavigableMap<Integer, String> commentAreas = new TreeMap<>();
 
     private static final Set<Character> commentIndicators = new HashSet<>();
-    private int cursor = 0;
+    private int cursor;
 
     // Trigger condition to remove whitespace added by the template.
     private boolean removeTemplateCommentArea;
     private boolean removeColumnMarkers;
     private boolean isAdditiveCommentArea;
 
-    private String copyStartComment = null;
-    private String copyStopComment = null;
-    private String copyUuidComment = null;
-    private String copybookNotFoundComment = null;
+    private String copyStartComment;
+    private String copyStopComment;
+    private String copyUuidComment;
+    private String copybookNotFoundComment;
 
     private final Deque<CopiedWord> copiedWordStack = new ArrayDeque<>();
 
-    private String replaceStartComment = null;
-    private String replaceStopComment = null;
-    private String replaceAdditiveWhitespaceComment = null;
-    private String replaceUuidComment = null;
+    private String replaceStartComment;
+    private String replaceStopComment;
+    private String replaceAdditiveWhitespaceComment;
+    private String replaceUuidComment;
 
-    private String replaceAdditiveTypeStartComment = null;
-    private String replaceAdditiveTypeStopComment = null;
+    private String replaceAdditiveTypeStartComment;
+    private String replaceAdditiveTypeStopComment;
 
     @Nullable
-    private Replacement replaceAdditiveType = null;
+    private Replacement replaceAdditiveType;
 
-    private String replaceAddWordStartComment = null;
-    private String replaceAddWordStopComment = null;
+    private String replaceAddWordStartComment;
+    private String replaceAddWordStopComment;
 
-    private String replaceReductiveTypeStartComment = null;
-    private String replaceReductiveTypeStopComment = null;
+    private String replaceReductiveTypeStartComment;
+    private String replaceReductiveTypeStopComment;
 
-    private String compileOptionStartComment = null;
-    private String compileOptionStopComment = null;
+    private String compileOptionStartComment;
+    private String compileOptionStopComment;
 
-    private String preprocessorStartComment = null;
-    private String preprocessorStopComment = null;
+    private String preprocessorStartComment;
+    private String preprocessorStopComment;
 
-    private String uuidComment = null;
-    private Integer nextIndex = null;
+    private String uuidComment;
+    private Integer nextIndex;
 
     public <T> T visit(@Nullable ParseTree... trees) {
         if (Duration.ofNanos(System.nanoTime() - start).compareTo(timeout) > 0) {

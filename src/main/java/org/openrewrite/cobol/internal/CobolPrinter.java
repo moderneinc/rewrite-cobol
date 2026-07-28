@@ -28,7 +28,7 @@ public class CobolPrinter<P> extends CobolSourcePrinter<P> {
 
     private final boolean printColumns;
     private final boolean printOriginalSource;
-    private Replacement additiveReplacement = null;
+    private Replacement additiveReplacement;
 
     public CobolPrinter(boolean printColumns,
                         boolean printOriginalSource) {

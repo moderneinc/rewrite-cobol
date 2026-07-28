@@ -55,7 +55,7 @@ class ExternalSysinTest implements RewriteTest {
 
     private static List<String> graftedWords(Jcl.CompilationUnit cu) {
         return cu.getStatements().stream()
-                .filter(s -> s instanceof DataDefinitionStream)
+                .filter(DataDefinitionStream.class::isInstance)
                 .filter(s -> s.getMarkers().findFirst(GeneratedParmContent.class).isPresent())
                 .map(s -> ((DataDefinitionStream) s).getWord().getText())
                 .collect(toList());

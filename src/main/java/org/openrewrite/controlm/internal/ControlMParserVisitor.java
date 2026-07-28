@@ -49,7 +49,7 @@ public class ControlMParserVisitor extends ControlMParserBaseVisitor<ControlM> {
     private final Charset charset;
     private final boolean charsetBomMarked;
 
-    private int cursor = 0;
+    private int cursor;
 
 	public <T> @Nullable T visitNullable(@Nullable ParseTree tree) {
         if (tree == null) {

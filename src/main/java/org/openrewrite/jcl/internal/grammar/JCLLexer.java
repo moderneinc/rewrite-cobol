@@ -29,16 +29,45 @@ public class JCLLexer extends Lexer {
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
-	public static final int
-		UTF_8_BOM=1, WS=2, EOL=3, JCL_STATEMENT=4, JCL_STREAM=5, JES2=6, JES3=7,
-		CM=8, COMMENT=9, UNKNOWN=10, CA_START=11, STRINGLITERAL=12, TEXT=13, JCL_TC_START=14,
-		JCL_TC_STOP=15, JCL_STRINGLITERAL=16, JCL_TEXT=17, STREAM_WS=18, STREAM_STRINGLITERAL=19,
-		STREAM_TEXT=20, JES2_STRINGLITERAL=21, JES2_TEXT=22, JES3_STRINGLITERAL=23,
-		JES3_TEXT=24, CM_STRINGLITERAL=25, CM_TEXT=26, COMMENT_WS=27, COMMENT_STRINGLITERAL=28,
-		COMMENT_TEXT=29, UNKNOWN_WS=30, UNKNOWN_STRINGLITERAL=31, UNKNOWN_TEXT=32;
-	public static final int
-		INSIDE_JCL=1, INSIDE_STREAM=2, INSIDE_JES2=3, INSIDE_JES3=4, INSIDE_CM=5,
-		INSIDE_COMMENT=6, INSIDE_UNKNOWN=7;
+    public static final int UTF_8_BOM = 1;
+    public static final int WS = 2;
+    public static final int EOL = 3;
+    public static final int JCL_STATEMENT = 4;
+    public static final int JCL_STREAM = 5;
+    public static final int JES2 = 6;
+    public static final int JES3 = 7;
+    public static final int CM = 8;
+    public static final int COMMENT = 9;
+    public static final int UNKNOWN = 10;
+    public static final int CA_START = 11;
+    public static final int STRINGLITERAL = 12;
+    public static final int TEXT = 13;
+    public static final int JCL_TC_START = 14;
+    public static final int JCL_TC_STOP = 15;
+    public static final int JCL_STRINGLITERAL = 16;
+    public static final int JCL_TEXT = 17;
+    public static final int STREAM_WS = 18;
+    public static final int STREAM_STRINGLITERAL = 19;
+    public static final int STREAM_TEXT = 20;
+    public static final int JES2_STRINGLITERAL = 21;
+    public static final int JES2_TEXT = 22;
+    public static final int JES3_STRINGLITERAL = 23;
+    public static final int JES3_TEXT = 24;
+    public static final int CM_STRINGLITERAL = 25;
+    public static final int CM_TEXT = 26;
+    public static final int COMMENT_WS = 27;
+    public static final int COMMENT_STRINGLITERAL = 28;
+    public static final int COMMENT_TEXT = 29;
+    public static final int UNKNOWN_WS = 30;
+    public static final int UNKNOWN_STRINGLITERAL = 31;
+    public static final int UNKNOWN_TEXT = 32;
+    public static final int INSIDE_JCL = 1;
+    public static final int INSIDE_STREAM = 2;
+    public static final int INSIDE_JES2 = 3;
+    public static final int INSIDE_JES3 = 4;
+    public static final int INSIDE_CM = 5;
+    public static final int INSIDE_COMMENT = 6;
+    public static final int INSIDE_UNKNOWN = 7;
 	public static String[] channelNames = {
 		"DEFAULT_TOKEN_CHANNEL", "HIDDEN"
 	};

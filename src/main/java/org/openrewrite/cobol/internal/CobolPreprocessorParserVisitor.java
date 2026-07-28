@@ -58,7 +58,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
     private final Map<Integer, String> commentAreas = new LinkedHashMap<>();
 
     private final Set<Character> commentIndicators = new HashSet<>();
-    private int cursor = 0;
+    private int cursor;
 
     public <T> T visit(@Nullable ParseTree... trees) {
         for (ParseTree tree : trees) {
