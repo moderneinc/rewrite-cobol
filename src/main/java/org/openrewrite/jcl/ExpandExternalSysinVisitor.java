@@ -138,7 +138,7 @@ public class ExpandExternalSysinVisitor<P> extends JclIsoVisitor<P> {
             }
             String t = text(s);
             if (t.startsWith("//")) {
-                boolean continuation = t.equals("//") &&
+                boolean continuation = "//".equals(t) &&
                         j + 1 < statements.size() && !isOperation(statements.get(j + 1));
                 if (continuation) {
                     expectOperand = true; // operands resume after the continuation marker

@@ -34,7 +34,7 @@ public class CobolLineReader {
     private static final List<String> triggersEnd = Arrays.asList("PROGRAM-ID", "AUTHOR", "INSTALLATION",
             "DATE-WRITTEN", "DATE-COMPILED", "SECURITY", "IDENTIFICATION", "ID", "ENVIRONMENT", "DATA", "PROCEDURE", "END");
 
-    private boolean inCommentEntry = false;
+    private boolean inCommentEntry;
 
     public String readLines(String source, CobolDialect cobolDialect) {
         int indicatorArea = cobolDialect.getColumns().getIndicatorArea();

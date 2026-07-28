@@ -29,31 +29,102 @@ public class ControlMLexer extends Lexer {
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
-	public static final int
-		UTF_8_BOM=1, WS=2, EOL=3, DEFINITION_START=4, SCHEDULE_START=5, INPUT_START=6,
-		OUTPUT_START=7, APP_FORM_START=8, LINE_START=9, LINE_END=10, SECTION_HEADER=11,
-		ODAT=12, STAT=13, PREV=14, PLUS_CHAR=15, MINUS_CHAR=16, INCR_DATE=17,
-		DECR_DATE=18, ANY_DATE=19, NAME=20, DEFINITION_END=21, DEFINITION_DESC=22,
-		DEFINITION_WS=23, DEFINITION_EOL=24, DEFINITION_HEADER=25, DEFINITION_LINE_START=26,
-		DEFINITION_LINE_END=27, DEFINITION_APPL=28, DEFINITION_AT=29, DEFINITION_CTB_STEP=30,
-		DEFINITION_DFLT=31, DEFINITION_DOCLIB=32, DEFINITION_DOCMEM=33, DEFINITION_GROUP=34,
-		DEFINITION_MEMNAME=35, DEFINITION_MEMLIB=36, DEFINITION_NJE_NODE=37, DEFINITION_OWNER=38,
-		DEFINITION_OVERLIB=39, DEFINITION_PREVENT_NCT2=40, DEFINITION_SCHENV=41,
-		DEFINITION_SET_VAR=42, DEFINITION_STAT_CAL=43, DEFINITION_SYSTEM_ID=44,
-		DEFINITION_TASKTYPE=45, DEFINITION_TYPE=46, DEFINITION_EQUALS_CHAR=47,
-		SCHEDULE_END=48, SCHEDULE_WS=49, SCHEDULE_EOL=50, SCHEDULE_HEADER=51,
-		SCHEDULE_LINE_START=52, SCHEDULE_LINE_END=53, INPUT_END=54, INPUT_NAMES_START=55,
-		INPUT_WS=56, INPUT_EOL=57, INPUT_HEADER=58, INPUT_LINE_START=59, INPUT_LINE_END=60,
-		INPUT_NAMES_END=61, INPUT_NAMES_WS=62, INPUT_NAMES_EOL=63, INPUT_NAMES_IN=64,
-		INPUT_NAMES_LINE_START=65, INPUT_NAMES_LINE_END=66, OUTPUT_END=67, OUTPUT_NAMES_START=68,
-		OUTPUT_WS=69, OUTPUT_EOL=70, OUTPUT_HEADER=71, OUTPUT_LINE_START=72, OUTPUT_LINE_END=73,
-		OUTPUT_NAMES_END=74, OUTPUT_NAMES_WS=75, OUTPUT_NAMES_EOL=76, OUTPUT_NAMES_OUT=77,
-		OUTPUT_NAMES_LINE_START=78, OUTPUT_NAMES_LINE_END=79, APP_FORM_END=80,
-		APP_FORM_WS=81, APP_FORM_EOL=82, APP_FORM_LINE_START=83, APP_FORM_LINE_END=84,
-		DESC_TEXT_WS=85, DESC_TEXT_EOL=86, DESC_TEXT_LINE_START=87, DESC_TEXT_WORD=88;
-	public static final int
-		DEFINITION=1, SCHEDULE=2, INPUT=3, INPUT_NAMES=4, OUTPUT=5, OUTPUT_NAMES=6,
-		APP_FORM=7, DESC_TEXT=8;
+    public static final int UTF_8_BOM = 1;
+    public static final int WS = 2;
+    public static final int EOL = 3;
+    public static final int DEFINITION_START = 4;
+    public static final int SCHEDULE_START = 5;
+    public static final int INPUT_START = 6;
+    public static final int OUTPUT_START = 7;
+    public static final int APP_FORM_START = 8;
+    public static final int LINE_START = 9;
+    public static final int LINE_END = 10;
+    public static final int SECTION_HEADER = 11;
+    public static final int ODAT = 12;
+    public static final int STAT = 13;
+    public static final int PREV = 14;
+    public static final int PLUS_CHAR = 15;
+    public static final int MINUS_CHAR = 16;
+    public static final int INCR_DATE = 17;
+    public static final int DECR_DATE = 18;
+    public static final int ANY_DATE = 19;
+    public static final int NAME = 20;
+    public static final int DEFINITION_END = 21;
+    public static final int DEFINITION_DESC = 22;
+    public static final int DEFINITION_WS = 23;
+    public static final int DEFINITION_EOL = 24;
+    public static final int DEFINITION_HEADER = 25;
+    public static final int DEFINITION_LINE_START = 26;
+    public static final int DEFINITION_LINE_END = 27;
+    public static final int DEFINITION_APPL = 28;
+    public static final int DEFINITION_AT = 29;
+    public static final int DEFINITION_CTB_STEP = 30;
+    public static final int DEFINITION_DFLT = 31;
+    public static final int DEFINITION_DOCLIB = 32;
+    public static final int DEFINITION_DOCMEM = 33;
+    public static final int DEFINITION_GROUP = 34;
+    public static final int DEFINITION_MEMNAME = 35;
+    public static final int DEFINITION_MEMLIB = 36;
+    public static final int DEFINITION_NJE_NODE = 37;
+    public static final int DEFINITION_OWNER = 38;
+    public static final int DEFINITION_OVERLIB = 39;
+    public static final int DEFINITION_PREVENT_NCT2 = 40;
+    public static final int DEFINITION_SCHENV = 41;
+    public static final int DEFINITION_SET_VAR = 42;
+    public static final int DEFINITION_STAT_CAL = 43;
+    public static final int DEFINITION_SYSTEM_ID = 44;
+    public static final int DEFINITION_TASKTYPE = 45;
+    public static final int DEFINITION_TYPE = 46;
+    public static final int DEFINITION_EQUALS_CHAR = 47;
+    public static final int SCHEDULE_END = 48;
+    public static final int SCHEDULE_WS = 49;
+    public static final int SCHEDULE_EOL = 50;
+    public static final int SCHEDULE_HEADER = 51;
+    public static final int SCHEDULE_LINE_START = 52;
+    public static final int SCHEDULE_LINE_END = 53;
+    public static final int INPUT_END = 54;
+    public static final int INPUT_NAMES_START = 55;
+    public static final int INPUT_WS = 56;
+    public static final int INPUT_EOL = 57;
+    public static final int INPUT_HEADER = 58;
+    public static final int INPUT_LINE_START = 59;
+    public static final int INPUT_LINE_END = 60;
+    public static final int INPUT_NAMES_END = 61;
+    public static final int INPUT_NAMES_WS = 62;
+    public static final int INPUT_NAMES_EOL = 63;
+    public static final int INPUT_NAMES_IN = 64;
+    public static final int INPUT_NAMES_LINE_START = 65;
+    public static final int INPUT_NAMES_LINE_END = 66;
+    public static final int OUTPUT_END = 67;
+    public static final int OUTPUT_NAMES_START = 68;
+    public static final int OUTPUT_WS = 69;
+    public static final int OUTPUT_EOL = 70;
+    public static final int OUTPUT_HEADER = 71;
+    public static final int OUTPUT_LINE_START = 72;
+    public static final int OUTPUT_LINE_END = 73;
+    public static final int OUTPUT_NAMES_END = 74;
+    public static final int OUTPUT_NAMES_WS = 75;
+    public static final int OUTPUT_NAMES_EOL = 76;
+    public static final int OUTPUT_NAMES_OUT = 77;
+    public static final int OUTPUT_NAMES_LINE_START = 78;
+    public static final int OUTPUT_NAMES_LINE_END = 79;
+    public static final int APP_FORM_END = 80;
+    public static final int APP_FORM_WS = 81;
+    public static final int APP_FORM_EOL = 82;
+    public static final int APP_FORM_LINE_START = 83;
+    public static final int APP_FORM_LINE_END = 84;
+    public static final int DESC_TEXT_WS = 85;
+    public static final int DESC_TEXT_EOL = 86;
+    public static final int DESC_TEXT_LINE_START = 87;
+    public static final int DESC_TEXT_WORD = 88;
+    public static final int DEFINITION = 1;
+    public static final int SCHEDULE = 2;
+    public static final int INPUT = 3;
+    public static final int INPUT_NAMES = 4;
+    public static final int OUTPUT = 5;
+    public static final int OUTPUT_NAMES = 6;
+    public static final int APP_FORM = 7;
+    public static final int DESC_TEXT = 8;
 	public static String[] channelNames = {
 		"DEFAULT_TOKEN_CHANNEL", "HIDDEN"
 	};

@@ -47,7 +47,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
     private final Charset charset;
     private final boolean charsetBomMarked;
 
-    private int cursor = 0;
+    private int cursor;
 
     public <T> T visit(@Nullable ParseTree... trees) {
         for (ParseTree tree : trees) {

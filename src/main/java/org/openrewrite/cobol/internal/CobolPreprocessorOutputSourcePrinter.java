@@ -74,41 +74,41 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
     private final boolean printColumns;
 
     // Lazily initialized Strings that are generated once with constraints based on the dialect.
-    private String dialectSequenceArea = null;
-    private String uuidEndOfLine = null;
+    private String dialectSequenceArea;
+    private String uuidEndOfLine;
 
-    private String copyStartComment = null;
-    private String copyStopComment = null;
-    private String copyUuidComment = null;
-    private String copybookNotFoundComment = null;
+    private String copyStartComment;
+    private String copyStopComment;
+    private String copyUuidComment;
+    private String copybookNotFoundComment;
 
-    private String replaceStartComment = null;
-    private String replaceStopComment = null;
-    private String replaceUuidComment = null;
+    private String replaceStartComment;
+    private String replaceStopComment;
+    private String replaceUuidComment;
 
-    private String uuidComment = null;
+    private String uuidComment;
 
-    private String replaceTypeAdditiveStartComment = null;
-    private String replaceTypeAdditiveStopComment = null;
-    private String replaceAddWordStartComment = null;
-    private String replaceAddWordStopComment = null;
+    private String replaceTypeAdditiveStartComment;
+    private String replaceTypeAdditiveStopComment;
+    private String replaceAddWordStartComment;
+    private String replaceAddWordStopComment;
 
-    private String replaceTypeReductiveStartComment = null;
-    private String replaceTypeReductiveStopComment = null;
-    private Replacement replaceReductiveType = null;
+    private String replaceTypeReductiveStartComment;
+    private String replaceTypeReductiveStopComment;
+    private Replacement replaceReductiveType;
 
-    private String replaceAddedWhitespaceComment = null;
+    private String replaceAddedWhitespaceComment;
 
-    private String compilerOptionsStartComment = null;
-    private String compilerOptionsStopComment = null;
+    private String compilerOptionsStartComment;
+    private String compilerOptionsStopComment;
 
-    private String preprocessorStartComment = null;
-    private String preprocessorStopComment = null;
+    private String preprocessorStartComment;
+    private String preprocessorStopComment;
 
     private final CobolPreprocessorSourcePrinter<ExecutionContext> statementPrinter = new CobolPreprocessorSourcePrinter<>(false);
     private final CobolSourcePrinter<ExecutionContext> cobolStatementPrinter = new CobolSourcePrinter<>(false);
 
-    private boolean inUnknownIndicator = false;
+    private boolean inUnknownIndicator;
 
     public CobolPreprocessorOutputSourcePrinter(CobolDialect cobolDialect,
                                                 boolean printColumns) {
