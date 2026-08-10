@@ -24,3 +24,5 @@ jobs:
       ossrh_signing_password: ${{ secrets.OSSRH_SIGNING_PASSWORD }}
       ast_publish_username: ${{ secrets.AST_PUBLISH_USERNAME }}
       ast_publish_password: ${{ secrets.AST_PUBLISH_PASSWORD }}
+      cgp_artifacts_maven_username: ${{ secrets.CGP_ARTIFACTS_MAVEN_USERNAME }}
+      cgp_artifacts_maven_token: ${{ secrets.CGP_ARTIFACTS_MAVEN_TOKEN }}
