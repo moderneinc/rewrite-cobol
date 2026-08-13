@@ -527,6 +527,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
                         ctx.compilerOptions(),
                         ctx.copyStatement(),
                         ctx.execCicsStatement(),
+                        ctx.execDliStatement(),
                         ctx.execSqlStatement(),
                         ctx.execSqlIncludeStatement(),
                         ctx.execSqlImsStatement(),
@@ -599,6 +600,19 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
                 EMPTY,
                 Markers.EMPTY,
                 wordsList(ctx.EXEC(), ctx.CICS()),
+                (CobolPreprocessor) visit(ctx.charData()),
+                (CobolPreprocessor.Word) visit(ctx.END_EXEC()),
+                visitNullable(ctx.DOT())
+        );
+    }
+
+    @Override
+    public Object visitExecDliStatement(CobolPreprocessorParser.ExecDliStatementContext ctx) {
+        return new CobolPreprocessor.ExecStatement(
+                randomId(),
+                EMPTY,
+                Markers.EMPTY,
+                wordsList(ctx.EXEC(), ctx.DLI()),
                 (CobolPreprocessor) visit(ctx.charData()),
                 (CobolPreprocessor.Word) visit(ctx.END_EXEC()),
                 visitNullable(ctx.DOT())

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// Generated from /home/sam/code/moderne/rewrite-cobol/src/main/antlr-cobol/CobolPreprocessor.g4 by ANTLR 4.13.2
+// Generated from src/main/antlr-cobol/CobolPreprocessor.g4 by ANTLR 4.13.2
 package org.openrewrite.cobol.internal.grammar;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -87,6 +87,18 @@ public class CobolPreprocessorBaseListener implements CobolPreprocessorListener 
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitExecCicsStatement(CobolPreprocessorParser.ExecCicsStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterExecDliStatement(CobolPreprocessorParser.ExecDliStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitExecDliStatement(CobolPreprocessorParser.ExecDliStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

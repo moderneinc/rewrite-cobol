@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.junitpioneer.jupiter.ExpectedToFail;
+import org.openrewrite.ExecutionContext;
 import org.openrewrite.Issue;
 import org.openrewrite.cobol.CobolIsoVisitor;
 import org.openrewrite.cobol.CobolTest;
@@ -30,6 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openrewrite.cobol.Assertions.cobol;
+import static org.openrewrite.test.RewriteTest.toRecipe;
 
 class CobolParserAnsi85DivisionTest extends CobolTest {
 
@@ -443,6 +445,28 @@ class CobolParserAnsi85DivisionTest extends CobolTest {
                          ADD X Y GIVING Z .                                          \s
                          DISPLAY "X + Y = "Z .                                       \s
                      STOP RUN .                                                      \s
+              """
+          )
+        );
+    }
+
+    /**
+     * The command level interface to IMS. Unlike EXEC CICS and EXEC SQL it has no dedicated LST
+     * node; it is preserved as a preprocessor EXEC statement attached to the word that follows it.
+     */
+    @Test
+    void execDli() {
+        rewriteRun(
+          cobol(
+            """
+              000000 IDENTIFICATION DIVISION.                                        \s
+              000000 PROGRAM-ID. DLIPGM.                                             \s
+              000000 PROCEDURE DIVISION.                                             \s
+              000000     EXEC DLI GU USING PCB(1) SEGMENT(ACCOUNT) INTO(WS-REC)      \s
+              000000          END-EXEC.                                              \s
+              000000     EXEC DLI ISRT USING PCB(2) SEGMENT(HISTORY) FROM(WS-REC)    \s
+              000000          END-EXEC.                                              \s
+              000000     GOBACK.                                                     \s
               """
           )
         );
@@ -1448,6 +1472,50 @@ class CobolParserAnsi85DivisionTest extends CobolTest {
         );
     }
 
+    /**
+     * The name in the EXIT statement's format-1, `paragraph-name. EXIT.`, opens a paragraph. It is
+     * a procedure name that PERFORM THRU and GO TO can target, so it has to reach the LST as one
+     * rather than being folded into the statement.
+     */
+    @Issue("https://github.com/openrewrite/rewrite-cobol/issues/111")
+    @Test
+    void exitParagraphIsAParagraph() {
+        AtomicInteger paragraphs = new AtomicInteger();
+        AtomicInteger exits = new AtomicInteger();
+        rewriteRun(
+          spec -> spec.recipe(toRecipe(() -> new CobolIsoVisitor<>() {
+              @Override
+              public Cobol.Paragraph visitParagraph(Cobol.Paragraph paragraph, ExecutionContext ctx) {
+                  paragraphs.incrementAndGet();
+                  return super.visitParagraph(paragraph, ctx);
+              }
+
+              @Override
+              public Cobol.Exit visitExit(Cobol.Exit exit, ExecutionContext ctx) {
+                  exits.incrementAndGet();
+                  assertThat(exit.getWords()).hasSize(1);
+                  assertThat(exit.getWords().get(0).getWord()).isEqualToIgnoringCase("EXIT");
+                  return super.visitExit(exit, ctx);
+              }
+          })),
+          cobol(
+            """
+              000001 IDENTIFICATION DIVISION.                                         C_AREA.01
+              000002 PROGRAM-ID. exitParagraph.                                       C_AREA.02
+              000003 PROCEDURE DIVISION.                                              C_AREA.03
+              000004 RW301M-CONTROL.                                                  C_AREA.04
+              000005     PERFORM RW301M-BODY THRU RW301M-EXIT.                        C_AREA.05
+              000006 RW301M-BODY.                                                     C_AREA.06
+              000007     MOVE 1 TO WS-X.                                              C_AREA.07
+              000008 RW301M-EXIT.                                                     C_AREA.08
+              000009     EXIT.                                                        C_AREA.09
+              """
+          )
+        );
+        assertThat(paragraphs).hasValue(3);
+        assertThat(exits).hasValue(1);
+    }
+
     @Test
     void sortStatement() {
         rewriteRun(
@@ -1662,6 +1730,31 @@ class CobolParserAnsi85DivisionTest extends CobolTest {
               000004 REPORT SECTION.                                                  C_AREA.04
               000005     RD IDENTIFIER IN IDENTIFIER IS GLOBAL.                       C_AREA.05
               000006     10 IDENTIFIER LINE NUMBER IS 10 ON NEXT PAGE.                C_AREA.06
+              """
+          )
+        );
+    }
+
+    /**
+     * The LIMIT keyword is optional in the RD PAGE clause, so `PAGE 30` says what
+     * `PAGE LIMIT IS 30 LINES` says.
+     */
+    @Test
+    void reportPageLimitClause() {
+        rewriteRun(
+          cobol(
+            """
+              000001 IDENTIFICATION DIVISION.                                         C_AREA.01
+              000002 PROGRAM-ID. reportPageLimit.                                     C_AREA.02
+              000003 DATA DIVISION.                                                   C_AREA.03
+              000004 REPORT SECTION.                                                  C_AREA.04
+              000005     RD REPORT-1 PAGE LIMIT IS 60 LINES.                          C_AREA.05
+              000006     10 IDENTIFIER LINE NUMBER IS 10 ON NEXT PAGE.                C_AREA.06
+              000007     RD REPORT-2 PAGE 60 LINES.                                   C_AREA.07
+              000008     10 IDENTIFIER LINE NUMBER IS 10 ON NEXT PAGE.                C_AREA.08
+              000009     RD REPORT-3 PAGE 30                                          C_AREA.09
+              000010     HEADING 1 FIRST DETAIL 6 LAST DETAIL 25.                     C_AREA.10
+              000011     10 IDENTIFIER LINE NUMBER IS 10 ON NEXT PAGE.                C_AREA.11
               """
           )
         );

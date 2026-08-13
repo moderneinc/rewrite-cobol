@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// Generated from /home/sam/code/moderne/rewrite-cobol/src/main/antlr-cobol/CobolPreprocessor.g4 by ANTLR 4.13.2
+// Generated from src/main/antlr-cobol/CobolPreprocessor.g4 by ANTLR 4.13.2
 package org.openrewrite.cobol.internal.grammar;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -55,6 +55,12 @@ public interface CobolPreprocessorVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitExecCicsStatement(CobolPreprocessorParser.ExecCicsStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CobolPreprocessorParser#execDliStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExecDliStatement(CobolPreprocessorParser.ExecDliStatementContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link CobolPreprocessorParser#execSqlStatement}.
 	 * @param ctx the parse tree

@@ -729,7 +729,7 @@ reportDescriptionGlobalClause
    ;
 
 reportDescriptionPageLimitClause
-   : PAGE (LIMIT | LIMITS) (IS | ARE)? integerLiteral (LINE | LINES)?
+   : PAGE (LIMIT | LIMITS)? (IS | ARE)? integerLiteral (LINE | LINES)?
    ;
 
 reportDescriptionHeadingClause
@@ -1505,9 +1505,10 @@ exhibitOperand
 
 // exit statement
 
+// Format-1 is written `paragraph-name. EXIT.`, but the name opens a paragraph rather than belonging
+// to the statement: PERFORM THRU and GO TO target it, so it has to reach the LST as a paragraph.
 exitStatement
-   : paragraphName DOT_FS EXIT
-   | EXIT (PROGRAM | METHOD | PERFORM CYCLE? | SECTION | PARAGRAPH)?
+   : EXIT (PROGRAM | METHOD | PERFORM CYCLE? | SECTION | PARAGRAPH)?
    ;
 
 // generate statement
