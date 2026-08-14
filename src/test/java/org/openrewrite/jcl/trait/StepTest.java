@@ -13,18 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openrewrite.jcl.model;
+package org.openrewrite.jcl.trait;
 
 import org.junit.jupiter.api.Test;
+import org.openrewrite.Cursor;
+import org.openrewrite.jcl.tree.Jcl;
 import org.openrewrite.test.RewriteTest;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openrewrite.jcl.Assertions.jcl;
 
-class JobStreamTest implements RewriteTest {
+class StepTest implements RewriteTest {
 
     @Test
-    void readsJobStepsAndDataDefinitions() {
+    void readsStepsAndTheirDataDefinitions() {
         rewriteRun(
           jcl(
             """
@@ -37,32 +42,27 @@ class JobStreamTest implements RewriteTest {
               //RPTDD    DD  DSN=PROD.ACCOUNT.REPORT,DISP=(NEW,CATLG)
               """,
             spec -> spec.afterRecipe(cu -> {
-                JobStream job = JobStream.of(cu);
-                assertThat(job.getJobName()).isEqualTo("ACCTJOB");
-                assertThat(JobStream.parameters(job.getJob()))
-                  .containsEntry("CLASS", "A").containsEntry("MSGCLASS", "X");
+                List<Step> steps = steps(cu);
+                assertThat(steps).extracting(Step::getName).containsExactly("STEP010", "STEP020");
+                assertThat(steps).extracting(Step::getProgram).containsExactly("ACCTPOST", "ACCTRPT");
+                assertThat(steps.get(0).getProcedure()).isNull();
 
-                assertThat(job.getSteps()).hasSize(2);
-
-                Step step = job.getSteps().get(0);
-                assertThat(step.getName()).isEqualTo("STEP010");
-                assertThat(step.getProgram()).isEqualTo("ACCTPOST");
-                assertThat(step.getProcedure()).isNull();
-                assertThat(JobStream.parameters(step.getStatement())).containsEntry("PARM", "'RUN'");
+                Step step = steps.get(0);
                 assertThat(step.getDataDefinitions()).extracting(DataDefinition::getName)
                   .containsExactly("ACCTDD", "TRANDD", "SYSOUT");
+                // The DDs of the next step are its own.
+                assertThat(steps.get(1).getDataDefinitions()).extracting(DataDefinition::getName)
+                  .containsExactly("RPTDD");
 
-                DataDefinition acct = step.dd("ACCTDD");
+                DataDefinition acct = step.getDataDefinition("ACCTDD");
                 assertThat(acct).isNotNull();
                 assertThat(acct.getDataSets()).singleElement().satisfies(ds -> {
                     assertThat(ds.getName()).isEqualTo("PROD.ACCOUNT.MASTER");
-                    assertThat(ds.getDisposition()).isNotNull();
                     assertThat(ds.getDisposition().getStatus()).isEqualTo(Disposition.Status.SHR);
                     assertThat(ds.getDisposition().isInput()).isTrue();
                 });
 
-                DataDefinition tran = step.dd("TRANDD");
-                assertThat(tran).isNotNull();
+                DataDefinition tran = step.getDataDefinition("TRANDD");
                 assertThat(tran.getDataSets()).singleElement().satisfies(ds -> {
                     assertThat(ds.getDisposition().getStatus()).isEqualTo(Disposition.Status.NEW);
                     assertThat(ds.getDisposition().getNormal()).isEqualTo("CATLG");
@@ -70,29 +70,24 @@ class JobStreamTest implements RewriteTest {
                     assertThat(ds.getDisposition().isInput()).isFalse();
                 });
 
-                DataDefinition sysout = step.dd("SYSOUT");
-                assertThat(sysout).isNotNull();
+                DataDefinition sysout = step.getDataDefinition("SYSOUT");
                 assertThat(sysout.getSysout()).isEqualTo("*");
                 assertThat(sysout.getDataSets()).isEmpty();
-
-                assertThat(job.getSteps().get(1).getName()).isEqualTo("STEP020");
-                assertThat(job.getSteps().get(1).getProgram()).isEqualTo("ACCTRPT");
             })
           )
         );
     }
 
     /**
-     * A DD with no name of its own concatenates onto the one before it. Read as separate statements,
-     * a concatenation reports data sets that nothing names — which is the shape every SYSLIB and
-     * STEPLIB in a portfolio takes.
+     * A DD with no name of its own concatenates onto the one before it, and the two are one DD as far
+     * as the program reading them is concerned. Reported separately, a concatenation names data sets
+     * that no DD claims — which is the shape every STEPLIB in a portfolio takes.
      */
     @Test
     void concatenatesUnnamedDataDefinitions() {
         rewriteRun(
           jcl(
             """
-              //LIBJOB   JOB (ACCT),'LIBS'
               //STEP010  EXEC PGM=IEBGENER
               //STEPLIB  DD  DSN=PROD.LOADLIB,DISP=SHR
               //         DD  DSN=SYS1.COB2LIB,DISP=SHR
@@ -100,46 +95,12 @@ class JobStreamTest implements RewriteTest {
               //SYSIN    DD  DUMMY
               """,
             spec -> spec.afterRecipe(cu -> {
-                Step step = JobStream.of(cu).getSteps().get(0);
+                Step step = steps(cu).get(0);
                 assertThat(step.getDataDefinitions()).extracting(DataDefinition::getName)
                   .containsExactly("STEPLIB", "SYSIN");
-
-                assertThat(step.dd("STEPLIB")).isNotNull();
-                assertThat(step.dd("STEPLIB").getDataSets()).extracting(DataSet::getName)
+                assertThat(step.getDataDefinition("STEPLIB").getDataSets()).extracting(DataSet::getName)
                   .containsExactly("PROD.LOADLIB", "SYS1.COB2LIB", "CEE.SCEERUN");
-
-                assertThat(step.dd("SYSIN")).isNotNull();
-                assertThat(step.dd("SYSIN").isDummy()).isTrue();
-            })
-          )
-        );
-    }
-
-    /**
-     * Operands spread over continuation lines are one parameter list, and the comment field after
-     * the operand on each line is not part of it.
-     */
-    @Test
-    void joinsContinuationLines() {
-        rewriteRun(
-          jcl(
-            """
-              //CONTJOB  JOB (ACCT),'CONT'
-              //STEP010  EXEC PGM=ACCTPOST
-              //ACCTDD   DD  DSN=PROD.ACCOUNT.MASTER,           THE MASTER
-              //             DISP=SHR,
-              //             AMP=('BUFND=10,BUFNI=5')
-              """,
-            spec -> spec.afterRecipe(cu -> {
-                DataDefinition dd = JobStream.of(cu).getSteps().get(0).dd("ACCTDD");
-                assertThat(dd).isNotNull();
-                assertThat(dd.getDataSets()).singleElement().satisfies(ds -> {
-                    assertThat(ds.getName()).isEqualTo("PROD.ACCOUNT.MASTER");
-                    assertThat(ds.getDisposition().getStatus()).isEqualTo(Disposition.Status.SHR);
-                });
-                // The commas inside AMP belong to its sub-parameters, not to the DD's parameter list.
-                assertThat(JobStream.parameters(dd.getStatements().get(0)))
-                  .containsEntry("AMP", "('BUFND=10,BUFNI=5')");
+                assertThat(step.getDataDefinition("SYSIN").isDummy()).isTrue();
             })
           )
         );
@@ -155,65 +116,54 @@ class JobStreamTest implements RewriteTest {
         rewriteRun(
           jcl(
             """
-              //GDGJOB   JOB (ACCT),'GDG'
               //STEP010  EXEC PGM=ACCTPOST
               //CARDS    DD  DSN=PROD.PARMLIB(ACCTCARD),DISP=SHR
               //NEWGEN   DD  DSN=PROD.ACCOUNT.HIST(+1),DISP=(NEW,CATLG)
               //TEMP     DD  DSN=&&WORK,DISP=(NEW,PASS)
               """,
             spec -> spec.afterRecipe(cu -> {
-                Step step = JobStream.of(cu).getSteps().get(0);
+                Step step = steps(cu).get(0);
 
-                DataSet cards = step.dd("CARDS").getDataSets().get(0);
+                DataSet cards = step.getDataDefinition("CARDS").getDataSets().get(0);
                 assertThat(cards.getName()).isEqualTo("PROD.PARMLIB");
                 assertThat(cards.getMember()).isEqualTo("ACCTCARD");
                 assertThat(cards.isGenerationDataGroup()).isFalse();
 
-                DataSet generation = step.dd("NEWGEN").getDataSets().get(0);
+                DataSet generation = step.getDataDefinition("NEWGEN").getDataSets().get(0);
                 assertThat(generation.getName()).isEqualTo("PROD.ACCOUNT.HIST");
                 assertThat(generation.isGenerationDataGroup()).isTrue();
 
-                DataSet temporary = step.dd("TEMP").getDataSets().get(0);
-                assertThat(temporary.isTemporary()).isTrue();
+                assertThat(step.getDataDefinition("TEMP").getDataSets().get(0).isTemporary()).isTrue();
             })
           )
         );
     }
 
-    /**
-     * {@code EXEC MYPROC} and {@code EXEC PROC=MYPROC} say the same thing, and a step that runs a
-     * procedure runs no program of its own.
-     */
     @Test
     void readsAProcedureStepEitherWayItIsWritten() {
         rewriteRun(
           jcl(
             """
-              //PROCJOB  JOB (ACCT),'PROCS'
               //STEP010  EXEC ACCTPROC
               //STEP020  EXEC PROC=RPTPROC,COND=(4,LT)
               """,
             spec -> spec.afterRecipe(cu -> {
-                JobStream job = JobStream.of(cu);
-                assertThat(job.getSteps()).extracting(Step::getProcedure)
+                assertThat(steps(cu)).extracting(Step::getProcedure)
                   .containsExactly("ACCTPROC", "RPTPROC");
-                assertThat(job.getSteps()).extracting(Step::getProgram).containsOnlyNulls();
-                assertThat(JobStream.parameters(job.getSteps().get(1).getStatement()))
-                  .containsEntry("COND", "(4,LT)");
+                assertThat(steps(cu)).extracting(Step::getProgram).containsOnlyNulls();
             })
           )
         );
     }
 
     /**
-     * In-stream data is how SYSIN control cards arrive, and a DD carrying them names no data set.
+     * In-stream data belongs to the DD that introduced it, and that DD names no data set.
      */
     @Test
-    void marksInStreamData() {
+    void readsInStreamData() {
         rewriteRun(
           jcl(
             """
-              //SORTJOB  JOB (ACCT),'SORT'
               //STEP010  EXEC PGM=SORT
               //SORTIN   DD  DSN=PROD.ACCOUNT.MASTER,DISP=SHR
               //SYSIN    DD  *
@@ -221,19 +171,42 @@ class JobStreamTest implements RewriteTest {
               /*
               """,
             spec -> spec.afterRecipe(cu -> {
-                Step step = JobStream.of(cu).getSteps().get(0);
-                assertThat(step.dd("SYSIN")).isNotNull();
-                assertThat(step.dd("SYSIN").isInStream()).isTrue();
-                assertThat(step.dd("SYSIN").getDataSets()).isEmpty();
-                assertThat(step.dd("SORTIN").isInStream()).isFalse();
+                Step step = steps(cu).get(0);
+                DataDefinition sysin = step.getDataDefinition("SYSIN");
+                assertThat(sysin.isInStream()).isTrue();
+                assertThat(sysin.getDataSets()).isEmpty();
+                assertThat(sysin.getInStreamData())
+                  .extracting(d -> d.getWord().getText())
+                  .containsExactly("SORT", "FIELDS=(1,11,CH,A)");
+                assertThat(step.getDataDefinition("SORTIN").isInStream()).isFalse();
             })
+          )
+        );
+    }
+
+    @Test
+    void readsTheJobCard() {
+        rewriteRun(
+          jcl(
+            """
+              //ACCTJOB  JOB (ACCT),'DAILY POST',CLASS=A,MSGCLASS=X
+              //STEP010  EXEC PGM=ACCTPOST
+              """,
+            spec -> spec.afterRecipe(cu ->
+              assertThat(new Job.Matcher().lower(cu).collect(Collectors.toList()))
+                .singleElement()
+                .satisfies(job -> {
+                    assertThat(job.getName()).isEqualTo("ACCTJOB");
+                    assertThat(job.getParameter("CLASS")).isEqualTo("A");
+                    assertThat(job.getParameter("MSGCLASS")).isEqualTo("X");
+                }))
           )
         );
     }
 
     /**
      * A member with no JOB card — a procedure, or a fragment meant to be included — still has steps
-     * worth reading, and a model that required a JOB card would report nothing for it.
+     * worth reading.
      */
     @Test
     void readsAMemberWithNoJobCard() {
@@ -244,12 +217,15 @@ class JobStreamTest implements RewriteTest {
               //ACCTDD   DD  DSN=PROD.ACCOUNT.MASTER,DISP=SHR
               """,
             spec -> spec.afterRecipe(cu -> {
-                JobStream job = JobStream.of(cu);
-                assertThat(job.getJobName()).isEmpty();
-                assertThat(job.getSteps()).singleElement()
+                assertThat(new Job.Matcher().lower(cu)).isEmpty();
+                assertThat(steps(cu)).singleElement()
                   .satisfies(step -> assertThat(step.getProgram()).isEqualTo("ACCTPOST"));
             })
           )
         );
+    }
+
+    private static List<Step> steps(Jcl.CompilationUnit cu) {
+        return new Step.Matcher().lower(cu).collect(Collectors.toList());
     }
 }

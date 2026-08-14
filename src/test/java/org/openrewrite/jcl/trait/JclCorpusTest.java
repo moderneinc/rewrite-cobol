@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openrewrite.jcl.model;
+package org.openrewrite.jcl.trait;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
@@ -28,12 +28,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Reads the JCL of a real application and reports what the model found, the same way
+ * Reads the JCL of a real application and reports what the traits found, the same way
  * {@code CorpusCoverageTest} does for COBOL. Gated on {@code JCL_CORPUS} pointing at a checkout,
  * because the corpus is not redistributed with this repository.
  * <p>
@@ -43,7 +44,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * tests say.
  */
 @EnabledIfEnvironmentVariable(named = "JCL_CORPUS", matches = ".+")
-class JobStreamCorpusTest {
+class JclCorpusTest {
 
     @Test
     void readsRealJcl() throws IOException {
@@ -73,18 +74,19 @@ class JobStreamCorpusTest {
                     failures.add(member.getFileName() + ": did not parse");
                     continue;
                 }
-                JobStream job = JobStream.of((Jcl.CompilationUnit) parsed.get(0));
+                List<Step> read = new Step.Matcher().lower((Jcl.CompilationUnit) parsed.get(0))
+                        .collect(Collectors.toList());
 
-                // The model must find exactly the EXEC cards the source has. Counting them
+                // The traits must find exactly the EXEC cards the source has. Counting them
                 // independently is the only thing that turns "it ran without complaining" into
-                // evidence that it read the file correctly.
+                // evidence that the file was read correctly.
                 int written = countExecCards(source);
-                if (written != job.getSteps().size()) {
-                    failures.add(member.getFileName() + ": " + job.getSteps().size() +
+                if (written != read.size()) {
+                    failures.add(member.getFileName() + ": " + read.size() +
                             " steps read, " + written + " EXEC cards written");
                 }
 
-                for (Step step : job.getSteps()) {
+                for (Step step : read) {
                     steps++;
                     if (step.getProgram() != null) {
                         programs++;
