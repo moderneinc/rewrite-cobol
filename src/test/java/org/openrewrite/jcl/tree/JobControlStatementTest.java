@@ -185,6 +185,79 @@ class JobControlStatementTest implements RewriteTest {
         );
     }
 
+    /**
+     * {@code /*} ends in-stream data. It is the delimiter statement, not a job control statement with
+     * a name of {@code /*} and no operation.
+     */
+    @Test
+    void readsTheDelimiterStatement() {
+        rewriteRun(
+          jcl(
+            """
+              //SYSIN    DD  *
+                SORT FIELDS=(1,11,CH,A)
+              /*
+              //SYSOUT   DD  SYSOUT=*
+              """,
+            spec -> spec.afterRecipe(cu -> {
+                assertThat(cu.getStatements()).filteredOn(Jcl.Delimiter.class::isInstance)
+                  .singleElement()
+                  .satisfies(d -> assertThat(((Jcl.Delimiter) d).getDelimiter().getText()).isEqualTo("/*"));
+                assertThat(statementsIn(cu)).extracting(Jcl.JobControlStatement::getSimpleName)
+                  .containsExactly("SYSIN", "SYSOUT");
+            })
+          )
+        );
+    }
+
+    /**
+     * {@code //} alone is the null statement, which ends a job.
+     */
+    @Test
+    void readsTheNullStatement() {
+        rewriteRun(
+          jcl(
+            """
+              //ACCTJOB  JOB (ACCT)
+              //STEP010  EXEC PGM=ACCTPOST
+              //
+              """,
+            spec -> spec.afterRecipe(cu ->
+              assertThat(cu.getStatements()).filteredOn(Jcl.NullStatement.class::isInstance)
+                .singleElement()
+                .satisfies(n -> assertThat(((Jcl.NullStatement) n).getMarker().getText()).isEqualTo("//")))
+          )
+        );
+    }
+
+    /**
+     * A DD names its own terminator with {@code DLM}, which is how a member containing {@code /*} is
+     * passed through untouched. Miss it and the data is read as JCL.
+     */
+    @Test
+    void readsInStreamDataEndedByACustomDelimiter() {
+        rewriteRun(
+          jcl(
+            """
+              //SYSOPTF  DD DATA,DLM=@@
+               NODYNAM
+               RENT
+              @@
+              //SYSPRINT DD SYSOUT=*
+              """,
+            spec -> spec.afterRecipe(cu -> {
+                assertThat(cu.getStatements()).filteredOn(Jcl.DataDefinitionStream.class::isInstance)
+                  .extracting(s -> ((Jcl.DataDefinitionStream) s).getWord().getText())
+                  .containsExactly("NODYNAM", "RENT");
+                assertThat(cu.getStatements()).filteredOn(Jcl.Delimiter.class::isInstance)
+                  .singleElement()
+                  .satisfies(d -> assertThat(((Jcl.Delimiter) d).getDelimiter().getText()).isEqualTo("@@"));
+                assertThat(cu.getStatements()).noneMatch(Jcl.Unknown.class::isInstance);
+            })
+          )
+        );
+    }
+
     private static List<Jcl.JobControlStatement> statementsIn(Jcl.CompilationUnit cu) {
         return cu.getStatements().stream()
                 .filter(Jcl.JobControlStatement.class::isInstance)

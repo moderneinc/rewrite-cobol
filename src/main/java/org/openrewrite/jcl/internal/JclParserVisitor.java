@@ -147,6 +147,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
         if (pending.isEmpty()) {
             return;
         }
+        JCLParser.JclContext first = pending.get(0);
         Space prefix = whitespace();
         List<Jcl.Word> words = new ArrayList<>(pending.size());
         List<Boolean> startsLine = new ArrayList<>(pending.size());
@@ -154,7 +155,22 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
             words.add(word(jcl));
             startsLine.add(beginsLine(jcl));
         }
+        boolean endsStream = endsStream(first);
         pending.clear();
+
+        // The delimiter statement ends in-stream data. It is not a job control statement: it has no
+        // name field and no operation, and anything after it is a comment.
+        if (endsStream) {
+            statements.add(new Jcl.Delimiter(randomId(), prefix, Markers.EMPTY,
+                    words.get(0).withPrefix(EMPTY), words.subList(1, words.size())));
+            return;
+        }
+        // The null statement, // alone, marks the end of a job. Also not a job control statement.
+        if (words.size() == 1 && "//".equals(words.get(0).getText())) {
+            statements.add(new Jcl.NullStatement(randomId(), prefix, Markers.EMPTY,
+                    words.get(0).withPrefix(EMPTY)));
+            return;
+        }
 
         Jcl.Word name = words.get(0).withPrefix(EMPTY);
         Jcl.Word operation = words.size() > 1 ? words.get(1) : null;
@@ -313,7 +329,16 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
      * Whether this word opens a statement rather than continuing the one before it.
      */
     private boolean beginsStatement(JCLParser.JclContext ctx) {
-        return lineMarker(ctx) == JCLLexer.JCL_STATEMENT;
+        int marker = lineMarker(ctx);
+        return marker == JCLLexer.JCL_STATEMENT || marker == JCLLexer.JCL_STREAM_END;
+    }
+
+    /**
+     * Whether this word is the delimiter that ends in-stream data. Only the line reader knows, since
+     * a DD can name any delimiter it likes with {@code DLM}.
+     */
+    private boolean endsStream(JCLParser.JclContext ctx) {
+        return lineMarker(ctx) == JCLLexer.JCL_STREAM_END;
     }
 
     /**
@@ -327,7 +352,9 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
         List<Token> hidden = tokens.getHiddenTokensToLeft(ctx.getStart().getTokenIndex());
         if (hidden != null) {
             for (Token token : hidden) {
-                if (token.getType() == JCLLexer.JCL_STATEMENT || token.getType() == JCLLexer.JCL_CONTINUATION) {
+                if (token.getType() == JCLLexer.JCL_STATEMENT ||
+                    token.getType() == JCLLexer.JCL_CONTINUATION ||
+                    token.getType() == JCLLexer.JCL_STREAM_END) {
                     return token.getType();
                 }
             }

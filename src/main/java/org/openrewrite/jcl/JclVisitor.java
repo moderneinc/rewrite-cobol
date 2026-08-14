@@ -62,6 +62,21 @@ public class JclVisitor<P> extends TreeVisitor<Jcl, P> {
         return j.withOperands(ListUtils.map(j.getOperands(), o -> visitAndCast(o, p)));
     }
 
+    public Jcl visitDelimiter(Jcl.Delimiter delimiter, P p) {
+        Jcl.Delimiter d = delimiter;
+        d = d.withPrefix(visitSpace(d.getPrefix(), Space.Location.DELIMITER_PREFIX, p));
+        d = d.withMarkers(visitMarkers(d.getMarkers(), p));
+        d = d.withDelimiter(visitAndCast(d.getDelimiter(), p));
+        return d.withComment(ListUtils.map(d.getComment(), w -> visitAndCast(w, p)));
+    }
+
+    public Jcl visitNullStatement(Jcl.NullStatement nullStatement, P p) {
+        Jcl.NullStatement n = nullStatement;
+        n = n.withPrefix(visitSpace(n.getPrefix(), Space.Location.NULL_STATEMENT_PREFIX, p));
+        n = n.withMarkers(visitMarkers(n.getMarkers(), p));
+        return n.withMarker(visitAndCast(n.getMarker(), p));
+    }
+
     public Jcl visitKeywordParameter(Jcl.KeywordParameter parameter, P p) {
         Jcl.KeywordParameter k = parameter;
         k = k.withPrefix(visitSpace(k.getPrefix(), Space.Location.PARAMETER_PREFIX, p));

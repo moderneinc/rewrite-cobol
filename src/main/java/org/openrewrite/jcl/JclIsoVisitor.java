@@ -40,6 +40,16 @@ public class JclIsoVisitor<P> extends JclVisitor<P> {
     }
 
     @Override
+    public Jcl.Delimiter visitDelimiter(Jcl.Delimiter delimiter, P p) {
+        return (Jcl.Delimiter) super.visitDelimiter(delimiter, p);
+    }
+
+    @Override
+    public Jcl.NullStatement visitNullStatement(Jcl.NullStatement nullStatement, P p) {
+        return (Jcl.NullStatement) super.visitNullStatement(nullStatement, p);
+    }
+
+    @Override
     public Jcl.KeywordParameter visitKeywordParameter(Jcl.KeywordParameter parameter, P p) {
         return (Jcl.KeywordParameter) super.visitKeywordParameter(parameter, p);
     }

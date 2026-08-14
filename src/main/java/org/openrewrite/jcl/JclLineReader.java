@@ -19,21 +19,32 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import org.jspecify.annotations.Nullable;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
 public class JclLineReader {
+    /**
+     * Every JCL statement there is. {@code ELSE}, {@code ENDIF} and {@code COMMAND} were missing, so
+     * a line carrying one was read as a nameless statement rather than as the statement it is.
+     * {@code THEN} is deliberately absent: it ends an {@code IF}, it is not an operation of its own.
+     */
     private static final Set<String> JCL_STATEMENT_NAMES = new HashSet<>(Arrays.asList("JOB", "JCLLIB", "CNTL", "ENDCNTL",
-            "DD", "EXEC", "EXPORT", "IF", "INCLUDE", "NOTIFY", "OUTPUT", "PEND", "PROC", "SCHEDULE", "SET", "XMIT"));
+            "COMMAND", "DD", "ELSE", "ENDIF", "EXEC", "EXPORT", "IF", "INCLUDE", "NOTIFY", "OUTPUT", "PEND", "PROC",
+            "SCHEDULE", "SET", "XMIT"));
 
     public static String readLines(String source) {
         StringBuilder p = new StringBuilder();
 
         int cursor = 0;
         JclLineContext jclLineContext = JclLineContext.NORM;
+        String streamDelimiter = null;
         Scanner scanner = new Scanner(source);
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
@@ -48,6 +59,19 @@ public class JclLineReader {
             if (line.length() > 72 && !line.substring(72).trim().isEmpty()) {
                 commentArea = line.substring(72);
                 line = line.substring(0, 72);
+            }
+
+            // A DD with DLM= ends its data at a string of its own choosing rather than at /*, which
+            // is the whole reason for saying so: it is how a member containing /* is passed through.
+            if (streamDelimiter != null && jclLineContext == JclLineContext.STREAM &&
+                line.startsWith(streamDelimiter)) {
+                p.append("^^STREAM_END^^");
+                p.append(line);
+                streamDelimiter = null;
+                jclLineContext = null;
+                cursor = appendEndOfLine(p, source, cursor + line.length() +
+                        (commentArea == null ? 0 : commentArea.length()));
+                continue;
             }
 
             if (lineType == LineType.JES2) {
@@ -104,6 +128,9 @@ public class JclLineReader {
                     }
                 }
                 jclLineContext = getLineContext(line);
+                if (jclLineContext == JclLineContext.STREAM) {
+                    streamDelimiter = streamDelimiter(operandField(line));
+                }
             } else if (lineType == LineType.COMMENT) {
                 p.append("^^COMMENT^^");
                 if (jclLineContext != JclLineContext.CONT) {
@@ -135,17 +162,24 @@ public class JclLineReader {
                 p.append(commentArea);
             }
 
-            cursor += line.length() + (trailingComment == null ? 0 : trailingComment.length()) + (commentArea == null ? 0 : commentArea.length());
-            String endOfLine = source.substring(cursor);
-            if (endOfLine.startsWith("\r\n")) {
-                p.append("\r\n");
-                cursor += 2;
-            } else if (endOfLine.startsWith("\n")) {
-                p.append("\n");
-                cursor += 1;
-            }
+            cursor = appendEndOfLine(p, source,
+                    cursor + line.length() + (trailingComment == null ? 0 : trailingComment.length()) +
+                            (commentArea == null ? 0 : commentArea.length()));
         }
         return p.toString();
+    }
+
+    private static int appendEndOfLine(StringBuilder p, String source, int cursor) {
+        String endOfLine = source.substring(cursor);
+        if (endOfLine.startsWith("\r\n")) {
+            p.append("\r\n");
+            return cursor + 2;
+        }
+        if (endOfLine.startsWith("\n")) {
+            p.append("\n");
+            return cursor + 1;
+        }
+        return cursor;
     }
 
     private static LineType getLineType(String line) {
@@ -190,53 +224,136 @@ public class JclLineReader {
 
     /**
      * The operand field of a line, which is what says whether the statement continues on the next
-     * one. It is one blank-free token, and everything after it is the comment field — so a line
-     * ending in a comment continues just as surely as one ending in a comma, and looking at the end
-     * of the line rather than the end of the operands misses it.
+     * one. Everything after it is the comment field — so a line ending in a comment continues just as
+     * surely as one ending in a comma, and looking at the end of the line misses it.
+     * <p>
+     * The field runs to the first blank <em>outside quotes</em>. Splitting on whitespace would cut
+     * {@code 'DAILY POST',CLASS=A,} in half and lose the comma that says the statement continues.
      */
     private static String operandField(String line) {
-        String[] words = line.trim().split("\\s+");
-        if (words.length < 2 || !words[0].startsWith("//")) {
-            return line.trim();
+        String trimmed = line.trim();
+        if (!trimmed.startsWith("//")) {
+            return trimmed;
         }
-        int operand = JCL_STATEMENT_NAMES.contains(words[1].toUpperCase(Locale.ROOT)) ? 2 : 1;
-        return operand < words.length ? words[operand] : "";
+        int i = endOfField(trimmed, 0);
+        int operationStart = startOfField(trimmed, i);
+        int operationEnd = endOfField(trimmed, operationStart);
+        String operation = trimmed.substring(operationStart, operationEnd).toUpperCase(Locale.ROOT);
+        if (!JCL_STATEMENT_NAMES.contains(operation)) {
+            // No operation, so what follows the name field is already the operands — a continuation.
+            return trimmed.substring(operationStart, operationEnd);
+        }
+        int start = startOfField(trimmed, operationEnd);
+        return trimmed.substring(start, endOfField(trimmed, start));
+    }
+
+    private static int startOfField(String line, int from) {
+        int i = from;
+        while (i < line.length() && (line.charAt(i) == ' ' || line.charAt(i) == '\t')) {
+            i++;
+        }
+        return i;
+    }
+
+    private static int endOfField(String line, int from) {
+        boolean quoted = false;
+        int i = from;
+        for (; i < line.length(); i++) {
+            char c = line.charAt(i);
+            if (c == '\'') {
+                quoted = !quoted;
+            } else if (!quoted && (c == ' ' || c == '\t')) {
+                break;
+            }
+        }
+        return i;
     }
 
     private static JclLineContext getLineContext(String line) {
-        if (operandField(line).endsWith(",")) {
+        String operands = operandField(line);
+        if (operands.endsWith(",")) {
             return JclLineContext.CONT;
+        }
+        if (isDataDefinition(line) && beginsInStreamData(operands)) {
+            return JclLineContext.STREAM;
         }
 
         int tickCount = 0;
-        boolean checkDD = false;
-        char[] charArray = line.trim().toCharArray();
-        char prev = '~';
-        for (int i = charArray.length - 1; i >= 0; i--) {
-            char c = charArray[i];
-            if (checkDD) {
-                if (Character.isWhitespace(c)) {
-                    prev = c;
-                    continue;
-                }
-                if (c == 'D' && prev == 'D' && i - 1 >= 0 &&
-                        (charArray[i - 1] == ' ' || charArray[i - 1] == '\t')) {
-                    return JclLineContext.STREAM;
-                }
-                if (c != 'D') {
-                    checkDD = false;
-                }
-            }
-
-            if (c == '*') {
-                checkDD = true;
-            }
+        for (char c : line.trim().toCharArray()) {
             if (c == '\'') {
                 tickCount++;
             }
-            prev = c;
         }
-
         return tickCount % 2 == 0 ? JclLineContext.NORM : JclLineContext.CONT;
+    }
+
+    private static boolean isDataDefinition(String line) {
+        String trimmed = line.trim();
+        if (!trimmed.startsWith("//")) {
+            return false;
+        }
+        int start = startOfField(trimmed, endOfField(trimmed, 0));
+        return "DD".equals(trimmed.substring(start, endOfField(trimmed, start)).toUpperCase(Locale.ROOT));
+    }
+
+    /**
+     * Whether a DD statement's operands say the data follows in the job stream. The first positional
+     * parameter is {@code *} or {@code DATA}; a keyword parameter cannot come first.
+     */
+    private static boolean beginsInStreamData(String operands) {
+        String first = firstParameter(operands).toUpperCase(Locale.ROOT);
+        return "*".equals(first) || "DATA".equals(first);
+    }
+
+    /**
+     * The string that ends the in-stream data, from {@code DLM=}. Without it the data ends at the
+     * delimiter statement {@code /*}; with it, anything at all can be the terminator, which is the
+     * point — {@code DLM} is how a member containing {@code /*} is passed through untouched.
+     */
+    private static @Nullable String streamDelimiter(String operands) {
+        for (String parameter : parameters(operands)) {
+            if (parameter.toUpperCase(Locale.ROOT).startsWith("DLM=")) {
+                String delimiter = parameter.substring(4);
+                if (delimiter.length() > 1 && delimiter.charAt(0) == '\'' && delimiter.endsWith("'")) {
+                    delimiter = delimiter.substring(1, delimiter.length() - 1);
+                }
+                return delimiter.isEmpty() ? null : delimiter;
+            }
+        }
+        return null;
+    }
+
+    private static String firstParameter(String operands) {
+        List<String> parameters = parameters(operands);
+        return parameters.isEmpty() ? "" : parameters.get(0);
+    }
+
+    /**
+     * Splits an operand field on commas outside parentheses and quotes.
+     */
+    private static List<String> parameters(String operands) {
+        List<String> parts = new ArrayList<>();
+        int depth = 0;
+        int start = 0;
+        boolean quoted = false;
+        for (int i = 0; i < operands.length(); i++) {
+            char c = operands.charAt(i);
+            if (c == '\'') {
+                quoted = !quoted;
+            } else if (quoted) {
+                continue;
+            } else if (c == '(') {
+                depth++;
+            } else if (c == ')') {
+                depth--;
+            } else if (c == ',' && depth == 0) {
+                parts.add(operands.substring(start, i));
+                start = i + 1;
+            }
+        }
+        if (start < operands.length()) {
+            parts.add(operands.substring(start));
+        }
+        return parts;
     }
 }

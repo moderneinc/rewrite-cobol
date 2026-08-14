@@ -247,6 +247,54 @@ public interface Jcl extends Tree {
     }
 
     /**
+     * The delimiter statement, which ends in-stream data: {@code /*}, or whatever the DD's
+     * {@code DLM} said instead.
+     */
+    @Value
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+    @With
+    class Delimiter implements Jcl, Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
+
+        Space prefix;
+        Markers markers;
+        Word delimiter;
+
+        /**
+         * A delimiter statement may carry a comment after it.
+         */
+        List<Word> comment;
+
+        @Override
+        public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
+            return v.visitDelimiter(this, p);
+        }
+    }
+
+    /**
+     * The null statement, {@code //} alone, which marks the end of a job.
+     */
+    @Value
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+    @With
+    class NullStatement implements Jcl, Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
+
+        Space prefix;
+        Markers markers;
+        Word marker;
+
+        @Override
+        public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
+            return v.visitNullStatement(this, p);
+        }
+    }
+
+    /**
      * A parameter written as {@code KEYWORD=value}.
      * <p>
      * The value is a list of words rather than one, because the lexer breaks a quoted string out on
