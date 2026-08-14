@@ -157,22 +157,240 @@ public interface Jcl extends Tree {
         }
     }
 
+    /**
+     * A job control statement: a name field, an operation, and the operands belonging to it, however
+     * many lines they are written over.
+     * <p>
+     * All of {@code JOB}, {@code EXEC}, {@code DD}, {@code PROC} and the rest share this shape, so
+     * they share a node and are told apart by {@link #getOperation()}. Twelve near identical classes
+     * would say nothing this does not.
+     * <p>
+     * Named for what IBM calls it rather than simply {@code Statement}, because {@link Statement} is
+     * the interface every entry in a job stream implements — comments, JES2 and JES3 control
+     * statements and in-stream data among them, all of which are statements too.
+     */
     @Value
     @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
-    class JclStatement implements Jcl, Statement {
+    class JobControlStatement implements Jcl, Statement {
 
         @EqualsAndHashCode.Include
         UUID id;
 
         Space prefix;
         Markers markers;
-        Word word;
+
+        /**
+         * The name field as written, including its leading slashes: {@code //ACCTDD}, or {@code //}
+         * for a statement with no name of its own — an unnamed step, or a DD continuing a
+         * concatenation.
+         */
+        Word name;
+
+        /**
+         * The operation. Null for a name field with nothing after it.
+         */
+        @Nullable
+        Word operation;
+
+        /**
+         * Everything after the operation, in source order: the {@link Parameter}s of the operand
+         * field, the words of any comment field, and the {@code //} beginning each continuation line.
+         * Keeping them in one ordered list is what lets the statement print back exactly, however it
+         * was laid out.
+         */
+        List<Jcl> operands;
 
         @Override
         public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
-            return v.visitJclStatement(this, p);
+            return v.visitJobControlStatement(this, p);
         }
+
+        public boolean isOperation(String operation) {
+            return this.operation != null && this.operation.getText().equalsIgnoreCase(operation);
+        }
+
+        /**
+         * The name field without its slashes, and without the procedure step qualifier of an
+         * override like {@code //STEP1.SORTIN}.
+         */
+        public String getSimpleName() {
+            String text = name.getText();
+            String unqualified = text.startsWith("//") ? text.substring(2) : text;
+            int dot = unqualified.indexOf('.');
+            return dot < 0 ? unqualified : unqualified.substring(dot + 1);
+        }
+
+        public List<Parameter> getParameters() {
+            List<Parameter> parameters = new java.util.ArrayList<>(operands.size());
+            for (Jcl operand : operands) {
+                if (operand instanceof Parameter) {
+                    parameters.add((Parameter) operand);
+                }
+            }
+            return parameters;
+        }
+
+        /**
+         * The keyword parameter of this name, or null. Keyword parameters are unique within a
+         * statement, so the first is the only one.
+         */
+        public Jcl.@Nullable KeywordParameter getParameter(String keyword) {
+            for (Parameter parameter : getParameters()) {
+                if (parameter instanceof KeywordParameter &&
+                    ((KeywordParameter) parameter).getKeyword().getText().equalsIgnoreCase(keyword)) {
+                    return (KeywordParameter) parameter;
+                }
+            }
+            return null;
+        }
+    }
+
+    /**
+     * The delimiter statement, which ends in-stream data: {@code /*}, or whatever the DD's
+     * {@code DLM} said instead.
+     */
+    @Value
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+    @With
+    class Delimiter implements Jcl, Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
+
+        Space prefix;
+        Markers markers;
+        Word delimiter;
+
+        /**
+         * A delimiter statement may carry a comment after it.
+         */
+        List<Word> comment;
+
+        @Override
+        public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
+            return v.visitDelimiter(this, p);
+        }
+    }
+
+    /**
+     * The null statement, {@code //} alone, which marks the end of a job.
+     */
+    @Value
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+    @With
+    class NullStatement implements Jcl, Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
+
+        Space prefix;
+        Markers markers;
+        Word marker;
+
+        @Override
+        public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
+            return v.visitNullStatement(this, p);
+        }
+    }
+
+    /**
+     * A parameter written as {@code KEYWORD=value}.
+     * <p>
+     * The value is a list of words rather than one, because the lexer breaks a quoted string out on
+     * its own: {@code ORDER=('SYS1.PROCLIB')} arrives as {@code ORDER=(}, {@code 'SYS1.PROCLIB'} and
+     * {@code )}. Reading the value back means joining them, and they are kept apart so that printing
+     * puts them back exactly as they were.
+     */
+    @Value
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+    @With
+    class KeywordParameter implements Jcl, Parameter {
+
+        @EqualsAndHashCode.Include
+        UUID id;
+
+        Space prefix;
+        Markers markers;
+
+        /**
+         * The keyword, without the {@code =}: {@code DSN}, {@code DISP}, {@code PGM}.
+         */
+        Word keyword;
+
+        List<Word> value;
+
+        @Override
+        public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
+            return v.visitKeywordParameter(this, p);
+        }
+
+        /**
+         * What the parameter means: the value without the {@code =} that introduces it or the comma
+         * that separates it from the next. Printing walks the words instead, so the punctuation is
+         * kept there and left out here.
+         */
+        public String getValueText() {
+            StringBuilder text = new StringBuilder();
+            for (Word word : value) {
+                text.append(word.getText());
+            }
+            return trimSeparators(text.toString().substring(1));
+        }
+
+        /**
+         * This parameter with a different value, keeping the {@code =} that introduces it and the
+         * comma that separates it from the next. Changing the value directly is easy to get wrong,
+         * because the separators live in the same words.
+         */
+        public KeywordParameter withValueText(String text) {
+            StringBuilder raw = new StringBuilder();
+            for (Word word : value) {
+                raw.append(word.getText());
+            }
+            String separator = raw.toString().endsWith(",") ? "," : "";
+            Word last = value.get(value.size() - 1);
+            return withValue(java.util.Collections.singletonList(
+                    new Word(last.getId(), Space.EMPTY, last.getMarkers(), "=" + text + separator)));
+        }
+    }
+
+    /**
+     * A parameter with no keyword: {@code *} and {@code DATA} on a DD, {@code DUMMY}, the accounting
+     * information on a JOB card, the procedure name on {@code EXEC MYPROC}.
+     */
+    @Value
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+    @With
+    class PositionalParameter implements Jcl, Parameter {
+
+        @EqualsAndHashCode.Include
+        UUID id;
+
+        Space prefix;
+        Markers markers;
+
+        List<Word> value;
+
+        @Override
+        public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
+            return v.visitPositionalParameter(this, p);
+        }
+
+        /**
+         * The value without the comma separating it from the next parameter.
+         */
+        public String getValueText() {
+            StringBuilder text = new StringBuilder();
+            for (Word word : value) {
+                text.append(word.getText());
+            }
+            return trimSeparators(text.toString());
+        }
+    }
+
+    static String trimSeparators(String text) {
+        return text.endsWith(",") ? text.substring(0, text.length() - 1) : text;
     }
 
     @Value

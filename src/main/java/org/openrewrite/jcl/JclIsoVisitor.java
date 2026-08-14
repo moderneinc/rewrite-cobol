@@ -35,8 +35,28 @@ public class JclIsoVisitor<P> extends JclVisitor<P> {
     }
 
     @Override
-    public Jcl.JclStatement visitJclStatement(Jcl.JclStatement jclStatement, P p) {
-        return (Jcl.JclStatement) super.visitJclStatement(jclStatement, p);
+    public Jcl.JobControlStatement visitJobControlStatement(Jcl.JobControlStatement statement, P p) {
+        return (Jcl.JobControlStatement) super.visitJobControlStatement(statement, p);
+    }
+
+    @Override
+    public Jcl.Delimiter visitDelimiter(Jcl.Delimiter delimiter, P p) {
+        return (Jcl.Delimiter) super.visitDelimiter(delimiter, p);
+    }
+
+    @Override
+    public Jcl.NullStatement visitNullStatement(Jcl.NullStatement nullStatement, P p) {
+        return (Jcl.NullStatement) super.visitNullStatement(nullStatement, p);
+    }
+
+    @Override
+    public Jcl.KeywordParameter visitKeywordParameter(Jcl.KeywordParameter parameter, P p) {
+        return (Jcl.KeywordParameter) super.visitKeywordParameter(parameter, p);
+    }
+
+    @Override
+    public Jcl.PositionalParameter visitPositionalParameter(Jcl.PositionalParameter parameter, P p) {
+        return (Jcl.PositionalParameter) super.visitPositionalParameter(parameter, p);
     }
 
     @Override

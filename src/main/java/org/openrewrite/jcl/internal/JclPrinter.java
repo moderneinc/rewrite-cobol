@@ -71,11 +71,55 @@ public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
     }
 
     @Override
-    public Jcl visitJclStatement(Jcl.JclStatement jclStatement, PrintOutputCapture<P> p) {
-        beforeSyntax(jclStatement, Space.Location.JCL_STATEMENT_PREFIX, p);
-        visit(jclStatement.getWord(), p);
-        afterSyntax(jclStatement, p);
-        return jclStatement;
+    public Jcl visitJobControlStatement(Jcl.JobControlStatement statement, PrintOutputCapture<P> p) {
+        beforeSyntax(statement, Space.Location.JOB_CONTROL_STATEMENT_PREFIX, p);
+        visit(statement.getName(), p);
+        visit(statement.getOperation(), p);
+        for (Jcl operand : statement.getOperands()) {
+            visit(operand, p);
+        }
+        afterSyntax(statement, p);
+        return statement;
+    }
+
+    @Override
+    public Jcl visitDelimiter(Jcl.Delimiter delimiter, PrintOutputCapture<P> p) {
+        beforeSyntax(delimiter, Space.Location.DELIMITER_PREFIX, p);
+        visit(delimiter.getDelimiter(), p);
+        for (Jcl.Word word : delimiter.getComment()) {
+            visit(word, p);
+        }
+        afterSyntax(delimiter, p);
+        return delimiter;
+    }
+
+    @Override
+    public Jcl visitNullStatement(Jcl.NullStatement nullStatement, PrintOutputCapture<P> p) {
+        beforeSyntax(nullStatement, Space.Location.NULL_STATEMENT_PREFIX, p);
+        visit(nullStatement.getMarker(), p);
+        afterSyntax(nullStatement, p);
+        return nullStatement;
+    }
+
+    @Override
+    public Jcl visitKeywordParameter(Jcl.KeywordParameter parameter, PrintOutputCapture<P> p) {
+        beforeSyntax(parameter, Space.Location.PARAMETER_PREFIX, p);
+        visit(parameter.getKeyword(), p);
+        for (Jcl.Word word : parameter.getValue()) {
+            visit(word, p);
+        }
+        afterSyntax(parameter, p);
+        return parameter;
+    }
+
+    @Override
+    public Jcl visitPositionalParameter(Jcl.PositionalParameter parameter, PrintOutputCapture<P> p) {
+        beforeSyntax(parameter, Space.Location.PARAMETER_PREFIX, p);
+        for (Jcl.Word word : parameter.getValue()) {
+            visit(word, p);
+        }
+        afterSyntax(parameter, p);
+        return parameter;
     }
 
     @Override

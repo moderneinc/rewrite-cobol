@@ -51,11 +51,45 @@ public class JclVisitor<P> extends TreeVisitor<Jcl, P> {
         return d.withWord(visitAndCast(d.getWord(), p));
     }
 
-    public Jcl visitJclStatement(Jcl.JclStatement jclStatement, P p) {
-        Jcl.JclStatement j = jclStatement;
-        j = j.withPrefix(visitSpace(j.getPrefix(), Space.Location.JES2_PREFIX, p));
+    public Jcl visitJobControlStatement(Jcl.JobControlStatement statement, P p) {
+        Jcl.JobControlStatement j = statement;
+        j = j.withPrefix(visitSpace(j.getPrefix(), Space.Location.JOB_CONTROL_STATEMENT_PREFIX, p));
         j = j.withMarkers(visitMarkers(j.getMarkers(), p));
-        return j.withWord(visitAndCast(j.getWord(), p));
+        j = j.withName(visitAndCast(j.getName(), p));
+        if (j.getOperation() != null) {
+            j = j.withOperation(visitAndCast(j.getOperation(), p));
+        }
+        return j.withOperands(ListUtils.map(j.getOperands(), o -> visitAndCast(o, p)));
+    }
+
+    public Jcl visitDelimiter(Jcl.Delimiter delimiter, P p) {
+        Jcl.Delimiter d = delimiter;
+        d = d.withPrefix(visitSpace(d.getPrefix(), Space.Location.DELIMITER_PREFIX, p));
+        d = d.withMarkers(visitMarkers(d.getMarkers(), p));
+        d = d.withDelimiter(visitAndCast(d.getDelimiter(), p));
+        return d.withComment(ListUtils.map(d.getComment(), w -> visitAndCast(w, p)));
+    }
+
+    public Jcl visitNullStatement(Jcl.NullStatement nullStatement, P p) {
+        Jcl.NullStatement n = nullStatement;
+        n = n.withPrefix(visitSpace(n.getPrefix(), Space.Location.NULL_STATEMENT_PREFIX, p));
+        n = n.withMarkers(visitMarkers(n.getMarkers(), p));
+        return n.withMarker(visitAndCast(n.getMarker(), p));
+    }
+
+    public Jcl visitKeywordParameter(Jcl.KeywordParameter parameter, P p) {
+        Jcl.KeywordParameter k = parameter;
+        k = k.withPrefix(visitSpace(k.getPrefix(), Space.Location.PARAMETER_PREFIX, p));
+        k = k.withMarkers(visitMarkers(k.getMarkers(), p));
+        k = k.withKeyword(visitAndCast(k.getKeyword(), p));
+        return k.withValue(ListUtils.map(k.getValue(), w -> visitAndCast(w, p)));
+    }
+
+    public Jcl visitPositionalParameter(Jcl.PositionalParameter parameter, P p) {
+        Jcl.PositionalParameter pp = parameter;
+        pp = pp.withPrefix(visitSpace(pp.getPrefix(), Space.Location.PARAMETER_PREFIX, p));
+        pp = pp.withMarkers(visitMarkers(pp.getMarkers(), p));
+        return pp.withValue(ListUtils.map(pp.getValue(), w -> visitAndCast(w, p)));
     }
 
     public Jcl visitJes2(Jcl.Jes2 jes2, P p) {

@@ -5,7 +5,13 @@ UTF_8_BOM : '\uFEFF' -> skip;
 WS : [ \t\f;]+ -> channel(HIDDEN);
 EOL : (CR? LF | FORM_FEED) -> channel(HIDDEN);
 
-JCL_STATEMENT : ('^^JCL_STATEMENT^^' | '^^JCL_CONT^^' | '^^JCL^^' | '^^STREAM_END^^') -> skip, pushMode(INSIDE_JCL);
+// Hidden rather than skipped: the line reader has already worked out which lines begin a statement
+// and which continue the one before, and that is the only place that information exists. Skipping it
+// threw away the one thing needed to group these words back into statements.
+JCL_STATEMENT : ('^^JCL_STATEMENT^^' | '^^JCL^^') -> channel(HIDDEN), pushMode(INSIDE_JCL);
+JCL_CONTINUATION : '^^JCL_CONT^^' -> channel(HIDDEN), pushMode(INSIDE_JCL);
+// Its own type so the delimiter statement ending in-stream data can be told from a statement.
+JCL_STREAM_END : '^^STREAM_END^^' -> channel(HIDDEN), pushMode(INSIDE_JCL);
 JCL_STREAM : '^^STREAM^^' -> skip, pushMode(INSIDE_STREAM);
 JES2 : ('^^JES2^^' | '^^JES2_CONT^^') -> skip, pushMode(INSIDE_JES2);
 JES3 : ('^^JES3^^' | '^^JES3_CONT^^') -> skip, pushMode(INSIDE_JES3);

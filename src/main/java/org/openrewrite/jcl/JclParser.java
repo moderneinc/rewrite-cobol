@@ -80,8 +80,9 @@ public class JclParser implements Parser {
                         EncodingDetectingInputStream is = sourceFile.getSource(ctx);
                         String sourceStr = is.readFully();
                         String postProcess = JclLineReader.readLines(sourceStr);
-                        JCLParser parser = new JCLParser(new CommonTokenStream(new JCLLexer(
-                                CharStreams.fromString(postProcess))));
+                        CommonTokenStream tokens = new CommonTokenStream(new JCLLexer(
+                                CharStreams.fromString(postProcess)));
+                        JCLParser parser = new JCLParser(tokens);
 
                         parser.removeErrorListeners();
                         parser.addErrorListener(new ForwardingErrorListener(sourceFile.getPath(), ctx));
@@ -91,7 +92,8 @@ public class JclParser implements Parser {
                                 sourceFile.getFileAttributes(),
                                 sourceStr,
                                 is.getCharset(),
-                                is.isCharsetBomMarked()
+                                is.isCharsetBomMarked(),
+                                tokens
                         ).visitCompilationUnit(parser.compilationUnit());
 
                         if (sysinExpander != null) {
