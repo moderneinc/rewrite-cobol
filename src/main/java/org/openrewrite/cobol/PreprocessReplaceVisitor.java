@@ -16,8 +16,10 @@
 package org.openrewrite.cobol;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
+import org.jspecify.annotations.Nullable;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.InMemoryExecutionContext;
 import org.openrewrite.cobol.tree.Cobol;
@@ -64,6 +66,7 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
                     //noinspection ConstantConditions
                     c = c.withCopybook(c.getCopybook().withLst(ListUtils.map(c.getCopybook().getLst(), preprocessor -> {
                         findReplaceableAreasVisitor.visit(preprocessor, replaceWords);
+                        requireWholeWords(findReplaceableAreasVisitor, entry.getKey());
                         if (!replaceWords.isEmpty()) {
                             ReplaceVisitor replaceVisitor = new ReplaceVisitor(replaceWords, entry.getValue(), replaceMap);
                             replaceWords.clear();
@@ -91,6 +94,7 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
             List<List<CobolPreprocessor.Word>> replaceWords = new ArrayList<>();
             FindReplaceableAreasVisitor findReplaceableAreasVisitor = new FindReplaceableAreasVisitor(entry.getKey());
             ListUtils.map(r.getCobols(), it -> findReplaceableAreasVisitor.visit(it, replaceWords, getCursor()));
+            requireWholeWords(findReplaceableAreasVisitor, entry.getKey());
 
             if (!replaceWords.isEmpty()) {
                 ReplaceVisitor replaceVisitor = new ReplaceVisitor(replaceWords, entry.getValue(), replaceMap);
@@ -101,12 +105,36 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
         return r;
     }
 
+    /**
+     * IBM Enterprise COBOL lets pseudo-text match part of a text word, so
+     * {@code ==(TAG)== BY ==CUST==} turns {@code FLG-(TAG)-OK} into {@code FLG-CUST-OK}. We cannot
+     * do that: a reductive replacement keeps the following text in its original columns by blanking
+     * the words it removes where they stand, which leaves {@code FLG-CUST     -OK} — three text
+     * words where the program means one. Refuse it rather than expand a copybook into the wrong
+     * tree.
+     */
+    private static void requireWholeWords(FindReplaceableAreasVisitor visitor, List<CobolPreprocessor.Word> from) {
+        if (visitor.isPartialWord()) {
+            StringBuilder pseudoText = new StringBuilder("==");
+            for (CobolPreprocessor.Word word : from) {
+                pseudoText.append(word.getCobolWord().getWord());
+            }
+            throw new UnsupportedOperationException("Partial word replacement is not supported: " +
+                    pseudoText.append("==."));
+        }
+    }
+
     private static class FindReplaceableAreasVisitor extends CobolPreprocessorIsoVisitor<List<List<CobolPreprocessor.Word>>> {
         private final List<CobolPreprocessor.Word> from;
         private final List<CobolPreprocessor.Word> replacements;
 
         boolean inMatch = false;
         private int fromPos = 0;
+        private boolean afterMatch = false;
+        private CobolPreprocessor.@Nullable Word previous;
+
+        @Getter
+        private boolean partialWord = false;
 
         public FindReplaceableAreasVisitor(List<CobolPreprocessor.Word> from) {
             this.from = from;
@@ -115,7 +143,16 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
 
         @Override
         public CobolPreprocessor.Word visitWord(CobolPreprocessor.Word word, List<List<CobolPreprocessor.Word>> words) {
+            if (afterMatch) {
+                afterMatch = false;
+                partialWord |= isJoined(word) && isWordChar(word.getCobolWord().getWord().charAt(0));
+            }
+
             if (!inMatch && word.getCobolWord().getWord().equals(from.get(0).getCobolWord().getWord())) {
+                partialWord |= isJoined(word) && previous != null &&
+                        isWordChar(previous.getCobolWord().getWord().charAt(previous.getCobolWord().getWord().length() - 1));
+                previous = word;
+
                 // Reset match.
                 fromPos = 0;
                 replacements.add(word);
@@ -123,6 +160,7 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
                 if (from.size() == 1) {
                     words.add(new ArrayList<>(replacements));
                     replacements.clear();
+                    afterMatch = true;
                 } else {
                     inMatch = true;
                     fromPos++;
@@ -136,6 +174,7 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
                         inMatch = false;
                         fromPos = 0;
                         replacements.clear();
+                        afterMatch = true;
                     } else {
                         fromPos++;
                     }
@@ -146,7 +185,25 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
                 }
             }
 
+            previous = word;
             return super.visitWord(word, words);
+        }
+
+        /**
+         * Whether the word is run together with whatever precedes it, rather than separated from it
+         * by whitespace or the start of a line.
+         */
+        private static boolean isJoined(CobolPreprocessor.Word word) {
+            return word.getPrefix().isEmpty() && word.getCobolWord().getSequenceArea() == null;
+        }
+
+        /**
+         * Whether the character would run into an adjacent word rather than separate from it. A
+         * period or a quotation mark abutting a match is a separator and leaves whole words on
+         * either side; a letter, digit or hyphen does not.
+         */
+        private static boolean isWordChar(char c) {
+            return Character.isLetterOrDigit(c) || c == '-' || c == '_';
         }
     }
 
@@ -449,7 +506,7 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
 				if (words.size() < to.size()) {
 					return ReplacementType.ADDITIVE;
 				}
-				if (words.size() > from.size()) {
+				if (words.size() > to.size()) {
 					return ReplacementType.REDUCTIVE;
 				}
 			}
