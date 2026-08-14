@@ -108,6 +108,7 @@ public class CobolParser implements Parser {
                         cobolDialect,
                         ((CobolPreprocessor.CompilationUnit) preprocessedCU).getPreprocessorStatements(),
                         ((CobolPreprocessor.CompilationUnit) preprocessedCU).getReplacements(),
+                        printWithoutColumns.getElidedDots(),
                         timeout
                 ).visitCompilationUnit(tokenizedCU);
                 parserListener.parsed(input, compilationUnit);

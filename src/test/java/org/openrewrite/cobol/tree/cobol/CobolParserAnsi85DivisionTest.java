@@ -27,8 +27,10 @@ import org.openrewrite.cobol.CobolTest;
 import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.internal.StringUtils;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openrewrite.cobol.Assertions.cobol;
 import static org.openrewrite.test.RewriteTest.toRecipe;
@@ -586,6 +588,91 @@ class CobolParserAnsi85DivisionTest extends CobolTest {
               000019 SAME RECORD AREA FOR IDENTIFIER                                  C_AREA.19
               000020 MULTIPLE FILE TAPE CONTAINS IDENTIFIER POSITION 10               C_AREA.20
               000021 COMMITMENT CONTROL FOR IDENTIFIER.                               C_AREA.21
+              """
+          )
+        );
+    }
+
+    /**
+     * The REPOSITORY paragraph declares the classes, interfaces, functions and program prototypes
+     * a program refers to. `FUNCTION ALL INTRINSIC` is the only form without a name.
+     */
+    @Test
+    void repositoryParagraph() {
+        AtomicInteger repositories = new AtomicInteger();
+        rewriteRun(
+          spec -> spec.recipe(toRecipe(() -> new CobolIsoVisitor<>() {
+              @Override
+              public Cobol.Repository visitRepository(Cobol.Repository repository, ExecutionContext ctx) {
+                  repositories.incrementAndGet();
+                  assertThat(repository.getWord().getWord()).isEqualTo("REPOSITORY");
+                  assertThat(repository.getDot().getWord()).isEqualTo(".");
+                  assertThat(repository.getDot2()).isNotNull();
+                  assertThat(repository.getDot2().getWord()).isEqualTo(".");
+
+                  List<Cobol.RepositoryEntry> entries = repository.getEntries();
+                  assertThat(entries).hasSize(5);
+
+                  assertThat(words(entries.get(0))).containsExactly("CLASS");
+                  assertThat(text(entries.get(0).getName())).isEqualTo("DB2-INSERT-HIST");
+                  assertThat(entries.get(0).getIs().getWord()).isEqualTo("IS");
+                  assertThat(text(entries.get(0).getLiteral())).isEqualTo("\"nazare.jmp.controller.InsertHist\"");
+
+                  assertThat(words(entries.get(1))).containsExactly("INTERFACE");
+                  assertThat(text(entries.get(1).getName())).isEqualTo("COMPARABLE");
+                  assertThat(text(entries.get(1).getLiteral())).isEqualTo("\"java.lang.Comparable\"");
+
+                  assertThat(words(entries.get(2))).containsExactly("FUNCTION", "ALL", "INTRINSIC");
+                  assertThat(entries.get(2).getName()).isNull();
+                  assertThat(entries.get(2).getIs()).isNull();
+                  assertThat(entries.get(2).getLiteral()).isNull();
+
+                  assertThat(words(entries.get(3))).containsExactly("FUNCTION");
+                  assertThat(text(entries.get(3).getName())).isEqualTo("FN-SQRT");
+                  assertThat(text(entries.get(3).getLiteral())).isEqualTo("\"SQRT\"");
+
+                  assertThat(words(entries.get(4))).containsExactly("PROGRAM");
+                  assertThat(text(entries.get(4).getName())).isEqualTo("PGM-A");
+                  assertThat(text(entries.get(4).getLiteral())).isEqualTo("\"PGMA\"");
+                  return super.visitRepository(repository, ctx);
+              }
+          })),
+          cobol(
+            """
+              000001 IDENTIFICATION DIVISION.                                         C_AREA.01
+              000002 PROGRAM-ID. REPOSITORY-TEST.                                     C_AREA.02
+              000003 ENVIRONMENT DIVISION.                                            C_AREA.03
+              000004 CONFIGURATION SECTION.                                           C_AREA.04
+              000005 REPOSITORY.                                                      C_AREA.05
+              000006     CLASS DB2-INSERT-HIST IS "nazare.jmp.controller.InsertHist"  C_AREA.06
+              000007     INTERFACE COMPARABLE IS "java.lang.Comparable"               C_AREA.07
+              000008     FUNCTION ALL INTRINSIC                                       C_AREA.08
+              000009     FUNCTION FN-SQRT IS "SQRT"                                   C_AREA.09
+              000010     PROGRAM PGM-A IS "PGMA".                                     C_AREA.10
+              000011 PROCEDURE DIVISION.                                              C_AREA.11
+              000012 STOP RUN.                                                        C_AREA.12
+              """
+          )
+        );
+        assertThat(repositories).hasValue(1);
+    }
+
+    /**
+     * Every entry is optional, so the paragraph can also stand alone.
+     */
+    @Test
+    void repositoryParagraphWithoutEntries() {
+        rewriteRun(
+          cobol(
+            """
+              000001 IDENTIFICATION DIVISION.                                         C_AREA.01
+              000002 PROGRAM-ID. REPOSITORY-EMPTY.                                    C_AREA.02
+              000003 ENVIRONMENT DIVISION.                                            C_AREA.03
+              000004 CONFIGURATION SECTION.                                           C_AREA.04
+              000005 SOURCE-COMPUTER. XXXXX082.                                       C_AREA.05
+              000006 REPOSITORY.                                                      C_AREA.06
+              000007 PROCEDURE DIVISION.                                              C_AREA.07
+              000008 STOP RUN.                                                        C_AREA.08
               """
           )
         );
@@ -1807,5 +1894,13 @@ class CobolParserAnsi85DivisionTest extends CobolTest {
               """
           )
         );
+    }
+
+    private static List<String> words(Cobol.RepositoryEntry entry) {
+        return entry.getWords().stream().map(Cobol.Word::getWord).collect(toList());
+    }
+
+    private static String text(Cobol word) {
+        return ((Cobol.Word) word).getWord();
     }
 }

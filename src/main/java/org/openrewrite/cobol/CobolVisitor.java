@@ -2906,6 +2906,26 @@ public class CobolVisitor<P> extends TreeVisitor<Cobol, P> {
         return r.withDescriptions(ListUtils.map(r.getDescriptions(), t -> visit(t, p)));
     }
 
+    public Cobol visitRepository(Cobol.Repository repository, P p) {
+        Cobol.Repository r = repository;
+        r = r.withPrefix(visitSpace(r.getPrefix(), Space.Location.REPOSITORY_PREFIX, p));
+        r = r.withMarkers(visitMarkers(r.getMarkers(), p));
+        r = r.withWord((Cobol.Word) visit(r.getWord(), p));
+        r = r.withDot((Cobol.Word) visit(r.getDot(), p));
+        r = r.withEntries(ListUtils.map(r.getEntries(), it -> (Cobol.RepositoryEntry) visit(it, p)));
+        return r.withDot2((Cobol.Word) visit(r.getDot2(), p));
+    }
+
+    public Cobol visitRepositoryEntry(Cobol.RepositoryEntry repositoryEntry, P p) {
+        Cobol.RepositoryEntry r = repositoryEntry;
+        r = r.withPrefix(visitSpace(r.getPrefix(), Space.Location.REPOSITORY_ENTRY_PREFIX, p));
+        r = r.withMarkers(visitMarkers(r.getMarkers(), p));
+        r = r.withWords(ListUtils.map(r.getWords(), it -> (Cobol.Word) visit(it, p)));
+        r = r.withName((Name) visit(r.getName(), p));
+        r = r.withIs((Cobol.Word) visit(r.getIs(), p));
+        return r.withLiteral((Literal) visit(r.getLiteral(), p));
+    }
+
     public Cobol visitRerunClause(Cobol.RerunClause rerunClause, P p) {
         Cobol.RerunClause r = rerunClause;
         r = r.withPrefix(visitSpace(r.getPrefix(), Space.Location.RERUN_CLAUSE_PREFIX, p));

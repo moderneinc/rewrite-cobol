@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// Generated from /home/sam/code/moderne/rewrite-cobol/src/main/antlr-cobol/Cobol.g4 by ANTLR 4.13.2
+// Generated from src/main/antlr-cobol/Cobol.g4 by ANTLR 4.13.2
 package org.openrewrite.cobol.internal.grammar;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
@@ -370,6 +370,20 @@ public class CobolBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitSymbolicCharacters(CobolParser.SymbolicCharactersContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitRepositoryParagraph(CobolParser.RepositoryParagraphContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitRepositoryEntry(CobolParser.RepositoryEntryContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

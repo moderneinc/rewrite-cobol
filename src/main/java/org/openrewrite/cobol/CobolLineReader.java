@@ -36,7 +36,7 @@ public class CobolLineReader {
 
     private boolean inCommentEntry = false;
 
-    public String readLines(String source, CobolDialect cobolDialect) {
+    public String readLines(String source, CobolDialect cobolDialect, boolean debuggingLinesAreComments) {
         int indicatorArea = cobolDialect.getColumns().getIndicatorArea();
         int contentAreaAStart = cobolDialect.getColumns().getContentArea();
         int contentAreaBEnd = cobolDialect.getColumns().getOtherArea();
@@ -73,9 +73,19 @@ public class CobolLineReader {
             } else {
                 contentArea = line.substring(contentAreaAStart, Math.min(line.length(), contentAreaBEnd));
             }
+            boolean isCommentLine = !indicator.isEmpty() &&
+                    (cobolDialect.getCommentIndicators().contains(indicator.charAt(0)) ||
+                            (debuggingLinesAreComments && DEBUGGING_INDICATORS.contains(indicator.charAt(0))));
+
+            if (!isCommentLine) {
+                int floatingComment = indexOfFloatingComment(contentArea);
+                if (floatingComment != -1) {
+                    contentArea = contentArea.substring(0, floatingComment);
+                }
+            }
+
             boolean isValidText = !(" ".equals(indicator) && contentArea.trim().isEmpty());
 
-            boolean isCommentLine = !indicator.isEmpty() && cobolDialect.getCommentIndicators().contains(indicator.charAt(0));
             if (inCommentEntry && !line.isEmpty()) {
                 if (startsWithTrigger(contentArea, triggersEnd)) {
                     inCommentEntry = false;

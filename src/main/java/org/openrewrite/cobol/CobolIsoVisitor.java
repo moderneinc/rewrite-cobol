@@ -1690,6 +1690,16 @@ public class CobolIsoVisitor<P> extends CobolVisitor<P> {
     }
 
     @Override
+    public Cobol.Repository visitRepository(Cobol.Repository repository, P p) {
+        return (Cobol.Repository) super.visitRepository(repository, p);
+    }
+
+    @Override
+    public Cobol.RepositoryEntry visitRepositoryEntry(Cobol.RepositoryEntry repositoryEntry, P p) {
+        return (Cobol.RepositoryEntry) super.visitRepositoryEntry(repositoryEntry, p);
+    }
+
+    @Override
     public Cobol.RerunClause visitRerunClause(Cobol.RerunClause rerunClause, P p) {
         return (Cobol.RerunClause) super.visitRerunClause(rerunClause, p);
     }

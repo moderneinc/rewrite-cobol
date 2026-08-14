@@ -16,8 +16,13 @@
 package org.openrewrite.cobol;
 
 import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.ExpectedToFail;
+import org.openrewrite.cobol.marker.ElidedDot;
+import org.openrewrite.cobol.tree.Cobol;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.openrewrite.cobol.Assertions.cobol;
 
 /**
@@ -25,14 +30,14 @@ import static org.openrewrite.cobol.Assertions.cobol;
  * {@code execCicsStatement : EXEC CICS charData END_EXEC DOT?} makes the terminating period part of
  * the EXEC. So eliding the EXEC also elides the period that ended the sentence.
  * <p>
- * When the EXEC is the only body of a period-terminated conditional, the grammar is handed
- * {@code IF WS-FLAG = 'R'} with no terminator at all, and the IF swallows the next paragraph's name
- * as a statement. This accounts for 21 of the 29 parse failures over the CardDemo, Bank-of-Z and
- * GenApp corpus.
+ * When the EXEC is the only body of a period-terminated conditional, the grammar was handed
+ * {@code IF WS-FLAG = 'R'} with no terminator at all, and the IF swallowed the next paragraph's name
+ * as a statement. The period is now re-emitted into the parser input, and the word the grammar
+ * produces for it is marked {@link ElidedDot} so that the printer takes it from the EXEC statement
+ * attached to that word rather than printing it a second time.
  */
 class ExecInConditionalTest extends CobolTest {
 
-    @ExpectedToFail("Eliding the EXEC also elides the period that terminated the sentence")
     @Test
     void execCicsAsTheOnlyBodyOfAnIf() {
         rewriteRun(
@@ -46,7 +51,11 @@ class ExecInConditionalTest extends CobolTest {
               000000        EXEC CICS SEND TEXT FROM(WS-MSG) END-EXEC.               \s
               000000 A-EXIT.                                                         \s
               000000     EXIT.                                                       \s
-              """
+              """,
+            spec -> spec.afterRecipe(cu -> {
+                assertThat(paragraphNames(cu)).containsExactly("MAIN-PARA", "A-EXIT");
+                assertThat(elidedDots(cu)).containsExactly(".");
+            })
           )
         );
     }
@@ -64,7 +73,11 @@ class ExecInConditionalTest extends CobolTest {
               000000        EXEC CICS SEND TEXT FROM(WS-MSG) END-EXEC                \s
               000000     END-IF.                                                     \s
               000000     GOBACK.                                                     \s
-              """
+              """,
+            spec -> spec.afterRecipe(cu -> {
+                assertThat(paragraphNames(cu)).containsExactly("MAIN-PARA");
+                assertThat(elidedDots(cu)).isEmpty();
+            })
           )
         );
     }
@@ -81,8 +94,87 @@ class ExecInConditionalTest extends CobolTest {
               000000     EXEC CICS RETURN END-EXEC.                                  \s
               000000 A-EXIT.                                                         \s
               000000     EXIT.                                                       \s
-              """
+              """,
+            spec -> spec.afterRecipe(cu -> {
+                assertThat(paragraphNames(cu)).containsExactly("MAIN-PARA", "A-EXIT");
+                assertThat(elidedDots(cu)).containsExactly(".");
+            })
           )
         );
+    }
+
+    /**
+     * Adjacent EXEC statements are all re-attached to the first word that follows them, so each of
+     * their periods has to be accounted for.
+     */
+    @Test
+    void consecutiveExecs() {
+        rewriteRun(
+          cobol(
+            """
+              000000 IDENTIFICATION DIVISION.                                        \s
+              000000 PROGRAM-ID. TWOEXEC.                                            \s
+              000000 PROCEDURE DIVISION.                                             \s
+              000000 MAIN-PARA.                                                      \s
+              000000     EXEC CICS ASKTIME ABSTIME(WS-ABSTIME) END-EXEC.             \s
+              000000     EXEC CICS RETURN END-EXEC.                                  \s
+              000000 A-EXIT.                                                         \s
+              000000     EXIT.                                                       \s
+              """,
+            spec -> spec.afterRecipe(cu -> {
+                assertThat(paragraphNames(cu)).containsExactly("MAIN-PARA", "A-EXIT");
+                assertThat(elidedDots(cu)).containsExactly(".", ".");
+            })
+          )
+        );
+    }
+
+    /**
+     * Outside the procedure division a period is not a sentence terminator, so the period of an
+     * elided EXEC has to stay elided or the data description entries around it stop parsing.
+     */
+    @Test
+    void execSqlInWorkingStorageKeepsItsPeriodElided() {
+        rewriteRun(
+          cobol(
+            """
+              000000 IDENTIFICATION DIVISION.                                        \s
+              000000 PROGRAM-ID. DECLTBL.                                            \s
+              000000 DATA DIVISION.                                                  \s
+              000000 WORKING-STORAGE SECTION.                                        \s
+              000000     EXEC SQL DECLARE CUSTOMER TABLE (NAME CHAR(4)) END-EXEC.    \s
+              000000 77 X PIC 99.                                                    \s
+              000000 PROCEDURE DIVISION.                                             \s
+              000000     GOBACK.                                                     \s
+              """,
+            spec -> spec.afterRecipe(cu -> assertThat(elidedDots(cu)).isEmpty())
+          )
+        );
+    }
+
+    private static List<String> paragraphNames(Cobol.CompilationUnit cu) {
+        List<String> names = new ArrayList<>();
+        new CobolIsoVisitor<Integer>() {
+            @Override
+            public Cobol.Paragraph visitParagraph(Cobol.Paragraph paragraph, Integer p) {
+                names.add(((Cobol.Word) paragraph.getParagraphName()).getWord());
+                return super.visitParagraph(paragraph, p);
+            }
+        }.visit(cu, 0);
+        return names;
+    }
+
+    private static List<String> elidedDots(Cobol.CompilationUnit cu) {
+        List<String> words = new ArrayList<>();
+        new CobolIsoVisitor<Integer>() {
+            @Override
+            public Cobol.Word visitWord(Cobol.Word word, Integer p) {
+                if (word.getMarkers().findFirst(ElidedDot.class).isPresent()) {
+                    words.add(word.getWord());
+                }
+                return super.visitWord(word, p);
+            }
+        }.visit(cu, 0);
+        return words;
     }
 }

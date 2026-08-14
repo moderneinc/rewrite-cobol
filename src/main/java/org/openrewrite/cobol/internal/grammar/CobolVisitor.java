@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// Generated from /home/sam/code/moderne/rewrite-cobol/src/main/antlr-cobol/Cobol.g4 by ANTLR 4.13.2
+// Generated from src/main/antlr-cobol/Cobol.g4 by ANTLR 4.13.2
 package org.openrewrite.cobol.internal.grammar;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -319,6 +319,18 @@ public interface CobolVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitSymbolicCharacters(CobolParser.SymbolicCharactersContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CobolParser#repositoryParagraph}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRepositoryParagraph(CobolParser.RepositoryParagraphContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CobolParser#repositoryEntry}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRepositoryEntry(CobolParser.RepositoryEntryContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link CobolParser#inputOutputSection}.
 	 * @param ctx the parse tree
