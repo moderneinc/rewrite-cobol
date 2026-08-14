@@ -24,7 +24,9 @@ import org.openrewrite.internal.ListUtils;
 import org.openrewrite.internal.StringUtils;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.openrewrite.cobol.CobolPrinterUtils.*;
@@ -109,6 +111,10 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
     private final CobolSourcePrinter<ExecutionContext> cobolStatementPrinter = new CobolSourcePrinter<>(false);
 
     private boolean inUnknownIndicator = false;
+
+    private final Set<UUID> elidedDots = new LinkedHashSet<>();
+    private boolean inProcedureDivision = false;
+    private String previousWord = "";
 
     public CobolPreprocessorOutputSourcePrinter(CobolDialect cobolDialect,
                                                 boolean printColumns) {
@@ -249,7 +255,22 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
     @Override
     public CobolPreprocessor visitExecStatement(CobolPreprocessor.ExecStatement execStatement, PrintOutputCapture<P> p) {
         addPreprocessorStatementTemplate(execStatement, p);
+
+        // Eliding the statement takes the period that ended the sentence with it, so re-emit the period for the COBOL
+        // grammar. Outside the procedure division a period is not a sentence terminator and the grammar rejects it.
+        if (!printColumns && inProcedureDivision && execStatement.getDot() != null) {
+            elidedDots.add(execStatement.getId());
+            p.append(".\n");
+        }
         return execStatement;
+    }
+
+    /**
+     * IDs of the EXEC statements whose period was re-emitted into the parser input. The word the COBOL grammar creates
+     * for each of them exists only to terminate the sentence and consumes no source.
+     */
+    public Set<UUID> getElidedDots() {
+        return elidedDots;
     }
 
     @Override
@@ -312,6 +333,12 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
 
     @Override
     public CobolPreprocessor visitWord(CobolPreprocessor.Word word, PrintOutputCapture<P> p) {
+        String currentWord = word.getCobolWord().getWord();
+        if ("DIVISION".equalsIgnoreCase(currentWord)) {
+            inProcedureDivision = "PROCEDURE".equalsIgnoreCase(previousWord);
+        }
+        previousWord = currentWord;
+
         if (!printColumns) {
             // Do not print words on lines with an unknown indicator until we know how to handle them.
             // Note: Unknown indicators are treated as comments via source code in CobolParserVisitor#isCommentIndicator.

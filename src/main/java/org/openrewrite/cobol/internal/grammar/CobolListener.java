@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// Generated from /home/sam/code/moderne/rewrite-cobol/src/main/antlr-cobol/Cobol.g4 by ANTLR 4.13.2
+// Generated from src/main/antlr-cobol/Cobol.g4 by ANTLR 4.13.2
 package org.openrewrite.cobol.internal.grammar;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -512,6 +512,26 @@ public interface CobolListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitSymbolicCharacters(CobolParser.SymbolicCharactersContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CobolParser#repositoryParagraph}.
+	 * @param ctx the parse tree
+	 */
+	void enterRepositoryParagraph(CobolParser.RepositoryParagraphContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CobolParser#repositoryParagraph}.
+	 * @param ctx the parse tree
+	 */
+	void exitRepositoryParagraph(CobolParser.RepositoryParagraphContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CobolParser#repositoryEntry}.
+	 * @param ctx the parse tree
+	 */
+	void enterRepositoryEntry(CobolParser.RepositoryEntryContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CobolParser#repositoryEntry}.
+	 * @param ctx the parse tree
+	 */
+	void exitRepositoryEntry(CobolParser.RepositoryEntryContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link CobolParser#inputOutputSection}.
 	 * @param ctx the parse tree

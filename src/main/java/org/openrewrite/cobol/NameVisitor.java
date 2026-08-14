@@ -2175,6 +2175,19 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
     }
 
     @Override
+    public Cobol.Repository visitRepository(Cobol.Repository repository, P p) {
+        Cobol.Repository r = repository;
+        return r.withEntries(ListUtils.map(r.getEntries(), e -> visitAndCast(e, p)));
+    }
+
+    @Override
+    public Cobol.RepositoryEntry visitRepositoryEntry(Cobol.RepositoryEntry repositoryEntry, P p) {
+        Cobol.RepositoryEntry r = repositoryEntry;
+        r = r.withName(visitAndCast(r.getName(), p));
+        return r.withLiteral(visitAndCast(r.getLiteral(), p));
+    }
+
+    @Override
     public Cobol.RerunClause visitRerunClause(Cobol.RerunClause rerunClause, P p) {
         Cobol.RerunClause r = rerunClause;
         r = r.withName(visitAndCast(r.getName(), p));

@@ -26,6 +26,7 @@ import org.openrewrite.cobol.CobolParsingTimeoutException;
 import org.openrewrite.cobol.internal.grammar.CobolBaseVisitor;
 import org.openrewrite.cobol.internal.grammar.CobolParser;
 import org.openrewrite.cobol.marker.CopiedWord;
+import org.openrewrite.cobol.marker.ElidedDot;
 import org.openrewrite.cobol.marker.MissingCopybook;
 import org.openrewrite.cobol.tree.*;
 import org.openrewrite.marker.Markers;
@@ -40,6 +41,9 @@ import java.util.function.Function;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.openrewrite.Tree.randomId;
+import static org.openrewrite.cobol.CobolStringUtils.DEBUGGING_INDICATORS;
+import static org.openrewrite.cobol.CobolStringUtils.indexOfFloatingComment;
+import static org.openrewrite.cobol.CobolStringUtils.isDebuggingModeEnabled;
 import static org.openrewrite.cobol.internal.CobolGrammarToken.COMMENT_ENTRY;
 import static org.openrewrite.cobol.internal.CobolGrammarToken.END_OF_FILE;
 import static org.openrewrite.cobol.tree.Space.EMPTY;
@@ -59,6 +63,14 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
 
     private final Map<String, CobolPreprocessor> preprocessorMap;
     private final Map<String, Replacement> replaceMap;
+
+    /**
+     * EXEC statements whose sentence-terminating period was re-emitted into the parser input by
+     * {@link CobolPreprocessorOutputSourcePrinter}. The period exists in the parser input only, so the word the grammar
+     * produces for it consumes nothing from the source.
+     */
+    private final Set<UUID> elidedDots;
+
     private final Duration timeout;
 
     private final long start = System.nanoTime();
@@ -70,7 +82,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     private final NavigableMap<Integer, String> indicatorAreas = new TreeMap<>();
     private final NavigableMap<Integer, String> commentAreas = new TreeMap<>();
 
-    private static final Set<Character> commentIndicators = new HashSet<>();
+    private final Set<Character> commentIndicators = new HashSet<>();
     private int cursor = 0;
 
     // Trigger condition to remove whitespace added by the template.
@@ -110,6 +122,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
 
     private String uuidComment = null;
     private Integer nextIndex = null;
+    private int pendingElidedDots = 0;
 
     public <T> T visit(@Nullable ParseTree... trees) {
         if (Duration.ofNanos(System.nanoTime() - start).compareTo(timeout) > 0) {
@@ -152,18 +165,27 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 sequenceAreas.put(pos, sequenceArea);
                 pos += sequenceArea.length();
 
+                String indicator = "";
                 if (cleanedPart.length() - 1 >= columns.getIndicatorArea()) {
-                    String indicatorArea = cleanedPart.substring(columns.getIndicatorArea(), columns.getContentArea());
-                    indicatorAreas.put(pos, indicatorArea);
-                    pos += indicatorArea.length();
+                    indicator = cleanedPart.substring(columns.getIndicatorArea(), columns.getContentArea());
+                    indicatorAreas.put(pos, indicator);
+                    pos += indicator.length();
                 }
 
+                int otherAreaStart = columns.getOtherArea();
                 if (cleanedPart.length() - 1 >= columns.getContentArea()) {
                     String contentArea = cleanedPart.substring(columns.getContentArea(), Math.min(cleanedPart.length(), columns.getOtherArea()));
+                    boolean isCommentLine = !indicator.isEmpty() && cobolDialect.getCommentIndicators().contains(indicator.charAt(0));
+                    int floatingComment = isCommentLine ? -1 : indexOfFloatingComment(contentArea);
+                    if (floatingComment != -1) {
+                        // A floating comment ends the content area early; the rest of the line is ignored like a comment area.
+                        otherAreaStart = columns.getContentArea() + floatingComment;
+                        contentArea = contentArea.substring(0, floatingComment);
+                    }
                     pos += contentArea.length();
                 }
 
-                String otherArea = cleanedPart.length() > columns.getOtherArea() ? cleanedPart.substring(columns.getOtherArea()) : "";
+                String otherArea = cleanedPart.length() > otherAreaStart ? cleanedPart.substring(otherAreaStart) : "";
                 if (!otherArea.isEmpty()) {
                     commentAreas.put(pos, otherArea);
                     pos += otherArea.length();
@@ -172,6 +194,9 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
             }
 
             commentIndicators.addAll(cobolDialect.getCommentIndicators());
+            if (!isDebuggingModeEnabled(source, cobolDialect)) {
+                commentIndicators.addAll(DEBUGGING_INDICATORS);
+            }
 
             CobolPreprocessorOutputSourcePrinter<ExecutionContext> templatePrinter = new CobolPreprocessorOutputSourcePrinter<>(cobolDialect, true);
 
@@ -4335,6 +4360,30 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     }
 
     @Override
+    public Cobol.Repository visitRepositoryParagraph(CobolParser.RepositoryParagraphContext ctx) {
+        return new Cobol.Repository(
+                EMPTY,
+                Markers.EMPTY,
+                (Cobol.Word) visit(ctx.REPOSITORY()),
+                (Cobol.Word) visit(ctx.DOT_FS(0)),
+                convertAll(ctx.repositoryEntry()),
+                ctx.DOT_FS().size() == 1 ? null : (Cobol.Word) visit(ctx.DOT_FS(1))
+        );
+    }
+
+    @Override
+    public Cobol.RepositoryEntry visitRepositoryEntry(CobolParser.RepositoryEntryContext ctx) {
+        return new Cobol.RepositoryEntry(
+                EMPTY,
+                Markers.EMPTY,
+                wordsList(ctx.CLASS(), ctx.INTERFACE(), ctx.FUNCTION(), ctx.PROGRAM(), ctx.ALL(), ctx.INTRINSIC()),
+                visitNullable(ctx.cobolWord()),
+                visitNullable(ctx.IS()),
+                visitNullable(ctx.literal())
+        );
+    }
+
+    @Override
     public Object visitRerunClause(CobolParser.RerunClauseContext ctx) {
         return new Cobol.RerunClause(
                 EMPTY,
@@ -5524,6 +5573,8 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 commentArea = (CommentArea) object;
             } else if (object instanceof Replacement) {
                 replacement = (Replacement) object;
+            } else if (object instanceof ElidedDot) {
+                markers = markers.addIfAbsent((ElidedDot) object);
             } else if (object instanceof CobolPreprocessor) {
                 if (object instanceof CopybookSource) {
                     if (!((CobolPreprocessor) object).getMarkers().findFirst(MissingCopybook.class).isPresent()) {
@@ -5963,6 +6014,16 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     private Space processTokenText(String text, List<Object> objects) {
 		parseCommentsAndEmptyLines(text, objects);
 
+		// Adjacent EXEC statements are all consumed by the first of their periods, so more than one may be pending.
+		if (pendingElidedDots > 0) {
+			if (".".equals(text)) {
+				pendingElidedDots--;
+				objects.add(new ElidedDot(randomId()));
+				return EMPTY;
+			}
+			pendingElidedDots = 0;
+		}
+
 		int saveCursor = cursor;
 		sequenceArea();
 		indicatorArea();
@@ -6011,7 +6072,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 }
 
                 int newLinePos = cursor + (source.substring(cursor).contains("\n") ? source.substring(cursor).indexOf("\n") : source.substring(cursor).length());
-                int endOfContentArea = cursor - cobolDialect.getColumns().getIndicatorArea() - 1 + cobolDialect.getColumns().getOtherArea();
+                int endOfContentArea = endOfContentArea();
                 String contentArea = source.substring(cursor, Math.min(newLinePos, endOfContentArea));
                 if (!(isCommentIndicator(indicatorArea) || contentArea.trim().isEmpty() || templateKeys.contains(contentArea))) {
                     break;
@@ -6043,7 +6104,7 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                         sequenceArea();
                         indicatorArea();
                         newLinePos = cursor + (source.substring(cursor).contains("\n") ? source.substring(cursor).indexOf("\n") : source.substring(cursor).length());
-                        endOfContentArea = cursor - cobolDialect.getColumns().getIndicatorArea() - 1 + cobolDialect.getColumns().getOtherArea();
+                        endOfContentArea = endOfContentArea();
                         contentArea = source.substring(cursor, Math.min(newLinePos, endOfContentArea));
                         if (copybookNotFoundComment.equals(contentArea)) {
                             copybookSource = copybookNotFoundComment((CopybookSource) copybookSource, lines);
@@ -6529,7 +6590,11 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         cursor += numberOfSpaces.length();
         nextIndex = Integer.valueOf(numberOfSpaces.trim());
 
-        return preprocessorMap.get(uuid.trim());
+        CobolPreprocessor statement = preprocessorMap.get(uuid.trim());
+        if (statement != null && elidedDots.contains(statement.getId())) {
+            pendingElidedDots++;
+        }
+        return statement;
     }
 
     private void parseComment(String comment) {
@@ -6548,9 +6613,18 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         return uuid;
     }
 
-    private static boolean isCommentIndicator(@Nullable IndicatorArea area) {
+    private boolean isCommentIndicator(@Nullable IndicatorArea area) {
         boolean isUnknownIndicator = area != null && ("G".equals(area.getIndicator()) || "J".equals(area.getIndicator()) || "P".equals(area.getIndicator()));
         return area != null && (isUnknownIndicator || commentIndicators.contains(area.getIndicator().charAt(0)));
+    }
+
+    /**
+     * End of the content area on the line the cursor is on, which a floating comment may start before column 73.
+     */
+    private int endOfContentArea() {
+        int endOfContentArea = cursor - cobolDialect.getColumns().getIndicatorArea() - 1 + cobolDialect.getColumns().getOtherArea();
+        Integer nextCommentArea = commentAreas.ceilingKey(cursor);
+        return nextCommentArea != null && nextCommentArea < endOfContentArea ? nextCommentArea : endOfContentArea;
     }
 
 	private @Nullable SequenceArea sequenceArea() {

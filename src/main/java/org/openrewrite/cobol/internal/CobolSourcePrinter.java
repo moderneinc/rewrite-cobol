@@ -23,6 +23,7 @@ import org.openrewrite.cobol.CobolPreprocessorVisitor;
 import org.openrewrite.cobol.CobolVisitor;
 import org.openrewrite.cobol.marker.CopiedStatement;
 import org.openrewrite.cobol.marker.CopiedWord;
+import org.openrewrite.cobol.marker.ElidedDot;
 import org.openrewrite.cobol.marker.MissingCopybook;
 import org.openrewrite.cobol.tree.*;
 import org.openrewrite.internal.StringUtils;
@@ -3259,6 +3260,28 @@ public class CobolSourcePrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
     }
 
     @Override
+    public Cobol visitRepository(Cobol.Repository repository, PrintOutputCapture<P> p) {
+        beforeSyntax(repository, Space.Location.REPOSITORY_PREFIX, p);
+        visit(repository.getWord(), p);
+        visit(repository.getDot(), p);
+        visit(repository.getEntries(), p);
+        visit(repository.getDot2(), p);
+        afterSyntax(repository, p);
+        return repository;
+    }
+
+    @Override
+    public Cobol visitRepositoryEntry(Cobol.RepositoryEntry repositoryEntry, PrintOutputCapture<P> p) {
+        beforeSyntax(repositoryEntry, Space.Location.REPOSITORY_ENTRY_PREFIX, p);
+        visit(repositoryEntry.getWords(), p);
+        visit(repositoryEntry.getName(), p);
+        visit(repositoryEntry.getIs(), p);
+        visit(repositoryEntry.getLiteral(), p);
+        afterSyntax(repositoryEntry, p);
+        return repositoryEntry;
+    }
+
+    @Override
     public Cobol visitRerunClause(Cobol.RerunClause rerunClause, PrintOutputCapture<P> p) {
         beforeSyntax(rerunClause, Space.Location.RERUN_CLAUSE_PREFIX, p);
         visit(rerunClause.getRerun(), p);
@@ -4412,7 +4435,10 @@ public class CobolSourcePrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
                 beforeSyntax(word, Space.Location.WORD_PREFIX, p);
             }
 
-            p.append(word.getWord());
+            // An elided dot was printed above, by the EXEC statement it was taken from.
+            if (!word.getMarkers().findFirst(ElidedDot.class).isPresent()) {
+                p.append(word.getWord());
+            }
 
             if (word.getCommentArea() != null && !word.getCommentArea().isAdded()) {
                 word.getCommentArea().printColumnArea(this, getCursor(), printColumns, p);

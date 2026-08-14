@@ -120,7 +120,7 @@ configurationSection
 // - configuration section paragraph ----------------------------------
 
 configurationSectionParagraph
-   : sourceComputerParagraph | objectComputerParagraph | specialNamesParagraph
+   : sourceComputerParagraph | objectComputerParagraph | specialNamesParagraph | repositoryParagraph
    // strictly, specialNamesParagraph does not belong into configurationSectionParagraph, but IBM-COBOL allows this
    ;
 
@@ -260,6 +260,17 @@ symbolicCharactersClause
 
 symbolicCharacters
    : symbolicCharacter+ (IS | ARE)? integerLiteral+
+   ;
+
+// - repository paragraph ----------------------------------
+
+repositoryParagraph
+   : REPOSITORY DOT_FS (repositoryEntry+ DOT_FS)?
+   ;
+
+repositoryEntry
+   : FUNCTION ALL INTRINSIC
+   | (CLASS | INTERFACE | FUNCTION | PROGRAM) cobolWord (IS? literal)?
    ;
 
 // -- input output section ----------------------------------
@@ -2930,7 +2941,9 @@ INPUT_OUTPUT : 'INPUT-OUTPUT';
 INSPECT : 'INSPECT';
 INSTALLATION : 'INSTALLATION';
 INTEGER : 'INTEGER';
+INTERFACE : 'INTERFACE';
 INTO : 'INTO';
+INTRINSIC : 'INTRINSIC';
 INVALID : 'INVALID';
 INVOKE : 'INVOKE';
 IS : 'IS';
@@ -3079,6 +3092,7 @@ REPLACING : 'REPLACING';
 REPORT : 'REPORT';
 REPORTING : 'REPORTING';
 REPORTS : 'REPORTS';
+REPOSITORY : 'REPOSITORY';
 REQUIRED : 'REQUIRED';
 RERUN : 'RERUN';
 RESERVE : 'RESERVE';

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// Generated from /home/sam/code/moderne/rewrite-cobol/src/main/antlr-cobol/Cobol.g4 by ANTLR 4.13.2
+// Generated from src/main/antlr-cobol/Cobol.g4 by ANTLR 4.13.2
 package org.openrewrite.cobol.internal.grammar;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -615,6 +615,30 @@ public class CobolBaseListener implements CobolListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitSymbolicCharacters(CobolParser.SymbolicCharactersContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterRepositoryParagraph(CobolParser.RepositoryParagraphContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitRepositoryParagraph(CobolParser.RepositoryParagraphContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterRepositoryEntry(CobolParser.RepositoryEntryContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitRepositoryEntry(CobolParser.RepositoryEntryContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

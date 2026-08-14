@@ -6174,6 +6174,52 @@ public interface Cobol extends Tree {
     @Value
     @EqualsAndHashCode(callSuper = false)
     @With
+    class Repository implements Cobol {
+
+        Space prefix;
+        Markers markers;
+        Word word;
+        Word dot;
+
+        @Nullable
+        List<RepositoryEntry> entries;
+
+        @Nullable
+        Word dot2;
+
+        @Override
+        public <P> Cobol acceptCobol(CobolVisitor<P> v, P p) {
+            return v.visitRepository(this, p);
+        }
+    }
+
+    @Value
+    @EqualsAndHashCode(callSuper = false)
+    @With
+    class RepositoryEntry implements Cobol {
+
+        Space prefix;
+        Markers markers;
+        List<Word> words;
+
+        @Nullable
+        Name name;
+
+        @Nullable
+        Word is;
+
+        @Nullable
+        Literal literal;
+
+        @Override
+        public <P> Cobol acceptCobol(CobolVisitor<P> v, P p) {
+            return v.visitRepositoryEntry(this, p);
+        }
+    }
+
+    @Value
+    @EqualsAndHashCode(callSuper = false)
+    @With
     class RerunClause implements Cobol {
 
         Space prefix;

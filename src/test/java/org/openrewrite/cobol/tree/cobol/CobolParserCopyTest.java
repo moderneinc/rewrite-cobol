@@ -785,14 +785,6 @@ class CobolParserCopyTest extends CobolTest {
             MOVE     "LIBCO" TO COPYSECT-3.
         SECT-COPY-4.
             MOVE     "PYTST" TO COPYSECT-4.
-        SECT-COPY-1.
-            MOVE     95427 TO COPYSECT-1.
-        SECT-COPY-2.
-            MOVE     23121 TO COPYSECT-2.
-        SECT-COPY-3.
-            MOVE     "LIBCO" TO COPYSECT-3.
-        SECT-COPY-4.
-            MOVE     "PYTST" TO COPYSECT-4.
         COPY-INIT-A.
             MOVE     "  SECTION" TO FEATURE.
         COPY-TEST-3.

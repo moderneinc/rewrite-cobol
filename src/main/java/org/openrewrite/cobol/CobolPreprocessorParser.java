@@ -44,6 +44,7 @@ import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static org.openrewrite.cobol.CobolStringUtils.isDebuggingModeEnabled;
 
 /**
  * Read preprocessed COBOL and execute preprocessor commands.
@@ -70,7 +71,8 @@ public class CobolPreprocessorParser implements Parser {
                         EncodingDetectingInputStream is = sourceFile.getSource(ctx);
                         String sourceStr = is.readFully();
 
-                        String prepareSource = new CobolLineReader().readLines(sourceStr, cobolDialect);
+                        boolean debuggingLinesAreComments = !isDebuggingModeEnabled(sourceStr, cobolDialect);
+                        String prepareSource = new CobolLineReader().readLines(sourceStr, cobolDialect, debuggingLinesAreComments);
 
                         CobolPreprocessorLexer lexer = new CobolPreprocessorLexer(CharStreams.fromString(prepareSource));
                         lexer.removeErrorListeners();
@@ -87,7 +89,8 @@ public class CobolPreprocessorParser implements Parser {
                                 sourceStr,
                                 is.getCharset(),
                                 is.isCharsetBomMarked(),
-                                cobolDialect
+                                cobolDialect,
+                                debuggingLinesAreComments
                         );
 
                         CobolPreprocessor.CompilationUnit preprocessedCU = parserVisitor.visitCompilationUnit(parser.compilationUnit());

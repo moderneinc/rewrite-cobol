@@ -78,7 +78,9 @@ public class CopybookParser implements Parser {
                     emptyList()
             );
 
-            String prepareSource = new CobolLineReader().readLines(sourceStr, cobolDialect);
+            // A copybook has no SOURCE-COMPUTER paragraph, so it cannot say whether debugging lines
+            // are live. The including program decides; here they are read as code, as before.
+            String prepareSource = new CobolLineReader().readLines(sourceStr, cobolDialect, false);
 
             CobolPreprocessorLexer lexer = new CobolPreprocessorLexer(CharStreams.fromString(prepareSource));
             lexer.removeErrorListeners();
@@ -95,7 +97,8 @@ public class CopybookParser implements Parser {
                     sourceStr,
                     is.getCharset(),
                     is.isCharsetBomMarked(),
-                    cobolDialect
+                    cobolDialect,
+                    false
             );
 
             CobolPreprocessor.CompilationUnit preprocessedCU = parserVisitor.visitCompilationUnit(parser.compilationUnit());
