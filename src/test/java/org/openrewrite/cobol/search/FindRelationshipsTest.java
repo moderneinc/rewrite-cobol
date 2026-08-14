@@ -85,6 +85,33 @@ class FindRelationshipsTest extends CobolTest {
         );
     }
 
+    /**
+     * A card can hold more than one BIND, and each one's MEMBERs are those written before the next
+     * BIND begins.
+     */
+    @Test
+    void multipleBindsOnOneCard() {
+        rewriteRun(
+          spec -> spec.dataTable(Row.class, rows -> {
+              assertThat(rows).extracting(Row::getDependency)
+                .containsExactlyInAnyOrder("FIRSTPGM", "SECONDPGM", "LINKEDIT9");
+              assertThat(rows).extracting(Row::getAction).contains(MEMBER, PLAN);
+          }),
+          text(
+            """
+              BIND PACKAGE(&PROD0.EXT) OWNER(&SBS100S) -
+                 QUALIFIER(&SBS100S.EXT) MEMBER(FIRSTPGM) -
+                 ACTION(ADD)
+              BIND PACKAGE(&PROD1.EXT) OWNER(&SBS100S) -
+                 QUALIFIER(&SBS100S.EXT) MEMBER(SECONDPGM) -
+                 ACTION(ADD)
+              BIND PLAN(LINKEDIT9) OWNER(SBS100S) -
+                 PKLIST(PROD0.*)
+              """,
+            spec -> spec.path("bindcards/MULTIBIND"))
+        );
+    }
+
     @Test
     void includeCopybookWithCopyAndInclude() {
         rewriteRun(
