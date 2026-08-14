@@ -19,7 +19,7 @@ grammar CobolPreprocessor;
 options { caseInsensitive = true; }
 
 compilationUnit
-   : (compilerOptions | copyStatement | execCicsStatement | execSqlStatement | execSqlIncludeStatement | execSqlImsStatement | replaceOffStatement | replaceArea | ejectStatement | skipStatement | titleStatement | charDataLine)* EOF
+   : (compilerOptions | copyStatement | execCicsStatement | execDliStatement | execSqlStatement | execSqlIncludeStatement | execSqlImsStatement | replaceOffStatement | replaceArea | ejectStatement | skipStatement | titleStatement | charDataLine)* EOF
    ;
 
 // compiler options
@@ -158,6 +158,12 @@ compilerOption
 
 execCicsStatement
    : EXEC CICS charData END_EXEC DOT?
+   ;
+
+// exec dli statement
+
+execDliStatement
+   : EXEC DLI charData END_EXEC DOT?
    ;
 
 // exec sql statement

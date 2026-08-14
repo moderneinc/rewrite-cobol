@@ -68,7 +68,26 @@ public class CobolRelationships extends DataTable<CobolRelationships.Row> {
         SQL_CURSOR,
         SQL_TABLE,
         CONTROL_M_SCHEDULE,
-        JCL
+        JCL,
+        CICS_FILE,
+        CICS_TS_QUEUE,
+        CICS_TD_QUEUE,
+        CICS_TRANSACTION,
+        CICS_MAP,
+        CICS_MAPSET,
+        /**
+         * An IMS database segment. Which database it belongs to comes from the PSB, not the COBOL.
+         */
+        IMS_SEGMENT,
+        /**
+         * A PCB, identified by the name the program gives it. Its position in the PSB is carried in
+         * the action metadata, because that position is what names the database.
+         */
+        IMS_PCB,
+        /**
+         * The IMS message queue, reached through the I/O PCB.
+         */
+        IMS_MESSAGE_QUEUE
     }
 
     public enum ResourceAction {
@@ -101,6 +120,24 @@ public class CobolRelationships extends DataTable<CobolRelationships.Row> {
         /**
          * A Control-M schedule triggers a JCL job or a Control-M schedules another Control-M job.
          */
-        TRIGGERS
+        TRIGGERS,
+        /**
+         * {@code EXEC CICS LINK} calls another program and gets control back.
+         */
+        LINK,
+        /**
+         * {@code EXEC CICS XCTL} transfers to another program and does not get control back.
+         */
+        XCTL,
+        /**
+         * {@code EXEC CICS START} schedules a transaction, or {@code RETURN TRANSID} names the one
+         * that continues the conversation.
+         */
+        START,
+        /**
+         * A BMS map is sent to or received from a terminal.
+         */
+        SEND,
+        RECEIVE
     }
 }
