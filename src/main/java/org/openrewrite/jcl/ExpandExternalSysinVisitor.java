@@ -72,11 +72,11 @@ public class ExpandExternalSysinVisitor<P> extends JclIsoVisitor<P> {
         boolean changed = false;
 
         for (Statement statement : cu.getStatements()) {
-            if (!(statement instanceof Jcl.JclStatement) || !((Jcl.JclStatement) statement).isOperation("DD")) {
+            if (!(statement instanceof Jcl.JobControlStatement) || !((Jcl.JobControlStatement) statement).isOperation("DD")) {
                 out.add(statement);
                 continue;
             }
-            Jcl.JclStatement dd = (Jcl.JclStatement) statement;
+            Jcl.JobControlStatement dd = (Jcl.JobControlStatement) statement;
             Jcl.KeywordParameter dsn = dd.getParameter("DSN");
             if (dsn == null) {
                 dsn = dd.getParameter("DSNAME");
@@ -105,7 +105,7 @@ public class ExpandExternalSysinVisitor<P> extends JclIsoVisitor<P> {
      * Returns the marker for a qualifying input DD that references a specific member, or
      * {@code null} when the DD does not qualify for expansion.
      */
-    private @Nullable ParmMember evaluate(Jcl.JclStatement dd, Jcl.KeywordParameter dsnParameter) {
+    private @Nullable ParmMember evaluate(Jcl.JobControlStatement dd, Jcl.KeywordParameter dsnParameter) {
         // The value keeps its leading = so that printing puts it back; the data set name is what
         // follows it.
         String dsn = dsnParameter.getValueText();

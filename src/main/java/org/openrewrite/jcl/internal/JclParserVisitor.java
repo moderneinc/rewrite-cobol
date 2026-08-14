@@ -187,7 +187,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
             operands.add(word);
         }
 
-        statements.add(new Jcl.JclStatement(randomId(), prefix, Markers.EMPTY, name, operation, operands));
+        statements.add(new Jcl.JobControlStatement(randomId(), prefix, Markers.EMPTY, name, operation, operands));
     }
 
     /**

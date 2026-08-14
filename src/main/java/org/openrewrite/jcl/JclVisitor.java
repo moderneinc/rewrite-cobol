@@ -51,9 +51,9 @@ public class JclVisitor<P> extends TreeVisitor<Jcl, P> {
         return d.withWord(visitAndCast(d.getWord(), p));
     }
 
-    public Jcl visitJclStatement(Jcl.JclStatement jclStatement, P p) {
-        Jcl.JclStatement j = jclStatement;
-        j = j.withPrefix(visitSpace(j.getPrefix(), Space.Location.JCL_STATEMENT_PREFIX, p));
+    public Jcl visitJobControlStatement(Jcl.JobControlStatement statement, P p) {
+        Jcl.JobControlStatement j = statement;
+        j = j.withPrefix(visitSpace(j.getPrefix(), Space.Location.JOB_CONTROL_STATEMENT_PREFIX, p));
         j = j.withMarkers(visitMarkers(j.getMarkers(), p));
         j = j.withName(visitAndCast(j.getName(), p));
         if (j.getOperation() != null) {

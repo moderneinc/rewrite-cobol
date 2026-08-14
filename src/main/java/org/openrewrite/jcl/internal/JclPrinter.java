@@ -71,15 +71,15 @@ public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
     }
 
     @Override
-    public Jcl visitJclStatement(Jcl.JclStatement jclStatement, PrintOutputCapture<P> p) {
-        beforeSyntax(jclStatement, Space.Location.JCL_STATEMENT_PREFIX, p);
-        visit(jclStatement.getName(), p);
-        visit(jclStatement.getOperation(), p);
-        for (Jcl operand : jclStatement.getOperands()) {
+    public Jcl visitJobControlStatement(Jcl.JobControlStatement statement, PrintOutputCapture<P> p) {
+        beforeSyntax(statement, Space.Location.JOB_CONTROL_STATEMENT_PREFIX, p);
+        visit(statement.getName(), p);
+        visit(statement.getOperation(), p);
+        for (Jcl operand : statement.getOperands()) {
             visit(operand, p);
         }
-        afterSyntax(jclStatement, p);
-        return jclStatement;
+        afterSyntax(statement, p);
+        return statement;
     }
 
     @Override

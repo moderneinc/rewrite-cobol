@@ -21,7 +21,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.openrewrite.jcl.marker.GeneratedParmContent;
 import org.openrewrite.jcl.marker.ParmMember;
 import org.openrewrite.jcl.tree.Jcl.DataDefinitionStream;
-import org.openrewrite.jcl.tree.Jcl.JclStatement;
+import org.openrewrite.jcl.tree.Jcl.JobControlStatement;
 import org.openrewrite.test.RewriteTest;
 
 import java.nio.file.Path;
@@ -71,8 +71,8 @@ class ExternalSysinTest implements RewriteTest {
     }
 
     private static String wordText(Statement s) {
-        if (s instanceof JclStatement) {
-            return ((JclStatement) s).getName().getText();
+        if (s instanceof JobControlStatement) {
+            return ((JobControlStatement) s).getName().getText();
         }
         if (s instanceof DataDefinitionStream) {
             return ((DataDefinitionStream) s).getWord().getText();

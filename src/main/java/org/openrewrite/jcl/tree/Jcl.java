@@ -158,17 +158,21 @@ public interface Jcl extends Tree {
     }
 
     /**
-     * One JCL statement: a name field, an operation, and the operands belonging to it, however many
-     * lines they are written over.
+     * A job control statement: a name field, an operation, and the operands belonging to it, however
+     * many lines they are written over.
      * <p>
      * All of {@code JOB}, {@code EXEC}, {@code DD}, {@code PROC} and the rest share this shape, so
      * they share a node and are told apart by {@link #getOperation()}. Twelve near identical classes
      * would say nothing this does not.
+     * <p>
+     * Named for what IBM calls it rather than simply {@code Statement}, because {@link Statement} is
+     * the interface every entry in a job stream implements — comments, JES2 and JES3 control
+     * statements and in-stream data among them, all of which are statements too.
      */
     @Value
     @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
-    class JclStatement implements Jcl, Statement {
+    class JobControlStatement implements Jcl, Statement {
 
         @EqualsAndHashCode.Include
         UUID id;
@@ -199,7 +203,7 @@ public interface Jcl extends Tree {
 
         @Override
         public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
-            return v.visitJclStatement(this, p);
+            return v.visitJobControlStatement(this, p);
         }
 
         public boolean isOperation(String operation) {

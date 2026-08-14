@@ -35,8 +35,8 @@ public class JclIsoVisitor<P> extends JclVisitor<P> {
     }
 
     @Override
-    public Jcl.JclStatement visitJclStatement(Jcl.JclStatement jclStatement, P p) {
-        return (Jcl.JclStatement) super.visitJclStatement(jclStatement, p);
+    public Jcl.JobControlStatement visitJobControlStatement(Jcl.JobControlStatement statement, P p) {
+        return (Jcl.JobControlStatement) super.visitJobControlStatement(statement, p);
     }
 
     @Override

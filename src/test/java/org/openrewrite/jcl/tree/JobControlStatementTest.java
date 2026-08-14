@@ -32,7 +32,7 @@ import static org.openrewrite.jcl.Assertions.jcl;
  * round-trips perfectly while telling you nothing. These check that the words are grouped into the
  * statements they belong to and that the parts of a statement are what they claim to be.
  */
-class JclStatementTest implements RewriteTest {
+class JobControlStatementTest implements RewriteTest {
 
     @Test
     void aStatementIsOneNode() {
@@ -44,14 +44,14 @@ class JclStatementTest implements RewriteTest {
               //ACCTDD   DD  DSN=PROD.ACCOUNT.MASTER,DISP=SHR
               """,
             spec -> spec.afterRecipe(cu -> {
-                List<Jcl.JclStatement> statements = statementsIn(cu);
+                List<Jcl.JobControlStatement> statements = statementsIn(cu);
                 assertThat(statements).hasSize(3);
-                assertThat(statements).extracting(Jcl.JclStatement::getSimpleName)
+                assertThat(statements).extracting(Jcl.JobControlStatement::getSimpleName)
                   .containsExactly("ACCTJOB", "STEP010", "ACCTDD");
                 assertThat(statements).extracting(s -> s.getOperation().getText())
                   .containsExactly("JOB", "EXEC", "DD");
 
-                Jcl.JclStatement dd = statements.get(2);
+                Jcl.JobControlStatement dd = statements.get(2);
                 assertThat(dd.isOperation("DD")).isTrue();
                 assertThat(dd.getParameter("DSN")).isNotNull();
                 assertThat(dd.getParameter("DSN").getValueText()).isEqualTo("PROD.ACCOUNT.MASTER");
@@ -121,7 +121,7 @@ class JclStatementTest implements RewriteTest {
               //SORTIN   DD  DSN=PROD.TRAN.DAILY,DISP=SHR
               """,
             spec -> spec.afterRecipe(cu -> {
-                List<Jcl.JclStatement> statements = statementsIn(cu);
+                List<Jcl.JobControlStatement> statements = statementsIn(cu);
                 assertThat(statements.get(0).getParameters()).singleElement()
                   .isInstanceOf(Jcl.PositionalParameter.class)
                   .satisfies(p -> assertThat(((Jcl.PositionalParameter) p).getValueText()).isEqualTo("DUMMY"));
@@ -185,10 +185,10 @@ class JclStatementTest implements RewriteTest {
         );
     }
 
-    private static List<Jcl.JclStatement> statementsIn(Jcl.CompilationUnit cu) {
+    private static List<Jcl.JobControlStatement> statementsIn(Jcl.CompilationUnit cu) {
         return cu.getStatements().stream()
-                .filter(Jcl.JclStatement.class::isInstance)
-                .map(Jcl.JclStatement.class::cast)
+                .filter(Jcl.JobControlStatement.class::isInstance)
+                .map(Jcl.JobControlStatement.class::cast)
                 .collect(Collectors.toList());
     }
 }

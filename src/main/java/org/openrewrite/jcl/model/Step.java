@@ -56,7 +56,7 @@ public class Step {
      * The EXEC statement itself, for anything this model does not name — {@code PARM}, {@code COND},
      * {@code REGION} — and so that a recipe can mark or rewrite it.
      */
-    Jcl.JclStatement statement;
+    Jcl.JobControlStatement statement;
 
     /**
      * The DD of this step with the given name, or null. DD names are unique within a step, which is

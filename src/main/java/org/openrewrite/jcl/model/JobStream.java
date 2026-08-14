@@ -33,7 +33,7 @@ import static java.util.Collections.unmodifiableList;
 /**
  * A job as a run of steps, each with the data sets it uses.
  * <p>
- * The tree already says what each statement is — {@link Jcl.JclStatement} carries its name field,
+ * The tree already says what each statement is — {@link Jcl.JobControlStatement} carries its name field,
  * its operation and its typed parameters — so this adds only the shape above it: which DD statements
  * belong to which step, which data sets a concatenation names, and what a {@code DISP} means. It
  * reads the tree and holds no text of its own.
@@ -54,7 +54,7 @@ public class JobStream {
     /**
      * The {@code JOB} statement, or null when the member has none.
      */
-    Jcl.@Nullable JclStatement job;
+    Jcl.@Nullable JobControlStatement job;
 
     List<Step> steps;
 
@@ -69,17 +69,17 @@ public class JobStream {
 
     public static JobStream of(Jcl.CompilationUnit cu) {
         String jobName = "";
-        Jcl.JclStatement job = null;
+        Jcl.JobControlStatement job = null;
         List<Step> steps = new ArrayList<>();
 
-        Jcl.JclStatement exec = null;
+        Jcl.JobControlStatement exec = null;
         List<DataDefinition> dds = new ArrayList<>();
 
         for (Statement statement : cu.getStatements()) {
-            if (!(statement instanceof Jcl.JclStatement)) {
+            if (!(statement instanceof Jcl.JobControlStatement)) {
                 continue;
             }
-            Jcl.JclStatement jcl = (Jcl.JclStatement) statement;
+            Jcl.JobControlStatement jcl = (Jcl.JobControlStatement) statement;
             if (jcl.isOperation("JOB")) {
                 job = jcl;
                 jobName = jcl.getSimpleName();
@@ -99,7 +99,7 @@ public class JobStream {
         return new JobStream(jobName, job, unmodifiableList(steps));
     }
 
-    private static Step step(Jcl.JclStatement exec, List<DataDefinition> dds) {
+    private static Step step(Jcl.JobControlStatement exec, List<DataDefinition> dds) {
         String program = value(exec, "PGM");
         String procedure = value(exec, "PROC");
         if (program == null && procedure == null) {
@@ -119,13 +119,13 @@ public class JobStream {
      * it. Read as separate statements, a concatenation reports data sets that nothing names — which
      * is the shape every STEPLIB in a portfolio takes.
      */
-    private static void addDataDefinition(List<DataDefinition> dds, Jcl.JclStatement dd) {
+    private static void addDataDefinition(List<DataDefinition> dds, Jcl.JobControlStatement dd) {
         DataDefinition definition = definitionOf(dd);
         if (dd.getSimpleName().isEmpty() && !dds.isEmpty()) {
             DataDefinition previous = dds.remove(dds.size() - 1);
             List<DataSet> combined = new ArrayList<>(previous.getDataSets());
             combined.addAll(definition.getDataSets());
-            List<Jcl.JclStatement> statements = new ArrayList<>(previous.getStatements());
+            List<Jcl.JobControlStatement> statements = new ArrayList<>(previous.getStatements());
             statements.add(dd);
             dds.add(new DataDefinition(previous.getName(), unmodifiableList(combined),
                     previous.isInStream(), previous.getSysout(), previous.isDummy(),
@@ -135,7 +135,7 @@ public class JobStream {
         dds.add(definition);
     }
 
-    private static DataDefinition definitionOf(Jcl.JclStatement dd) {
+    private static DataDefinition definitionOf(Jcl.JobControlStatement dd) {
         boolean inStream = false;
         boolean dummy = false;
         for (Parameter parameter : dd.getParameters()) {
@@ -170,7 +170,7 @@ public class JobStream {
      * The value of a keyword parameter, without its {@code =}, or null when the statement has no such
      * parameter.
      */
-    private static @Nullable String value(Jcl.JclStatement statement, String keyword) {
+    private static @Nullable String value(Jcl.JobControlStatement statement, String keyword) {
         Jcl.KeywordParameter parameter = statement.getParameter(keyword);
         return parameter == null ? null : parameter.getValueText();
     }
@@ -179,7 +179,7 @@ public class JobStream {
      * Every keyword parameter of a statement, keyed by upper cased keyword, for questions the model
      * does not name: {@code SPACE}, {@code RECFM}, {@code AMP}.
      */
-    public static Map<String, String> parameters(Jcl.JclStatement statement) {
+    public static Map<String, String> parameters(Jcl.JobControlStatement statement) {
         Map<String, String> parameters = new LinkedHashMap<>();
         for (Parameter parameter : statement.getParameters()) {
             if (parameter instanceof Jcl.KeywordParameter) {

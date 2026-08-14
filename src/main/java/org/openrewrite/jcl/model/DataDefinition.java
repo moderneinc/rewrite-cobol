@@ -74,5 +74,5 @@ public class DataDefinition {
      * The DD statements this came from — more than one for a concatenation. Anything the model does
      * not name is on them, and a recipe that wants to mark or rewrite the DD works through them.
      */
-    List<Jcl.JclStatement> statements;
+    List<Jcl.JobControlStatement> statements;
 }

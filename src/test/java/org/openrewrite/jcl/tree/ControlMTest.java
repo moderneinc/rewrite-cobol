@@ -64,7 +64,7 @@ class ControlMTest implements RewriteTest {
     }
 
     @Test
-    void cmAfterJclStatement() {
+    void cmAfterJobControlStatement() {
         rewriteRun(
           jcl(
             """
