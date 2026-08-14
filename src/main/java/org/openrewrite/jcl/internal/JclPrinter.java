@@ -73,9 +73,34 @@ public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
     @Override
     public Jcl visitJclStatement(Jcl.JclStatement jclStatement, PrintOutputCapture<P> p) {
         beforeSyntax(jclStatement, Space.Location.JCL_STATEMENT_PREFIX, p);
-        visit(jclStatement.getWord(), p);
+        visit(jclStatement.getName(), p);
+        visit(jclStatement.getOperation(), p);
+        for (Jcl operand : jclStatement.getOperands()) {
+            visit(operand, p);
+        }
         afterSyntax(jclStatement, p);
         return jclStatement;
+    }
+
+    @Override
+    public Jcl visitKeywordParameter(Jcl.KeywordParameter parameter, PrintOutputCapture<P> p) {
+        beforeSyntax(parameter, Space.Location.PARAMETER_PREFIX, p);
+        visit(parameter.getKeyword(), p);
+        for (Jcl.Word word : parameter.getValue()) {
+            visit(word, p);
+        }
+        afterSyntax(parameter, p);
+        return parameter;
+    }
+
+    @Override
+    public Jcl visitPositionalParameter(Jcl.PositionalParameter parameter, PrintOutputCapture<P> p) {
+        beforeSyntax(parameter, Space.Location.PARAMETER_PREFIX, p);
+        for (Jcl.Word word : parameter.getValue()) {
+            visit(word, p);
+        }
+        afterSyntax(parameter, p);
+        return parameter;
     }
 
     @Override

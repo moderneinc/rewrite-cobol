@@ -53,9 +53,28 @@ public class JclVisitor<P> extends TreeVisitor<Jcl, P> {
 
     public Jcl visitJclStatement(Jcl.JclStatement jclStatement, P p) {
         Jcl.JclStatement j = jclStatement;
-        j = j.withPrefix(visitSpace(j.getPrefix(), Space.Location.JES2_PREFIX, p));
+        j = j.withPrefix(visitSpace(j.getPrefix(), Space.Location.JCL_STATEMENT_PREFIX, p));
         j = j.withMarkers(visitMarkers(j.getMarkers(), p));
-        return j.withWord(visitAndCast(j.getWord(), p));
+        j = j.withName(visitAndCast(j.getName(), p));
+        if (j.getOperation() != null) {
+            j = j.withOperation(visitAndCast(j.getOperation(), p));
+        }
+        return j.withOperands(ListUtils.map(j.getOperands(), o -> visitAndCast(o, p)));
+    }
+
+    public Jcl visitKeywordParameter(Jcl.KeywordParameter parameter, P p) {
+        Jcl.KeywordParameter k = parameter;
+        k = k.withPrefix(visitSpace(k.getPrefix(), Space.Location.PARAMETER_PREFIX, p));
+        k = k.withMarkers(visitMarkers(k.getMarkers(), p));
+        k = k.withKeyword(visitAndCast(k.getKeyword(), p));
+        return k.withValue(ListUtils.map(k.getValue(), w -> visitAndCast(w, p)));
+    }
+
+    public Jcl visitPositionalParameter(Jcl.PositionalParameter parameter, P p) {
+        Jcl.PositionalParameter pp = parameter;
+        pp = pp.withPrefix(visitSpace(pp.getPrefix(), Space.Location.PARAMETER_PREFIX, p));
+        pp = pp.withMarkers(visitMarkers(pp.getMarkers(), p));
+        return pp.withValue(ListUtils.map(pp.getValue(), w -> visitAndCast(w, p)));
     }
 
     public Jcl visitJes2(Jcl.Jes2 jes2, P p) {

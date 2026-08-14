@@ -16,11 +16,14 @@
 package org.openrewrite.jcl.internal;
 
 import lombok.RequiredArgsConstructor;
+import org.antlr.v4.runtime.BufferedTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.FileAttributes;
+import org.openrewrite.jcl.internal.grammar.JCLLexer;
 import org.openrewrite.jcl.internal.grammar.JCLParser;
 import org.openrewrite.jcl.internal.grammar.JCLParserBaseVisitor;
 import org.openrewrite.jcl.marker.CommentArea;
@@ -35,6 +38,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Collections.singletonList;
 import static org.openrewrite.Tree.randomId;
 import static org.openrewrite.jcl.tree.Space.EMPTY;
 
@@ -46,6 +50,13 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
     private final String source;
     private final Charset charset;
     private final boolean charsetBomMarked;
+
+    /**
+     * The line reader works out which lines begin a statement and which continue one, and puts that
+     * on the hidden channel. It is the only place that information survives, so grouping words back
+     * into statements needs the token stream rather than just the parse tree.
+     */
+    private final BufferedTokenStream tokens;
 
     private int cursor = 0;
 
@@ -62,9 +73,20 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
     @Override
     public Jcl.CompilationUnit visitCompilationUnit(JCLParser.CompilationUnitContext ctx) {
         List<Statement> statements = new ArrayList<>(ctx.statement().size());
+        List<JCLParser.JclContext> pending = new ArrayList<>();
+
         for (JCLParser.StatementContext statement : ctx.statement()) {
-            statements.add((Statement) visitStatement(statement));
+            if (statement.jcl() == null) {
+                flush(pending, statements);
+                statements.add((Statement) visitStatement(statement));
+                continue;
+            }
+            if (beginsStatement(statement.jcl())) {
+                flush(pending, statements);
+            }
+            pending.add(statement.jcl());
         }
+        flush(pending, statements);
 
         return new Jcl.CompilationUnit(
                 randomId(),
@@ -112,32 +134,205 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
         );
     }
 
-    @Override
-    public Jcl visitJclWord(JCLParser.JclWordContext ctx) {
-        Space prefix = whitespace();
-        Markers markers = Markers.EMPTY;
-        Jcl.Word word = visit(ctx.JCL_TEXT(), ctx.JCL_STRINGLITERAL());
-        if (ctx.jclCommentArea() != null) {
-            markers = markers.addIfAbsent(mapCommentArea(ctx.jclCommentArea()));
+    /**
+     * Turns the words gathered so far into one statement: name field, operation, and everything
+     * after it.
+     * <p>
+     * The operand field ends at the first blank on a line, and what follows is the comment field.
+     * Those comment words stay in the operand list as plain words rather than becoming parameters,
+     * so that the statement still prints back exactly while only the parts that mean something are
+     * typed.
+     */
+    private void flush(List<JCLParser.JclContext> pending, List<Statement> statements) {
+        if (pending.isEmpty()) {
+            return;
         }
-        return new Jcl.JclStatement(
-                randomId(),
-                prefix,
-                markers,
-                word
-        );
+        Space prefix = whitespace();
+        List<Jcl.Word> words = new ArrayList<>(pending.size());
+        List<Boolean> startsLine = new ArrayList<>(pending.size());
+        for (JCLParser.JclContext jcl : pending) {
+            words.add(word(jcl));
+            startsLine.add(beginsLine(jcl));
+        }
+        pending.clear();
+
+        Jcl.Word name = words.get(0).withPrefix(EMPTY);
+        Jcl.Word operation = words.size() > 1 ? words.get(1) : null;
+
+        List<Jcl> operands = new ArrayList<>();
+        boolean expectOperand = operation != null;
+        for (int i = 2; i < words.size(); i++) {
+            Jcl.Word word = words.get(i);
+            if (startsLine.get(i)) {
+                // The // opening a continuation line. Kept as a word: it is punctuation, not an
+                // operand, and the operand field starts again after it.
+                operands.add(word);
+                expectOperand = true;
+                continue;
+            }
+            if (expectOperand) {
+                // The operand field runs to the first blank. A quoted string is its own token, so it
+                // can span several words — the ones with nothing between them.
+                StringBuilder run = new StringBuilder(word.getText());
+                Jcl.Word last = word;
+                while (i + 1 < words.size() && !startsLine.get(i + 1) &&
+                       words.get(i + 1).getPrefix().getWhitespace().isEmpty()) {
+                    last = words.get(++i);
+                    run.append(last.getText());
+                }
+                operands.addAll(parameters(word.getPrefix(), run.toString(), last.getMarkers()));
+                expectOperand = false;
+                continue;
+            }
+            operands.add(word);
+        }
+
+        statements.add(new Jcl.JclStatement(randomId(), prefix, Markers.EMPTY, name, operation, operands));
     }
 
-    @Override
-    public Jcl visitJclTrailingComment(JCLParser.JclTrailingCommentContext ctx) {
-        Markers markers = Markers.EMPTY;
-        Jcl.JclStatement jclStatement = (Jcl.JclStatement) visit(ctx.jclWord(0));
+    /**
+     * The parameters of one operand field.
+     * <p>
+     * The field is a comma separated list, and the commas are not aligned with the tokens: the lexer
+     * breaks on quotes, so {@code (ACCT),'DAILY POST',CLASS=A} arrives as three words of which the
+     * last holds two parameters. So the run is split on its text rather than on token boundaries,
+     * with each comma kept on the parameter it follows. Concatenating the results reproduces the run
+     * exactly, which is what printing needs.
+     *
+     * @param trailing markers from the last word of the run — a comment area belongs at the end of
+     *                 the line, so it goes on the last parameter.
+     */
+    private static List<Jcl> parameters(Space prefix, String run, Markers trailing) {
+        List<Jcl> parameters = new ArrayList<>();
+        for (String text : splitOnTopLevelCommas(run)) {
+            boolean isLast = parameters.size() == countOf(run) - 1;
+            Markers markers = isLast ? trailing : Markers.EMPTY;
+            Space parameterPrefix = parameters.isEmpty() ? prefix : EMPTY;
 
-        markers = markers.addIfAbsent(mapTrailingComment(ctx.jclWord().subList(1, ctx.jclWord().size())));
-        if (ctx.jclCommentArea() != null) {
-            markers = markers.addIfAbsent(mapCommentArea(ctx.jclCommentArea()));
+            int equals = indexOfAssignment(text);
+            if (equals <= 0) {
+                parameters.add(new Jcl.PositionalParameter(randomId(), parameterPrefix, Markers.EMPTY,
+                        singletonList(new Jcl.Word(randomId(), EMPTY, markers, text))));
+            } else {
+                // The keyword is its own word so it can be read and replaced without string work.
+                Jcl.Word keyword = new Jcl.Word(randomId(), EMPTY, Markers.EMPTY, text.substring(0, equals));
+                Jcl.Word value = new Jcl.Word(randomId(), EMPTY, markers, text.substring(equals));
+                parameters.add(new Jcl.KeywordParameter(randomId(), parameterPrefix, Markers.EMPTY,
+                        keyword, singletonList(value)));
+            }
         }
-        return jclStatement.withMarkers(markers);
+        return parameters;
+    }
+
+    private static int countOf(String run) {
+        return splitOnTopLevelCommas(run).size();
+    }
+
+    /**
+     * Splits on commas outside parentheses and quotes, keeping each comma on the parameter it
+     * follows so that the pieces still concatenate to the original.
+     */
+    private static List<String> splitOnTopLevelCommas(String run) {
+        List<String> parts = new ArrayList<>();
+        int depth = 0;
+        int start = 0;
+        boolean quoted = false;
+        for (int i = 0; i < run.length(); i++) {
+            char c = run.charAt(i);
+            if (c == '\'') {
+                quoted = !quoted;
+            } else if (quoted) {
+                continue;
+            } else if (c == '(') {
+                depth++;
+            } else if (c == ')') {
+                depth--;
+            } else if (c == ',' && depth == 0) {
+                parts.add(run.substring(start, i + 1));
+                start = i + 1;
+            }
+        }
+        if (start < run.length()) {
+            parts.add(run.substring(start));
+        }
+        return parts;
+    }
+
+    /**
+     * The first {@code =} outside parentheses and quotes, so {@code AMP=('BUFND=5')} is one keyword
+     * rather than two.
+     */
+    private static int indexOfAssignment(String parameter) {
+        int depth = 0;
+        boolean quoted = false;
+        for (int i = 0; i < parameter.length(); i++) {
+            char c = parameter.charAt(i);
+            if (c == '\'') {
+                quoted = !quoted;
+            } else if (quoted) {
+                continue;
+            } else if (c == '(') {
+                depth++;
+            } else if (c == ')') {
+                depth--;
+            } else if (c == '=' && depth == 0) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * The word of a JCL context, carrying any comment area or trailing comment as markers. They sat
+     * on the enclosing statement before, which was one word; on the word they print in the same
+     * place.
+     */
+    private Jcl.Word word(JCLParser.JclContext ctx) {
+        if (ctx.jclTrailingComment() != null) {
+            JCLParser.JclTrailingCommentContext tc = ctx.jclTrailingComment();
+            Jcl.Word word = word(tc.jclWord(0));
+            Markers markers = Markers.EMPTY.addIfAbsent(
+                    mapTrailingComment(tc.jclWord().subList(1, tc.jclWord().size())));
+            if (tc.jclCommentArea() != null) {
+                markers = markers.addIfAbsent(mapCommentArea(tc.jclCommentArea()));
+            }
+            return word.withMarkers(markers);
+        }
+        return word(ctx.jclWord());
+    }
+
+    private Jcl.Word word(JCLParser.JclWordContext ctx) {
+        Jcl.Word word = visit(ctx.JCL_TEXT(), ctx.JCL_STRINGLITERAL());
+        if (ctx.jclCommentArea() != null) {
+            word = word.withMarkers(word.getMarkers().addIfAbsent(mapCommentArea(ctx.jclCommentArea())));
+        }
+        return word;
+    }
+
+    /**
+     * Whether this word opens a statement rather than continuing the one before it.
+     */
+    private boolean beginsStatement(JCLParser.JclContext ctx) {
+        return lineMarker(ctx) == JCLLexer.JCL_STATEMENT;
+    }
+
+    /**
+     * Whether this word is the first on its line, either opening a statement or continuing one.
+     */
+    private boolean beginsLine(JCLParser.JclContext ctx) {
+        return lineMarker(ctx) != -1;
+    }
+
+    private int lineMarker(JCLParser.JclContext ctx) {
+        List<Token> hidden = tokens.getHiddenTokensToLeft(ctx.getStart().getTokenIndex());
+        if (hidden != null) {
+            for (Token token : hidden) {
+                if (token.getType() == JCLLexer.JCL_STATEMENT || token.getType() == JCLLexer.JCL_CONTINUATION) {
+                    return token.getType();
+                }
+            }
+        }
+        return -1;
     }
 
     @Override

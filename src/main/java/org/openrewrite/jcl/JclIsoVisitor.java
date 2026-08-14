@@ -40,6 +40,16 @@ public class JclIsoVisitor<P> extends JclVisitor<P> {
     }
 
     @Override
+    public Jcl.KeywordParameter visitKeywordParameter(Jcl.KeywordParameter parameter, P p) {
+        return (Jcl.KeywordParameter) super.visitKeywordParameter(parameter, p);
+    }
+
+    @Override
+    public Jcl.PositionalParameter visitPositionalParameter(Jcl.PositionalParameter parameter, P p) {
+        return (Jcl.PositionalParameter) super.visitPositionalParameter(parameter, p);
+    }
+
+    @Override
     public Jcl.Jes2 visitJes2(Jcl.Jes2 jes2, P p) {
         return (Jcl.Jes2) super.visitJes2(jes2, p);
     }

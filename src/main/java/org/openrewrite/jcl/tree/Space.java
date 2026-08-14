@@ -139,6 +139,7 @@ public class Space {
         JCL_STATEMENT_PREFIX,
         JES2_PREFIX,
         JES3_PREFIX,
+        PARAMETER_PREFIX,
         UNKNOWN_PREFIX,
         TRAILING_COMMENT_PREFIX,
         COMMENT_PREFIX,

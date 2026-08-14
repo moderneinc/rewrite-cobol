@@ -39,7 +39,8 @@ class JobStreamTest implements RewriteTest {
             spec -> spec.afterRecipe(cu -> {
                 JobStream job = JobStream.of(cu);
                 assertThat(job.getJobName()).isEqualTo("ACCTJOB");
-                assertThat(job.getJobParameters()).containsEntry("CLASS", "A").containsEntry("MSGCLASS", "X");
+                assertThat(JobStream.parameters(job.getJob()))
+                  .containsEntry("CLASS", "A").containsEntry("MSGCLASS", "X");
 
                 assertThat(job.getSteps()).hasSize(2);
 
@@ -47,7 +48,7 @@ class JobStreamTest implements RewriteTest {
                 assertThat(step.getName()).isEqualTo("STEP010");
                 assertThat(step.getProgram()).isEqualTo("ACCTPOST");
                 assertThat(step.getProcedure()).isNull();
-                assertThat(step.getParameters()).containsEntry("PARM", "'RUN'");
+                assertThat(JobStream.parameters(step.getStatement())).containsEntry("PARM", "'RUN'");
                 assertThat(step.getDataDefinitions()).extracting(DataDefinition::getName)
                   .containsExactly("ACCTDD", "TRANDD", "SYSOUT");
 
@@ -137,7 +138,8 @@ class JobStreamTest implements RewriteTest {
                     assertThat(ds.getDisposition().getStatus()).isEqualTo(Disposition.Status.SHR);
                 });
                 // The commas inside AMP belong to its sub-parameters, not to the DD's parameter list.
-                assertThat(dd.getParameters()).containsEntry("AMP", "('BUFND=10,BUFNI=5')");
+                assertThat(JobStream.parameters(dd.getStatements().get(0)))
+                  .containsEntry("AMP", "('BUFND=10,BUFNI=5')");
             })
           )
         );
@@ -196,7 +198,8 @@ class JobStreamTest implements RewriteTest {
                 assertThat(job.getSteps()).extracting(Step::getProcedure)
                   .containsExactly("ACCTPROC", "RPTPROC");
                 assertThat(job.getSteps()).extracting(Step::getProgram).containsOnlyNulls();
-                assertThat(job.getSteps().get(1).getParameters()).containsEntry("COND", "(4,LT)");
+                assertThat(JobStream.parameters(job.getSteps().get(1).getStatement()))
+                  .containsEntry("COND", "(4,LT)");
             })
           )
         );

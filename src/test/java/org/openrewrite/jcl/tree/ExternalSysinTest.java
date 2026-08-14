@@ -41,12 +41,21 @@ class ExternalSysinTest implements RewriteTest {
               SORT FIELDS=(8,2,PD,A,10,4,PD,A,14,2,PD,A,16,1,CH,A)
               """));
 
+    /**
+     * The marker sits on the DSN parameter rather than on the statement, so the whole tree is
+     * searched rather than the statement list.
+     */
     private static Optional<ParmMember> parmMarker(Jcl.CompilationUnit cu) {
-        return cu.getStatements().stream()
-                .flatMap(s -> s.getMarkers().getMarkers().stream())
-                .filter(ParmMember.class::isInstance)
-                .map(ParmMember.class::cast)
-                .findFirst();
+        List<ParmMember> found = new java.util.ArrayList<>();
+        new org.openrewrite.jcl.JclIsoVisitor<List<ParmMember>>() {
+            @Override
+            public Jcl.KeywordParameter visitKeywordParameter(Jcl.KeywordParameter parameter,
+                                                              List<ParmMember> markers) {
+                parameter.getMarkers().findFirst(ParmMember.class).ifPresent(markers::add);
+                return super.visitKeywordParameter(parameter, markers);
+            }
+        }.visit(cu, found);
+        return found.stream().findFirst();
     }
 
     private static Optional<ParmMember> parmMarker(Jcl.CompilationUnit cu, ParmMember.Status status) {
@@ -63,7 +72,7 @@ class ExternalSysinTest implements RewriteTest {
 
     private static String wordText(Statement s) {
         if (s instanceof JclStatement) {
-            return ((JclStatement) s).getWord().getText();
+            return ((JclStatement) s).getName().getText();
         }
         if (s instanceof DataDefinitionStream) {
             return ((DataDefinitionStream) s).getWord().getText();
@@ -266,7 +275,7 @@ class ExternalSysinTest implements RewriteTest {
                 List<String> texts = cu.getStatements().stream()
                         .map(ExternalSysinTest::wordText)
                         .collect(toList());
-                int dsn = texts.indexOf("DSN=DWL.PARMLIB(MGSLAP8F),DISP=SHR");
+                int dsn = texts.indexOf("//SYSIN");
                 int sort = texts.indexOf("SORT");
                 int sysout = texts.indexOf("//SYSOUT");
                 assertThat(sort).isGreaterThan(dsn).isLessThan(sysout);

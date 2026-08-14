@@ -18,8 +18,9 @@ package org.openrewrite.jcl.model;
 import lombok.Value;
 import org.jspecify.annotations.Nullable;
 
+import org.openrewrite.jcl.tree.Jcl;
+
 import java.util.List;
-import java.util.Map;
 
 /**
  * One DD statement, with the data sets it names.
@@ -42,13 +43,6 @@ public class DataDefinition {
      * end to end as though they were one.
      */
     List<DataSet> dataSets;
-
-    /**
-     * Every parameter as written, keyed by upper cased keyword. Positional parameters are absent.
-     * This is here so that a question nobody anticipated — {@code SPACE}, {@code RECFM},
-     * {@code AMP} — can still be asked without changing the model.
-     */
-    Map<String, String> parameters;
 
     /**
      * True for {@code DD *} and {@code DD DATA}, where the data follows in the job stream rather than
@@ -75,4 +69,10 @@ public class DataDefinition {
      */
     @Nullable
     String backwardReference;
+
+    /**
+     * The DD statements this came from — more than one for a concatenation. Anything the model does
+     * not name is on them, and a recipe that wants to mark or rewrite the DD works through them.
+     */
+    List<Jcl.JclStatement> statements;
 }

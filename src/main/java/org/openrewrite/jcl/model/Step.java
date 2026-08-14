@@ -18,8 +18,9 @@ package org.openrewrite.jcl.model;
 import lombok.Value;
 import org.jspecify.annotations.Nullable;
 
+import org.openrewrite.jcl.tree.Jcl;
+
 import java.util.List;
-import java.util.Map;
 
 /**
  * One EXEC statement and the DD statements belonging to it.
@@ -52,10 +53,10 @@ public class Step {
     List<DataDefinition> dataDefinitions;
 
     /**
-     * Every EXEC parameter as written, keyed by upper cased keyword: {@code PARM}, {@code COND},
-     * {@code REGION}, {@code TIME}.
+     * The EXEC statement itself, for anything this model does not name — {@code PARM}, {@code COND},
+     * {@code REGION} — and so that a recipe can mark or rewrite it.
      */
-    Map<String, String> parameters;
+    Jcl.JclStatement statement;
 
     /**
      * The DD of this step with the given name, or null. DD names are unique within a step, which is

@@ -20,6 +20,7 @@ import org.openrewrite.jcl.marker.GeneratedParmContent;
 import org.openrewrite.jcl.marker.ParmMember;
 import org.openrewrite.jcl.tree.Jcl;
 import org.openrewrite.jcl.tree.Space;
+import org.openrewrite.internal.ListUtils;
 import org.openrewrite.jcl.tree.Statement;
 import org.openrewrite.marker.Markers;
 
@@ -67,112 +68,51 @@ public class ExpandExternalSysinVisitor<P> extends JclIsoVisitor<P> {
 
     @Override
     public Jcl.CompilationUnit visitCompilationUnit(Jcl.CompilationUnit cu, P p) {
-        List<Statement> in = cu.getStatements();
-        List<Statement> out = new ArrayList<>(in.size());
+        List<Statement> out = new ArrayList<>(cu.getStatements().size());
         boolean changed = false;
 
-        int i = 0;
-        while (i < in.size()) {
-            DdGroup group = matchDdGroup(in, i);
-            if (group == null) {
-                out.add(in.get(i));
-                i++;
+        for (Statement statement : cu.getStatements()) {
+            if (!(statement instanceof Jcl.JclStatement) || !((Jcl.JclStatement) statement).isOperation("DD")) {
+                out.add(statement);
+                continue;
+            }
+            Jcl.JclStatement dd = (Jcl.JclStatement) statement;
+            Jcl.KeywordParameter dsn = dd.getParameter("DSN");
+            if (dsn == null) {
+                dsn = dd.getParameter("DSNAME");
+            }
+            ParmMember marker = dsn == null ? null : evaluate(dd, dsn);
+            if (marker == null) {
+                out.add(dd);
                 continue;
             }
 
-            ParmMember marker = group.dsnIndex < 0 ? null : evaluate(group.ddName, group.params);
-            for (int k = group.start; k < group.end; k++) {
-                Statement s = in.get(k);
-                if (marker != null && k == group.dsnIndex) {
-                    Jcl.JclStatement js = (Jcl.JclStatement) s;
-                    s = js.withMarkers(js.getMarkers().addIfAbsent(marker));
-                    changed = true;
-                }
-                out.add(s);
-            }
+            Jcl.KeywordParameter marked = dsn;
+            out.add(dd.withOperands(ListUtils.map(dd.getOperands(),
+                    o -> o == marked ? marked.withMarkers(marked.getMarkers().addIfAbsent(marker)) : o)));
+            changed = true;
 
-            if (marker != null && marker.getStatus() == ParmMember.Status.EXPANDED) {
+            if (marker.getStatus() == ParmMember.Status.EXPANDED) {
                 String memberName = marker.getMemberName();
-                List<Statement> grafted = buildStreamNodes(
-                        parmMembers.get(memberName.toUpperCase(Locale.ROOT)), memberName);
-                out.addAll(grafted);
-                changed |= !grafted.isEmpty();
+                out.addAll(buildStreamNodes(parmMembers.get(memberName.toUpperCase(Locale.ROOT)), memberName));
             }
-            i = group.end;
         }
 
         return changed ? cu.withStatements(out) : cu;
     }
 
     /**
-     * Matches a logical DD statement starting at {@code start}: a name/blank field
-     * ({@code //NAME} or bare {@code //}) followed by the {@code DD} operation and its
-     * parameter words, walking across {@code //}-continuation lines. Returns {@code null}
-     * when no DD statement starts at {@code start}.
-     */
-    private @Nullable DdGroup matchDdGroup(List<Statement> statements, int start) {
-        Statement head = statements.get(start);
-        if (!(head instanceof Jcl.JclStatement)) {
-            return null;
-        }
-        String headText = text(head);
-        if (!headText.startsWith("//") || isComment(headText)) {
-            return null;
-        }
-        if (start + 1 >= statements.size() || !isWord(statements.get(start + 1), "DD")) {
-            return null;
-        }
-
-        String ddName = headText.length() > 2 ? headText.substring(2) : "";
-        StringBuilder params = new StringBuilder();
-        int dsnIndex = -1;
-        // The operand field is a single blank-free token per line segment; the first word
-        // after the operation (or after a //-continuation) is the operand, and any further
-        // words on that line are the comment field, which is ignored.
-        boolean expectOperand = true;
-        int j = start + 2;
-        for (; j < statements.size(); j++) {
-            Statement s = statements.get(j);
-            if (!(s instanceof Jcl.JclStatement)) {
-                break;
-            }
-            String t = text(s);
-            if (t.startsWith("//")) {
-                boolean continuation = t.equals("//") &&
-                        j + 1 < statements.size() && !isOperation(statements.get(j + 1));
-                if (continuation) {
-                    expectOperand = true; // operands resume after the continuation marker
-                    continue;
-                }
-                break; // a new statement begins
-            }
-            if (expectOperand) {
-                params.append(t);
-                if (dsnIndex < 0 && isDsnAssignment(t)) {
-                    dsnIndex = j;
-                }
-                expectOperand = false;
-            }
-        }
-        return new DdGroup(start, j, dsnIndex, ddName, params.toString());
-    }
-
-    /**
      * Returns the marker for a qualifying input DD that references a specific member, or
      * {@code null} when the DD does not qualify for expansion.
      */
-    private @Nullable ParmMember evaluate(String ddName, String params) {
-        String dsn = null;
-        String disp = null;
-        for (String param : splitParams(params)) {
-            String upper = param.toUpperCase(Locale.ROOT);
-            if (dsn == null && (upper.startsWith("DSN=") || upper.startsWith("DSNAME="))) {
-                dsn = param.substring(param.indexOf('=') + 1);
-            } else if (disp == null && upper.startsWith("DISP=")) {
-                disp = param.substring(param.indexOf('=') + 1);
-            }
-        }
-        if (dsn == null || !isInputDisposition(disp)) {
+    private @Nullable ParmMember evaluate(Jcl.JclStatement dd, Jcl.KeywordParameter dsnParameter) {
+        // The value keeps its leading = so that printing puts it back; the data set name is what
+        // follows it.
+        String dsn = dsnParameter.getValueText();
+        Jcl.KeywordParameter dispParameter = dd.getParameter("DISP");
+        String disp = dispParameter == null ? null : dispParameter.getValueText();
+        String ddName = dd.getSimpleName();
+        if (!isInputDisposition(disp)) {
             return null;
         }
         Matcher m = DSN_MEMBER.matcher(dsn);
@@ -250,29 +190,6 @@ public class ExpandExternalSysinVisitor<P> extends JclIsoVisitor<P> {
         return words;
     }
 
-    /**
-     * Splits a JCL parameter string on commas at parenthesis depth zero, so that commas
-     * inside sub-parameter lists such as {@code DISP=(NEW,CATLG,DELETE)} do not split.
-     */
-    private static List<String> splitParams(String params) {
-        List<String> result = new ArrayList<>();
-        int depth = 0;
-        int start = 0;
-        for (int i = 0; i < params.length(); i++) {
-            char c = params.charAt(i);
-            if (c == '(') {
-                depth++;
-            } else if (c == ')') {
-                depth--;
-            } else if (c == ',' && depth == 0) {
-                result.add(params.substring(start, i));
-                start = i + 1;
-            }
-        }
-        result.add(params.substring(start));
-        return result;
-    }
-
     private static boolean isInputDisposition(@Nullable String disp) {
         if (disp == null) {
             return false;
@@ -294,44 +211,4 @@ public class ExpandExternalSysinVisitor<P> extends JclIsoVisitor<P> {
         return "SHR".equals(status) || "OLD".equals(status);
     }
 
-    private static boolean isDsnAssignment(String text) {
-        String upper = text.toUpperCase(Locale.ROOT);
-        return upper.startsWith("DSN=") || upper.startsWith("DSNAME=");
-    }
-
-    private static boolean isComment(String headText) {
-        return headText.length() > 2 && headText.charAt(2) == '*';
-    }
-
-    private static boolean isOperation(Statement statement) {
-        return statement instanceof Jcl.JclStatement &&
-                OPERATIONS.contains(text(statement).toUpperCase(Locale.ROOT));
-    }
-
-    private static boolean isWord(Statement statement, String word) {
-        return statement instanceof Jcl.JclStatement && text(statement).equalsIgnoreCase(word);
-    }
-
-    private static String text(Statement statement) {
-        return ((Jcl.JclStatement) statement).getWord().getText();
-    }
-
-    /**
-     * The span of a logical DD statement within the flat statement list.
-     */
-    private static final class DdGroup {
-        final int start;
-        final int end;
-        final int dsnIndex;
-        final String ddName;
-        final String params;
-
-        DdGroup(int start, int end, int dsnIndex, String ddName, String params) {
-            this.start = start;
-            this.end = end;
-            this.dsnIndex = dsnIndex;
-            this.ddName = ddName;
-            this.params = params;
-        }
-    }
 }

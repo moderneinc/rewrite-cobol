@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -187,8 +188,23 @@ public class JclLineReader {
         NORM, CONT, STREAM, CM_CONT
     }
 
+    /**
+     * The operand field of a line, which is what says whether the statement continues on the next
+     * one. It is one blank-free token, and everything after it is the comment field — so a line
+     * ending in a comment continues just as surely as one ending in a comma, and looking at the end
+     * of the line rather than the end of the operands misses it.
+     */
+    private static String operandField(String line) {
+        String[] words = line.trim().split("\\s+");
+        if (words.length < 2 || !words[0].startsWith("//")) {
+            return line.trim();
+        }
+        int operand = JCL_STATEMENT_NAMES.contains(words[1].toUpperCase(Locale.ROOT)) ? 2 : 1;
+        return operand < words.length ? words[operand] : "";
+    }
+
     private static JclLineContext getLineContext(String line) {
-        if (line.trim().endsWith(",")) {
+        if (operandField(line).endsWith(",")) {
             return JclLineContext.CONT;
         }
 
