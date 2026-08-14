@@ -40,7 +40,11 @@ public class JclLineReader {
             String trailingComment = null;
             String commentArea = null;
             LineType lineType = getLineType(line);
-            if (line.length() > 72) {
+            // Only when columns 73-80 hold something. A line merely padded out to 80 would otherwise
+            // open a comment area with nothing in it, which `jclCommentArea` cannot match — it needs
+            // a word, and blanks are hidden — so the parser would recover by swallowing the next
+            // statement's name field.
+            if (line.length() > 72 && !line.substring(72).trim().isEmpty()) {
                 commentArea = line.substring(72);
                 line = line.substring(0, 72);
             }
