@@ -69,6 +69,12 @@ public class CobolRelationships extends DataTable<CobolRelationships.Row> {
         SQL_TABLE,
         CONTROL_M_SCHEDULE,
         JCL,
+        /**
+         * A data set, named as the installation knows it. This is the only name a batch job and the
+         * program it runs both see: the JCL names the data set and not what is done with it, the
+         * program names the DD and not what it is bound to.
+         */
+        DATA_SET,
         CICS_FILE,
         CICS_TS_QUEUE,
         CICS_TD_QUEUE,
@@ -121,6 +127,11 @@ public class CobolRelationships extends DataTable<CobolRelationships.Row> {
          * A Control-M schedule triggers a JCL job or a Control-M schedules another Control-M job.
          */
         TRIGGERS,
+        /**
+         * A JCL step runs a program. Which load module that program is comes from the STEPLIB, so
+         * this is a name and not yet a resolution.
+         */
+        EXEC,
         /**
          * {@code EXEC CICS LINK} calls another program and gets control back.
          */
