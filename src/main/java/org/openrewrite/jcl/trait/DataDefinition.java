@@ -71,6 +71,14 @@ public class DataDefinition implements Trait<Jcl.JobControlStatement> {
     }
 
     /**
+     * The step this DD is written under, or null for one written before any step. A DD means nothing
+     * on its own — the step is what says which program will open it.
+     */
+    public @Nullable Step getStep() {
+        return Steps.stepOf(cursor);
+    }
+
+    /**
      * True for {@code DD *} and {@code DD DATA}, where the data follows in the job stream rather than
      * living in a data set. SYSIN control cards arrive this way.
      */

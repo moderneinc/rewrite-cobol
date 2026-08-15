@@ -17,12 +17,14 @@ package org.openrewrite.jcl.trait;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
 import org.openrewrite.jcl.tree.Jcl;
 import org.openrewrite.jcl.tree.Statement;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 import static java.util.Collections.emptyList;
 
@@ -52,6 +54,29 @@ final class Steps {
     }
 
     /**
+     * The step a statement belongs to, or null for one written before any step. The inverse of
+     * {@link Step#getDataDefinitions()}, and read the same way: backwards through the cards until
+     * one of them turns out to be the EXEC.
+     */
+    static @Nullable Step stepOf(Cursor cursor) {
+        Jcl.CompilationUnit cu = cursor.firstEnclosing(Jcl.CompilationUnit.class);
+        if (cu == null) {
+            return null;
+        }
+        List<Statement> statements = cu.getStatements();
+        for (int i = indexOf(statements, cursor.getValue()) - 1; i >= 0; i--) {
+            Statement statement = statements.get(i);
+            if (isOperation(statement, "EXEC")) {
+                return new Step(new Cursor(cursor.getParentOrThrow(), statement));
+            }
+            if (isOperation(statement, "JOB") || isOperation(statement, "PEND")) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Whether an unnamed DD continues the one before it rather than standing on its own. It only
      * continues something if there is something to continue: an unnamed DD with no DD before it in
      * the step is a DD in its own right, and dropping it would lose a data set nothing else names.
@@ -61,10 +86,8 @@ final class Steps {
         if (cu == null) {
             return false;
         }
-        Object self = cursor.getValue();
         List<Statement> statements = cu.getStatements();
-        int from = statements.indexOf(self);
-        for (int i = from - 1; i >= 0; i--) {
+        for (int i = indexOf(statements, cursor.getValue()) - 1; i >= 0; i--) {
             Statement statement = statements.get(i);
             if (isOperation(statement, "DD")) {
                 return true;
@@ -76,20 +99,13 @@ final class Steps {
         return false;
     }
 
-    private static List<Statement> following(Cursor cursor, java.util.function.Predicate<Statement> stop) {
+    private static List<Statement> following(Cursor cursor, Predicate<Statement> stop) {
         Jcl.CompilationUnit cu = cursor.firstEnclosing(Jcl.CompilationUnit.class);
         if (cu == null) {
             return emptyList();
         }
-        Object self = cursor.getValue();
         List<Statement> statements = cu.getStatements();
-        int from = -1;
-        for (int i = 0; i < statements.size(); i++) {
-            if (statements.get(i) == self) {
-                from = i;
-                break;
-            }
-        }
+        int from = indexOf(statements, cursor.getValue());
         if (from < 0) {
             return emptyList();
         }
@@ -98,6 +114,15 @@ final class Steps {
             within.add(statements.get(i));
         }
         return within;
+    }
+
+    private static int indexOf(List<Statement> statements, Object statement) {
+        for (int i = 0; i < statements.size(); i++) {
+            if (statements.get(i) == statement) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     static boolean isOperation(Statement statement, String operation) {

@@ -184,6 +184,35 @@ class StepTest implements RewriteTest {
         );
     }
 
+    /**
+     * A DD found on its own has to be able to name its step, or nothing can say which program opens
+     * it.
+     */
+    @Test
+    void readsTheStepADataDefinitionBelongsTo() {
+        rewriteRun(
+          jcl(
+            """
+              //ACCTJOB  JOB (ACCT),'DAILY POST'
+              //JOBLIB   DD  DSN=PROD.LOADLIB,DISP=SHR
+              //STEP010  EXEC PGM=ACCTPOST
+              //ACCTDD   DD  DSN=PROD.ACCOUNT.MASTER,DISP=SHR
+              //STEP020  EXEC PGM=ACCTRPT
+              //RPTDD    DD  DSN=PROD.ACCOUNT.REPORT,DISP=(NEW,CATLG)
+              """,
+            spec -> spec.afterRecipe(cu -> {
+                List<DataDefinition> dds = new DataDefinition.Matcher().lower(cu).collect(Collectors.toList());
+                assertThat(dds).extracting(DataDefinition::getName)
+                  .containsExactly("JOBLIB", "ACCTDD", "RPTDD");
+                // A JOBLIB is the job's, not any step's.
+                assertThat(dds.get(0).getStep()).isNull();
+                assertThat(dds.get(1).getStep().getName()).isEqualTo("STEP010");
+                assertThat(dds.get(2).getStep().getName()).isEqualTo("STEP020");
+            })
+          )
+        );
+    }
+
     @Test
     void readsTheJobCard() {
         rewriteRun(
