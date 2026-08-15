@@ -54,21 +54,13 @@ public interface Cobol extends Tree {
 
     <P extends Cobol> P withPrefix(Space prefix);
 
-	@Override default UUID getId() {
-        return Cobol.CompilationUnit.id;
-    }
-
-	@Override default <T extends Tree> T withId(UUID id) {
-        //noinspection unchecked
-        return (T) this;
-    }
-
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class CompilationUnit implements Cobol, CobolSourceFile {
 
-        public static final UUID id = randomId();
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Path sourcePath;
 
@@ -113,9 +105,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Abbreviation implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -144,9 +139,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Accept implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -170,9 +168,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class AcceptFromDateStatement implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -185,9 +186,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class AcceptFromEscapeKeyStatement implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -200,9 +204,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class AcceptFromMnemonicStatement implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -216,9 +223,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class AcceptMessageCountStatement implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -231,9 +241,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class AccessModeClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -247,9 +260,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Add implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -272,9 +288,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class AddCorresponding implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -290,9 +309,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class AddTo implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -307,9 +329,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class AddToGiving implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -331,9 +356,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class AlphabetAlso implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -347,9 +375,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class AlphabetClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -366,9 +397,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class AlphabetLiteral implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -387,9 +421,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class AlphabetThrough implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -403,9 +440,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class AlteredGoTo implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -419,9 +459,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class AlternateRecordKeyClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -440,9 +483,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class AlterProceedTo implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -457,9 +503,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class AlterStatement implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -473,9 +522,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class AndOrCondition implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -494,9 +546,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Argument implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -514,9 +569,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ArithmeticExpression implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -532,9 +590,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class AssignClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -548,9 +609,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class BlockContainsClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -570,9 +634,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class BlockContainsTo implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -586,9 +653,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Call implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -620,9 +690,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class CallBy implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -638,9 +711,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class CallGivingPhrase implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -654,9 +730,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class CallPhrase implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -670,9 +749,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Cancel implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -686,9 +768,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class CancelCall implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -712,9 +797,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ChannelClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -733,9 +821,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ClassClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -751,9 +842,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ClassClauseThrough implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -772,9 +866,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ClassCondition implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -793,9 +890,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Close implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -809,9 +909,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class CloseFile implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -827,9 +930,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ClosePortFileIOStatement implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -843,9 +949,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ClosePortFileIOUsingAssociatedData implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -859,9 +968,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ClosePortFileIOUsingAssociatedDataLength implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -875,9 +987,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ClosePortFileIOUsingCloseDisposition implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -890,9 +1005,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class CloseReelUnitStatement implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -905,9 +1023,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class CloseRelativeStatement implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -920,9 +1041,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Word implements Literal, Identifier {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -956,9 +1080,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class CodeSetClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -972,9 +1099,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class CollatingSequenceAlphabet implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -988,9 +1118,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class CollatingSequenceClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1011,9 +1144,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class CombinableCondition implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1030,9 +1166,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class CommentEntry implements Cobol, Comment {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1045,9 +1184,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class CommitmentControlClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1061,9 +1203,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class CommunicationDescriptionEntryFormat1 implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1080,9 +1225,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class CommunicationDescriptionEntryFormat2 implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1099,9 +1247,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class CommunicationDescriptionEntryFormat3 implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1118,9 +1269,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class CommunicationSection implements DataDivisionSection {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1135,9 +1289,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Compute implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1158,9 +1315,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Condition implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1174,9 +1334,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ConditionNameReference implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1201,9 +1364,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ConditionNameSubscriptReference implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1218,9 +1384,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ConfigurationSection implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1235,9 +1404,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Continue implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1250,9 +1422,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class CurrencyClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1272,9 +1447,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DataAlignedClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1287,9 +1465,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DataBaseSection implements DataDivisionSection {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1304,9 +1485,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DataBaseSectionEntry implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1322,9 +1506,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DataBlankWhenZeroClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1337,9 +1524,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DataCommonOwnLocalClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1352,9 +1542,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DataDescriptionEntry implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1377,9 +1570,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DataDivision implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1394,9 +1590,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DataExternalClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1410,9 +1609,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DataGlobalClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1425,9 +1627,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DataIntegerStringClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1440,9 +1645,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DataJustifiedClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1455,9 +1663,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DataOccursClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1483,9 +1694,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DataOccursDepending implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1499,9 +1713,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DataOccursIndexed implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1515,9 +1732,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DataOccursSort implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1531,9 +1751,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DataOccursTo implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1547,9 +1770,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DataPictureClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1563,9 +1789,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DataReceivedByClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1578,9 +1807,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DataRecordAreaClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1593,9 +1825,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DataRecordsClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1609,9 +1844,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DataRedefinesClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1625,9 +1863,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DataRenamesClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1648,9 +1889,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DataSignClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1663,9 +1907,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DataSynchronizedClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1678,9 +1925,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DataThreadLocalClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1693,9 +1943,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DataTypeClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1711,9 +1964,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DataTypeDefClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1726,9 +1982,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DataUsageClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1741,9 +2000,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DataUsingClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1757,9 +2019,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DataValueClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1773,9 +2038,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DataValueInterval implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1791,9 +2059,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DataValueIntervalTo implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1807,9 +2078,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DataWithLowerBoundsClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1822,9 +2096,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DecimalPointClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1837,9 +2114,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DefaultComputationalSignClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1852,9 +2132,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DefaultDisplaySignClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1867,9 +2150,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Delete implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1895,9 +2181,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DestinationCountClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1911,9 +2200,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DestinationTableClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1929,9 +2221,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Disable implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1952,9 +2247,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Display implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -1986,9 +2284,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DisplayAt implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2002,9 +2303,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DisplayUpon implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2018,9 +2322,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Divide implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2047,9 +2354,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DivideGiving implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2066,9 +2376,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DivideGivingPhrase implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2082,9 +2395,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DivideInto implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2098,9 +2414,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class DivideRemainder implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2114,9 +2433,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Enable implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2137,9 +2459,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class EndKeyClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2153,9 +2478,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class EndProgram implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2170,9 +2498,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Entry implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2190,9 +2521,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class EnvironmentDivision implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2207,9 +2541,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Evaluate implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2235,9 +2572,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class EvaluateAlso implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2252,9 +2592,12 @@ public interface Cobol extends Tree {
 
     // environmentName IS? mnemonicName environmentSwitchNameSpecialNamesStatusPhrase? | environmentSwitchNameSpecialNamesStatusPhrase
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class EnvironmentSwitchNameClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2278,9 +2621,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class EnvironmentSwitchNameSpecialNamesStatusPhrase implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2293,9 +2639,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ErrorKeyClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2309,9 +2658,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class EvaluateAlsoCondition implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2326,9 +2678,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class EvaluateCondition implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2349,9 +2704,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class EvaluateThrough implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2365,9 +2723,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class EvaluateWhen implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2384,9 +2745,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class EvaluateWhenPhrase implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2402,9 +2766,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ExecCicsStatement implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2417,9 +2784,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ExecSqlImsStatement implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2432,9 +2802,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ExecSqlStatement implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2447,9 +2820,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Exhibit implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2463,9 +2839,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Exit implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2478,9 +2857,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ExternalClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2493,9 +2875,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class FigurativeConstant implements Literal {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2512,9 +2897,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class FileControlEntry implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2530,9 +2918,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class FileControlParagraph implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
 
@@ -2550,9 +2941,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class FileDescriptionEntry implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2572,9 +2966,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class FileSection implements DataDivisionSection {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2589,9 +2986,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class FileStatusClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2605,9 +3005,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class FunctionCall implements Identifier {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2625,9 +3028,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Generate implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2641,9 +3047,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class GlobalClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2656,9 +3065,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class GoBack implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2671,9 +3083,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class GoTo implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2688,9 +3103,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class GoToDependingOnStatement implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2710,9 +3128,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class IdentificationDivision implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2727,9 +3148,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class IdentificationDivisionParagraph implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2750,9 +3174,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class If implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
 
@@ -2777,9 +3204,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class IfElse implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2798,9 +3228,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class IfThen implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2821,9 +3254,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class InData implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2837,9 +3273,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class InFile implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2853,9 +3292,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Initialize implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2872,9 +3314,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class InitializeReplacingBy implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2888,9 +3333,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class InitializeReplacingPhrase implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2904,9 +3352,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Initiate implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2920,9 +3371,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class InLibrary implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2936,9 +3390,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class InMnemonic implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2952,9 +3409,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class InputOutputSection implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2970,9 +3430,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class InSection implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -2986,9 +3449,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Inspect implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3003,9 +3469,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class InspectAllLeading implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3021,9 +3490,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class InspectAllLeadings implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3037,9 +3509,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class InspectBeforeAfter implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3053,9 +3528,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class InspectBy implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3069,9 +3547,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class InspectCharacters implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3087,9 +3568,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class InspectConvertingPhrase implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3107,9 +3591,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class InspectFor implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3124,9 +3611,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class InspectReplacingAllLeading implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3143,9 +3633,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class InspectReplacingAllLeadings implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3159,9 +3652,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class InspectReplacingCharacters implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3178,9 +3674,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class InspectReplacingPhrase implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3194,9 +3693,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class InspectTallyingPhrase implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3210,9 +3712,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class InspectTallyingReplacingPhrase implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3227,9 +3732,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class InspectTo implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3243,9 +3751,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class InTable implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3259,9 +3770,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class IoControlParagraph implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3286,9 +3800,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class LabelRecordsClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3304,9 +3821,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class LibraryAttributeClauseFormat1 implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3319,9 +3839,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class LibraryAttributeClauseFormat2 implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3345,9 +3868,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class LibraryAttributeFunction implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3361,9 +3887,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class LibraryAttributeParameter implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3377,9 +3906,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class LibraryAttributeTitle implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3393,9 +3925,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class LibraryDescriptionEntryFormat1 implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3418,9 +3953,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class LibraryDescriptionEntryFormat2 implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3444,9 +3982,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class LibraryEntryProcedureClauseFormat1 implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3463,9 +4004,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class LibraryEntryProcedureClauseFormat2 implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3491,9 +4035,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class LibraryEntryProcedureForClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3507,9 +4054,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class LibraryEntryProcedureGivingClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3523,9 +4073,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class LibraryEntryProcedureUsingClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3539,9 +4092,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class LibraryEntryProcedureWithClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3555,9 +4111,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class LibraryIsCommonClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3570,9 +4129,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class LibraryIsGlobalClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3585,9 +4147,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class LinageClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3607,9 +4172,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class LinageFootingAt implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3623,9 +4191,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class LinageLinesAtBottom implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3639,9 +4210,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class LinageLinesAtTop implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3655,9 +4229,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class LinkageSection implements DataDivisionSection {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3674,9 +4251,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class LocalStorageSection implements DataDivisionSection {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3701,9 +4281,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Merge implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3728,9 +4311,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Mergeable implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3744,9 +4330,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class MergeCollatingSequencePhrase implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3766,9 +4355,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class MergeGiving implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3784,9 +4376,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class MergeGivingPhrase implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3800,9 +4395,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class MergeOnKeyClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3816,9 +4414,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class MergeOutputProcedurePhrase implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3835,9 +4436,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class MergeOutputThrough implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3851,9 +4455,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class MergeUsing implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3867,9 +4474,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class MessageCountClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3883,9 +4493,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class MessageDateClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3899,9 +4512,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class MessageTimeClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3915,9 +4531,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class MoveCorrespondingToStatement implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3933,9 +4552,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class MoveStatement implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3949,9 +4571,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class MoveToStatement implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3966,9 +4591,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class MultDiv implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -3982,9 +4610,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class MultDivs implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4000,9 +4631,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class MultipleFileClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4016,9 +4650,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class MultipleFilePosition implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4037,9 +4674,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Multiply implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4064,9 +4704,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class MultiplyGiving implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4081,9 +4724,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class MultiplyRegular implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4096,9 +4742,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class NextSentence implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4111,9 +4760,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ObjectComputer implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4129,9 +4781,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ObjectComputerDefinition implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4146,9 +4801,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class OdtClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4162,9 +4820,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Open implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4178,9 +4839,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Openable implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4196,9 +4860,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class OpenInputOutputStatement implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4212,9 +4879,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class OpenIOExtendStatement implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4228,9 +4898,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class OrganizationClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4243,9 +4916,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class PaddingCharacterClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4259,9 +4935,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Paragraph implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4283,9 +4962,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Paragraphs implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4299,9 +4981,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Parenthesized implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4316,9 +5001,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class PasswordClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4332,9 +5020,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Perform implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4348,9 +5039,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Performable implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4364,9 +5058,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class PerformInlineStatement implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4385,9 +5082,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class PerformProcedureStatement implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4409,9 +5109,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class PerformTestClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4424,9 +5127,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class PerformTimes implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4440,9 +5146,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class PerformUntil implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4460,9 +5169,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class PerformVarying implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4475,9 +5187,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class PerformVaryingClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4492,9 +5207,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class PerformVaryingPhrase implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4510,9 +5228,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Picture implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4528,9 +5249,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class PictureString implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4543,9 +5267,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class PlusMinus implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4559,9 +5286,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Power implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4578,9 +5308,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Powers implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4597,9 +5330,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ProcedureDeclarative implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4616,9 +5352,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ProcedureDeclaratives implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4635,9 +5374,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ProcedureDivision implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4663,9 +5405,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ProcedureDivisionBody implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4681,9 +5426,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ProcedureDivisionByReference implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4700,9 +5448,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ProcedureDivisionByReferencePhrase implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4719,9 +5470,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ProcedureDivisionByValuePhrase implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4735,9 +5489,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ProcedureDivisionGivingClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4751,9 +5508,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ProcedureDivisionUsingClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4767,9 +5527,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ProcedureName implements Cobol, Name {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4788,9 +5551,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ProcedureSection implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4805,9 +5571,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ProcedureSectionHeader implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4822,9 +5591,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ProgramIdParagraph implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4848,9 +5620,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ProgramLibrarySection implements DataDivisionSection {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4866,9 +5641,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ProgramUnit implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4899,9 +5677,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Purge implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4915,9 +5696,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class QualifiedDataName implements Cobol, Identifier {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4930,9 +5714,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class QualifiedDataNameFormat1 implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4951,9 +5738,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class QualifiedDataNameFormat2 implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4967,9 +5757,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class QualifiedDataNameFormat3 implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4983,9 +5776,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class QualifiedDataNameFormat4 implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -4999,9 +5795,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class QualifiedInData implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5014,9 +5813,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Read implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5054,9 +5856,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReadInto implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5070,9 +5875,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReadKey implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5086,9 +5894,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReadWith implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5101,9 +5912,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Receivable implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5117,9 +5931,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReceiveWith implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5132,9 +5949,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Receive implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5156,9 +5976,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReceiveFrom implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5174,9 +5997,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReceiveFromStatement implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5192,9 +6018,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReceiveIntoStatement implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5215,9 +6044,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class RecordContainsClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5231,9 +6063,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class RecordContainsClauseFormat1 implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5253,9 +6088,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class RecordContainsClauseFormat2 implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5270,9 +6108,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class RecordContainsClauseFormat3 implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5293,9 +6134,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class RecordContainsTo implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5309,9 +6153,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class RecordDelimiterClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5327,9 +6174,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class RecordingModeClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5343,9 +6193,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class RecordKeyClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5364,9 +6217,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReferenceModifier implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5386,9 +6242,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class RelationalOperator implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5401,9 +6260,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class RelationArithmeticComparison implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5418,9 +6280,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class RelationCombinedComparison implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5435,9 +6300,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class RelationCombinedCondition implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5450,9 +6318,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class RelationSignCondition implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5466,9 +6337,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class RelativeKeyClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5482,9 +6356,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Release implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5504,9 +6381,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5520,9 +6400,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportDescription implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5536,9 +6419,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportDescriptionEntry implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5572,9 +6458,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportDescriptionFirstDetailClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5588,9 +6477,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportDescriptionFootingClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5604,9 +6496,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportDescriptionGlobalClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5619,9 +6514,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportDescriptionHeadingClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5635,9 +6533,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportDescriptionLastDetailClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5651,9 +6552,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportDescriptionPageLimitClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5670,9 +6574,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportGroupBlankWhenZeroClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5685,9 +6592,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportGroupColumnNumberClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5701,9 +6611,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportGroupDescriptionEntryFormat1 implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5730,9 +6643,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportGroupDescriptionEntryFormat2 implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5755,9 +6671,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportGroupDescriptionEntryFormat3 implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5778,9 +6697,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportGroupIndicateClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5793,9 +6715,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportGroupJustifiedClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5808,9 +6733,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportGroupLineNumberClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5824,9 +6752,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportGroupLineNumberNextPage implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5840,9 +6771,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportGroupLineNumberPlus implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5856,9 +6790,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportGroupNextGroupClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5872,9 +6809,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportGroupNextGroupNextPage implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5887,9 +6827,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportGroupNextGroupPlus implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5903,9 +6846,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportGroupPictureClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5919,9 +6865,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportGroupResetClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5937,9 +6886,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportGroupSignClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5952,9 +6904,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportGroupSourceClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5968,9 +6923,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportGroupSumClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5983,9 +6941,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportGroupTypeClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -5999,9 +6960,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportGroupTypeControlFooting implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6017,9 +6981,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportGroupTypeControlHeading implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6035,9 +7002,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportGroupTypeDetail implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6050,9 +7020,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportGroupTypePageFooting implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6065,9 +7038,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportGroupTypePageHeading implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6080,9 +7056,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportGroupTypeReportFooting implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6095,9 +7074,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportGroupTypeReportHeading implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6110,9 +7092,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportGroupUsageClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6125,9 +7110,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportGroupValueClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6141,9 +7129,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportName implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6156,9 +7147,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReportSection implements DataDivisionSection {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6172,9 +7166,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Repository implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6194,9 +7191,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class RepositoryEntry implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6218,9 +7218,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class RerunClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6243,9 +7246,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class RerunEveryClock implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6261,9 +7267,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class RerunEveryOf implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6277,9 +7286,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class RerunEveryRecords implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6293,9 +7305,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReserveClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6308,9 +7323,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReserveNetworkClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6323,9 +7341,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Return implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6353,9 +7374,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ReturnInto implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6369,9 +7393,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Rewrite implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6398,9 +7425,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class RewriteFrom implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6414,9 +7444,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Roundable implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6432,9 +7465,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class SameClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6448,9 +7484,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ScreenDescriptionAutoClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6463,9 +7502,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ScreenDescriptionBackgroundColorClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6481,9 +7523,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ScreenDescriptionBellClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6496,9 +7541,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ScreenDescriptionBlankClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6511,9 +7559,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ScreenDescriptionBlankWhenZeroClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6526,9 +7577,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ScreenDescriptionBlinkClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6541,9 +7595,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ScreenDescriptionColumnClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6557,9 +7614,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ScreenDescriptionControlClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6573,9 +7633,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ScreenDescriptionEntry implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6594,9 +7657,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ScreenDescriptionEraseClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6609,9 +7675,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ScreenDescriptionForegroundColorClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6625,9 +7694,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ScreenDescriptionFromClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6644,9 +7716,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ScreenDescriptionFullClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6659,9 +7734,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ScreenDescriptionGridClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6674,9 +7752,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ScreenDescriptionJustifiedClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6689,9 +7770,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ScreenDescriptionLightClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6704,9 +7788,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ScreenDescriptionLineClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6720,9 +7807,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ScreenDescriptionPictureClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6736,9 +7826,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ScreenDescriptionPromptClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6755,9 +7848,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ScreenDescriptionPromptOccursClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6774,9 +7870,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ScreenDescriptionRequiredClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6789,9 +7888,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ScreenDescriptionReverseVideoClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6804,9 +7906,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ScreenDescriptionSecureClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6819,9 +7924,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ScreenDescriptionSignClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6834,9 +7942,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ScreenDescriptionSizeClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6850,9 +7961,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ScreenDescriptionToClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6866,9 +7980,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ScreenDescriptionUnderlineClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6881,9 +7998,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ScreenDescriptionUsageClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6896,9 +8016,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ScreenDescriptionUsingClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6912,9 +8035,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ScreenDescriptionValueClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6928,9 +8054,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ScreenDescriptionZeroFillClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6943,9 +8072,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ScreenSection implements DataDivisionSection {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6960,9 +8092,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Search implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -6987,9 +8122,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class SearchVarying implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7003,9 +8141,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class SearchWhen implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7021,9 +8162,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class SelectClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7037,9 +8181,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Send implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7059,9 +8206,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class SendAdvancingLines implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7077,9 +8227,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class SendPhrase implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7095,9 +8248,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class SendStatementSync implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7122,9 +8278,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Sentence implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7138,9 +8297,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Set implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7159,9 +8321,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class SetTo implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7176,9 +8341,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class SetUpDown implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7193,9 +8361,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Sort implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7222,9 +8393,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Sortable implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7238,9 +8412,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class SortCollatingSequencePhrase implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7260,9 +8437,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class SortGiving implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7278,9 +8458,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class SortProcedurePhrase implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7297,9 +8480,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class SourceComputer implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7315,9 +8501,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class SourceComputerDefinition implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7335,9 +8524,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class SpecialNames implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7357,9 +8549,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class SpecialRegister implements Cobol, Name, Identifier {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7375,9 +8570,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Start implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7403,9 +8601,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class StartKey implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7419,9 +8620,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class StatementPhrase implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7435,9 +8639,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class StatusKeyClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7451,9 +8658,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Stop implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7469,9 +8679,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class StringDelimitedByPhrase implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7485,9 +8698,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class StopStatementGiving implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7501,9 +8717,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class StringForPhrase implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7517,9 +8736,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class StringIntoPhrase implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7533,9 +8755,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class StringSendingPhrase implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7549,9 +8774,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class StringStatement implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7578,9 +8806,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class StringWithPointerPhrase implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7594,9 +8825,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Subscript implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7614,9 +8848,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Subtract implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7639,9 +8876,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class SubtractCorrespondingStatement implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7657,9 +8897,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class SubtractFromGivingStatement implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7676,9 +8919,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class SubtractFromStatement implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7693,9 +8939,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class SubtractMinuendCorresponding implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7711,9 +8960,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class SymbolicCharacter implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7731,9 +8983,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class SymbolicCharactersClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7753,9 +9008,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class SymbolicDestinationClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7769,9 +9027,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class SymbolicQueueClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7785,9 +9046,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class SymbolicSourceClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7801,9 +9065,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class SymbolicSubQueueClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7817,9 +9084,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class SymbolicTerminalClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7833,9 +9103,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class TableCall implements Identifier {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7852,9 +9125,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Terminate implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7868,9 +9144,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class TextLengthClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7884,9 +9163,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class UnString implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7916,9 +9198,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class UnstringCountIn implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7932,9 +9217,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class UnstringDelimitedByPhrase implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7948,9 +9236,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class UnstringDelimiterIn implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7964,9 +9255,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class UnstringInto implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -7985,9 +9279,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class UnstringIntoPhrase implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -8001,9 +9298,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class UnstringOrAllPhrase implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -8017,9 +9317,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class UnstringSendingPhrase implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -8038,9 +9341,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class UnstringTallyingPhrase implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -8054,9 +9360,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class UnstringWithPointerPhrase implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -8070,9 +9379,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class UseAfterClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -8086,9 +9398,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class UseAfterOn implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -8106,9 +9421,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class UseDebugClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -8122,9 +9440,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class UseDebugOn implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -8142,9 +9463,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class UseStatement implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -8158,9 +9482,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ValuedObjectComputerClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -8187,9 +9514,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ValueOfClause implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -8203,9 +9533,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class ValuePair implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -8223,9 +9556,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class WorkingStorageSection implements DataDivisionSection {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -8240,9 +9576,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class Write implements Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -8277,9 +9616,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class WriteAdvancingLines implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -8293,9 +9635,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class WriteAdvancingMnemonic implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -8308,9 +9653,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class WriteAdvancingPage implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -8323,9 +9671,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class WriteAdvancingPhrase implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;
@@ -8339,9 +9690,12 @@ public interface Cobol extends Tree {
     }
 
     @Value
-    @EqualsAndHashCode(callSuper = false)
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
     class WriteFromPhrase implements Cobol {
+
+        @EqualsAndHashCode.Include
+        UUID id;
 
         Space prefix;
         Markers markers;

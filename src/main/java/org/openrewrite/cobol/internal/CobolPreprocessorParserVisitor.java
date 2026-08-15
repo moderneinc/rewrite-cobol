@@ -147,7 +147,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
 
     @Override
     public Object visitCharData(CobolPreprocessorParser.CharDataContext ctx) {
-        return new CobolPreprocessor.CharData(
+        return new CobolPreprocessor.CharData(randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 convertAll(ctx.charDataLine())
@@ -162,7 +162,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
 
     @Override
     public Object visitCharDataLine(CobolPreprocessorParser.CharDataLineContext ctx) {
-        return new CobolPreprocessor.CharDataLine(
+        return new CobolPreprocessor.CharDataLine(randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 convertAllList(ctx.cobolWord(), ctx.literal(), ctx.filename(), ctx.commentEntry(), ctx.TEXT(), ctx.DOT(), ctx.LPARENCHAR(), ctx.RPARENCHAR())
@@ -171,7 +171,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
 
     @Override
     public Object visitCharDataLineNoDot(CobolPreprocessorParser.CharDataLineNoDotContext ctx) {
-        return new CobolPreprocessor.CharDataLine(
+        return new CobolPreprocessor.CharDataLine(randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 convertAllList(ctx.cobolWord(), ctx.literal(), ctx.filename(), ctx.commentEntry(), ctx.TEXT(), ctx.LPARENCHAR(), ctx.RPARENCHAR())
@@ -180,7 +180,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
 
     @Override
     public Object visitCharDataSql(CobolPreprocessorParser.CharDataSqlContext ctx) {
-        return new CobolPreprocessor.CharDataSql(
+        return new CobolPreprocessor.CharDataSql(randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 convertAllList(ctx.charDataLine())
@@ -195,7 +195,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
 
     @Override
     public Object visitCommentEntry(CobolPreprocessorParser.CommentEntryContext ctx) {
-        return new CobolPreprocessor.CommentEntry(
+        return new CobolPreprocessor.CommentEntry(randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 convertAll(ctx.COMMENTENTRYLINE())
@@ -204,7 +204,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
 
     @Override
     public Object visitCompilerOption(CobolPreprocessorParser.CompilerOptionContext ctx) {
-        return new CobolPreprocessor.CompilerOption(
+        return new CobolPreprocessor.CompilerOption(randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 convertAllList(
@@ -514,7 +514,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
 
     @Override
     public Object visitCompilerXOpts(CobolPreprocessorParser.CompilerXOptsContext ctx) {
-        return new CobolPreprocessor.CompilerXOpts(
+        return new CobolPreprocessor.CompilerXOpts(randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (CobolPreprocessor.Word) visit(ctx.XOPTS()),
@@ -528,7 +528,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
     public CobolPreprocessor.CompilationUnit visitCompilationUnit(CobolPreprocessorParser.CompilationUnitContext ctx) {
         init();
 
-        return new CobolPreprocessor.CompilationUnit(
+        return new CobolPreprocessor.CompilationUnit(randomId(),
                 path,
                 fileAttributes,
                 EMPTY,
@@ -563,7 +563,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
 
     @Override
     public Object visitCopySource(CobolPreprocessorParser.CopySourceContext ctx) {
-        return new CobolPreprocessor.CopySource(
+        return new CobolPreprocessor.CopySource(randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 visit(ctx.literal(), ctx.cobolWord(), ctx.filename()),
@@ -699,7 +699,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
 
     @Override
     public Object visitPseudoText(CobolPreprocessorParser.PseudoTextContext ctx) {
-        return new CobolPreprocessor.PseudoText(
+        return new CobolPreprocessor.PseudoText(randomId(),
                 EMPTY,
                 Markers.EMPTY,
                 (CobolPreprocessor.Word) visit(ctx.DOUBLEEQUALCHAR().get(0)),
@@ -831,7 +831,7 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
         return new CobolPreprocessor.Word(
                 EMPTY,
                 Markers.EMPTY,
-                new Cobol.Word(
+                new Cobol.Word(randomId(),
                         prefix,
                         Markers.EMPTY,
                         cobolLines,

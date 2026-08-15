@@ -464,7 +464,7 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
                         for (int i = 0; i < difference; i++) {
                             int cur = toPos + i;
                             CobolPreprocessor.Word toWord = to.get(cur);
-                            Cobol.Word addedWord = new Cobol.Word(
+                            Cobol.Word addedWord = new Cobol.Word(randomId(),
                                     toWord.getPrefix(),
                                     Markers.EMPTY,
                                     null,
@@ -590,7 +590,7 @@ public class PreprocessReplaceVisitor<P> extends CobolPreprocessorIsoVisitor<P> 
                 words.add(new CobolPreprocessor.Word(
                         EMPTY,
                         Markers.EMPTY,
-                        new Cobol.Word(
+                        new Cobol.Word(randomId(),
                                 EMPTY,
                                 Markers.EMPTY,
                                 null,
