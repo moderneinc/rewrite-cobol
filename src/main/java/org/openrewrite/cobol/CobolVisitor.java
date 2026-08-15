@@ -1121,6 +1121,13 @@ public class CobolVisitor<P> extends TreeVisitor<Cobol, P> {
         return e.withExecCicsLines(ListUtils.map(e.getExecCicsLines(), t -> (Cobol.Word) visit(t, p)));
     }
 
+    public Cobol visitExecDliStatement(Cobol.ExecDliStatement execDliStatement, P p) {
+        Cobol.ExecDliStatement e = execDliStatement;
+        e = e.withPrefix(visitSpace(e.getPrefix(), Space.Location.EXEC_DLI_STATEMENT_PREFIX, p));
+        e = e.withMarkers(visitMarkers(e.getMarkers(), p));
+        return e.withExecDliLines(ListUtils.map(e.getExecDliLines(), t -> (Cobol.Word) visit(t, p)));
+    }
+
     public Cobol visitExecSqlImsStatement(Cobol.ExecSqlImsStatement execSqlImsStatement, P p) {
         Cobol.ExecSqlImsStatement e = execSqlImsStatement;
         e = e.withPrefix(visitSpace(e.getPrefix(), Space.Location.EXEC_SQL_IMS_STATEMENT_PREFIX, p));

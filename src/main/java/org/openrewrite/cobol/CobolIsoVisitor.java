@@ -645,6 +645,11 @@ public class CobolIsoVisitor<P> extends CobolVisitor<P> {
     }
 
     @Override
+    public Cobol.ExecDliStatement visitExecDliStatement(Cobol.ExecDliStatement execDliStatement, P p) {
+        return (Cobol.ExecDliStatement) super.visitExecDliStatement(execDliStatement, p);
+    }
+
+    @Override
     public Cobol.ExecSqlImsStatement visitExecSqlImsStatement(Cobol.ExecSqlImsStatement execSqlImsStatement, P p) {
         return (Cobol.ExecSqlImsStatement) super.visitExecSqlImsStatement(execSqlImsStatement, p);
     }

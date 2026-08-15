@@ -817,6 +817,13 @@ public class NameVisitor<P> extends CobolIsoVisitor<P> {
     }
 
     @Override
+    public Cobol.ExecDliStatement visitExecDliStatement(Cobol.ExecDliStatement execDliStatement, P p) {
+        // TODO: https://github.com/moderneinc/rewrite-cobol/issues/70.
+        // The grammar rule means that the ExecDliStatement is a single token.
+        return execDliStatement;
+    }
+
+    @Override
     public Cobol.ExecSqlImsStatement visitExecSqlImsStatement(Cobol.ExecSqlImsStatement execSqlImsStatement, P p) {
         // TODO: https://github.com/moderneinc/rewrite-cobol/issues/70.
         // The grammar rule means that the ExecCicsStatement is a single token.

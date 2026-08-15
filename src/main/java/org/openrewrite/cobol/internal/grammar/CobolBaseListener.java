@@ -4148,6 +4148,18 @@ public class CobolBaseListener implements CobolListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterExecDliStatement(CobolParser.ExecDliStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitExecDliStatement(CobolParser.ExecDliStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterExecSqlStatement(CobolParser.ExecSqlStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}

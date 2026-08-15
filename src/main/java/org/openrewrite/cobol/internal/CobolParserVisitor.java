@@ -26,8 +26,7 @@ import org.openrewrite.cobol.CobolParsingTimeoutException;
 import org.openrewrite.cobol.internal.grammar.CobolBaseVisitor;
 import org.openrewrite.cobol.internal.grammar.CobolParser;
 import org.openrewrite.cobol.marker.CopiedWord;
-import org.openrewrite.cobol.marker.ElidedDot;
-import org.openrewrite.cobol.marker.MissingCopybook;
+import org.openrewrite.cobol.marker.ElidedExec;
 import org.openrewrite.cobol.tree.*;
 import org.openrewrite.marker.Markers;
 
@@ -46,6 +45,7 @@ import static org.openrewrite.cobol.CobolStringUtils.indexOfFloatingComment;
 import static org.openrewrite.cobol.CobolStringUtils.isDebuggingModeEnabled;
 import static org.openrewrite.cobol.internal.CobolGrammarToken.COMMENT_ENTRY;
 import static org.openrewrite.cobol.internal.CobolGrammarToken.END_OF_FILE;
+import static org.openrewrite.cobol.internal.CobolGrammarToken.EXEC_TAG;
 import static org.openrewrite.cobol.tree.Space.EMPTY;
 
 @RequiredArgsConstructor
@@ -65,11 +65,11 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
     private final Map<String, Replacement> replaceMap;
 
     /**
-     * EXEC statements whose sentence-terminating period was re-emitted into the parser input by
-     * {@link CobolPreprocessorOutputSourcePrinter}. The period exists in the parser input only, so the word the grammar
-     * produces for it consumes nothing from the source.
+     * EXEC statements that {@link CobolPreprocessorOutputSourcePrinter} stood back up in the parser input as a tagged
+     * line, followed by the period they took with them. Both exist in the parser input only, so the words the grammar
+     * produces for them consume nothing from the source.
      */
-    private final Set<UUID> elidedDots;
+    private final Set<UUID> elidedExecs;
 
     private final Duration timeout;
 
@@ -122,7 +122,10 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
 
     private String uuidComment = null;
     private Integer nextIndex = null;
-    private int pendingElidedDots = 0;
+
+    // Stand-ins for the EXEC block and its period, in the order the parser input holds them.
+    private boolean pendingElidedExec;
+    private boolean pendingElidedDot;
 
     public <T> T visit(@Nullable ParseTree... trees) {
         if (Duration.ofNanos(System.nanoTime() - start).compareTo(timeout) > 0) {
@@ -1882,6 +1885,15 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 EMPTY,
                 Markers.EMPTY,
                 convertAll(ctx.EXECCICSLINE())
+        );
+    }
+
+    @Override
+    public Object visitExecDliStatement(CobolParser.ExecDliStatementContext ctx) {
+        return new Cobol.ExecDliStatement(randomId(),
+                EMPTY,
+                Markers.EMPTY,
+                convertAll(ctx.EXECDLILINE())
         );
     }
 
@@ -5548,7 +5560,8 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         List<Object> objects = new ArrayList<>();
         Space prefix = processTokenText(node.getText(), objects);
         Markers markers = Markers.EMPTY;
-        String text = END_OF_FILE.equals(node.getText()) ? "" :
+        // The tag stands in for an EXEC block that the grammar was never handed, so the word has no text of its own.
+        String text = END_OF_FILE.equals(node.getText()) || node.getText().startsWith(EXEC_TAG) ? "" :
                 node.getText().startsWith(COMMENT_ENTRY) ? node.getText().substring(COMMENT_ENTRY.length()) : node.getText();
 
         List<CobolLine> cobolLines = null;
@@ -5573,14 +5586,9 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                 commentArea = (CommentArea) object;
             } else if (object instanceof Replacement) {
                 replacement = (Replacement) object;
-            } else if (object instanceof ElidedDot) {
-                markers = markers.addIfAbsent((ElidedDot) object);
+            } else if (object instanceof ElidedExec) {
+                markers = markers.addIfAbsent((ElidedExec) object);
             } else if (object instanceof CobolPreprocessor) {
-                if (object instanceof CopybookSource) {
-                    if (!((CobolPreprocessor) object).getMarkers().findFirst(MissingCopybook.class).isPresent()) {
-                        copiedWordStack.add(new CopiedWord(randomId(), ((CobolPreprocessor) object).getId().toString()));
-                    }
-                }
                 preprocessorStatements.add((CobolPreprocessor) object);
             }
         }
@@ -6012,17 +6020,23 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
      * Markers consist of COBOL areas that are removed during preprocessing.
      */
     private Space processTokenText(String text, List<Object> objects) {
+		// The stand-ins for an elided EXEC print from the EXEC statement attached to them and consume no source. The
+		// period stands directly behind the block, so it leaves even the comments before the next word alone.
+		if (pendingElidedDot && ".".equals(text)) {
+			pendingElidedDot = false;
+			objects.add(new ElidedExec(randomId()));
+			return EMPTY;
+		}
+
 		parseCommentsAndEmptyLines(text, objects);
 
-		// Adjacent EXEC statements are all consumed by the first of their periods, so more than one may be pending.
-		if (pendingElidedDots > 0) {
-			if (".".equals(text)) {
-				pendingElidedDots--;
-				objects.add(new ElidedDot(randomId()));
-				return EMPTY;
-			}
-			pendingElidedDots = 0;
+		if (pendingElidedExec && text.startsWith(EXEC_TAG)) {
+			pendingElidedExec = false;
+			objects.add(new ElidedExec(randomId()));
+			return EMPTY;
 		}
+		pendingElidedExec = false;
+		pendingElidedDot = false;
 
 		int saveCursor = cursor;
 		sequenceArea();
@@ -6108,16 +6122,25 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                         contentArea = source.substring(cursor, Math.min(newLinePos, endOfContentArea));
                         if (copybookNotFoundComment.equals(contentArea)) {
                             copybookSource = copybookNotFoundComment((CopybookSource) copybookSource, lines);
-                            copiedWordStack.add(new CopiedWord(randomId(), copybookSource.getId().toString()));
                             lines.clear();
                         } else {
                             cursor = savedCursor;
                         }
+                        // Opened here rather than on the word that carries the copybook, so that a copybook
+                        // contributing no words is still closed by its own stop comment.
+                        copiedWordStack.add(new CopiedWord(randomId(), copybookSource.getId().toString()));
                         objects.add(copybookSource);
                     } else if (copyStopComment.equals(contentArea)) {
                         copyStopComment();
+                        // The copy statement and its copybook print the lines they span; keeping them on the word
+                        // as well prints them twice over.
+                        lines.clear();
                     } else if (preprocessorStartComment.equals(contentArea)) {
                         objects.add(getPreprocessorStatement());
+                        if (pendingElidedExec) {
+                            // The words that follow stand in for this EXEC; a later one gets its own statement.
+                            iterations = max;
+                        }
                     }
                 } else {
                     cursor += contentArea.length();
@@ -6383,6 +6406,17 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         String numberOfSpaces = source.substring(cursor, cursor + source.substring(cursor).indexOf("\n") + 1);
         cursor += numberOfSpaces.length();
         nextIndex = Integer.valueOf(numberOfSpaces.trim());
+
+        // The alignment whitespace stands in for the copy statement's own text. With no word behind it on the line
+        // there is nothing left to align, and keeping it would print whitespace the source never had.
+        if (nextIndex > 0) {
+            int endOfLine = source.indexOf("\n", cursor);
+            String alignment = endOfLine == -1 ? source.substring(cursor) : source.substring(cursor, endOfLine);
+            if (alignment.trim().isEmpty()) {
+                cursor += alignment.length();
+                nextIndex = null;
+            }
+        }
     }
 
     private CobolPreprocessor copyUuidComment() {
@@ -6591,8 +6625,9 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
         nextIndex = Integer.valueOf(numberOfSpaces.trim());
 
         CobolPreprocessor statement = preprocessorMap.get(uuid.trim());
-        if (statement != null && elidedDots.contains(statement.getId())) {
-            pendingElidedDots++;
+        if (statement != null && elidedExecs.contains(statement.getId())) {
+            pendingElidedExec = true;
+            pendingElidedDot = ((CobolPreprocessor.ExecStatement) statement).getDot() != null;
         }
         return statement;
     }

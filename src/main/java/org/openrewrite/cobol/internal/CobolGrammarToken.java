@@ -22,4 +22,14 @@ public class CobolGrammarToken {
     public static final String COMMENT_ENTRY = "*>CE ";
     public static final String COMMENT = "*> ";
     public static final String END_OF_FILE = "<EOF>";
+
+    /**
+     * Preprocessing removes an EXEC block from the text the COBOL grammar sees. A tagged line takes its place so
+     * that the block is still a statement; the grammar matches one of these tags per EXEC dialect.
+     */
+    public static final String EXEC_TAG = "*>EXEC";
+    public static final String EXEC_CICS = EXEC_TAG + "CICS ";
+    public static final String EXEC_DLI = EXEC_TAG + "DLI ";
+    public static final String EXEC_SQL = EXEC_TAG + "SQL ";
+    public static final String EXEC_SQL_IMS = EXEC_TAG + "SQLIMS ";
 }

@@ -23,13 +23,13 @@ import org.openrewrite.marker.Marker;
 import java.util.UUID;
 
 /**
- * Preprocessing removes an {@link CobolPreprocessor.ExecStatement} from the text the COBOL grammar sees, which takes
- * the period that ended the sentence with it. The period is re-emitted into the parser input so that the sentence is
- * still terminated; this marks the resulting word as a placeholder whose text prints from the EXEC statement that is
- * attached to it, so that the period is only printed once.
+ * Preprocessing removes an {@link CobolPreprocessor.ExecStatement} from the text the COBOL grammar sees, taking the
+ * period that ended the sentence with it. A tagged line and a period stand in for them in the parser input, so that
+ * the EXEC is still a statement and the sentence is still terminated. This marks each stand-in word; its text prints
+ * from the EXEC statement attached to it rather than from the word itself.
  */
 @With
 @Value
-public class ElidedDot implements Marker {
+public class ElidedExec implements Marker {
     UUID id;
 }

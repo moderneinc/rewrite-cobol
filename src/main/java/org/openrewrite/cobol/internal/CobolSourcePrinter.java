@@ -23,7 +23,7 @@ import org.openrewrite.cobol.CobolPreprocessorVisitor;
 import org.openrewrite.cobol.CobolVisitor;
 import org.openrewrite.cobol.marker.CopiedStatement;
 import org.openrewrite.cobol.marker.CopiedWord;
-import org.openrewrite.cobol.marker.ElidedDot;
+import org.openrewrite.cobol.marker.ElidedExec;
 import org.openrewrite.cobol.marker.MissingCopybook;
 import org.openrewrite.cobol.tree.*;
 import org.openrewrite.internal.StringUtils;
@@ -1266,6 +1266,14 @@ public class CobolSourcePrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
         visit(execCicsStatement.getExecCicsLines(), p);
         afterSyntax(execCicsStatement, p);
         return execCicsStatement;
+    }
+
+    @Override
+    public Cobol visitExecDliStatement(Cobol.ExecDliStatement execDliStatement, PrintOutputCapture<P> p) {
+        beforeSyntax(execDliStatement, Space.Location.EXEC_DLI_STATEMENT_PREFIX, p);
+        visit(execDliStatement.getExecDliLines(), p);
+        afterSyntax(execDliStatement, p);
+        return execDliStatement;
     }
 
     @Override
@@ -4354,9 +4362,11 @@ public class CobolSourcePrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
             if (preprocessorStatement instanceof CopybookSource) {
                 if (!preprocessorStatement.getMarkers().findFirst(CopiedStatement.class).isPresent()) {
                     copybookSource = (CopybookSource) preprocessorStatement;
-                    // The COBOL word is a product of a copy or exec sql include statement.
                     getCobolPreprocessorVisitor().visit((CobolPreprocessor) copybookSource, p);
-                    if (!((CobolPreprocessor) copybookSource).getMarkers().findFirst(MissingCopybook.class).isPresent()) {
+                    // Printing the copybook covers this word only when the word came from it. A copybook that
+                    // contributes no words is carried by a word of the program's own, which still has itself to print.
+                    if (!((CobolPreprocessor) copybookSource).getMarkers().findFirst(MissingCopybook.class).isPresent() &&
+                            word.getMarkers().findFirst(CopiedWord.class).isPresent()) {
                         return word;
                     }
                 }
@@ -4435,8 +4445,8 @@ public class CobolSourcePrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
                 beforeSyntax(word, Space.Location.WORD_PREFIX, p);
             }
 
-            // An elided dot was printed above, by the EXEC statement it was taken from.
-            if (!word.getMarkers().findFirst(ElidedDot.class).isPresent()) {
+            // A stand-in for an elided EXEC was printed above, by the EXEC statement it was taken from.
+            if (!word.getMarkers().findFirst(ElidedExec.class).isPresent()) {
                 p.append(word.getWord());
             }
 

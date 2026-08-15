@@ -31,7 +31,7 @@ import java.util.UUID;
 
 import static org.openrewrite.cobol.CobolPrinterUtils.*;
 import static org.openrewrite.cobol.CobolStringUtils.isSubstituteCharacter;
-import static org.openrewrite.cobol.internal.CobolGrammarToken.COMMENT_ENTRY;
+import static org.openrewrite.cobol.internal.CobolGrammarToken.*;
 
 /**
  * Print the post processed COBOL AST with comments that act like a `JavaTemplate`.
@@ -112,7 +112,7 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
 
     private boolean inUnknownIndicator = false;
 
-    private final Set<UUID> elidedDots = new LinkedHashSet<>();
+    private final Set<UUID> elidedExecs = new LinkedHashSet<>();
     private boolean inProcedureDivision = false;
     private String previousWord = "";
 
@@ -256,21 +256,46 @@ public class CobolPreprocessorOutputSourcePrinter<P> extends CobolPreprocessorSo
     public CobolPreprocessor visitExecStatement(CobolPreprocessor.ExecStatement execStatement, PrintOutputCapture<P> p) {
         addPreprocessorStatementTemplate(execStatement, p);
 
-        // Eliding the statement takes the period that ended the sentence with it, so re-emit the period for the COBOL
-        // grammar. Outside the procedure division a period is not a sentence terminator and the grammar rejects it.
-        if (!printColumns && inProcedureDivision && execStatement.getDot() != null) {
-            elidedDots.add(execStatement.getId());
-            p.append(".\n");
+        // Stand the elided block up as a tagged line so that the COBOL grammar still sees a statement, and re-emit the
+        // period it took with it so that the sentence is still terminated. Outside the procedure division an EXEC is
+        // not a statement and a period is not a sentence terminator, so there the block stays elided.
+        if (!printColumns && inProcedureDivision) {
+            String tag = execTag(execStatement);
+            if (tag != null) {
+                elidedExecs.add(execStatement.getId());
+                p.append(tag).append("\n");
+                if (execStatement.getDot() != null) {
+                    p.append(".\n");
+                }
+            }
         }
         return execStatement;
     }
 
+    private static @Nullable String execTag(CobolPreprocessor.ExecStatement execStatement) {
+        if (execStatement.getWords().size() < 2) {
+            return null;
+        }
+        switch (execStatement.getWords().get(1).getCobolWord().getWord().toUpperCase()) {
+            case "CICS":
+                return EXEC_CICS;
+            case "DLI":
+                return EXEC_DLI;
+            case "SQL":
+                return EXEC_SQL;
+            case "SQLIMS":
+                return EXEC_SQL_IMS;
+            default:
+                return null;
+        }
+    }
+
     /**
-     * IDs of the EXEC statements whose period was re-emitted into the parser input. The word the COBOL grammar creates
-     * for each of them exists only to terminate the sentence and consumes no source.
+     * IDs of the EXEC statements that were re-emitted into the parser input as a tagged line. The words the COBOL
+     * grammar creates for one of them, and for the period that followed it, consume no source.
      */
-    public Set<UUID> getElidedDots() {
-        return elidedDots;
+    public Set<UUID> getElidedExecs() {
+        return elidedExecs;
     }
 
     @Override

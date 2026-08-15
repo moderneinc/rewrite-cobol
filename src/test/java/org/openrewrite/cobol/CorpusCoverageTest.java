@@ -35,6 +35,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * Parses a corpus of real COBOL and reports how much of it the parser can actually read.
  * <p>
@@ -83,6 +85,25 @@ class CorpusCoverageTest {
           .forEach(e -> System.out.printf("  [%d] %s%n      e.g. %s%n",
             e.getValue().size(), e.getKey(),
             e.getValue().stream().limit(4).collect(Collectors.joining(", "))));
+
+        // Parsing a program is only half of it: whatever preprocessing takes out of the text the grammar sees has to
+        // come back on the way out, byte for byte.
+        List<String> notPrintedBack = new ArrayList<>();
+        for (SourceFile program : programs) {
+            if (program instanceof ParseError) {
+                continue;
+            }
+            String original = new String(Files.readAllBytes(root.resolve(program.getSourcePath())), program.getCharset());
+            if (!original.equals(program.printAll())) {
+                notPrintedBack.add(program.getSourcePath().getFileName().toString());
+            }
+        }
+        System.out.printf("%nround trip: %d of %d printed back unchanged%n",
+          programs.size() - failed.size() - notPrintedBack.size(), programs.size() - failed.size());
+
+        // Coverage is reported rather than asserted, because what the parser cannot yet read is the point of the
+        // measurement. Losing the text of a program it did read is a different thing, and is never acceptable.
+        assertThat(notPrintedBack).isEmpty();
     }
 
     /**
