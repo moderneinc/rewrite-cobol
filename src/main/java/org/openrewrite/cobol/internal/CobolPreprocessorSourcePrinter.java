@@ -314,7 +314,7 @@ public class CobolPreprocessorSourcePrinter<P> extends CobolPreprocessorVisitor<
                     word.getCobolWord().getIndicatorArea().printColumnArea(this, getCursor(), printColumns, p);
                 }
                 beforeSyntax(word, Space.Location.WORD_PREFIX, p);
-                p.append(word.getCobolWord().getWord());
+                printWord(word, p);
                 return word;
             }
         }
@@ -357,7 +357,7 @@ public class CobolPreprocessorSourcePrinter<P> extends CobolPreprocessorVisitor<
                 beforeSyntax(word, Space.Location.WORD_PREFIX, p);
             }
 
-            p.append(word.getCobolWord().getWord());
+            printWord(word, p);
 
             if (word.getCobolWord().getCommentArea() != null && !word.getCobolWord().getCommentArea().isAdded()) {
                 word.getCobolWord().getCommentArea().printColumnArea(this, getCursor(), printColumns, p);
@@ -366,6 +366,23 @@ public class CobolPreprocessorSourcePrinter<P> extends CobolPreprocessorVisitor<
 
         afterSyntax(word, p);
         return word;
+    }
+
+    /**
+     * Appends a word's own characters, reporting where they landed.
+     */
+    protected void printWord(CobolPreprocessor.Word word, PrintOutputCapture<P> p) {
+        int start = p.out.length();
+        p.append(word.getCobolWord().getWord());
+        wordPrinted(word, start, p.out.length());
+    }
+
+    /**
+     * Where a word's characters landed in the output, for a printer measuring the source rather than
+     * producing it. What preprocessing took out of the text the grammar sees is printed here rather
+     * than by the COBOL printer, so an {@code EXEC} block is only reachable through this.
+     */
+    public void wordPrinted(CobolPreprocessor.Word word, int start, int end) {
     }
 
     private static final UnaryOperator<String> COBOL_MARKER_WRAPPER =

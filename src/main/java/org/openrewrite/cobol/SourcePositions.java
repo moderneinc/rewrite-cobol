@@ -19,8 +19,11 @@ import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
 import org.openrewrite.PrintOutputCapture;
 import org.openrewrite.Tree;
+import org.openrewrite.cobol.internal.CobolPreprocessorSourcePrinter;
 import org.openrewrite.cobol.internal.CobolPrinter;
+import org.openrewrite.cobol.marker.ElidedExec;
 import org.openrewrite.cobol.tree.Cobol;
+import org.openrewrite.cobol.tree.CobolPreprocessor;
 import org.openrewrite.marker.Range;
 
 import java.util.ArrayList;
@@ -147,6 +150,7 @@ public class SourcePositions {
 
         private final Map<UUID, int[]> spans = new HashMap<>();
         private final List<int[]> words = new ArrayList<>();
+        private Cobol.@Nullable Word carrying;
 
         Measure() {
             super(true, true);
@@ -164,12 +168,43 @@ public class SourcePositions {
         }
 
         @Override
+        public Cobol visitWord(Cobol.Word word, PrintOutputCapture<P> p) {
+            Cobol.Word outer = carrying;
+            carrying = word;
+            Cobol printed = super.visitWord(word, p);
+            carrying = outer;
+            return printed;
+        }
+
+        @Override
         public void wordPrinted(Cobol.Word word, int start, int end) {
             // The word ending a compilation unit carries the trailing whitespace and no text of its own.
             // Left in, its empty span at the end of the file would extend the last statement over the newline.
             if (end > start) {
                 words.add(new int[]{start, end});
             }
+        }
+
+        /**
+         * An {@code EXEC} block is taken out of the text the COBOL grammar sees, so its words arrive here
+         * rather than through {@link #wordPrinted}. Those are the statements a lineage edge crosses the
+         * program boundary at, and without this they would be the one kind with nowhere to point.
+         * <p>
+         * Only the block a stand-in word was left in place of counts. Copybooks and the declarations a
+         * precompiler eats print through the same visitor while the word carrying them still has its own
+         * text to print, and taking their words would start that word at something written before it.
+         */
+        @Override
+        protected CobolPreprocessorVisitor<PrintOutputCapture<P>> getCobolPreprocessorVisitor() {
+            return new CobolPreprocessorSourcePrinter<P>(true) {
+                @Override
+                public void wordPrinted(CobolPreprocessor.Word word, int start, int end) {
+                    if (end > start && carrying != null &&
+                        carrying.getMarkers().findFirst(ElidedExec.class).isPresent()) {
+                        words.add(new int[]{start, end});
+                    }
+                }
+            };
         }
     }
 }

@@ -39,6 +39,7 @@ public class Continuation {
     Markers markers;
     Map<Integer, List<ColumnArea>> continuations;
 
+    @SuppressWarnings("DuplicatedCode")
     public <P> void printContinuation(CobolPreprocessorSourcePrinter<P> sourcePrinter, Cursor cursor, CobolPreprocessor.Word word, boolean printColumns, PrintOutputCapture<P> p) {
         for (Marker marker : getMarkers().getMarkers()) {
             p.out.append(p.getMarkerPrinter().beforeSyntax(marker, new Cursor(cursor, marker), COBOL_MARKER_WRAPPER));
@@ -56,6 +57,8 @@ public class Continuation {
 
         sourcePrinter.visitSpace(word.getPrefix(), Space.Location.CONTINUATION_PREFIX, p);
 
+        // A continued word spans the column areas it is broken around, so its position covers them.
+        int start = p.out.length();
         char[] charArray = word.getCobolWord().getWord().toCharArray();
         for (int i = 0; i < charArray.length; i++) {
             if (i != 0 && continuations.containsKey(i)) {
@@ -66,6 +69,7 @@ public class Continuation {
             char c = charArray[i];
             p.append(c);
         }
+        sourcePrinter.wordPrinted(word, start, p.out.length());
 
         List<List<ColumnArea>> lastColumnAreas = continuations.entrySet().stream()
                 .filter(it -> it.getKey() > word.getCobolWord().getWord().length())

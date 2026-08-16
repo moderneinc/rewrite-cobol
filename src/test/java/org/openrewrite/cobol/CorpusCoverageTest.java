@@ -129,19 +129,20 @@ class CorpusCoverageTest {
             Cobol.CompilationUnit cu = (Cobol.CompilationUnit) program;
             SourcePositions positions = SourcePositions.of(cu);
             for (Cobol.Word word : wordsIn(cu)) {
-                // A continued word is broken around the column areas it spans, so its position covers them too.
-                if (word.getContinuation() != null) {
+                // A continued word is broken around the column areas it spans, so its position covers them
+                // too, and a stand-in for an elided EXEC covers the block it stands for. Neither reads back
+                // as its own text; the statement count below is what holds the EXEC blocks to their place.
+                if (word.getContinuation() != null || word.getMarkers().findFirst(ElidedExec.class).isPresent()) {
                     continue;
                 }
                 words++;
                 Range range = positions.get(word);
                 if (range == null) {
-                    // Copied in from a copybook, or the stand-in the grammar leaves where an EXEC block was
-                    // elided: both print somewhere else. Anything else printing nothing is a gap, not a
-                    // position that belongs elsewhere, so it is named rather than passed over.
+                    // Copied in from a copybook, which prints there and not here. Anything else printing
+                    // nothing is a gap, not a position that belongs elsewhere, so it is named rather than
+                    // passed over.
                     if (!word.getWord().isEmpty() &&
-                        !word.getMarkers().findFirst(CopiedWord.class).isPresent() &&
-                        !word.getMarkers().findFirst(ElidedExec.class).isPresent()) {
+                        !word.getMarkers().findFirst(CopiedWord.class).isPresent()) {
                         unexplained.add(cu.getSourcePath() + " " + word.getWord());
                     }
                     continue;
@@ -158,7 +159,7 @@ class CorpusCoverageTest {
                 statements++;
                 if (positions.get(statement) != null) {
                     placedStatements++;
-                } else if (!printsElsewhere(statement)) {
+                } else if (!writtenByACopybook(statement)) {
                     unexplained.add(cu.getSourcePath() + " " + statement.getClass().getSimpleName());
                 }
             }
@@ -169,11 +170,9 @@ class CorpusCoverageTest {
         assertThat(unexplained).isEmpty();
     }
 
-    private static boolean printsElsewhere(Cobol tree) {
+    private static boolean writtenByACopybook(Cobol tree) {
         for (Cobol.Word word : wordsIn(tree)) {
-            if (!word.getWord().isEmpty() &&
-                !word.getMarkers().findFirst(CopiedWord.class).isPresent() &&
-                !word.getMarkers().findFirst(ElidedExec.class).isPresent()) {
+            if (!word.getWord().isEmpty() && !word.getMarkers().findFirst(CopiedWord.class).isPresent()) {
                 return false;
             }
         }

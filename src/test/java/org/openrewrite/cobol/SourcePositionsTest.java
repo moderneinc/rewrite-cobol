@@ -73,6 +73,43 @@ class SourcePositionsTest extends CobolTest {
     }
 
     /**
+     * The EXEC blocks are where a lineage edge crosses the program boundary, so they are the
+     * statements a catalog most wants to point at. Preprocessing takes their text out of what the
+     * grammar sees and the printer puts it back, which is a path worth pinning separately.
+     */
+    @Test
+    void placesAnExecBlockAtItsOwnText() {
+        rewriteRun(
+          cobol(
+            """
+              000100 IDENTIFICATION DIVISION.                                         00000010
+              000200 PROGRAM-ID. POSEXEC.                                             00000020
+              000300 DATA DIVISION.                                                   00000030
+              000400 WORKING-STORAGE SECTION.                                         00000040
+              000500 01  WS-ACCT          PIC X(30).                                  00000050
+              000600 PROCEDURE DIVISION.                                              00000060
+              000700 MAIN-PARA.                                                       00000070
+              000800     EXEC CICS READ FILE('ACCTFILE') INTO(WS-ACCT) END-EXEC.      00000080
+              000900     GOBACK.                                                      00000090
+              """,
+            spec -> spec.afterRecipe(cu -> {
+                SourcePositions positions = SourcePositions.of(cu);
+                Statement exec = statementsIn(cu).get(0);
+                assertThat(exec).isInstanceOf(Cobol.ExecCicsStatement.class);
+
+                // The period comes with the block: preprocessing takes the whole card out of the text the
+                // grammar sees, and what stands in its place is the period, printing nothing of its own.
+                Range range = positions.get(exec);
+                assertThat(range).isNotNull();
+                assertThat(positions.textOf(range))
+                  .isEqualTo("EXEC CICS READ FILE('ACCTFILE') INTO(WS-ACCT) END-EXEC.");
+                assertThat(range.getStart().getLine()).isEqualTo(8);
+                assertThat(range.getStart().getColumn()).isEqualTo(12);
+            }))
+        );
+    }
+
+    /**
      * A copied statement prints nothing in the program that includes it, so it has nowhere to point
      * at here. Reporting no position is the answer; the copybook is what has one.
      */
