@@ -73,9 +73,14 @@ public class PreprocessCopyVisitor<P> extends CobolPreprocessorIsoVisitor<P> {
         return c;
     }
 
-    // A copybook name is a PDS member name, which is case insensitive. On a distributed filesystem
-    // the same member is often a lower case file, so COPY LGCMAREA has to find lgcmarea.cpy.
+    // A copybook name is a PDS member name, which is case insensitive, and COPY takes it either as a
+    // word or as a literal. On a distributed filesystem the same member is often a lower case file,
+    // so COPY LGCMAREA has to find lgcmarea.cpy and COPY 'CSSTRPFY' has to find CSSTRPFY.cpy.
     private static String memberName(String name) {
+        if (name.length() > 1 && (name.charAt(0) == '\'' || name.charAt(0) == '"') &&
+                name.charAt(name.length() - 1) == name.charAt(0)) {
+            name = name.substring(1, name.length() - 1);
+        }
         return name.toUpperCase(Locale.ROOT);
     }
 

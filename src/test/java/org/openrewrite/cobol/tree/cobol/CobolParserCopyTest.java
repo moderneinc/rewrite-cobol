@@ -84,6 +84,8 @@ class CobolParserCopyTest extends CobolTest {
     @ParameterizedTest
     @ValueSource(strings = {
       "COPY LOWCASE.",
+      "COPY 'LOWCASE'.",
+      "COPY \"LOWCASE\".",
       "EXEC SQL INCLUDE LOWCASE END-EXEC.",
     })
     void copybookFileNamedInAnotherCase(String input) {
