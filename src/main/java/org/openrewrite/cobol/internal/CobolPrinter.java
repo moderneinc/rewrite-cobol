@@ -71,7 +71,7 @@ public class CobolPrinter<P> extends CobolSourcePrinter<P> {
             word.getContinuation().printContinuation(this, getCursor(), word, printColumns, p);
         } else {
             beforeSyntax(word, Space.Location.WORD_PREFIX, p);
-            p.append(word.getWord());
+            printWord(word, p);
         }
 
         if (word.getCommentArea() != null && !word.getCommentArea().isAdded()) {

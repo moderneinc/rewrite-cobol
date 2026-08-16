@@ -4412,7 +4412,7 @@ public class CobolSourcePrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
                     word.getIndicatorArea().printColumnArea(this, getCursor(), printColumns, p);
                 }
                 beforeSyntax(word, Space.Location.WORD_PREFIX, p);
-                p.append(word.getWord());
+                printWord(word, p);
                 return word;
             }
         }
@@ -4447,7 +4447,7 @@ public class CobolSourcePrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
 
             // A stand-in for an elided EXEC was printed above, by the EXEC statement it was taken from.
             if (!word.getMarkers().findFirst(ElidedExec.class).isPresent()) {
-                p.append(word.getWord());
+                printWord(word, p);
             }
 
             if (word.getCommentArea() != null && !word.getCommentArea().isAdded()) {
@@ -4526,6 +4526,23 @@ public class CobolSourcePrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
         visit(writeFromPhrase.getName(), p);
         afterSyntax(writeFromPhrase, p);
         return writeFromPhrase;
+    }
+
+    /**
+     * Appends a word's own characters, reporting where they landed.
+     */
+    protected void printWord(Cobol.Word word, PrintOutputCapture<P> p) {
+        int start = p.out.length();
+        p.append(word.getWord());
+        wordPrinted(word, start, p.out.length());
+    }
+
+    /**
+     * Where a word's characters landed in the output, for a printer measuring the source rather
+     * than producing it. A word printing nothing of its own — copied in from a copybook, replaced
+     * away, or the stand-in for an elided EXEC — is never reported, so it contributes no position.
+     */
+    public void wordPrinted(Cobol.Word word, int start, int end) {
     }
 
     protected void beforeSyntax(Cobol c, Space.Location loc, PrintOutputCapture<P> p) {

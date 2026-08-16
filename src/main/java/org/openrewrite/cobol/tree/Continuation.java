@@ -103,6 +103,8 @@ public class Continuation {
 
         sourcePrinter.visitSpace(word.getPrefix(), Space.Location.CONTINUATION_PREFIX, p);
 
+        // A continued word spans the column areas it is broken around, so its position covers them.
+        int start = p.out.length();
         char[] charArray = word.getWord().toCharArray();
         for (int i = 0; i < charArray.length; i++) {
             if (i != 0 && continuations.containsKey(i)) {
@@ -113,6 +115,7 @@ public class Continuation {
             char c = charArray[i];
             p.append(c);
         }
+        sourcePrinter.wordPrinted(word, start, p.out.length());
 
         List<List<ColumnArea>> lastColumnAreas = continuations.entrySet().stream()
                 .filter(it -> it.getKey() > word.getWord().length())
