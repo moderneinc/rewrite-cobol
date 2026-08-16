@@ -77,6 +77,43 @@ class CobolParserCopyTest extends CobolTest {
         );
     }
 
+    /**
+     * A copybook name is a PDS member name, and those are case insensitive. Checked out onto a
+     * distributed filesystem the same member is often a lower case file.
+     */
+    @ParameterizedTest
+    @ValueSource(strings = {
+      "COPY LOWCASE.",
+      "EXEC SQL INCLUDE LOWCASE END-EXEC.",
+    })
+    void copybookFileNamedInAnotherCase(String input) {
+        rewriteRun(
+          cobolPostProcess(
+            """
+              000000* Prevent trim
+                     IDENTIFICATION DIVISION.
+                     PROGRAM-ID. LOWPGM.
+                     DATA DIVISION.
+                     WORKING-STORAGE SECTION.
+                     %s
+                     PROCEDURE DIVISION.
+                         STOP RUN.
+              """.formatted(input),
+            """
+              IDENTIFICATION DIVISION.
+              PROGRAM-ID. LOWPGM.
+              DATA DIVISION.
+              WORKING-STORAGE SECTION.
+              01 LOWCASE-RECORD.
+                 03 LOWCASE-KEY                PIC X(8).
+                 03 LOWCASE-AMOUNT             PIC 9(7)V99.
+              PROCEDURE DIVISION.
+                  STOP RUN.
+              """
+          )
+        );
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {
       "COPY TRAILING_WHITESPACE.",

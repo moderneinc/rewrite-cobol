@@ -41,7 +41,7 @@ public class PreprocessCopyVisitor<P> extends CobolPreprocessorIsoVisitor<P> {
         this.preprocessorMap = preprocessorMap;
         copybooks.forEach(it -> {
             String fileName = it.getSourcePath().getFileName().toString();
-            this.copybooks.putIfAbsent(fileName.substring(0, fileName.indexOf(".")), it);
+            this.copybooks.putIfAbsent(memberName(fileName.substring(0, fileName.indexOf("."))), it);
         });
     }
 
@@ -73,9 +73,16 @@ public class PreprocessCopyVisitor<P> extends CobolPreprocessorIsoVisitor<P> {
         return c;
     }
 
+    // A copybook name is a PDS member name, which is case insensitive. On a distributed filesystem
+    // the same member is often a lower case file, so COPY LGCMAREA has to find lgcmarea.cpy.
+    private static String memberName(String name) {
+        return name.toUpperCase(Locale.ROOT);
+    }
+
     private CobolPreprocessor resolve(CobolPreprocessor c, String copybookName, P p) {
-        if (copybooks.containsKey(copybookName)) {
-            SourceFile sf = copybooks.get(copybookName);
+        String member = memberName(copybookName);
+        if (copybooks.containsKey(member)) {
+            SourceFile sf = copybooks.get(member);
             if (sf instanceof ParseError) {
                 return c.withMarkers(c.getMarkers().addIfAbsent(new MissingCopybook(randomId(), MissingCopybook.Status.PARSE_ERROR)));
             }
