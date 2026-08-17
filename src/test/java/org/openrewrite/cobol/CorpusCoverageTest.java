@@ -225,6 +225,7 @@ class CorpusCoverageTest {
     private static List<Parser.Input> inputs(Path root, String extension) throws IOException {
         try (Stream<Path> paths = Files.walk(root)) {
             return paths
+              .filter(Corpus::isSource)
               .filter(p -> p.toString().toLowerCase().endsWith(extension))
               .sorted()
               .map(p -> new Parser.Input(p, () -> {

@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.openrewrite.InMemoryExecutionContext;
 import org.openrewrite.SourceFile;
+import org.openrewrite.cobol.Corpus;
 import org.openrewrite.jcl.JclParser;
 import org.openrewrite.jcl.tree.Jcl;
 
@@ -52,6 +53,7 @@ class JclCorpusTest {
         List<Path> members = new ArrayList<>();
         try (Stream<Path> walk = Files.walk(corpus)) {
             walk.filter(Files::isRegularFile)
+                    .filter(Corpus::isSource)
                     .filter(p -> p.toString().toLowerCase().endsWith(".jcl"))
                     .forEach(members::add);
         }
