@@ -244,11 +244,9 @@ public class CicsCommand implements Trait<Cobol.Word> {
     public static class Matcher extends SimpleTraitMatcher<CicsCommand> {
 
         /**
-         * A CICS command is a procedure division statement, so the parser gives each block its own
-         * stand-in word and there is one command per word. Measured over the corpus on 2026-08-17:
-         * 1,460 words carrying 1,460 blocks, none carrying two. Only EXEC SQL piles up, in the data
-         * division where {@code INCLUDE} is written and no tag is emitted — see
-         * {@link CopybookReference}, which reads several off one word.
+         * One command per block, matched on the word that stands in for it. Every word within the
+         * block answers with the block too — see {@link Execs#isStandIn} — so matching on any word
+         * that carries one reports a single command a dozen times over.
          */
         @Override
         protected @Nullable CicsCommand test(Cursor cursor) {
@@ -256,12 +254,9 @@ public class CicsCommand implements Trait<Cobol.Word> {
             if (!(value instanceof Cobol.Word)) {
                 return null;
             }
-            for (CobolPreprocessor ps : ((Cobol.Word) value).getPreprocessorStatements()) {
-                if (ps instanceof CobolPreprocessor.ExecStatement && isCics((CobolPreprocessor.ExecStatement) ps)) {
-                    return parse(cursor, (CobolPreprocessor.ExecStatement) ps);
-                }
-            }
-            return null;
+            CobolPreprocessor.ExecStatement exec = Execs.blockOn((Cobol.Word) value);
+            return exec != null && isCics(exec) && Execs.isStandIn(cursor, (Cobol.Word) value) ?
+                    parse(cursor, exec) : null;
         }
     }
 

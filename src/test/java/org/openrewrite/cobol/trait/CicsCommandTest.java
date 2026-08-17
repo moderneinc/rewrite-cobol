@@ -228,6 +228,29 @@ class CicsCommandTest implements RewriteTest {
     }
 
     /**
+     * A block in the procedure division parses to a statement whose words each answer with the block
+     * they came from, so asking every word what it carries hears about one command a dozen times.
+     * Matching the stand-in is what makes it one.
+     */
+    @Test
+    void readsABlockInAParagraphOnce() {
+        List<CicsCommand> commands = parse(
+          """
+            000000 IDENTIFICATION DIVISION.                                        \s
+            000000 PROGRAM-ID. CICSPGM.                                            \s
+            000000 PROCEDURE DIVISION.                                             \s
+            000000 MAIN-PARA.                                                      \s
+            000000     EXEC CICS READ FILE('ACCTFILE') INTO(WS-REC) END-EXEC.      \s
+            000000     EXEC CICS WRITEQ TS QUEUE('ACCTQ') FROM(WS-REC) END-EXEC.   \s
+            000000     GOBACK.                                                     \s
+            """
+        );
+
+        assertThat(commands).extracting(CicsCommand::getCommand)
+          .containsExactly("READ", "WRITEQ TS");
+    }
+
+    /**
      * The command is on the word that stands in for the block, so that is what a caller marks. The
      * block's own text prints from the preprocessor statement and would not carry a marker.
      */

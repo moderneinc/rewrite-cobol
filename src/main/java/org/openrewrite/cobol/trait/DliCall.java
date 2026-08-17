@@ -223,9 +223,8 @@ public class DliCall implements Trait<Cobol> {
     public static class Matcher extends SimpleTraitMatcher<DliCall> {
 
         /**
-         * An {@code EXEC DLI} is a procedure division statement, so the parser gives each block its
-         * own stand-in word and there is one call per word — 26 words carrying 26 blocks over the
-         * corpus on 2026-08-17, none carrying two.
+         * One call per block, matched on the word that stands in for it rather than on every word
+         * within it. See {@link Execs#isStandIn}.
          */
         @Override
         protected @Nullable DliCall test(Cursor cursor) {
@@ -234,10 +233,9 @@ public class DliCall implements Trait<Cobol> {
                 return fromCall(cursor, (Cobol.Call) value);
             }
             if (value instanceof Cobol.Word) {
-                for (CobolPreprocessor ps : ((Cobol.Word) value).getPreprocessorStatements()) {
-                    if (ps instanceof CobolPreprocessor.ExecStatement && isDli((CobolPreprocessor.ExecStatement) ps)) {
-                        return fromExec(cursor, (CobolPreprocessor.ExecStatement) ps);
-                    }
+                CobolPreprocessor.ExecStatement exec = Execs.blockOn((Cobol.Word) value);
+                if (exec != null && isDli(exec) && Execs.isStandIn(cursor, (Cobol.Word) value)) {
+                    return fromExec(cursor, exec);
                 }
             }
             return null;

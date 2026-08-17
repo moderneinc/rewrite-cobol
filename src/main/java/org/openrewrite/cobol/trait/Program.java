@@ -23,6 +23,7 @@ import org.openrewrite.trait.SimpleTraitMatcher;
 import org.openrewrite.trait.Trait;
 
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * The program a statement belongs to.
@@ -54,13 +55,22 @@ public class Program implements Trait<Cobol.ProgramUnit> {
     }
 
     /**
-     * The program {@code cursor} is inside, innermost first, or null outside a program unit.
+     * The program {@code cursor} is inside, innermost first.
+     * <p>
+     * At the compilation unit itself — where an analysis that reports once per file asks — there is
+     * no program above to find, so the file's first program answers instead. A file holding several
+     * is rare and the first is the one it is named for.
      */
     public static @Nullable Program of(Cursor cursor) {
         for (Iterator<Cursor> path = cursor.getPathAsCursors(); path.hasNext(); ) {
             Cursor enclosing = path.next();
-            if (enclosing.getValue() instanceof Cobol.ProgramUnit) {
+            Object value = enclosing.getValue();
+            if (value instanceof Cobol.ProgramUnit) {
                 return new Program(enclosing);
+            }
+            if (value instanceof Cobol.CompilationUnit) {
+                List<Cobol.ProgramUnit> units = ((Cobol.CompilationUnit) value).getProgramUnits();
+                return units.isEmpty() ? null : new Program(new Cursor(enclosing, units.get(0)));
             }
         }
         return null;
@@ -71,7 +81,20 @@ public class Program implements Trait<Cobol.ProgramUnit> {
      * which keeps a row attributable to something rather than dropping it.
      */
     public static String nameOf(Cursor cursor) {
-        Program program = of(cursor);
+        return nameOf(of(cursor));
+    }
+
+    /**
+     * The name of the program a file declares, for a caller holding the file rather than a cursor
+     * into it.
+     */
+    public static String nameOf(Cobol.CompilationUnit cu) {
+        List<Cobol.ProgramUnit> units = cu.getProgramUnits();
+        return units.isEmpty() ? "UNKNOWN" :
+                nameOf(new Program(new Cursor(new Cursor(null, Cursor.ROOT_VALUE), units.get(0))));
+    }
+
+    private static String nameOf(@Nullable Program program) {
         if (program == null) {
             return "UNKNOWN";
         }

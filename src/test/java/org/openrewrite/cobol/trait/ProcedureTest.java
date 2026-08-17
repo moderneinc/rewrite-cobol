@@ -88,6 +88,34 @@ class ProcedureTest implements RewriteTest {
         )).containsExactly("FLATPGM/");
     }
 
+    /**
+     * An analysis that reports once per file asks at the compilation unit, where there is no program
+     * above to find.
+     */
+    @Test
+    void readsTheProgramOfTheFileItself() {
+        List<String> found = new ArrayList<>();
+        rewriteRun(
+          spec -> spec.recipe(toRecipe(() -> new CobolIsoVisitor<ExecutionContext>() {
+              @Override
+              public Cobol.CompilationUnit visitCompilationUnit(Cobol.CompilationUnit cu, ExecutionContext ctx) {
+                  found.add(Program.nameOf(getCursor()));
+                  return super.visitCompilationUnit(cu, ctx);
+              }
+          })),
+          cobol(
+            """
+              000000 IDENTIFICATION DIVISION.                                        \s
+              000000 PROGRAM-ID. FILEPGM.                                            \s
+              000000 PROCEDURE DIVISION.                                             \s
+              000000     GOBACK.                                                     \s
+              """
+          )
+        );
+
+        assertThat(found).containsExactly("FILEPGM");
+    }
+
     @Test
     void readsTheInnermostProgram() {
         assertThat(locations(

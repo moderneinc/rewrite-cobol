@@ -16,6 +16,7 @@
 package org.openrewrite.cobol;
 
 import lombok.AllArgsConstructor;
+import org.openrewrite.Cursor;
 import org.openrewrite.Tree;
 import org.openrewrite.TreeVisitor;
 import org.openrewrite.cobol.tree.Cobol;
@@ -278,7 +279,18 @@ public class CobolPreprocessorVisitor<P> extends TreeVisitor<CobolPreprocessor, 
         CobolPreprocessor.Word w = word;
         w = w.withPrefix(visitSpace(w.getPrefix(), Space.Location.WORD_PREFIX, p));
         w = w.withMarkers(visitMarkers(w.getMarkers(), p));
-        return w.withCobolWord((Cobol.Word) cobolVisitor.visitWord(w.getCobolWord(), p));
+
+        // The COBOL visitor is re-entered here for a word it never descended to, so it is given a
+        // cursor for it. Without one, everything the word's own visitWord asks the cursor is answered
+        // about the word that carries this block: a visitor reading what an EXEC statement is
+        // attached to heard the same block once for every word inside it.
+        Cursor parent = cobolVisitor.getCursor();
+        cobolVisitor.setCursor(new Cursor(parent, w.getCobolWord()));
+        try {
+            return w.withCobolWord((Cobol.Word) cobolVisitor.visitWord(w.getCobolWord(), p));
+        } finally {
+            cobolVisitor.setCursor(parent);
+        }
     }
 
     public Space visitSpace(Space space, Space.Location location, P p) {
