@@ -87,6 +87,33 @@ class CicsCommandTest implements RewriteTest {
         assertThat(commands.get(2).getCommand()).isEqualTo("SEND MAP");
     }
 
+    /**
+     * {@code SEND MAP('ACCTM')} writes the qualifier and an option of the same name once, so reading
+     * it only as the qualifier lost the map. Over the corpus that was every one of them: 131 mapsets
+     * and no maps at all.
+     */
+    @Test
+    void readsAQualifierThatIsAlsoAnOption() {
+        List<CicsCommand> commands = parse(
+          """
+            000000 IDENTIFICATION DIVISION.                                        \s
+            000000 PROGRAM-ID. CICSPGM.                                            \s
+            000000 PROCEDURE DIVISION.                                             \s
+            000000     EXEC CICS SEND MAP('ACCTM') MAPSET('ACCTMS') END-EXEC.      \s
+            000000     EXEC CICS WAIT EVENT(WS-ECB) END-EXEC.                      \s
+            000000     STOP RUN.                                                   \s
+            """
+        );
+
+        assertThat(commands.get(0).getCommand()).isEqualTo("SEND MAP");
+        assertThat(commands.get(0).operand("MAP")).isEqualTo("ACCTM");
+        assertThat(commands.get(0).getResources()).extracting(CicsResourceAccess::getKind)
+          .containsExactly(CicsResourceAccess.Kind.MAP, CicsResourceAccess.Kind.MAPSET);
+
+        assertThat(commands.get(1).getCommand()).isEqualTo("WAIT EVENT");
+        assertThat(commands.get(1).getOption("EVENT")).isEqualTo("WS-ECB");
+    }
+
     @Test
     void readsOptionsWithoutOperands() {
         List<CicsCommand> commands = parse(

@@ -280,7 +280,11 @@ public class CicsCommand implements Trait<Cobol.Word> {
             String candidate = tokens.get(i).toUpperCase(Locale.ROOT);
             if (allowed.contains(candidate)) {
                 qualifier = candidate;
-                i++;
+                // SEND MAP('ACCTM') writes the qualifier and an option of the same name once. Left
+                // consumed, the map name went with it and no BMS map was ever reported.
+                if (i + 1 >= tokens.size() || !"(".equals(tokens.get(i + 1))) {
+                    i++;
+                }
             }
         }
 
