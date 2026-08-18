@@ -97,3 +97,9 @@ configure<nl.javadude.gradle.plugins.license.LicenseExtension> {
 tasks.withType<com.hierynomus.gradle.license.tasks.LicenseCheck>().configureEach {
     enabled = false;
 }
+
+// This artifact is not published to Maven Central. Disabling rather than unregistering the Sonatype
+// tasks means the shared release workflow, which names them explicitly, skips them instead of
+// failing on a missing task. Publishing to the Code Genome Project is unaffected.
+tasks.matching { it.name.contains("Sonatype") || it.name.endsWith("StagingRepositories") }
+    .configureEach { enabled = false }
