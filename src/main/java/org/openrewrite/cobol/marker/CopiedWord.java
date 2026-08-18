@@ -21,9 +21,21 @@ import org.openrewrite.marker.Marker;
 
 import java.util.UUID;
 
+/**
+ * A word that came from a copybook rather than from the program's own source.
+ * <p>
+ * The copybook is named rather than pointed at. This used to carry the id of the statement that
+ * copied the word, and an id does not survive being stored: the Moderne CLI writes build LSTs with
+ * node ids omitted and regenerates them on read, so the reference pointed at nothing and every field
+ * declared by a copybook read as though it had been declared in the program.
+ */
 @With
 @Value
 public class CopiedWord implements Marker {
     UUID id;
-    String statementId;
+
+    /**
+     * The copybook name as the {@code COPY} or {@code EXEC SQL INCLUDE} wrote it.
+     */
+    String copybook;
 }

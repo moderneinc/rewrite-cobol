@@ -50,10 +50,21 @@ public class CopybookReference implements Trait<CobolPreprocessor> {
      * The copybook name as written, which is what the library is searched for.
      */
     public String getName() {
-        CobolPreprocessor tree = getTree();
-        return tree instanceof CobolPreprocessor.CopyStatement ?
-                ((CobolPreprocessor.CopyStatement) tree).getCopySource().getName().getCobolWord().getWord() :
-                ((CobolPreprocessor.ExecSqlIncludeStatement) tree).getCopySource().getCobolWord().getWord();
+        return nameOf(getTree());
+    }
+
+    /**
+     * The copybook a {@code COPY} or {@code EXEC SQL INCLUDE} names, or an empty string for anything
+     * else. Static because the parser needs it before there is a cursor to build a trait from.
+     */
+    public static String nameOf(CobolPreprocessor tree) {
+        if (tree instanceof CobolPreprocessor.CopyStatement) {
+            return ((CobolPreprocessor.CopyStatement) tree).getCopySource().getName().getCobolWord().getWord();
+        }
+        if (tree instanceof CobolPreprocessor.ExecSqlIncludeStatement) {
+            return ((CobolPreprocessor.ExecSqlIncludeStatement) tree).getCopySource().getCobolWord().getWord();
+        }
+        return "";
     }
 
     /**

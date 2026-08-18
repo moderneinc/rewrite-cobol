@@ -26,6 +26,7 @@ import org.openrewrite.cobol.CobolParsingTimeoutException;
 import org.openrewrite.cobol.internal.grammar.CobolBaseVisitor;
 import org.openrewrite.cobol.internal.grammar.CobolParser;
 import org.openrewrite.cobol.marker.CopiedWord;
+import org.openrewrite.cobol.trait.CopybookReference;
 import org.openrewrite.cobol.marker.ElidedExec;
 import org.openrewrite.cobol.tree.*;
 import org.openrewrite.marker.Markers;
@@ -6128,7 +6129,10 @@ public class CobolParserVisitor extends CobolBaseVisitor<Object> {
                         }
                         // Opened here rather than on the word that carries the copybook, so that a copybook
                         // contributing no words is still closed by its own stop comment.
-                        copiedWordStack.add(new CopiedWord(randomId(), copybookSource.getId().toString()));
+                        // Pushed rather than appended: a copybook that copies another has to close
+                        // before the one that copied it, and peek and pop both read the head.
+                        copiedWordStack.push(new CopiedWord(randomId(),
+                                CopybookReference.nameOf(copybookSource)));
                         objects.add(copybookSource);
                     } else if (copyStopComment.equals(contentArea)) {
                         copyStopComment();
