@@ -53,12 +53,25 @@ public class JclLineReader {
             String commentArea = null;
             LineType lineType = getLineType(line);
             // Only when columns 73-80 hold something. A line merely padded out to 80 would otherwise
-            // open a comment area with nothing in it, which `jclCommentArea` cannot match — it needs
+            // open a comment area with nothing in it, which `commentArea` cannot match — it needs
             // a word, and blanks are hidden — so the parser would recover by swallowing the next
             // statement's name field.
-            if (line.length() > 72 && !line.substring(72).trim().isEmpty()) {
-                commentArea = line.substring(72);
-                line = line.substring(0, 72);
+            //
+            // And only when column 72 is blank. A line long enough to reach column 73 without one is
+            // not a statement with a sequence field, it is a line too long to be JCL at all — a
+            // Jinja template of a job, whose placeholders are longer than what will replace them.
+            // Splitting it here would cut a word in half, and the halves cannot be put back: the
+            // parser walks the original source, where nothing separates them.
+            //
+            // Blanks in front of what the field holds stay with the statement, so that the comment
+            // area's token is exactly the text and the blanks become its prefix.
+            if (line.length() > 72 && line.charAt(71) == ' ' && !line.substring(72).trim().isEmpty()) {
+                int start = 72;
+                while (line.charAt(start) == ' ') {
+                    start++;
+                }
+                commentArea = line.substring(start);
+                line = line.substring(0, start);
             }
 
             // A DD with DLM= ends its data at a string of its own choosing rather than at /*, which

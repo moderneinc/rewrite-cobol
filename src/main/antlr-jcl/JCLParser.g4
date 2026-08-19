@@ -22,15 +22,11 @@ jcl
     ;
 
 jclWord
-    : (JCL_TEXT | JCL_STRINGLITERAL) jclCommentArea?
-    ;
-
-jclCommentArea
-    : CA_START (JCL_TEXT | JCL_STRINGLITERAL)
+    : (JCL_TEXT | JCL_STRINGLITERAL) commentArea?
     ;
 
 jclTrailingComment
-    : jclWord JCL_TC_START jclWord* JCL_TC_STOP  jclCommentArea?
+    : jclWord JCL_TC_START jclWord* JCL_TC_STOP  commentArea?
     ;
 
 jes2
@@ -38,11 +34,7 @@ jes2
     ;
 
 jes2Word
-    : (JES2_TEXT | JES2_STRINGLITERAL) jes2CommentArea?
-    ;
-
-jes2CommentArea
-    : CA_START (JES2_TEXT | JES2_STRINGLITERAL)
+    : (JES2_TEXT | JES2_STRINGLITERAL) commentArea?
     ;
 
 jes3
@@ -50,11 +42,7 @@ jes3
     ;
 
 jes3Word
-    : (JES3_TEXT | JES3_STRINGLITERAL) jes3CommentArea?
-    ;
-
-jes3CommentArea
-    : CA_START (JES3_TEXT | JES3_STRINGLITERAL)
+    : (JES3_TEXT | JES3_STRINGLITERAL) commentArea?
     ;
 
 stream
@@ -62,11 +50,7 @@ stream
     ;
 
 streamWord
-    : (STREAM_TEXT | STREAM_STRINGLITERAL) streamCommentArea?
-    ;
-
-streamCommentArea
-    : CA_START (STREAM_TEXT | STREAM_STRINGLITERAL)
+    : (STREAM_TEXT | STREAM_STRINGLITERAL) commentArea?
     ;
 
 controlM
@@ -74,11 +58,7 @@ controlM
     ;
 
 controlMWord
-    : (CM_TEXT | CM_STRINGLITERAL) controlMCommentArea?
-    ;
-
-controlMCommentArea
-    : CA_START (CM_TEXT | CM_STRINGLITERAL)
+    : (CM_TEXT | CM_STRINGLITERAL) commentArea?
     ;
 
 comment
@@ -86,11 +66,7 @@ comment
     ;
 
 commentWord
-    : (COMMENT_TEXT | COMMENT_STRINGLITERAL) commentCommentArea?
-    ;
-
-commentCommentArea
-    : CA_START (COMMENT_TEXT | COMMENT_STRINGLITERAL)
+    : (COMMENT_TEXT | COMMENT_STRINGLITERAL) commentArea?
     ;
 
 unknown
@@ -98,10 +74,13 @@ unknown
     ;
 
 unknownWord
-    : (UNKNOWN_TEXT | UNKNOWN_STRINGLITERAL) unknownCommentArea?
-    | unknownCommentArea
+    : (UNKNOWN_TEXT | UNKNOWN_STRINGLITERAL) commentArea?
+    | commentArea
     ;
 
-unknownCommentArea
-    : CA_START (UNKNOWN_TEXT | UNKNOWN_STRINGLITERAL)
+// Columns 73-80, the sequence field. One token however many words are written there: the line ending
+// that bounds it is on the hidden channel, so a parser repetition would run straight through it into
+// the next line.
+commentArea
+    : CA_START
     ;

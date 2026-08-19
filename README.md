@@ -21,13 +21,14 @@
 
 ## What is this?
 
-This project implements a [Rewrite module](https://github.com/openrewrite/rewrite) that provides parsers, visitors, and recipes for COBOL and related mainframe technologies. It supports parsing and transforming COBOL source code, JCL (Job Control Language), BMS map sets, and Control-M job definitions.
+This project implements a [Rewrite module](https://github.com/openrewrite/rewrite) that provides parsers, visitors, and recipes for COBOL and related mainframe technologies. It supports parsing and transforming COBOL source code, JCL (Job Control Language), BMS map sets, DB2 DDL, and Control-M job definitions.
 
 ### Language Support
 
 - **COBOL** — Full parsing of COBOL-85 (IBM ANSI 85 and HP Tandem dialects), including preprocessor directives (COPY, REPLACE) and copybook resolution
-- **JCL** — Job Control Language parsing (`.jcl`, `.prc` files)
+- **JCL** — Job Control Language parsing (`.jcl`, `.prc`, and the `.j2` Jinja templates an installation ships its jobs as)
 - **BMS** — CICS Basic Mapping Support map sets (`.bms`): the `DFHMSD`/`DFHMDI`/`DFHMDF` macros, and the symbolic map names they generate, which is what joins a screen field to the COBOL data item a program reads it from
+- **DB2 DDL** — an island grammar over DB2 for z/OS DDL (`.ddl`, `.sql`, and the `SYSIN` streams of the jobs that create a schema): `CREATE TABLE`, `CREATE INDEX` and the foreign keys between them, which is what puts a real column on the end of a data lineage row
 - **Control-M** — Control-M job scheduling definition parsing
 
 ### Recipes
@@ -57,7 +58,8 @@ Clone them side by side into one directory and point the tests at it. The corpus
 themselves when the variables are unset, so a normal `./gradlew test` does not need them:
 
 ```bash
-COBOL_CORPUS=/path/to/corpus JCL_CORPUS=/path/to/corpus BMS_CORPUS=/path/to/corpus ./gradlew test
+COBOL_CORPUS=/path/to/corpus JCL_CORPUS=/path/to/corpus BMS_CORPUS=/path/to/corpus \
+  DB2_CORPUS=/path/to/corpus ./gradlew test
 ```
 
 `CorpusCoverageTest` reports how much of the corpus parses rather than requiring all of it to: what
@@ -67,6 +69,12 @@ parse prints back byte-identical to the input, which is the property recipes dep
 `BmsCorpusTest` asserts the same over the corpus's 32 map sets, and counts the macros it read against
 an independent count of the source. A map set that groups its continuation lines wrongly still prints
 back perfectly — it just says something else — so printing alone would not catch it.
+
+`Db2CorpusTest` does the same for the schema, over both places DDL is written: six files of DDL and
+the twelve `SYSIN` streams the corpus's jobs submit. It reads 16 tables, 156 columns, 18 indexes and
+8 foreign keys, and counts each `CREATE TABLE`, `CREATE INDEX` and `PRIMARY KEY` it read against an
+independent count of the source — an island grammar fails quietly, turning a statement it cannot read
+into water that still prints back.
 
 ## Contributing
 

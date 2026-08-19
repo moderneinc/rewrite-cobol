@@ -19,7 +19,9 @@ CM : '^^CM^^' -> skip, pushMode(INSIDE_CM);
 COMMENT : '^^COMMENT^^' -> skip, pushMode(INSIDE_COMMENT);
 UNKNOWN : '^^UNKNOWN^^' -> skip, pushMode(INSIDE_UNKNOWN);
 
-CA_START : '^^CA_START^^';
+// The whole of columns 73-80 in one token. A sequence field holding a quote — `WAIT=30,F=WRAP')` —
+// otherwise lexes into several, and only one of them was kept.
+CA_START : '^^CA_START^^' ~[\r\n]*;
 STRINGLITERAL
     : '"' (~["\n\r] | '""' | '\'')* '"'
     | '\'' (~['\n\r] | '\'\'' | '"')* '\''

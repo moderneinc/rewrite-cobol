@@ -45,6 +45,8 @@ import static org.openrewrite.jcl.tree.Space.EMPTY;
 @RequiredArgsConstructor
 public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
 
+    private static final String CA_START_MARKER = "^^CA_START^^";
+
     private final Path path;
     private final @Nullable FileAttributes fileAttributes;
     private final String source;
@@ -107,8 +109,8 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
         Space prefix = whitespace();
         Markers markers = Markers.EMPTY;
         Jcl.Word word = visit(ctx.COMMENT_TEXT(), ctx.COMMENT_STRINGLITERAL());
-        if (ctx.commentCommentArea() != null) {
-            markers = markers.addIfAbsent(mapCommentArea(ctx.commentCommentArea()));
+        if (ctx.commentArea() != null) {
+            markers = markers.addIfAbsent(mapCommentArea(ctx.commentArea()));
         }
         return new Jcl.Comment(
                 randomId(),
@@ -123,8 +125,8 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
         Space prefix = whitespace();
         Markers markers = Markers.EMPTY;
         Jcl.Word word = visit(ctx.CM_TEXT(), ctx.CM_STRINGLITERAL());
-        if (ctx.controlMCommentArea() != null) {
-            markers = markers.addIfAbsent(mapCommentArea(ctx.controlMCommentArea()));
+        if (ctx.commentArea() != null) {
+            markers = markers.addIfAbsent(mapCommentArea(ctx.commentArea()));
         }
         return new Jcl.ControlM(
                 randomId(),
@@ -309,8 +311,8 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
             Jcl.Word word = word(tc.jclWord(0));
             Markers markers = Markers.EMPTY.addIfAbsent(
                     mapTrailingComment(tc.jclWord().subList(1, tc.jclWord().size())));
-            if (tc.jclCommentArea() != null) {
-                markers = markers.addIfAbsent(mapCommentArea(tc.jclCommentArea()));
+            if (tc.commentArea() != null) {
+                markers = markers.addIfAbsent(mapCommentArea(tc.commentArea()));
             }
             return word.withMarkers(markers);
         }
@@ -319,8 +321,8 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
 
     private Jcl.Word word(JCLParser.JclWordContext ctx) {
         Jcl.Word word = visit(ctx.JCL_TEXT(), ctx.JCL_STRINGLITERAL());
-        if (ctx.jclCommentArea() != null) {
-            word = word.withMarkers(word.getMarkers().addIfAbsent(mapCommentArea(ctx.jclCommentArea())));
+        if (ctx.commentArea() != null) {
+            word = word.withMarkers(word.getMarkers().addIfAbsent(mapCommentArea(ctx.commentArea())));
         }
         return word;
     }
@@ -367,8 +369,8 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
         Space prefix = whitespace();
         Markers markers = Markers.EMPTY;
         Jcl.Word word = visit(ctx.JES2_TEXT(), ctx.JES2_STRINGLITERAL());
-        if (ctx.jes2CommentArea() != null) {
-            markers = markers.addIfAbsent(mapCommentArea(ctx.jes2CommentArea()));
+        if (ctx.commentArea() != null) {
+            markers = markers.addIfAbsent(mapCommentArea(ctx.commentArea()));
         }
         return new Jcl.Jes2(
                 randomId(),
@@ -383,8 +385,8 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
         Space prefix = whitespace();
         Markers markers = Markers.EMPTY;
         Jcl.Word word = visit(ctx.JES3_TEXT(), ctx.JES3_STRINGLITERAL());
-        if (ctx.jes3CommentArea() != null) {
-            markers = markers.addIfAbsent(mapCommentArea(ctx.jes3CommentArea()));
+        if (ctx.commentArea() != null) {
+            markers = markers.addIfAbsent(mapCommentArea(ctx.commentArea()));
         }
         return new Jcl.Jes3(
                 randomId(),
@@ -399,8 +401,8 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
         Space prefix = whitespace();
         Markers markers = Markers.EMPTY;
         Jcl.Word word = visit(ctx.STREAM_TEXT(), ctx.STREAM_STRINGLITERAL());
-        if (ctx.streamCommentArea() != null) {
-            markers = markers.addIfAbsent(mapCommentArea(ctx.streamCommentArea()));
+        if (ctx.commentArea() != null) {
+            markers = markers.addIfAbsent(mapCommentArea(ctx.commentArea()));
         }
         return new Jcl.DataDefinitionStream(
                 randomId(),
@@ -425,8 +427,8 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
         } else {
             word = visit(ctx.UNKNOWN_TEXT(), ctx.UNKNOWN_STRINGLITERAL());
         }
-        if (ctx.unknownCommentArea() != null) {
-            markers = markers.addIfAbsent(mapCommentArea(ctx.unknownCommentArea()));
+        if (ctx.commentArea() != null) {
+            markers = markers.addIfAbsent(mapCommentArea(ctx.commentArea()));
         }
         return new Jcl.Unknown(
                 randomId(),
@@ -446,12 +448,15 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
         );
     }
 
-    private CommentArea mapCommentArea(ParserRuleContext ctx) {
-        return new CommentArea(
-                randomId(),
-                sourceBefore(ctx.getChild(ctx.getChildCount() - 1).getText()),
-                ctx.getChild(ctx.getChildCount() - 1).getText()
-        );
+    /**
+     * Columns 73-80, whole. The token carries the marker the line reader put in front of it, which is
+     * not in the source, so the text is what follows it. Reading only one word of the field used to
+     * drop the rest silently — the area is a marker, so what it did not hold was not printed either,
+     * and {@code WAIT=30,F=WRAP')} in a sequence field lost everything up to the quote.
+     */
+    private CommentArea mapCommentArea(JCLParser.CommentAreaContext ctx) {
+        String comment = ctx.CA_START().getText().substring(CA_START_MARKER.length());
+        return new CommentArea(randomId(), sourceBefore(comment), comment);
     }
 
     private TrailingComment mapTrailingComment(List<JCLParser.JclWordContext> rules) {

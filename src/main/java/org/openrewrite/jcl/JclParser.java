@@ -133,8 +133,17 @@ public class JclParser implements Parser {
 
     @Override
     public boolean accept(Path path) {
-        return path.toString().toLowerCase().endsWith(".jcl") ||
-                path.toString().toLowerCase().endsWith(".prc");
+        String name = path.getFileName().toString().toLowerCase();
+        // A Jinja template of a job is still a job. Bank-of-Z ships its whole installation this way
+        // and creates every one of its DB2 tables from a templated member, so refusing these leaves
+        // an application's schema invisible. A template is named for what it produces, so what is
+        // left after dropping the .j2 decides: a .xml.j2 or .yaml.j2 is not JCL, and a member with
+        // no extension at all is exactly how a PDS holds one.
+        if (name.endsWith(".j2")) {
+            name = name.substring(0, name.length() - 3);
+            return !name.contains(".") || name.endsWith(".jcl") || name.endsWith(".prc");
+        }
+        return name.endsWith(".jcl") || name.endsWith(".prc");
     }
 
     @Override

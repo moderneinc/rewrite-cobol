@@ -80,18 +80,6 @@ public class JCLParserBaseListener implements JCLParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterJclCommentArea(JCLParser.JclCommentAreaContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitJclCommentArea(JCLParser.JclCommentAreaContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterJclTrailingComment(JCLParser.JclTrailingCommentContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -128,18 +116,6 @@ public class JCLParserBaseListener implements JCLParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterJes2CommentArea(JCLParser.Jes2CommentAreaContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitJes2CommentArea(JCLParser.Jes2CommentAreaContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterJes3(JCLParser.Jes3Context ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -159,18 +135,6 @@ public class JCLParserBaseListener implements JCLParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitJes3Word(JCLParser.Jes3WordContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterJes3CommentArea(JCLParser.Jes3CommentAreaContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitJes3CommentArea(JCLParser.Jes3CommentAreaContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -200,18 +164,6 @@ public class JCLParserBaseListener implements JCLParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterStreamCommentArea(JCLParser.StreamCommentAreaContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitStreamCommentArea(JCLParser.StreamCommentAreaContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterControlM(JCLParser.ControlMContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -231,18 +183,6 @@ public class JCLParserBaseListener implements JCLParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitControlMWord(JCLParser.ControlMWordContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterControlMCommentArea(JCLParser.ControlMCommentAreaContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitControlMCommentArea(JCLParser.ControlMCommentAreaContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -272,18 +212,6 @@ public class JCLParserBaseListener implements JCLParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterCommentCommentArea(JCLParser.CommentCommentAreaContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitCommentCommentArea(JCLParser.CommentCommentAreaContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterUnknown(JCLParser.UnknownContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -308,13 +236,13 @@ public class JCLParserBaseListener implements JCLParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterUnknownCommentArea(JCLParser.UnknownCommentAreaContext ctx) { }
+	@Override public void enterCommentArea(JCLParser.CommentAreaContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitUnknownCommentArea(JCLParser.UnknownCommentAreaContext ctx) { }
+	@Override public void exitCommentArea(JCLParser.CommentAreaContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
