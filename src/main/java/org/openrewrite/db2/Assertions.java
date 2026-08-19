@@ -36,9 +36,9 @@ public class Assertions {
         });
     }
 
-    public static SourceSpecs db2(@Nullable String before, Consumer<SourceSpec<Db2.CompilationUnit>> spec) {
-        SourceSpec<Db2.CompilationUnit> db2 = new SourceSpec<>(
-                Db2.CompilationUnit.class, null, Db2Parser.builder(), before,
+    public static SourceSpecs db2(@Nullable String before, Consumer<SourceSpec<Db2.Ddl>> spec) {
+        SourceSpec<Db2.Ddl> db2 = new SourceSpec<>(
+                Db2.Ddl.class, null, Db2Parser.builder(), before,
                 SourceSpec.ValidateSource.noop,
                 Assertions::customizeExecutionContext);
         acceptSpec(spec, db2);
@@ -51,17 +51,17 @@ public class Assertions {
     }
 
     public static SourceSpecs db2(@Nullable String before, @Nullable String after,
-                                  Consumer<SourceSpec<Db2.CompilationUnit>> spec) {
-        SourceSpec<Db2.CompilationUnit> db2 = new SourceSpec<>(
-                Db2.CompilationUnit.class, null, Db2Parser.builder(), before,
+                                  Consumer<SourceSpec<Db2.Ddl>> spec) {
+        SourceSpec<Db2.Ddl> db2 = new SourceSpec<>(
+                Db2.Ddl.class, null, Db2Parser.builder(), before,
                 SourceSpec.ValidateSource.noop,
                 Assertions::customizeExecutionContext).after(s -> after);
         acceptSpec(spec, db2);
         return db2;
     }
 
-    private static void acceptSpec(Consumer<SourceSpec<Db2.CompilationUnit>> spec, SourceSpec<Db2.CompilationUnit> db2) {
-        Consumer<Db2.CompilationUnit> userSuppliedAfterRecipe = db2.getAfterRecipe();
+    private static void acceptSpec(Consumer<SourceSpec<Db2.Ddl>> spec, SourceSpec<Db2.Ddl> db2) {
+        Consumer<Db2.Ddl> userSuppliedAfterRecipe = db2.getAfterRecipe();
         db2.afterRecipe(userSuppliedAfterRecipe::accept);
         spec.accept(db2);
     }

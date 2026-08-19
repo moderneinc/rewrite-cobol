@@ -31,12 +31,12 @@ public class Db2Printer<P> extends Db2Visitor<PrintOutputCapture<P>> {
             out -> "~~" + out + (out.isEmpty() ? "" : "~~") + ">";
 
     @Override
-    public Db2 visitCompilationUnit(Db2.CompilationUnit cu, PrintOutputCapture<P> p) {
-        beforeSyntax(cu, Space.Location.COMPILATION_UNIT_PREFIX, p);
-        visit(cu.getStatements(), p);
-        afterSyntax(cu, p);
-        visitSpace(cu.getEof(), Space.Location.COMPILATION_UNIT_EOF, p);
-        return cu;
+    public Db2 visitDdl(Db2.Ddl ddl, PrintOutputCapture<P> p) {
+        beforeSyntax(ddl, Space.Location.DDL_PREFIX, p);
+        visit(ddl.getStatements(), p);
+        afterSyntax(ddl, p);
+        visitSpace(ddl.getEof(), Space.Location.DDL_EOF, p);
+        return ddl;
     }
 
     @Override

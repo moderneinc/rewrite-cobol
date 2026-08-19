@@ -140,6 +140,12 @@ public interface DB2ParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitUnknownStatement(DB2Parser.UnknownStatementContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link DB2Parser#unknownStart}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitUnknownStart(DB2Parser.UnknownStartContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link DB2Parser#qualifiedName}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

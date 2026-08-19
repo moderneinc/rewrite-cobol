@@ -57,14 +57,8 @@ public class JclLineReader {
             // a word, and blanks are hidden — so the parser would recover by swallowing the next
             // statement's name field.
             //
-            // And only when column 72 is blank. A line long enough to reach column 73 without one is
-            // not a statement with a sequence field, it is a line too long to be JCL at all — a
-            // Jinja template of a job, whose placeholders are longer than what will replace them.
-            // Splitting it here would cut a word in half, and the halves cannot be put back: the
-            // parser walks the original source, where nothing separates them.
-            //
-            // Blanks in front of what the field holds stay with the statement, so that the comment
-            // area's token is exactly the text and the blanks become its prefix.
+            // And only when column 72 is blank: past that the line is too long to be JCL, and the
+            // split would cut a word in half that nothing downstream can put back together.
             if (line.length() > 72 && line.charAt(71) == ' ' && !line.substring(72).trim().isEmpty()) {
                 int start = 72;
                 while (line.charAt(start) == ' ') {

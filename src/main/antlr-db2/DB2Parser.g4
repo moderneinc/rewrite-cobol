@@ -11,9 +11,7 @@ compilationUnit
     : statement* EOF
     ;
 
-// Order is the island rule: the water alternative can match anything the islands can, and ANTLR
-// resolves that ambiguity in favour of the first alternative. When an island fails to match — a
-// clause this grammar does not know — prediction falls through to water rather than to an error.
+// Islands first, water last, and see `unknownStart` for why water cannot take an island's place.
 statement
     : createTable
     | createIndex
@@ -104,8 +102,16 @@ alterAction
     ;
 
 unknownStatement
-    : (CREATE | ALTER | water) water* SEMI?
+    : unknownStart water* SEMI?
     | SEMI
+    ;
+
+// Water may not begin with the words that open an island, so a CREATE TABLE this grammar cannot
+// parse is a syntax error rather than an Unknown nobody notices.
+unknownStart
+    : CREATE ~(TABLE | INDEX | UNIQUE | SEMI)
+    | ALTER ~(TABLE | SEMI)
+    | water
     ;
 
 qualifiedName

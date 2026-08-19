@@ -20,8 +20,8 @@ import org.openrewrite.db2.tree.Db2;
 public class Db2IsoVisitor<P> extends Db2Visitor<P> {
 
     @Override
-    public Db2.CompilationUnit visitCompilationUnit(Db2.CompilationUnit compilationUnit, P p) {
-        return (Db2.CompilationUnit) super.visitCompilationUnit(compilationUnit, p);
+    public Db2.Ddl visitDdl(Db2.Ddl ddl, P p) {
+        return (Db2.Ddl) super.visitDdl(ddl, p);
     }
 
     @Override

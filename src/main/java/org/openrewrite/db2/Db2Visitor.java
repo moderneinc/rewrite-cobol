@@ -22,12 +22,12 @@ import org.openrewrite.internal.ListUtils;
 
 public class Db2Visitor<P> extends TreeVisitor<Db2, P> {
 
-    public Db2 visitCompilationUnit(Db2.CompilationUnit compilationUnit, P p) {
-        Db2.CompilationUnit c = compilationUnit;
-        c = c.withPrefix(visitSpace(c.getPrefix(), Space.Location.COMPILATION_UNIT_PREFIX, p));
-        c = c.withMarkers(visitMarkers(c.getMarkers(), p));
-        c = c.withStatements(ListUtils.map(c.getStatements(), s -> visitAndCast(s, p)));
-        return c.withEof(visitSpace(c.getEof(), Space.Location.COMPILATION_UNIT_EOF, p));
+    public Db2 visitDdl(Db2.Ddl ddl, P p) {
+        Db2.Ddl d = ddl;
+        d = d.withPrefix(visitSpace(d.getPrefix(), Space.Location.DDL_PREFIX, p));
+        d = d.withMarkers(visitMarkers(d.getMarkers(), p));
+        d = d.withStatements(ListUtils.map(d.getStatements(), s -> visitAndCast(s, p)));
+        return d.withEof(visitSpace(d.getEof(), Space.Location.DDL_EOF, p));
     }
 
     public Db2 visitCreateTable(Db2.CreateTable createTable, P p) {

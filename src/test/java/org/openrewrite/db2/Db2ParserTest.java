@@ -21,6 +21,7 @@ import org.openrewrite.InMemoryExecutionContext;
 import org.openrewrite.SourceFile;
 import org.openrewrite.db2.tree.Db2;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,7 +38,7 @@ class Db2ParserTest {
 
     @Test
     void aTableIsColumnsAndAPrimaryKey() {
-        Db2.CompilationUnit cu = parse(
+        Db2.Ddl cu = parse(
           """
             CREATE TABLE CARDDEMO.TRANSACTION_TYPE
             (   TR_TYPE                        CHAR(2) NOT NULL,
@@ -70,7 +71,7 @@ class Db2ParserTest {
      */
     @Test
     void aColumnWithoutNotNullIsNullable() {
-        Db2.CompilationUnit cu = parse(
+        Db2.Ddl cu = parse(
           """
             CREATE TABLE CARDDEMO.AUTHFRDS
             (CARD_NUM              CHAR(16)    NOT NULL,
@@ -99,7 +100,7 @@ class Db2ParserTest {
      */
     @Test
     void aForeignKeyPointsAtAnotherTable() {
-        Db2.CompilationUnit cu = parse(
+        Db2.Ddl cu = parse(
           """
             CREATE TABLE CARDDEMO.TRANSACTION_TYPE_CATEGORY
             (   TRC_TYPE_CODE                  CHAR(2) NOT NULL,
@@ -125,7 +126,7 @@ class Db2ParserTest {
 
     @Test
     void anIndexNamesItsTableAndItsKeys() {
-        Db2.CompilationUnit cu = parse(
+        Db2.Ddl cu = parse(
           """
             CREATE UNIQUE INDEX CARDDEMO.XAUTHFRD
                 ON CARDDEMO.AUTHFRDS
@@ -150,7 +151,7 @@ class Db2ParserTest {
      */
     @Test
     void anIndexNeedNotBeUniqueOrDirected() {
-        Db2.CompilationUnit cu = parse(
+        Db2.Ddl cu = parse(
           """
             CREATE INDEX BANKZ.ACCTCUST
                ON BANKZ.ACCOUNT(ACCOUNT_SORTCODE,ACCOUNT_CUSTOMER_NUMBER)
@@ -168,7 +169,7 @@ class Db2ParserTest {
      */
     @Test
     void anAlterTableCarriesAForeignKey() {
-        Db2.CompilationUnit cu = parse(
+        Db2.Ddl cu = parse(
           """
             ALTER TABLE CARDDEMO.TRANSACTION_TYPE_CATEGORY
               FOREIGN KEY (TRC_TYPE_CODE)
@@ -189,7 +190,7 @@ class Db2ParserTest {
      */
     @Test
     void everythingElseIsWater() {
-        Db2.CompilationUnit cu = parse(
+        Db2.Ddl cu = parse(
           """
             SET CURRENT SQLID = 'SYSADM';
             CREATE DATABASE CARDDEMO
@@ -216,13 +217,13 @@ class Db2ParserTest {
      */
     @Test
     void createTablespaceIsNotCreateTable() {
-        Db2.CompilationUnit cu = parse("CREATE TABLESPACE ACCOUNT IN BANKZ ;\n");
+        Db2.Ddl cu = parse("CREATE TABLESPACE ACCOUNT IN BANKZ ;\n");
         assertThat(cu.getStatements().get(0)).isInstanceOf(Db2.Unknown.class);
     }
 
     @Test
     void theTablespaceATableIsCreatedIn() {
-        Db2.CompilationUnit cu = parse(
+        Db2.Ddl cu = parse(
           """
             CREATE TABLE  CARDDEMO.TRANSACTION_TYPE
              (       TR_TYPE   CHAR(2)      NOT NULL,
@@ -242,7 +243,7 @@ class Db2ParserTest {
      */
     @Test
     void aTemplatedSchemaIsStillAName() {
-        Db2.CompilationUnit cu = parse(
+        Db2.Ddl cu = parse(
           """
             CREATE TABLE <DB2DBID>.house (
                  policyNumber   INTEGER NOT NULL,
@@ -280,27 +281,46 @@ class Db2ParserTest {
                 PRIMARY KEY(TR_TYPE));
             """;
 
-        Db2.CompilationUnit cu = parse(source);
+        Db2.Ddl cu = parse(source);
         assertThat(cu.getStatements()).hasSize(1);
         assertThat(cu.printAll()).isEqualTo(source);
     }
 
     /**
-     * The island contract. Both of these are real DB2 that this grammar does not model, and neither
-     * may cost a syntax error or a byte of the file — {@link #parse} fails the test on either. A
-     * table created from another table is water until something needs it to be more.
+     * The island contract, and the half of it that matters most: a statement this grammar claims to
+     * read and cannot is a syntax error, never an {@link Db2.Unknown}. Both of these are real DB2 the
+     * grammar does not model, and both are reported rather than quietly demoted — a schema silently
+     * missing a table is worse than one that says it could not read it.
      */
     @Test
-    void aTableShapeTheGrammarDoesNotKnowFallsThroughToWater() {
-        Db2.CompilationUnit cu = parse(
+    void aTableShapeTheGrammarDoesNotKnowIsAnError() {
+        assertThat(errorsIn("CREATE TABLE CARDDEMO.ARCHIVE LIKE CARDDEMO.ACCOUNT;\n"))
+          .isNotEmpty();
+        assertThat(errorsIn(
           """
-            CREATE TABLE CARDDEMO.ACCOUNT_ARCHIVE LIKE CARDDEMO.ACCOUNT;
             CREATE TABLE CARDDEMO.ACCOUNT_SUMMARY AS
               (SELECT ACCT_ID, ACCT_STATUS FROM CARDDEMO.ACCOUNT) WITH NO DATA;
+            """)).isNotEmpty();
+    }
+
+    /**
+     * The other half: a statement the grammar never claimed is water, silently and for free. These
+     * all begin with a word an island begins with, which is the case that has to be told apart by
+     * more than the first token.
+     */
+    @Test
+    void aStatementTheGrammarNeverClaimedIsNotAnError() {
+        Db2.Ddl ddl = parse(
+          """
+            CREATE TABLESPACE CARDSPC1 IN CARDDEMO;
+            CREATE DATABASE CARDDEMO CCSID EBCDIC;
+            CREATE STOGROUP GENASG02 VOLUMES ('*') VCAT DB2RUN;
+            CREATE VIEW CARDDEMO.V_ACCOUNT AS SELECT ACCT_ID FROM CARDDEMO.ACCOUNT;
+            ALTER TABLESPACE CARDDEMO.CARDSPC1 BUFFERPOOL BP1;
             """);
 
-        assertThat(cu.getStatements()).hasSize(2);
-        assertThat(cu.getStatements()).allMatch(Db2.Unknown.class::isInstance);
+        assertThat(ddl.getStatements()).hasSize(5);
+        assertThat(ddl.getStatements()).allMatch(Db2.Unknown.class::isInstance);
     }
 
     /**
@@ -309,7 +329,7 @@ class Db2ParserTest {
      */
     @Test
     void aMissingSemicolonDoesNotRunTwoStatementsTogether() {
-        Db2.CompilationUnit cu = parse(
+        Db2.Ddl cu = parse(
           """
             COMMIT
             CREATE TABLE BANKZ.CONTROL (
@@ -329,7 +349,7 @@ class Db2ParserTest {
      */
     @Test
     void aCheckConstraintIsKeptWhole() {
-        Db2.CompilationUnit cu = parse(
+        Db2.Ddl cu = parse(
           """
             CREATE TABLE CARDDEMO.ACCOUNT
             (   ACCT_ID     DECIMAL(11) NOT NULL,
@@ -352,7 +372,7 @@ class Db2ParserTest {
      */
     @Test
     void theFourWordUniqueIndex() {
-        Db2.CompilationUnit cu = parse(
+        Db2.Ddl cu = parse(
           """
             CREATE UNIQUE WHERE NOT NULL INDEX CARDDEMO.XACCTALT
                 ON CARDDEMO.ACCOUNT (ACCT_GROUP);
@@ -369,7 +389,7 @@ class Db2ParserTest {
      */
     @Test
     void aDelimitedName() {
-        Db2.CompilationUnit cu = parse(
+        Db2.Ddl cu = parse(
           """
             CREATE TABLE "My Schema"."Account" (
                 "Account Id" INTEGER NOT NULL,
@@ -387,7 +407,7 @@ class Db2ParserTest {
      */
     @Test
     void lowerCaseKeywords() {
-        Db2.CompilationUnit cu = parse("create table bankz.control (control_name char(32));\n");
+        Db2.Ddl cu = parse("create table bankz.control (control_name char(32));\n");
         Db2.CreateTable table = (Db2.CreateTable) cu.getStatements().get(0);
         assertThat(table.getName().getFullName()).isEqualTo("BANKZ.CONTROL");
         assertThat(table.getColumns()).hasSize(1);
@@ -400,15 +420,24 @@ class Db2ParserTest {
           .collect(Collectors.toList());
     }
 
-    private static Db2.CompilationUnit parse(String source) {
+    private static List<String> errorsIn(String source) {
+        List<String> errors = new ArrayList<>();
+        Db2Parser.builder().build()
+          .parse(new InMemoryExecutionContext(t -> errors.add(String.valueOf(t.getMessage()))), source)
+          .forEach(cu -> {
+          });
+        return errors;
+    }
+
+    private static Db2.Ddl parse(String source) {
         List<SourceFile> parsed = Db2Parser.builder().build()
           .parse(new InMemoryExecutionContext(t -> {
               throw new IllegalStateException(t);
           }), source)
           .collect(Collectors.toList());
         assertThat(parsed).hasSize(1);
-        assertThat(parsed.get(0)).isInstanceOf(Db2.CompilationUnit.class);
-        Db2.CompilationUnit cu = (Db2.CompilationUnit) parsed.get(0);
+        assertThat(parsed.get(0)).isInstanceOf(Db2.Ddl.class);
+        Db2.Ddl cu = (Db2.Ddl) parsed.get(0);
         assertThat(cu.printAll()).as("prints back byte for byte").isEqualTo(source);
         return cu;
     }

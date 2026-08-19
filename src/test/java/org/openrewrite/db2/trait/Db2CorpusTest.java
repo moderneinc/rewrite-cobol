@@ -23,6 +23,7 @@ import org.openrewrite.SourceFile;
 import org.openrewrite.cobol.Corpus;
 import org.openrewrite.db2.Db2Parser;
 import org.openrewrite.db2.tree.Db2;
+import org.openrewrite.db2.tree.Statement;
 import org.openrewrite.jcl.JclParser;
 import org.openrewrite.jcl.tree.Jcl;
 
@@ -38,6 +39,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -54,6 +56,8 @@ class Db2CorpusTest {
     private static final Pattern CREATE_TABLE = Pattern.compile("(?i)\\bCREATE\\s+TABLE\\b");
     private static final Pattern CREATE_INDEX = Pattern.compile("(?i)\\bCREATE\\s+(UNIQUE\\s+(WHERE\\s+NOT\\s+NULL\\s+)?)?INDEX\\b");
     private static final Pattern PRIMARY_KEY = Pattern.compile("(?i)\\bPRIMARY\\s+KEY\\b");
+    private static final Pattern ISLAND = Pattern.compile(
+            "(?i)\\b(CREATE\\s+(UNIQUE\\s+)?(TABLE|INDEX)|ALTER\\s+TABLE)\\b");
 
     @Test
     void readsRealSchemas() throws IOException {
@@ -66,7 +70,7 @@ class Db2CorpusTest {
         assertThat(jcl).as("no JCL found under %s", corpus).isNotEmpty();
 
         List<String> failures = new ArrayList<>();
-        List<Db2.CompilationUnit> schemas = new ArrayList<>();
+        List<Db2.Ddl> schemas = new ArrayList<>();
         int written = 0;
         int indexesWritten = 0;
         int keysWritten = 0;
@@ -109,8 +113,9 @@ class Db2CorpusTest {
         int indexesRead = 0;
         int columns = 0;
         int keysRead = 0;
+        int water = 0;
 
-        for (Db2.CompilationUnit schema : schemas) {
+        for (Db2.Ddl schema : schemas) {
             for (Table table : new Table.Matcher().lower(schema).collect(toList())) {
                 tablesRead++;
                 tables.add(table.getQualifiedName());
@@ -141,18 +146,31 @@ class Db2CorpusTest {
                     failures.add(foreignKey + ": a foreign key with an end missing");
                 }
             }
+            // No CREATE TABLE or CREATE INDEX may have ended up as water.
+            for (Statement statement : schema.getStatements()) {
+                if (!(statement instanceof Db2.Unknown)) {
+                    continue;
+                }
+                water++;
+                String text = ((Db2.Unknown) statement).getWords().stream()
+                        .map(Db2.Word::getText)
+                        .collect(joining(" "));
+                if (ISLAND.matcher(text).find()) {
+                    failures.add("read as water: " + text.substring(0, Math.min(80, text.length())));
+                }
+            }
         }
 
         System.out.printf("DB2 corpus: %d DDL files, %d in-stream DDL streams, " +
-                        "%d tables, %d columns, %d indexes, %d primary keys, %d foreign keys%n",
-                ddl.size(), streams, tables.size(), columns, indexes.size(), keysRead, edges.size());
+                        "%d tables, %d columns, %d indexes, %d primary keys, %d foreign keys, %d water%n",
+                ddl.size(), streams, tables.size(), columns, indexes.size(), keysRead,
+                edges.size(), water);
         edges.forEach(edge -> System.out.println("  " + edge));
 
         assertThat(failures).isEmpty();
 
-        // An island grammar fails quietly: a statement it cannot read becomes water and the file
-        // still prints back. Counting what the source says against what the traits found is the
-        // only thing that tells a table read as water from one that was never there.
+        // Counting what the source says against what the traits found is the only thing that tells
+        // a table read as water from one that was never there.
         assertThat(tablesRead).as("CREATE TABLE read against written").isEqualTo(written);
         assertThat(indexesRead).as("CREATE INDEX read against written").isEqualTo(indexesWritten);
         assertThat(keysRead).as("PRIMARY KEY read against written").isEqualTo(keysWritten);
@@ -171,16 +189,16 @@ class Db2CorpusTest {
      * ANTLR recovers from an error by inventing tokens, so a parse that reported one has read
      * something the source does not say even when the two happen to agree.
      */
-    private static Db2.@Nullable CompilationUnit read(String name, String source, List<String> failures) {
+    private static Db2.@Nullable Ddl read(String name, String source, List<String> failures) {
         List<String> errors = new ArrayList<>();
         List<SourceFile> parsed = Db2Parser.builder().build()
                 .parse(new InMemoryExecutionContext(t -> errors.add(t.getMessage())), source)
                 .collect(toList());
-        if (parsed.size() != 1 || !(parsed.get(0) instanceof Db2.CompilationUnit)) {
+        if (parsed.size() != 1 || !(parsed.get(0) instanceof Db2.Ddl)) {
             failures.add(name + ": did not parse");
             return null;
         }
-        Db2.CompilationUnit cu = (Db2.CompilationUnit) parsed.get(0);
+        Db2.Ddl cu = (Db2.Ddl) parsed.get(0);
         if (!errors.isEmpty()) {
             failures.add(name + ": " + errors.get(0));
         }

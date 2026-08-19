@@ -104,8 +104,8 @@ public class Space {
     }
 
     public enum Location {
-        COMPILATION_UNIT_PREFIX,
-        COMPILATION_UNIT_EOF,
+        DDL_PREFIX,
+        DDL_EOF,
         ALTER_TABLE_PREFIX,
         COLUMN_DEFINITION_PREFIX,
         COLUMN_LIST_PREFIX,

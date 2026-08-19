@@ -213,6 +213,16 @@ public interface DB2ParserListener extends ParseTreeListener {
 	 */
 	void exitUnknownStatement(DB2Parser.UnknownStatementContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link DB2Parser#unknownStart}.
+	 * @param ctx the parse tree
+	 */
+	void enterUnknownStart(DB2Parser.UnknownStartContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DB2Parser#unknownStart}.
+	 * @param ctx the parse tree
+	 */
+	void exitUnknownStart(DB2Parser.UnknownStartContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link DB2Parser#qualifiedName}.
 	 * @param ctx the parse tree
 	 */

@@ -67,7 +67,11 @@ public interface Db2 extends Tree {
     @Value
     @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
     @With
-    class CompilationUnit implements Db2, SourceFile {
+    /**
+     * A file of DDL, or the DDL of one {@code SYSIN} stream. Not a compilation unit: nothing here is
+     * compiled, and DDL is what the domain calls it.
+     */
+    class Ddl implements Db2, SourceFile {
 
         @EqualsAndHashCode.Include
         UUID id;
@@ -105,7 +109,7 @@ public interface Db2 extends Tree {
 
         @Override
         public <P> Db2 acceptDb2(Db2Visitor<P> v, P p) {
-            return v.visitCompilationUnit(this, p);
+            return v.visitDdl(this, p);
         }
 
         @Override

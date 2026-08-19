@@ -81,7 +81,7 @@ public class InstreamDdl implements Trait<Jcl.JobControlStatement> {
      * The stream read as DDL. Detached from the JCL rather than grafted into it: two source files
      * cannot share a path, and the DDL is a fact about the estate rather than about the job.
      */
-    public Db2.CompilationUnit parse(ExecutionContext ctx) {
+    public Db2.Ddl parse(ExecutionContext ctx) {
         return new Db2Parser().parseFragment(sourcePath(), getText(), ctx);
     }
 
@@ -111,7 +111,7 @@ public class InstreamDdl implements Trait<Jcl.JobControlStatement> {
     /**
      * Every stream of DDL in a job, read.
      */
-    public static List<Db2.CompilationUnit> parseAll(Jcl.CompilationUnit cu, ExecutionContext ctx) {
+    public static List<Db2.Ddl> parseAll(Jcl.CompilationUnit cu, ExecutionContext ctx) {
         return new Matcher().lower(cu)
                 .map(ddl -> ddl.parse(ctx))
                 .collect(toList());

@@ -56,12 +56,12 @@ public class Db2ParserVisitor extends DB2ParserBaseVisitor<Db2> {
     private int cursor = 0;
 
     @Override
-    public Db2.CompilationUnit visitCompilationUnit(DB2Parser.CompilationUnitContext ctx) {
+    public Db2.Ddl visitCompilationUnit(DB2Parser.CompilationUnitContext ctx) {
         List<Statement> statements = new ArrayList<>(ctx.statement().size());
         for (DB2Parser.StatementContext statement : ctx.statement()) {
             statements.add(statement(statement));
         }
-        return new Db2.CompilationUnit(
+        return new Db2.Ddl(
                 randomId(),
                 path,
                 fileAttributes,

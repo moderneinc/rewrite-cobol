@@ -63,7 +63,7 @@ class InstreamDdlTest implements RewriteTest {
                 assertThat(streams).hasSize(1);
                 assertThat(streams.get(0).getName()).isEqualTo("SYSIN");
 
-                Db2.CompilationUnit ddl = streams.get(0).parse(new InMemoryExecutionContext(t -> {
+                Db2.Ddl ddl = streams.get(0).parse(new InMemoryExecutionContext(t -> {
                     throw new IllegalStateException(t);
                 }));
 

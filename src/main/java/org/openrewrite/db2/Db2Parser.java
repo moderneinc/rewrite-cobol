@@ -57,7 +57,7 @@ public class Db2Parser implements Parser {
                     try {
                         EncodingDetectingInputStream is = sourceFile.getSource(ctx);
                         String sourceStr = is.readFully();
-                        Db2.CompilationUnit cu = parse(path, sourceStr, is.getCharset(),
+                        Db2.Ddl cu = parse(path, sourceStr, is.getCharset(),
                                 is.isCharsetBomMarked(), sourceFile.getPath(), ctx);
                         sample.stop(MetricsHelper.successTags(timer).register(Metrics.globalRegistry));
                         parsingListener.parsed(sourceFile, cu);
@@ -77,11 +77,11 @@ public class Db2Parser implements Parser {
      * @param path what to call the result, which for in-stream DDL names the job it was found in
      *             rather than anything on disk.
      */
-    public Db2.CompilationUnit parseFragment(Path path, String source, ExecutionContext ctx) {
+    public Db2.Ddl parseFragment(Path path, String source, ExecutionContext ctx) {
         return parse(path, source, UTF_8, false, path, ctx);
     }
 
-    private Db2.CompilationUnit parse(Path path, String source, Charset charset, boolean charsetBomMarked,
+    private Db2.Ddl parse(Path path, String source, Charset charset, boolean charsetBomMarked,
                                       Path reportedPath, ExecutionContext ctx) {
         CommonTokenStream tokens = new CommonTokenStream(new DB2Lexer(CharStreams.fromString(source)));
         DB2Parser parser = new DB2Parser(tokens);
@@ -124,7 +124,7 @@ public class Db2Parser implements Parser {
     public static class Builder extends org.openrewrite.Parser.Builder {
 
         public Builder() {
-            super(Db2.CompilationUnit.class);
+            super(Db2.Ddl.class);
         }
 
         @Override
