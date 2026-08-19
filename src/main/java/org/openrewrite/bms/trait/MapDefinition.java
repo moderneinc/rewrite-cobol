@@ -87,6 +87,32 @@ public class MapDefinition implements Trait<Bms.MacroStatement> {
         return named;
     }
 
+    /**
+     * The COBOL record a program moves values into to fill this map: the map's name with {@code O}
+     * appended. It redefines the input record, so the two are one piece of storage under two names.
+     */
+    public String getOutputRecordName() {
+        return getName() + Field.Subfield.OUTPUT.getSuffix();
+    }
+
+    /**
+     * The COBOL record a program receives this map into: the map's name with {@code I} appended.
+     */
+    public String getInputRecordName() {
+        return getName() + Field.Subfield.INPUT.getSuffix();
+    }
+
+    /**
+     * Whether a COBOL record name is the symbolic map generated for this map. This is how a map is
+     * recovered from a command that names none: {@code SEND MAP(CCARD-NEXT-MAP) FROM(CACTVWAO)}
+     * decides which map it sends at run time, but only one map generates {@code CACTVWAO}.
+     */
+    public boolean generates(String cobolRecordName) {
+        String trimmed = cobolRecordName.trim();
+        return trimmed.equalsIgnoreCase(getOutputRecordName()) ||
+               trimmed.equalsIgnoreCase(getInputRecordName());
+    }
+
     public @Nullable Field getField(String name) {
         for (Field field : getFields()) {
             if (name.equalsIgnoreCase(field.getName())) {

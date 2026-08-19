@@ -71,6 +71,35 @@ class MapsetTest implements RewriteTest {
     }
 
     /**
+     * The other half of the join to COBOL. A program that decides at run time which map it sends
+     * names no map the analysis can read, but the record it sends from is generated from one — so
+     * the map is recovered from the record rather than from the command.
+     */
+    @Test
+    void aMapIsRecoverableFromTheSymbolicMapRecordAProgramSendsFrom() {
+        rewriteRun(
+          bms(
+            """
+              COACTVW DFHMSD LANG=COBOL,MODE=INOUT
+              CACTVWA DFHMDI SIZE=(24,80)
+              ACCTSID DFHMDF ATTRB=(UNPROT),LENGTH=11,POS=(5,20)
+                      DFHMSD TYPE=FINAL
+                      END
+              """,
+            spec -> spec.afterRecipe(cu -> {
+                MapDefinition map = new MapDefinition.Matcher().lower(cu).findFirst().orElseThrow();
+                assertThat(map.getOutputRecordName()).isEqualTo("CACTVWAO");
+                assertThat(map.getInputRecordName()).isEqualTo("CACTVWAI");
+                assertThat(map.generates("CACTVWAO")).isTrue();
+                assertThat(map.generates("cactvwai")).isTrue();
+                assertThat(map.generates("CACTVWA")).isFalse();
+                assertThat(map.generates("CACTUPAO")).isFalse();
+            })
+          )
+        );
+    }
+
+    /**
      * {@code DFHMSD TYPE=FINAL} closes a mapset rather than opening one, so it is not a mapset of
      * its own and the maps before it belong to the mapset that was opened.
      */

@@ -106,6 +106,61 @@ class FieldTest implements RewriteTest {
         );
     }
 
+    /**
+     * Which name a program used, not merely that it used one of them. Only the value subfields put
+     * anything on the screen or take anything off it — a lineage row about the colour byte would be
+     * describing how the field is drawn as though it were data.
+     */
+    @Test
+    void tellsTheValueSubfieldsFromTheOnesThatOnlySayHowAFieldIsDrawn() {
+        rewriteRun(
+          bms(
+            """
+              COSGN0A DFHMDI SIZE=(24,80)
+              TRNNAME DFHMDF ATTRB=(ASKIP,FSET,NORM),LENGTH=4,POS=(1,8)
+              """,
+            spec -> spec.afterRecipe(cu -> {
+                Field field = new Field.Matcher().lower(cu).findFirst().orElseThrow();
+                assertThat(field.subfieldOf("TRNNAMEO")).isEqualTo(Field.Subfield.OUTPUT);
+                assertThat(field.subfieldOf("trnnamei")).isEqualTo(Field.Subfield.INPUT);
+                assertThat(field.subfieldOf("TRNNAMEL")).isEqualTo(Field.Subfield.LENGTH);
+                assertThat(field.subfieldOf("TRNNAMEC")).isEqualTo(Field.Subfield.COLOR);
+                assertThat(field.subfieldOf("TRNNAMEZ")).isNull();
+                assertThat(field.subfieldOf("TRNNAME")).isNull();
+
+                assertThat(Field.Subfield.OUTPUT.isValue()).isTrue();
+                assertThat(Field.Subfield.INPUT.isValue()).isTrue();
+                assertThat(Field.Subfield.LENGTH.isValue()).isFalse();
+                assertThat(Field.Subfield.ATTRIBUTE.isValue()).isFalse();
+            })
+          )
+        );
+    }
+
+    /**
+     * A field whose name is a prefix of another's. Matching on the prefix alone would report
+     * {@code CUSTNOL} as the length of {@code CUSTNO} and as the outline attribute of {@code CUSTN}.
+     */
+    @Test
+    void aNameIsOnlyASubfieldOfTheFieldItIsExactlyOneLetterLongerThan() {
+        rewriteRun(
+          bms(
+            """
+              COSGN0A DFHMDI SIZE=(24,80)
+              CUSTN   DFHMDF ATTRB=(UNPROT),LENGTH=5,POS=(3,1)
+              CUSTNO  DFHMDF ATTRB=(UNPROT),LENGTH=9,POS=(4,1)
+              """,
+            spec -> spec.afterRecipe(cu -> {
+                List<Field> fields = new Field.Matcher().lower(cu).collect(Collectors.toList());
+                assertThat(fields).filteredOn(f -> f.generates("CUSTNOL")).extracting(Field::getName)
+                  .containsExactly("CUSTNO");
+                assertThat(fields).filteredOn(f -> f.generates("CUSTNOI")).extracting(Field::getName)
+                  .containsExactly("CUSTNO");
+            })
+          )
+        );
+    }
+
     @Test
     void aFieldWritingALiteralHasNoNameAndGeneratesNothing() {
         rewriteRun(

@@ -37,18 +37,67 @@ import java.util.Set;
 @Value
 public class Field implements Trait<Bms.MacroStatement> {
 
-    /**
-     * What BMS appends to a field's name when it generates the symbolic map, in the order the
-     * generated copybook writes them.
-     * <p>
-     * Which of these are actually generated depends on the mapset's {@code EXTATT}, {@code DSATTS}
-     * and {@code MAPATTS}, and on {@code MODE}. They are all offered anyway: this is a lookup from a
-     * COBOL data name back to the field it came from, where an extra candidate nothing references
-     * costs nothing and a missing one loses the join.
-     */
-    private static final String SUFFIXES = "LFAICPHVMUTO";
-
     Cursor cursor;
+
+    /**
+     * One item the symbolic map generates for a field, and the letter BMS appends to the field's
+     * name to make it. Declared in the order the generated copybook writes them.
+     * <p>
+     * A program never names the field — it names these. {@code MOVE WS-NAME TO TRNNAMEO} puts a
+     * value on the screen, while {@code TRNNAMEL} only says how much the operator typed and
+     * {@code TRNNAMEC} what colour it is drawn in.
+     * <p>
+     * Which of these a mapset actually generates depends on its {@code EXTATT}, {@code DSATTS},
+     * {@code MAPATTS} and {@code MODE}. They are all offered anyway: this is a lookup from a COBOL
+     * data name back to the field it came from, where an extra candidate nothing references costs
+     * nothing and a missing one loses the join.
+     */
+    public enum Subfield {
+        /**
+         * How much the operator typed, which is how a program tells an empty field from one filled
+         * with blanks.
+         */
+        LENGTH('L'),
+        FLAG('F'),
+        ATTRIBUTE('A'),
+        INPUT('I'),
+        COLOR('C'),
+        PROGRAMMED_SYMBOLS('P'),
+        HIGHLIGHT('H'),
+        VALIDATION('V'),
+        OUTLINE('U'),
+        SOSI('M'),
+        TRANSPARENCY('T'),
+        OUTPUT('O');
+
+        private final char suffix;
+
+        Subfield(char suffix) {
+            this.suffix = suffix;
+        }
+
+        public char getSuffix() {
+            return suffix;
+        }
+
+        /**
+         * Whether this subfield carries the field's value rather than how it is drawn or how much of
+         * it was typed. Only these two cross the boundary between a program and the screen, so they
+         * are the only ones a lineage answer should report.
+         */
+        public boolean isValue() {
+            return this == INPUT || this == OUTPUT;
+        }
+
+        static @Nullable Subfield of(char suffix) {
+            for (Subfield subfield : values()) {
+                if (subfield.suffix == Character.toUpperCase(suffix)) {
+                    return subfield;
+                }
+            }
+            return null;
+        }
+    }
 
     /**
      * The field's name, or null for a {@code DFHMDF} that writes a literal on the screen. An unnamed
@@ -143,7 +192,7 @@ public class Field implements Trait<Bms.MacroStatement> {
      * with {@code O} appended. Null for an unnamed field.
      */
     public @Nullable String getOutputName() {
-        return getName() == null ? null : getName() + "O";
+        return getName() == null ? null : getName() + Subfield.OUTPUT.getSuffix();
     }
 
     /**
@@ -151,7 +200,7 @@ public class Field implements Trait<Bms.MacroStatement> {
      * {@code I} appended.
      */
     public @Nullable String getInputName() {
-        return getName() == null ? null : getName() + "I";
+        return getName() == null ? null : getName() + Subfield.INPUT.getSuffix();
     }
 
     /**
@@ -159,7 +208,7 @@ public class Field implements Trait<Bms.MacroStatement> {
      * field from one filled with blanks: the field's name with {@code L} appended.
      */
     public @Nullable String getLengthName() {
-        return getName() == null ? null : getName() + "L";
+        return getName() == null ? null : getName() + Subfield.LENGTH.getSuffix();
     }
 
     /**
@@ -169,26 +218,34 @@ public class Field implements Trait<Bms.MacroStatement> {
         Set<String> names = new LinkedHashSet<>();
         String name = getName();
         if (name != null) {
-            for (char suffix : SUFFIXES.toCharArray()) {
-                names.add(name + suffix);
+            for (Subfield subfield : Subfield.values()) {
+                names.add(name + subfield.getSuffix());
             }
         }
         return names;
     }
 
     /**
-     * Whether a COBOL data name is one the symbolic map generates for this field. This is the join
-     * between a program's data flow and the screen: a program naming {@code TRNNAMEO} is writing to
-     * the field {@code TRNNAME}.
+     * Which item of the symbolic map a COBOL data name is, or null if it is not this field's. This is
+     * the join between a program's data flow and the screen: a program naming {@code TRNNAMEO} is
+     * writing what the field {@code TRNNAME} shows, and one naming {@code TRNNAMEL} is only asking
+     * how much was typed into it.
+     */
+    public @Nullable Subfield subfieldOf(String cobolDataName) {
+        String name = getName();
+        String trimmed = cobolDataName.trim();
+        if (name == null || trimmed.length() != name.length() + 1 ||
+            !trimmed.regionMatches(true, 0, name, 0, name.length())) {
+            return null;
+        }
+        return Subfield.of(trimmed.charAt(name.length()));
+    }
+
+    /**
+     * Whether a COBOL data name is one the symbolic map generates for this field.
      */
     public boolean generates(String cobolDataName) {
-        String trimmed = cobolDataName.trim();
-        for (String generated : getGeneratedNames()) {
-            if (generated.equalsIgnoreCase(trimmed)) {
-                return true;
-            }
-        }
-        return false;
+        return subfieldOf(cobolDataName) != null;
     }
 
     public @Nullable MapDefinition getMap() {
