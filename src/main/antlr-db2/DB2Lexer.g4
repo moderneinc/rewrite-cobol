@@ -6,7 +6,7 @@ WS : [ \t\f\r\n]+ -> channel(HIDDEN);
 LINE_COMMENT : '--' ~[\r\n]* -> channel(HIDDEN);
 BLOCK_COMMENT : '/*' .*? '*/' -> channel(HIDDEN);
 
-// Only the words the island rules need. Everything else — a data type name, a table option, a
+// Only the words the modelled statements need. Everything else — a data type name, an option, a
 // privilege — stays an IDENTIFIER, so that TABLESPACE does not read as TABLE and a column called
 // DATA still parses.
 CREATE : 'CREATE';
@@ -40,12 +40,12 @@ STRING : '\'' (~['\r\n] | '\'\'')* '\'';
 DELIMITED_IDENTIFIER : '"' (~["\r\n] | '""')* '"';
 
 // The DDL on disk is a template: genapp writes <DB2DBID>.customer and Bank-of-Z {{ db2.sqlid }}.
-// Lexing a placeholder as a name is what keeps the CREATE TABLE around it an island rather than
-// water. Bounded to a bare word so that `x < 5` is still two tokens.
+// Lexing a placeholder as a name is what keeps the CREATE TABLE around it readable. Bounded to a
+// bare word so that `x < 5` is still two tokens.
 PLACEHOLDER : '<' [A-Z0-9_.]+ '>' | '{{' ~[}\r\n]* '}}';
 
 NUMBER : [0-9]+ ('.' [0-9]+)?;
 IDENTIFIER : [A-Z_@#$] [A-Z0-9_@#$]*;
 
-// Nothing may fail to lex: an island grammar has to carry the water it does not read.
+// Nothing may fail to lex: what this grammar does not model, it still has to carry.
 OTHER : .;

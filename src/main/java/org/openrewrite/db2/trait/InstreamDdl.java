@@ -46,8 +46,7 @@ public class InstreamDdl implements Trait<Jcl.JobControlStatement> {
 
     /**
      * A stream is DDL if it says so. Streams carry IDCAMS commands, sort cards and TSO input too,
-     * and parsing those as DB2 would cost more than looking first — the water rules would swallow
-     * them whole and report nothing, but slowly.
+     * and parsing those as DB2 would report nothing, slowly.
      */
     private static final Pattern DDL = Pattern.compile(
             "(?i)\\b(CREATE|ALTER|DROP)\\s+(TABLE|INDEX)\\b");

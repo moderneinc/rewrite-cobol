@@ -11,7 +11,7 @@ compilationUnit
     : statement* EOF
     ;
 
-// Islands first, water last, and see `unknownStart` for why water cannot take an island's place.
+// The modelled statements first, the unparsed catch-all last. See `unknownStart`.
 statement
     : createTable
     | createIndex

@@ -359,8 +359,8 @@ public class Db2ParserVisitor extends DB2ParserBaseVisitor<Db2> {
     }
 
     /**
-     * Every token under {@code tree}, in source order. This is how water becomes words: a rule this
-     * grammar does not read is flattened rather than shaped.
+     * Every token under {@code tree}, in source order. A rule this grammar does not model is
+     * flattened to its words rather than shaped.
      */
     private List<Db2.Word> words(ParseTree tree) {
         List<Db2.Word> words = new ArrayList<>();

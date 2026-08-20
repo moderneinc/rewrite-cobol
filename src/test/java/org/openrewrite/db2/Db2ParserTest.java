@@ -185,11 +185,11 @@ class Db2ParserTest {
     }
 
     /**
-     * The water. None of these say anything the relationship graph joins on, and all of them have to
-     * survive being read.
+     * None of these say anything the relationship graph joins on, so none is modelled — and all of
+     * them have to survive being read anyway.
      */
     @Test
-    void everythingElseIsWater() {
+    void everythingElseIsUnmodelled() {
         Db2.Ddl cu = parse(
           """
             SET CURRENT SQLID = 'SYSADM';
@@ -239,7 +239,7 @@ class Db2ParserTest {
 
     /**
      * genapp ships its DDL as a template. A placeholder stands where a schema belongs, and lexing it
-     * as anything but a name would make the whole statement water.
+     * as anything but a name would leave the whole statement unmodelled.
      */
     @Test
     void aTemplatedSchemaIsStillAName() {
@@ -287,7 +287,7 @@ class Db2ParserTest {
     }
 
     /**
-     * The island contract, and the half of it that matters most: a statement this grammar claims to
+     * The half of the contract that matters most: a statement this grammar claims to
      * read and cannot is a syntax error, never an {@link Db2.Unknown}. Both of these are real DB2 the
      * grammar does not model, and both are reported rather than quietly demoted — a schema silently
      * missing a table is worse than one that says it could not read it.
@@ -304,9 +304,8 @@ class Db2ParserTest {
     }
 
     /**
-     * The other half: a statement the grammar never claimed is water, silently and for free. These
-     * all begin with a word an island begins with, which is the case that has to be told apart by
-     * more than the first token.
+     * The other half: a statement the grammar never claimed to read costs nothing. These all open
+     * with a word a modelled statement opens with, so telling them apart takes more than one token.
      */
     @Test
     void aStatementTheGrammarNeverClaimedIsNotAnError() {
@@ -325,7 +324,7 @@ class Db2ParserTest {
 
     /**
      * A statement written without its terminating semicolon must not swallow the one after it. The
-     * water rules stop short of CREATE and ALTER for exactly this.
+     * catch-all stops short of CREATE and ALTER for exactly this.
      */
     @Test
     void aMissingSemicolonDoesNotRunTwoStatementsTogether() {
@@ -343,9 +342,9 @@ class Db2ParserTest {
     }
 
     /**
-     * A check constraint's expression is water, so it is kept as words rather than modelled — but it
-     * is full of the commas and parentheses that separate one table element from the next, and being
-     * read as several would lose the columns after it.
+     * A check constraint's expression is kept as words rather than modelled, but it is full of the
+     * commas and parentheses that separate one table element from the next, and being read as
+     * several would lose the columns after it.
      */
     @Test
     void aCheckConstraintIsKeptWhole() {

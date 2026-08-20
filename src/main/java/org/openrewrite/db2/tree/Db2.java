@@ -36,7 +36,7 @@ import java.util.UUID;
 import static java.util.Collections.emptyList;
 
 /**
- * DB2 for z/OS DDL, read as islands in water.
+ * DB2 for z/OS DDL, of which only some statements are modelled.
  * <p>
  * {@link CreateTable}, {@link CreateIndex} and {@link AlterTable} are modelled because they say what
  * the estate's tables and columns are and which of them point at which. Every other statement — a
@@ -64,13 +64,13 @@ public interface Db2 extends Tree {
 
     <P extends Db2> P withPrefix(Space prefix);
 
-    @Value
-    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
-    @With
     /**
      * A file of DDL, or the DDL of one {@code SYSIN} stream. Not a compilation unit: nothing here is
      * compiled, and DDL is what the domain calls it.
      */
+    @Value
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+    @With
     class Ddl implements Db2, SourceFile {
 
         @EqualsAndHashCode.Include
@@ -544,8 +544,8 @@ public interface Db2 extends Tree {
     }
 
     /**
-     * One token, with what preceded it. Keywords, punctuation and the water this grammar does not
-     * read are all words; an identifier is a {@link Name}, so the two can be told apart by type.
+     * One token, with what preceded it. Keywords, punctuation and the text of an unmodelled
+     * statement are all words; an identifier is a {@link Name}, so the two are told apart by type.
      */
     @Value
     @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)

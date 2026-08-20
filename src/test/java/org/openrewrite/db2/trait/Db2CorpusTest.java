@@ -56,7 +56,7 @@ class Db2CorpusTest {
     private static final Pattern CREATE_TABLE = Pattern.compile("(?i)\\bCREATE\\s+TABLE\\b");
     private static final Pattern CREATE_INDEX = Pattern.compile("(?i)\\bCREATE\\s+(UNIQUE\\s+(WHERE\\s+NOT\\s+NULL\\s+)?)?INDEX\\b");
     private static final Pattern PRIMARY_KEY = Pattern.compile("(?i)\\bPRIMARY\\s+KEY\\b");
-    private static final Pattern ISLAND = Pattern.compile(
+    private static final Pattern MODELLED = Pattern.compile(
             "(?i)\\b(CREATE\\s+(UNIQUE\\s+)?(TABLE|INDEX)|ALTER\\s+TABLE)\\b");
 
     @Test
@@ -113,7 +113,7 @@ class Db2CorpusTest {
         int indexesRead = 0;
         int columns = 0;
         int keysRead = 0;
-        int water = 0;
+        int notModelled = 0;
 
         for (Db2.Ddl schema : schemas) {
             for (Table table : new Table.Matcher().lower(schema).collect(toList())) {
@@ -146,31 +146,32 @@ class Db2CorpusTest {
                     failures.add(foreignKey + ": a foreign key with an end missing");
                 }
             }
-            // No CREATE TABLE or CREATE INDEX may have ended up as water.
+            // No CREATE TABLE or CREATE INDEX may have ended up unmodelled.
             for (Statement statement : schema.getStatements()) {
                 if (!(statement instanceof Db2.Unknown)) {
                     continue;
                 }
-                water++;
+                notModelled++;
                 String text = ((Db2.Unknown) statement).getWords().stream()
                         .map(Db2.Word::getText)
                         .collect(joining(" "));
-                if (ISLAND.matcher(text).find()) {
-                    failures.add("read as water: " + text.substring(0, Math.min(80, text.length())));
+                if (MODELLED.matcher(text).find()) {
+                    failures.add("not modelled: " + text.substring(0, Math.min(80, text.length())));
                 }
             }
         }
 
         System.out.printf("DB2 corpus: %d DDL files, %d in-stream DDL streams, " +
-                        "%d tables, %d columns, %d indexes, %d primary keys, %d foreign keys, %d water%n",
+                        "%d tables, %d columns, %d indexes, %d primary keys, %d foreign keys, "
+                        + "%d statements not modelled%n",
                 ddl.size(), streams, tables.size(), columns, indexes.size(), keysRead,
-                edges.size(), water);
+                edges.size(), notModelled);
         edges.forEach(edge -> System.out.println("  " + edge));
 
         assertThat(failures).isEmpty();
 
         // Counting what the source says against what the traits found is the only thing that tells
-        // a table read as water from one that was never there.
+        // a table the grammar failed to read from one that was never there.
         assertThat(tablesRead).as("CREATE TABLE read against written").isEqualTo(written);
         assertThat(indexesRead).as("CREATE INDEX read against written").isEqualTo(indexesWritten);
         assertThat(keysRead).as("PRIMARY KEY read against written").isEqualTo(keysWritten);
