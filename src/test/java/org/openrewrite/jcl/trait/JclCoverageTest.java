@@ -50,7 +50,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class JclCoverageTest {
 
     @Test
-    void everythingIsUnderstood() throws Exception {
+    void listsWhatFellToUnknown() throws Exception {
         Path corpus = Paths.get(System.getenv("JCL_CORPUS"));
         List<Path> members = new ArrayList<>();
         for (Path repository : Corpus.repositories(corpus)) {
