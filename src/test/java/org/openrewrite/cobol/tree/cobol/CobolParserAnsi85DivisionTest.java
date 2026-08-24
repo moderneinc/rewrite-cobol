@@ -1398,6 +1398,56 @@ class CobolParserAnsi85DivisionTest extends CobolTest {
         );
     }
 
+    /**
+     * The colon of a reference modifier ends a word, so {@code (1:5)} is a modifier and not two
+     * subscripts; the {@code :TAG:} placeholder of a copybook written for {@code REPLACING} stays
+     * part of one.
+     */
+    @Test
+    void referenceModifierBesideAPlaceholder() {
+        AtomicInteger modifiers = new AtomicInteger();
+        rewriteRun(
+          spec -> spec.recipe(toRecipe(() -> new CobolIsoVisitor<>() {
+              @Override
+              public Cobol.ReferenceModifier visitReferenceModifier(Cobol.ReferenceModifier modifier, ExecutionContext ctx) {
+                  modifiers.incrementAndGet();
+                  return super.visitReferenceModifier(modifier, ctx);
+              }
+
+              @Override
+              public Cobol.TableCall visitTableCall(Cobol.TableCall tableCall, ExecutionContext ctx) {
+                  assertThat(tableCall.getSubscripts()).isEmpty();
+                  return super.visitTableCall(tableCall, ctx);
+              }
+
+              @Override
+              public Cobol.DataDescriptionEntry visitDataDescriptionEntry(Cobol.DataDescriptionEntry entry, ExecutionContext ctx) {
+                  assertThat(entry.getName()).isNotNull();
+                  assertThat(entry.getName().getWord()).isIn(":TAG:-REC", ":TAG:-KEY", "WS-BUF", "WS-LEN", "WS-OUT");
+                  return super.visitDataDescriptionEntry(entry, ctx);
+              }
+          })),
+          cobol(
+            """
+              000001 IDENTIFICATION DIVISION.
+              000002 PROGRAM-ID. REFMOD.
+              000003 DATA DIVISION.
+              000004 WORKING-STORAGE SECTION.
+              000005 01  :TAG:-REC.
+              000006     05  :TAG:-KEY   PIC X(5).
+              000007 01  WS-BUF   PIC X(20).
+              000008 01  WS-LEN   PIC 9.
+              000009 01  WS-OUT   PIC X(20).
+              000010 PROCEDURE DIVISION.
+              000011     MOVE WS-BUF(1:5) TO WS-OUT.
+              000012     MOVE WS-BUF(WS-LEN:5) TO WS-OUT(1:WS-LEN).
+              000013     STOP RUN.
+              """
+          )
+        );
+        assertThat(modifiers.get()).isEqualTo(3);
+    }
+
     @Test
     void functionCallTest() {
         rewriteRun(
