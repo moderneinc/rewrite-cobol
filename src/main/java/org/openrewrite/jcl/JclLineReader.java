@@ -103,9 +103,7 @@ public class JclLineReader {
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
 
-            // In-stream data is data in all of its columns: nothing on a data line is a comment
-            // area, and with DLM in force a line beginning /* is data too. // ends the data of a
-            // DD *, and is data in a DD DATA — passing JCL through is what DATA is for.
+            // A data line is data in every column; under DLM /* is data too, and // is data in a DD DATA.
             if (jclLineContext == JclLineContext.STREAM && !line.startsWith(streamDelimiter == null ? "/*" : streamDelimiter) &&
                 (streamIsData || !line.startsWith("//"))) {
                 p.append("^^STREAM^^");
@@ -123,9 +121,8 @@ public class JclLineReader {
             // Only when columns 73-80 hold something. A line merely padded out to 80 would otherwise
             // open a comment area with nothing in it, which `jclCommentArea` cannot match — it needs
             // a word, and blanks are hidden — so the parser would recover by swallowing the next
-            // statement's name field. A literal still open at column 72 and closed after it is not
-            // a comment area either: the line was never held to 72 columns, and cutting it there
-            // would leave the quote unclosed.
+            // statement's name field. Nor when a literal open at column 72 closes after it: the line
+            // was never held to 72 columns.
             if (line.length() > 72 && !line.substring(72).trim().isEmpty() &&
                 !(line.substring(72).indexOf('\'') >= 0 && quoteOpenAfter(operandField(line.substring(0, 72), quoteOpen), quoteOpen))) {
                 commentArea = line.substring(72);
