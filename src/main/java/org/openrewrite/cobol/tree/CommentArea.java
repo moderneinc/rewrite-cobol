@@ -44,7 +44,9 @@ public class CommentArea implements ColumnArea {
 
         sourcePrinter.visitSpace(prefix, Space.Location.COMMENT_AREA_PREFIX, p);
         if (printColumns) {
+            int start = p.out.length();
             p.append(comment);
+            sourcePrinter.commentPrinted(this, start, p.out.length());
         }
         sourcePrinter.visitSpace(endOfLine, Space.Location.COMMENT_AREA_EOL, p);
 
@@ -61,7 +63,9 @@ public class CommentArea implements ColumnArea {
 
         sourcePrinter.visitSpace(prefix, Space.Location.COMMENT_AREA_PREFIX, p);
         if (printColumns) {
+            int start = p.out.length();
             p.append(comment);
+            sourcePrinter.commentPrinted(this, start, p.out.length());
         }
         sourcePrinter.visitSpace(endOfLine, Space.Location.COMMENT_AREA_EOL, p);
 

@@ -143,6 +143,61 @@ class SourcePositionsTest extends CobolTest {
         );
     }
 
+    /**
+     * A literal continued over a column-7 break is one word and two lines of source. The word's
+     * range spans both; its pieces are what a highlight needs, one per line. The comment line and
+     * the floating comment are not nodes, so they are found by identity.
+     */
+    @Test
+    void placesEachLineOfAContinuedLiteralAndTheCommentsAroundIt() {
+        rewriteRun(
+          cobol(
+            """
+              000100 IDENTIFICATION DIVISION.                                         00000010
+              000200 PROGRAM-ID. POSCONT.                                             00000020
+              000300 PROCEDURE DIVISION.                                              00000030
+              000400 MAIN-PARA.                                                       00000040
+              000500* The message is wider than a card.                               00000050
+              000600     DISPLAY 'ACCOUNT FILE OPEN FAILED, CHECK THE DD STATEMENT INP
+              000700-    'UT'.                                              *> so far
+              000800     GOBACK.                                                      00000080
+              """,
+            spec -> spec.afterRecipe(cu -> {
+                SourcePositions positions = SourcePositions.of(cu);
+                Cobol.Word display = ((Cobol.Display) statementsIn(cu).get(0)).getDisplay();
+                Cobol.Word literal = (Cobol.Word) ((Cobol.Display) statementsIn(cu).get(0)).getOperands().get(0);
+
+                assertThat(positions.textOf(positions.get(literal)))
+                  .startsWith("'ACCOUNT FILE").endsWith("UT'").contains("\n000700-");
+                assertThat(positions.pieces(literal)).extracting(positions::textOf)
+                  .containsExactly("'ACCOUNT FILE OPEN FAILED, CHECK THE DD STATEMENT INP", "UT'");
+
+                assertThat(display.getLines()).singleElement().satisfies(line ->
+                  assertThat(positions.textOf(positions.get(line)).trim())
+                    .isEqualTo("The message is wider than a card."));
+                // The floating comment belongs to the last word on its line, which is the period.
+                Range comment = positions.get(wordsIn(cu).stream()
+                  .map(Cobol.Word::getCommentArea)
+                  .filter(area -> area != null && area.getComment().startsWith("*>"))
+                  .findFirst().orElseThrow());
+                assertThat(positions.textOf(comment)).isEqualTo("*> so far");
+                assertThat(comment.getStart().getLine()).isEqualTo(7);
+            }))
+        );
+    }
+
+    private static List<Cobol.Word> wordsIn(Cobol.CompilationUnit cu) {
+        List<Cobol.Word> words = new ArrayList<>();
+        new CobolIsoVisitor<Integer>() {
+            @Override
+            public Cobol.Word visitWord(Cobol.Word word, Integer p) {
+                words.add(word);
+                return word;
+            }
+        }.visit(cu, 0);
+        return words;
+    }
+
     private static List<Statement> statementsIn(Cobol.CompilationUnit cu) {
         List<Statement> statements = new ArrayList<>();
         new CobolIsoVisitor<Integer>() {

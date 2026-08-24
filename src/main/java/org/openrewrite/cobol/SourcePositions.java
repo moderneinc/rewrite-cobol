@@ -23,15 +23,20 @@ import org.openrewrite.cobol.internal.CobolPreprocessorSourcePrinter;
 import org.openrewrite.cobol.internal.CobolPrinter;
 import org.openrewrite.cobol.marker.ElidedExec;
 import org.openrewrite.cobol.tree.Cobol;
+import org.openrewrite.cobol.tree.CobolLine;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
+import org.openrewrite.cobol.tree.CommentArea;
 import org.openrewrite.marker.Range;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import static java.util.Collections.emptyList;
 
 /**
  * Where each node of a program sits in its source.
@@ -46,6 +51,9 @@ import java.util.UUID;
  * has no position there. That is the honest answer rather than a gap: the source it came from is the
  * copybook's, and it is the copybook that has somewhere to point at.
  * <p>
+ * Comment lines and comment areas are not nodes and have no id, so they are found by identity: ask
+ * about the line or area held by the tree that was printed, not a copy of it.
+ * <p>
  * Lines and columns are one-based, as an editor reports them. Offsets are into {@link #getSource()},
  * which is the program as it was parsed.
  */
@@ -53,13 +61,15 @@ public class SourcePositions {
 
     private final String source;
     private final Map<UUID, int[]> spans;
+    private final Map<Object, int[]> texts;
     private final int[] wordStarts;
     private final int[] wordEnds;
     private final int[] lineStarts;
 
-    private SourcePositions(String source, Map<UUID, int[]> spans, List<int[]> words) {
+    private SourcePositions(String source, Map<UUID, int[]> spans, Map<Object, int[]> texts, List<int[]> words) {
         this.source = source;
         this.spans = spans;
+        this.texts = texts;
         this.wordStarts = new int[words.size()];
         this.wordEnds = new int[words.size()];
         for (int i = 0; i < words.size(); i++) {
@@ -73,7 +83,7 @@ public class SourcePositions {
         Measure<Integer> measure = new Measure<>();
         PrintOutputCapture<Integer> out = new PrintOutputCapture<>(0);
         measure.visit(cu, out, new Cursor(null, Cursor.ROOT_VALUE));
-        return new SourcePositions(out.getOut(), measure.spans, measure.words);
+        return new SourcePositions(out.getOut(), measure.spans, measure.texts, measure.words);
     }
 
     /**
@@ -101,7 +111,40 @@ public class SourcePositions {
         if (first > last) {
             return null;
         }
-        return new Range(Tree.randomId(), positionAt(wordStarts[first]), positionAt(wordEnds[last]));
+        return rangeOf(wordStarts[first], wordEnds[last]);
+    }
+
+    /**
+     * The content area of a comment or blank line, or null for a line that printed nothing.
+     */
+    public @Nullable Range get(CobolLine line) {
+        int[] span = texts.get(line);
+        return span == null ? null : rangeOf(span[0], span[1]);
+    }
+
+    /**
+     * The text of a comment area, or null for one that printed nothing.
+     */
+    public @Nullable Range get(CommentArea commentArea) {
+        int[] span = texts.get(commentArea);
+        return span == null ? null : rangeOf(span[0], span[1]);
+    }
+
+    /**
+     * A word's characters one line at a time: one range for a word written on one line, and one per
+     * line for a literal or name continued across column-7 breaks, so a highlight can land on each.
+     * Empty for a word that printed nothing.
+     */
+    public List<Range> pieces(Cobol.Word word) {
+        int[] span = spans.get(word.getId());
+        if (span == null) {
+            return emptyList();
+        }
+        List<Range> pieces = new ArrayList<>();
+        for (int i = firstWordFrom(span[0]), last = lastWordUntil(span[1]); i <= last; i++) {
+            pieces.add(rangeOf(wordStarts[i], wordEnds[i]));
+        }
+        return pieces;
     }
 
     /**
@@ -109,6 +152,10 @@ public class SourcePositions {
      */
     public String textOf(Range range) {
         return source.substring(range.getStart().getOffset(), range.getEnd().getOffset());
+    }
+
+    private Range rangeOf(int start, int end) {
+        return new Range(Tree.randomId(), positionAt(start), positionAt(end));
     }
 
     private Range.Position positionAt(int offset) {
@@ -149,6 +196,7 @@ public class SourcePositions {
     private static class Measure<P> extends CobolPrinter<P> {
 
         private final Map<UUID, int[]> spans = new HashMap<>();
+        private final Map<Object, int[]> texts = new IdentityHashMap<>();
         private final List<int[]> words = new ArrayList<>();
         private Cobol.@Nullable Word carrying;
 
@@ -185,6 +233,22 @@ public class SourcePositions {
             }
         }
 
+        @Override
+        public void contentPrinted(CobolLine line, int start, int end) {
+            texts.put(line, new int[]{start, end});
+        }
+
+        @Override
+        public void commentPrinted(CommentArea commentArea, int start, int end) {
+            if (end > start) {
+                texts.put(commentArea, new int[]{start, end});
+            }
+        }
+
+        private boolean carryingAnElidedExec() {
+            return carrying != null && carrying.getMarkers().findFirst(ElidedExec.class).isPresent();
+        }
+
         /**
          * An {@code EXEC} block is taken out of the text the COBOL grammar sees, so its words arrive here
          * rather than through {@link #wordPrinted}. Those are the statements a lineage edge crosses the
@@ -197,11 +261,34 @@ public class SourcePositions {
         @Override
         protected CobolPreprocessorVisitor<PrintOutputCapture<P>> getCobolPreprocessorVisitor() {
             return new CobolPreprocessorSourcePrinter<P>(true) {
+                // A block's word shares its id with the COBOL word it wraps, so the block's words are placed too.
+                @Override
+                public @Nullable CobolPreprocessor visit(@Nullable Tree tree, PrintOutputCapture<P> p) {
+                    if (!(tree instanceof CobolPreprocessor.Word) || !carryingAnElidedExec()) {
+                        return super.visit(tree, p);
+                    }
+                    int before = p.out.length();
+                    CobolPreprocessor printed = super.visit(tree, p);
+                    spans.put(((CobolPreprocessor.Word) tree).getId(), new int[]{before, p.out.length()});
+                    return printed;
+                }
+
                 @Override
                 public void wordPrinted(CobolPreprocessor.Word word, int start, int end) {
-                    if (end > start && carrying != null &&
-                        carrying.getMarkers().findFirst(ElidedExec.class).isPresent()) {
+                    if (end > start && carryingAnElidedExec()) {
                         words.add(new int[]{start, end});
+                    }
+                }
+
+                @Override
+                public void contentPrinted(CobolLine line, int start, int end) {
+                    texts.put(line, new int[]{start, end});
+                }
+
+                @Override
+                public void commentPrinted(CommentArea commentArea, int start, int end) {
+                    if (end > start) {
+                        texts.put(commentArea, new int[]{start, end});
                     }
                 }
             };
