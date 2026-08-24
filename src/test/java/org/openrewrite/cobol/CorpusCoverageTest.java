@@ -48,7 +48,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Parses a corpus of real COBOL and reports how much of it the parser can actually read.
  * <p>
  * The NIST suite is ANSI conformance code: no CICS, no IMS, no JCL. This is the first real online
- * and batch code the parser has seen, so its purpose is to find what is broken, not to pass.
+ * and batch code the parser has seen, so its purpose is to find what is broken, not to pass. The one
+ * application it must pass is the fixture, which is written so that all of it parses.
  * <p>
  * Run with { COBOL_CORPUS=/path/to/corpus}.
  */
@@ -64,6 +65,8 @@ class CorpusCoverageTest {
         List<SourceFile> programs = new ArrayList<>();
         int copybooksParsed = 0;
         int copybookErrors = 0;
+        List<String> fixtureNotRead = new ArrayList<>();
+        boolean fixtureFound = false;
         System.out.println("programs parsed, copybooks not found, by application:");
         for (Path repository : Corpus.repositories(root)) {
             List<Parser.Input> programInputs = inputs(Corpus.programs(repository));
@@ -83,6 +86,11 @@ class CorpusCoverageTest {
               repository.getFileName(), parsed.size() - errors(parsed).size(), parsed.size(),
               parsed.stream().filter(CorpusCoverageTest::missingACopybook).count());
             programs.addAll(parsed);
+            if (Corpus.isFixture(repository)) {
+                fixtureFound = true;
+                fixtureNotRead.addAll(notRead(copybooks));
+                fixtureNotRead.addAll(notRead(parsed));
+            }
         }
         System.out.printf("copybooks: %d parsed, %d errors%n", copybooksParsed, copybookErrors);
 
@@ -94,10 +102,7 @@ class CorpusCoverageTest {
         // Group by the syntax message so a single grammar gap does not look like fifty problems.
         Map<String, List<String>> byCause = new LinkedHashMap<>();
         for (SourceFile error : failed) {
-            String message = error.getMarkers().findFirst(ParseExceptionResult.class)
-              .map(ParseExceptionResult::getMessage)
-              .orElse("unknown");
-            byCause.computeIfAbsent(normalize(message), k -> new ArrayList<>())
+            byCause.computeIfAbsent(normalize(cause(error)), k -> new ArrayList<>())
               .add(error.getSourcePath().toString());
         }
 
@@ -127,6 +132,11 @@ class CorpusCoverageTest {
         // Coverage is reported rather than asserted, because what the parser cannot yet read is the point of the
         // measurement. Losing the text of a program it did read is a different thing, and is never acceptable.
         assertThat(notPrintedBack).isEmpty();
+
+        // The fixture is the exception: all of it parses by construction. A fixture the walk could not see, a
+        // symbolic link say, would otherwise pass as an empty application.
+        assertThat(fixtureFound).as("mainframe-fixtures under %s", root).isTrue();
+        assertThat(fixtureNotRead).isEmpty();
 
         // A position landing anywhere but on the word it names is worse than no position at all, so every word
         // the corpus prints is read back out of the source at the offset reported for it. Sequence numbers in
@@ -236,6 +246,27 @@ class CorpusCoverageTest {
 
     private static List<SourceFile> errors(List<SourceFile> parsed) {
         return parsed.stream().filter(s -> s instanceof ParseError).collect(Collectors.toList());
+    }
+
+    private static String cause(SourceFile error) {
+        return error.getMarkers().findFirst(ParseExceptionResult.class)
+          .map(ParseExceptionResult::getMessage)
+          .orElse("unknown");
+    }
+
+    /**
+     * Each file that was not read, with what kept it from being: a syntax error, or a copybook not found.
+     */
+    private static List<String> notRead(List<SourceFile> parsed) {
+        List<String> notRead = new ArrayList<>();
+        for (SourceFile file : parsed) {
+            if (file instanceof ParseError) {
+                notRead.add(file.getSourcePath() + ": " + cause(file));
+            } else if (missingACopybook(file)) {
+                notRead.add(file.getSourcePath() + ": missing a copybook");
+            }
+        }
+        return notRead;
     }
 
     // A program whose copybook was not found parses, and reads as though the fields it uses were

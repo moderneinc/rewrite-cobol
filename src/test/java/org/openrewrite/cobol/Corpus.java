@@ -55,6 +55,14 @@ public final class Corpus {
         }
     }
 
+    /**
+     * moderneinc/mainframe-fixtures, cloned beside the real applications. It is written so that every
+     * member of it parses, so the tests require that of it where they only measure the rest.
+     */
+    public static boolean isFixture(Path repository) {
+        return "mainframe-fixtures".equals(repository.getFileName().toString());
+    }
+
     public static List<Path> programs(Path repository) throws IOException {
         return files(repository, CobolParser.builder().build());
     }

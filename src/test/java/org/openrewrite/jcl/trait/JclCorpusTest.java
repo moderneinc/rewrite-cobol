@@ -49,7 +49,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * A member counts as read when the traits find exactly the EXEC cards it has, nothing in it fell to
  * {@link Jcl.Unknown}, and every job control statement has an operation that is a JCL statement
  * rather than a fragment of the line before it. That coverage is reported per application rather
- * than asserted, because what the parser cannot yet read is the point of the measurement. Printing
+ * than asserted, because what the parser cannot yet read is the point of the measurement; the
+ * fixture, written so that all of it reads, is the one application it is required of. Printing
  * back byte for byte is asserted: losing the text of a member the parser did read is never
  * acceptable.
  */
@@ -68,6 +69,8 @@ class JclCorpusTest {
         int concatenations = 0;
         List<String> notPrintedBack = new ArrayList<>();
         List<String> notRead = new ArrayList<>();
+        List<String> fixtureNotRead = new ArrayList<>();
+        boolean fixtureFound = false;
 
         System.out.println("members read, by application:");
         for (Path repository : Corpus.repositories(corpus)) {
@@ -76,6 +79,7 @@ class JclCorpusTest {
                 continue;
             }
             int read = 0;
+            int unread = notRead.size();
             for (Path member : jobs) {
                 members++;
                 String name = corpus.relativize(member).toString();
@@ -118,6 +122,10 @@ class JclCorpusTest {
                 }
             }
             System.out.printf("  %-40s %3d of %3d%n", repository.getFileName(), read, jobs.size());
+            if (Corpus.isFixture(repository)) {
+                fixtureFound = true;
+                fixtureNotRead.addAll(notRead.subList(unread, notRead.size()));
+            }
         }
         assertThat(members).as("no JCL found under %s", corpus).isPositive();
 
@@ -136,6 +144,10 @@ class JclCorpusTest {
         assertThat(notPrintedBack).isEmpty();
         assertThat(steps).isPositive();
         assertThat(dataSets).isPositive();
+
+        // A fixture the walk could not see, a symbolic link say, would otherwise pass as an empty application.
+        assertThat(fixtureFound).as("mainframe-fixtures under %s", corpus).isTrue();
+        assertThat(fixtureNotRead).isEmpty();
     }
 
     /**

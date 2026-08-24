@@ -61,9 +61,10 @@ its own:
 | Zowe install packaging | [zowe/zowe-install-packaging](https://github.com/zowe/zowe-install-packaging) | — | 48 of 51 | — | — | — | — |
 | MainframeJCL | [billrain/MainframeJCL](https://github.com/billrain/MainframeJCL) | — | 83 of 108 | — | — | — | — |
 | zorow | [openmainframeproject/zorow](https://github.com/openmainframeproject/zorow) | — | 47 of 56 | — | — | — | — |
+| CLAIMS fixture | [moderneinc/mainframe-fixtures](https://github.com/moderneinc/mainframe-fixtures) | 14 of 14 | 33 of 33 | 5 | 4 | 4 | 1 |
 
-Programs and Jobs say how many files of each kind the parser read, and out of how many: 197 of 210
-COBOL programs and 465 of 505 JCL members, plus all 46 BMS map sets in the six applications that
+Programs and Jobs say how many files of each kind the parser read, and out of how many: 211 of 224
+COBOL programs and 498 of 538 JCL members, plus all 49 BMS map sets in the seven applications that
 have them. The technology columns say how many programs use each. A program counts as read when it
 parsed and printed back byte for byte; a job when it also had exactly the EXEC cards the traits
 found and nothing in it was left unplaced. The gaps are the measurement: `CorpusCoverageTest` groups
@@ -74,6 +75,14 @@ names, 36 of its 37 copybooks and all 10 of its map sets are in Bank of Z too; o
 programs two are byte-identical, 19 differ by a few lines, and eight (BANKDATA, BNK1DCS, CREACC,
 CRECUST, DELCUS, INQCUST, UPDCUST, XFRFUN) were rewritten. Bank of Z adds the 14 IMS programs; CBSA
 adds the 110 jobs, among them DB2 DDL and BIND in JCL, where Bank of Z has one.
+
+The last row is not a public application but a fixture: one fictional insurance claims
+application, CLAIMS, written so that every `COPY`, `CALL`, `EXEC PROC`, `SEND MAP` and `SYSIN`
+member in it resolves to a member of the same repository, and every member of it parses. The
+public applications are measured; the fixture is required. The tests know it by its directory
+name, `mainframe-fixtures`, and fail when a program, copybook, job, procedure or map set of it does
+not parse, read or print back — or when the corpus root does not contain it, since a fixture the
+walk cannot see, a symbolic link say, would otherwise pass as an empty application.
 
 Clone them side by side into one directory and point the tests at it. The tests find files the way
 the parsers accept them, whatever the case of the extension: programs by `.cbl`, `.cob` and
@@ -111,13 +120,14 @@ not text the parser can read.
 | Zowe install packaging | `v3.x/staging` 20977c3 | EPL-2.0 |
 | MainframeJCL | `main` 598744a | MIT |
 | zorow | `master` 9f1fdf0 | Apache-2.0 |
+| CLAIMS fixture | `main` facf2c0 | Apache-2.0 |
 
 `CorpusCoverageTest` reports how much of each application parses rather than requiring all of it to:
 what the parser cannot yet read is the point of the measurement. It asserts that every program it
 did parse prints back byte-identical to the input, which is the property recipes depend on, and
 `JclCorpusTest` asserts the same of every job.
 
-`BmsCorpusTest` asserts the same over the 46 map sets, and counts the macros it read against an
+`BmsCorpusTest` asserts the same over the 49 map sets, and counts the macros it read against an
 independent count of the source. A map set that groups its continuation lines wrongly still prints
 back perfectly — it just says something else — so printing alone would not catch it.
 

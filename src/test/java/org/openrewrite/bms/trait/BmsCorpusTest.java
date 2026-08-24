@@ -58,6 +58,7 @@ class BmsCorpusTest {
         int positioned = 0;
         int written = 0;
         List<String> failures = new ArrayList<>();
+        boolean fixtureFound = false;
 
         System.out.println("map sets read, by application:");
         for (Path repository : Corpus.repositories(corpus)) {
@@ -65,6 +66,7 @@ class BmsCorpusTest {
             if (files.isEmpty()) {
                 continue;
             }
+            fixtureFound |= Corpus.isFixture(repository);
             int read = 0;
             for (Path member : files) {
                 members++;
@@ -148,6 +150,10 @@ class BmsCorpusTest {
         assertThat(failures).isEmpty();
         assertThat(mapsets).as("no mapsets read from %d files", members).isPositive();
         assertThat(maps).isPositive();
+
+        // Every map set is required to read, so the fixture only has to be there: one the walk could not
+        // see, a symbolic link say, would otherwise pass as an empty application.
+        assertThat(fixtureFound).as("mainframe-fixtures under %s", corpus).isTrue();
 
         // Every field is reachable from the map it belongs to. Containment is read from position
         // rather than from brackets, so a field the walk cannot reach is one no report would find.
