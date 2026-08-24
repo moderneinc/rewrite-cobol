@@ -32,7 +32,6 @@ import org.openrewrite.marker.Range;
 import org.openrewrite.tree.ParseError;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -69,12 +68,12 @@ class CorpusCoverageTest {
         boolean fixtureFound = false;
         System.out.println("programs parsed, copybooks not found, by application:");
         for (Path repository : Corpus.repositories(root)) {
-            List<Parser.Input> programInputs = inputs(Corpus.programs(repository));
+            List<Parser.Input> programInputs = Corpus.inputs(Corpus.programs(repository));
             if (programInputs.isEmpty()) {
                 continue;
             }
             List<SourceFile> copybooks = CopybookParser.builder().build()
-              .parseInputs(inputs(Corpus.copybooks(repository)), root, new InMemoryExecutionContext())
+              .parseInputs(Corpus.inputs(Corpus.copybooks(repository)), root, new InMemoryExecutionContext())
               .collect(Collectors.toList());
             copybooksParsed += copybooks.size() - errors(copybooks).size();
             copybookErrors += errors(copybooks).size();
@@ -283,17 +282,5 @@ class CorpusCoverageTest {
             return reference.getTree();
         }).visit(program, 0);
         return !unresolved.isEmpty();
-    }
-
-    private static List<Parser.Input> inputs(List<Path> paths) {
-        return paths.stream()
-          .map(p -> new Parser.Input(p, () -> {
-              try {
-                  return Files.newInputStream(p);
-              } catch (IOException e) {
-                  throw new UncheckedIOException(e);
-              }
-          }))
-          .collect(Collectors.toList());
     }
 }

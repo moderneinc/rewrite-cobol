@@ -19,7 +19,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.InMemoryExecutionContext;
-import org.openrewrite.Parser;
 import org.openrewrite.SourceFile;
 import org.openrewrite.cobol.CobolParser;
 import org.openrewrite.cobol.CopybookParser;
@@ -28,8 +27,6 @@ import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.test.RewriteTest;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -369,10 +366,10 @@ class DataNameTest implements RewriteTest {
                 continue;
             }
             List<SourceFile> copybooks = CopybookParser.builder().build()
-              .parseInputs(inputs(Corpus.copybooks(repository)), root, new InMemoryExecutionContext())
+              .parseInputs(Corpus.inputs(Corpus.copybooks(repository)), root, new InMemoryExecutionContext())
               .collect(Collectors.toList());
             List<SourceFile> parsed = CobolParser.builder().copybooks(copybooks).build()
-              .parseInputs(inputs(Corpus.programs(repository)), root, new InMemoryExecutionContext())
+              .parseInputs(Corpus.inputs(Corpus.programs(repository)), root, new InMemoryExecutionContext())
               .collect(Collectors.toList());
             for (SourceFile program : parsed) {
                 if (!(program instanceof Cobol.CompilationUnit)) {
@@ -444,17 +441,5 @@ class DataNameTest implements RewriteTest {
             assertThat(set.isSet()).isTrue();
             assertThat(set.getConditionalVariable()).isNotNull().extracting(DataName::getName).isEqualTo("WS-ERR-FLG");
         });
-    }
-
-    private static List<Parser.Input> inputs(List<Path> paths) {
-        return paths.stream()
-          .map(path -> new Parser.Input(path, () -> {
-              try {
-                  return Files.newInputStream(path);
-              } catch (IOException e) {
-                  throw new UncheckedIOException(e);
-              }
-          }))
-          .collect(Collectors.toList());
     }
 }

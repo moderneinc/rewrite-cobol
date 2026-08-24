@@ -20,6 +20,7 @@ import org.openrewrite.bms.BmsParser;
 import org.openrewrite.jcl.JclParser;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -77,6 +78,18 @@ public final class Corpus {
 
     public static List<Path> jobs(Path repository) throws IOException {
         return files(repository, JclParser.builder().build());
+    }
+
+    public static List<Parser.Input> inputs(List<Path> paths) {
+        return paths.stream()
+          .map(p -> new Parser.Input(p, () -> {
+              try {
+                  return Files.newInputStream(p);
+              } catch (IOException e) {
+                  throw new UncheckedIOException(e);
+              }
+          }))
+          .collect(toList());
     }
 
     /**

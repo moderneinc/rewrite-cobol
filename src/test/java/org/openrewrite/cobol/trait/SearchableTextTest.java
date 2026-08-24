@@ -30,8 +30,6 @@ import org.openrewrite.marker.Range;
 import org.openrewrite.test.RewriteTest;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -277,12 +275,12 @@ class SearchableTextTest implements RewriteTest {
         Map<String, SourcePositions> positionsOf = new HashMap<>();
 
         for (Path repository : Corpus.repositories(root)) {
-            List<Parser.Input> programInputs = inputs(Corpus.programs(repository));
+            List<Parser.Input> programInputs = Corpus.inputs(Corpus.programs(repository));
             if (programInputs.isEmpty()) {
                 continue;
             }
             List<SourceFile> copybooks = CopybookParser.builder().build()
-              .parseInputs(inputs(Corpus.copybooks(repository)), root, new InMemoryExecutionContext())
+              .parseInputs(Corpus.inputs(Corpus.copybooks(repository)), root, new InMemoryExecutionContext())
               .collect(Collectors.toList());
             List<SourceFile> parsed = CobolParser.builder().copybooks(copybooks).build()
               .parseInputs(programInputs, root, new InMemoryExecutionContext())
@@ -360,17 +358,5 @@ class SearchableTextTest implements RewriteTest {
             "Program:     COACTVWC.CBL",
             "Layer:       Business logic",
             "Function:    Accept and process Account View request");
-    }
-
-    private static List<Parser.Input> inputs(List<Path> paths) {
-        return paths.stream()
-          .map(p -> new Parser.Input(p, () -> {
-              try {
-                  return Files.newInputStream(p);
-              } catch (IOException e) {
-                  throw new UncheckedIOException(e);
-              }
-          }))
-          .collect(Collectors.toList());
     }
 }
