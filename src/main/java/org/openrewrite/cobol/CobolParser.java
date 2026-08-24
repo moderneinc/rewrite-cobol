@@ -50,7 +50,7 @@ import static java.util.stream.Collectors.toList;
 @RequiredArgsConstructor
 public class CobolParser implements Parser {
     public static final List<String> COPYBOOK_FILE_EXTENSIONS = Arrays.asList(".cpy", ".dcl");
-    public static final List<String> COBOL_FILE_EXTENSIONS = singletonList(".cbl");
+    public static final List<String> COBOL_FILE_EXTENSIONS = Arrays.asList(".cbl", ".cobol");
 
     private final CobolDialect cobolDialect;
     private final List<SourceFile> copybooks;
