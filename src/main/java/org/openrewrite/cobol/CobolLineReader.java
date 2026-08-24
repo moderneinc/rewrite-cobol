@@ -34,6 +34,8 @@ public class CobolLineReader {
     private static final List<String> triggersEnd = Arrays.asList("PROGRAM-ID", "AUTHOR", "INSTALLATION",
             "DATE-WRITTEN", "DATE-COMPILED", "SECURITY", "IDENTIFICATION", "ID", "ENVIRONMENT", "DATA", "PROCEDURE", "END");
 
+    private static final int AREA_A_WIDTH = 4;
+
     private boolean inCommentEntry = false;
 
     public String readLines(String source, CobolDialect cobolDialect, boolean debuggingLinesAreComments) {
@@ -91,8 +93,8 @@ public class CobolLineReader {
 
             boolean isValidText = !(" ".equals(indicator) && contentArea.trim().isEmpty());
 
-            // A paragraph header belongs in area A, but IBM accepts it in area B and generated code puts it there.
-            String paragraph = trimLeadingWhitespace(contentArea);
+            // A paragraph header belongs in area A, and generated code begins it past the area's first column.
+            String paragraph = beginsInAreaA(contentArea) ? trimLeadingWhitespace(contentArea) : contentArea;
             if (inCommentEntry && !line.isEmpty()) {
                 if (startsWithTrigger(paragraph, triggersEnd)) {
                     inCommentEntry = false;
@@ -176,6 +178,14 @@ public class CobolLineReader {
             }
         }
         return ticks % 2 != 0 || quotes % 2 != 0 || contentArea.endsWith("'") || contentArea.endsWith("\"");
+    }
+
+    /**
+     * Whether the first word is in area A, the four columns the content area opens with. Text in
+     * area B may begin with {@code PROCEDURE} or {@code IDENTIFICATION} and still be a comment entry.
+     */
+    private static boolean beginsInAreaA(String contentArea) {
+        return contentArea.length() - trimLeadingWhitespace(contentArea).length() < AREA_A_WIDTH;
     }
 
     private static String getFirstWords(String line) {

@@ -190,11 +190,13 @@ class CobolParserAnsi85DivisionTest extends CobolTest {
     }
 
     /**
-     * A paragraph header belongs in area A, but IBM accepts it in area B and generated code puts it
-     * there. The comment entry after it was being read as code.
+     * A paragraph header belongs in area A, and generated code begins it at column 9 rather than 8;
+     * the comment entry after it was being read as code. Only area A, though: a comment entry's text
+     * in area B may begin with {@code PROCEDURE} or {@code IDENTIFICATION}, as NIST SG104A's and
+     * OBNC1M's do, and is still the entry.
      */
     @Test
-    void commentEntryParagraphsInAreaB() {
+    void commentEntryParagraphsAnywhereInAreaA() {
         rewriteRun(
           cobol(
             """
@@ -203,6 +205,10 @@ class CobolParserAnsi85DivisionTest extends CobolTest {
               000300  AUTHOR. WD4Z.
               000400  INSTALLATION. 9.0.0.V200809191411.
               000500  DATE-WRITTEN. 1/19/09 2:11 PM.
+              000510  SECURITY.
+              000520     NONE.  THE INPUT
+              000530     PROCEDURE BUILDS THE FILE.
+              000540     IDENTIFICATION DIVISION IS WHAT THE REMARKS SAY.
               000600 DATA DIVISION.
               000700 WORKING-STORAGE SECTION.
               000800 01 A PIC X.
