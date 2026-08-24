@@ -25,8 +25,8 @@ This project implements a [Rewrite module](https://github.com/openrewrite/rewrit
 
 ### Language Support
 
-- **COBOL** — Full parsing of COBOL-85 (IBM ANSI 85 and HP Tandem dialects), including preprocessor directives (COPY, REPLACE) and copybook resolution
-- **JCL** — Job Control Language parsing (`.jcl`, `.prc` files)
+- **COBOL** — Full parsing of COBOL-85 (IBM ANSI 85 and HP Tandem dialects), including preprocessor directives (COPY, REPLACE) and copybook resolution; programs by `.cbl`, `.cob` and `.cobol`, copybooks by `.cpy`, `.copy` and `.dcl`
+- **JCL** — Job Control Language parsing (`.jcl`, `.prc` and `.proc` files, and a `.txt` or extensionless PDS member whose first card is JCL)
 - **BMS** — CICS Basic Mapping Support map sets (`.bms`): the `DFHMSD`/`DFHMDI`/`DFHMDF` macros, and the symbolic map names they generate, which is what joins a screen field to the COBOL data item a program reads it from
 - **Control-M** — Control-M job scheduling definition parsing
 
@@ -45,25 +45,25 @@ its own:
 
 | Application | Repository | Programs | Jobs | CICS | Embedded SQL | BMS maps | DL/I |
 |---|---|---:|---:|---:|---:|---:|---:|
-| CardDemo | [aws-samples/aws-mainframe-modernization-carddemo](https://github.com/aws-samples/aws-mainframe-modernization-carddemo) | 42 of 44 | 60 of 61 | 25 | 4 | 7 | 7 |
+| CardDemo | [aws-samples/aws-mainframe-modernization-carddemo](https://github.com/aws-samples/aws-mainframe-modernization-carddemo) | 42 of 44 | 61 of 61 | 25 | 4 | 7 | 7 |
 | GenApp | [cicsdev/cics-genapp](https://github.com/cicsdev/cics-genapp) | 31 of 31 | 29 of 29 | 31 | 8 | 5 | — |
 | Bank of Z | [IBM/Bank-of-Z](https://github.com/IBM/Bank-of-Z) | 43 of 43 | 1 of 1 | 31 | 15 | 9 | 11 |
-| CBSA | [cicsdev/cics-banking-sample-application-cbsa](https://github.com/cicsdev/cics-banking-sample-application-cbsa) | 31 of 31 | 108 of 110 | 30 | 12 | 9 | — |
+| CBSA | [cicsdev/cics-banking-sample-application-cbsa](https://github.com/cicsdev/cics-banking-sample-application-cbsa) | 31 of 31 | 109 of 110 | 30 | 12 | 9 | — |
 | COBOL Programming Course | [openmainframeproject/cobol-programming-course](https://github.com/openmainframeproject/cobol-programming-course) | 26 of 30 | 43 of 43 | — | 3 | — | — |
 | Cash Account | [IBMStockTrader/cash-account-cobol](https://github.com/IBMStockTrader/cash-account-cobol) | 1 of 1 | 3 of 3 | 1 | 1 | — | — |
-| zAppBuild | [IBM/dbb-zappbuild](https://github.com/IBM/dbb-zappbuild) | 4 of 7 | — | 3 | 1 | 2 | — |
-| DBB Samples | [ibmdbbdev/Samples](https://github.com/ibmdbbdev/Samples) | 14 of 17 | — | 3 | 1 | 2 | — |
+| zAppBuild | [IBM/dbb-zappbuild](https://github.com/IBM/dbb-zappbuild) | 6 of 7 | — | 3 | 1 | 2 | — |
+| DBB Samples | [ibmdbbdev/Samples](https://github.com/ibmdbbdev/Samples) | 16 of 17 | — | 3 | 1 | 2 | — |
 | Z Open Editor sample | [IBM/zopeneditor-sample](https://github.com/IBM/zopeneditor-sample) | 0 of 5 | 8 of 10 | — | — | — | — |
 | base64 | [cicsdev/base64](https://github.com/cicsdev/base64) | 1 of 1 | 1 of 1 | — | — | — | — |
 | GenevaERS Workbench | [genevaers/Workbench](https://github.com/genevaers/Workbench) | — | 20 of 20 | — | — | — | — |
 | GenevaERS Performance Engine | [genevaers/Performance-Engine](https://github.com/genevaers/Performance-Engine) | — | 1 of 1 | — | — | — | — |
 | ADCD setup | [davidegirardi/adcdsetup](https://github.com/davidegirardi/adcdsetup) | — | 11 of 11 | — | — | — | — |
-| Zowe install packaging | [zowe/zowe-install-packaging](https://github.com/zowe/zowe-install-packaging) | — | 26 of 51 | — | — | — | — |
-| MainframeJCL | [billrain/MainframeJCL](https://github.com/billrain/MainframeJCL) | — | 82 of 108 | — | — | — | — |
-| zorow | [openmainframeproject/zorow](https://github.com/openmainframeproject/zorow) | — | 30 of 56 | — | — | — | — |
+| Zowe install packaging | [zowe/zowe-install-packaging](https://github.com/zowe/zowe-install-packaging) | — | 48 of 51 | — | — | — | — |
+| MainframeJCL | [billrain/MainframeJCL](https://github.com/billrain/MainframeJCL) | — | 83 of 108 | — | — | — | — |
+| zorow | [openmainframeproject/zorow](https://github.com/openmainframeproject/zorow) | — | 47 of 56 | — | — | — | — |
 
-Programs and Jobs say how many files of each kind the parser read, and out of how many: 193 of 210
-COBOL programs and 423 of 505 JCL members, plus all 46 BMS map sets in the six applications that
+Programs and Jobs say how many files of each kind the parser read, and out of how many: 197 of 210
+COBOL programs and 465 of 505 JCL members, plus all 46 BMS map sets in the six applications that
 have them. The technology columns say how many programs use each. A program counts as read when it
 parsed and printed back byte for byte; a job when it also had exactly the EXEC cards the traits
 found and nothing in it was left unplaced. The gaps are the measurement: `CorpusCoverageTest` groups
@@ -75,10 +75,13 @@ programs two are byte-identical, 19 differ by a few lines, and eight (BANKDATA, 
 CRECUST, DELCUS, INQCUST, UPDCUST, XFRFUN) were rewritten. Bank of Z adds the 14 IMS programs; CBSA
 adds the 110 jobs, among them DB2 DDL and BIND in JCL, where Bank of Z has one.
 
-Clone them side by side into one directory and point the tests at it. The tests find programs by
-`.cbl` and `.cobol`, copybooks by `.cpy` and `.dcl`, map sets by `.bms`, and jobs by `.jcl`, `.prc`
+Clone them side by side into one directory and point the tests at it. The tests find files the way
+the parsers accept them, whatever the case of the extension: programs by `.cbl`, `.cob` and
+`.cobol`, copybooks by `.cpy`, `.copy` and `.dcl`, map sets by `.bms`, and jobs by `.jcl`, `.prc`
 and `.proc` — or, since MainframeJCL, ADCD setup and Zowe's SZWESAMP keep their members as they came
-off the PDS, by a `.txt` or extensionless file whose first line begins `//`. The corpus tests skip
+off the PDS, by a `.txt` or extensionless file whose first card is JCL. A member whose name promises
+a language its content is not — CBSA's `DFH$SIP1.jcl` is a CICS parameter member — is reported as
+such, under `WrongLanguageException`, rather than as a grammar failure. The corpus tests skip
 themselves when the variables are unset, so a normal `./gradlew test` does not need them:
 
 ```bash

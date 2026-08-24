@@ -20,6 +20,7 @@ import lombok.NoArgsConstructor;
 import org.openrewrite.cobol.internal.CobolDialect;
 
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -95,6 +96,22 @@ public class CobolStringUtils {
             }
         }
         return -1;
+    }
+
+    /**
+     * Where a {@code CBL} or {@code PROCESS} statement begins when it is written ahead of column 8,
+     * or -1. IBM lets it start in any column from 1, and a line that does has no sequence area.
+     */
+    public static int compilerOptionsStart(String line) {
+        int i = 0;
+        while (i < line.length() && line.charAt(i) == ' ') {
+            i++;
+        }
+        if (i >= 7) {
+            return -1;
+        }
+        String rest = line.substring(i).toUpperCase(Locale.ROOT);
+        return rest.equals("CBL") || rest.startsWith("CBL ") || rest.equals("PROCESS") || rest.startsWith("PROCESS ") ? i : -1;
     }
 
     public static boolean isSubstituteCharacter(String text) {

@@ -169,6 +169,61 @@ class CobolParserAnsi85DivisionTest extends CobolTest {
         );
     }
 
+    /**
+     * IBM lets CBL and PROCESS start in any column from 1, and a line that does has no sequence
+     * area — {@code CBL} in columns 4 to 6 is the statement, not a sequence number.
+     */
+    @Test
+    void compilerOptionsAheadOfColumn8() {
+        rewriteRun(
+          cobol(
+            """
+                 CBL NUMPROC(MIG),FLAG(I,W),RENT
+              PROCESS ARITH(EXTEND),OPT,NOCICS
+                     ID DIVISION.
+                     PROGRAM-ID. EPSMPMT.
+                     PROCEDURE DIVISION.
+                         STOP RUN.
+              """
+          )
+        );
+    }
+
+    /**
+     * A paragraph header belongs in area A, but IBM accepts it in area B and generated code puts it
+     * there. The comment entry after it was being read as code.
+     */
+    @Test
+    void commentEntryParagraphsInAreaB() {
+        rewriteRun(
+          cobol(
+            """
+              000100 IDENTIFICATION DIVISION.
+              000200  PROGRAM-ID. 'EPSCSMRD'.
+              000300  AUTHOR. WD4Z.
+              000400  INSTALLATION. 9.0.0.V200809191411.
+              000500  DATE-WRITTEN. 1/19/09 2:11 PM.
+              000600 DATA DIVISION.
+              000700 WORKING-STORAGE SECTION.
+              000800 01 A PIC X.
+              000900 PROCEDURE DIVISION.
+              001000     GOBACK.
+              001100 END PROGRAM 'EPSCSMRD'.
+              001200 IDENTIFICATION DIVISION.
+              001300  PROGRAM-ID. 'EPSCSMRF'.
+              001400  AUTHOR. WD4Z.
+              001500  DATE-WRITTEN. 1/19/09 2:11 PM
+              001600 DATA DIVISION.
+              001700 WORKING-STORAGE SECTION.
+              001800 01 A PIC X.
+              001900 PROCEDURE DIVISION.
+              002000     GOBACK.
+              002100 END PROGRAM 'EPSCSMRF'.
+              """
+          )
+        );
+    }
+
     @Issue("https://github.com/openrewrite/rewrite-cobol/issues/33")
     @Test
     void specialRegister() {

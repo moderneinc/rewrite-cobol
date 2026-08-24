@@ -15,14 +15,14 @@
  */
 package org.openrewrite.cobol;
 
-import java.io.BufferedReader;
+import org.openrewrite.Parser;
+import org.openrewrite.bms.BmsParser;
+import org.openrewrite.jcl.JclParser;
+
 import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -33,6 +33,9 @@ import static java.util.stream.Collectors.toList;
  * Each application is measured on its own. A copybook is found by member name, so two applications
  * that share one — Bank of Z and CBSA share 36 — would otherwise have the first one walked supply
  * the copybook for both.
+ * <p>
+ * Files are found the way the parsers themselves accept them, so the tests measure what a build
+ * would read and nothing else.
  */
 public final class Corpus {
 
@@ -53,19 +56,19 @@ public final class Corpus {
     }
 
     public static List<Path> programs(Path repository) throws IOException {
-        return files(repository, p -> hasExtension(p, ".cbl", ".cobol"));
+        return files(repository, CobolParser.builder().build());
     }
 
     public static List<Path> copybooks(Path repository) throws IOException {
-        return files(repository, p -> hasExtension(p, ".cpy", ".dcl"));
+        return files(repository, CopybookParser.builder().build());
     }
 
     public static List<Path> mapsets(Path repository) throws IOException {
-        return files(repository, p -> hasExtension(p, ".bms"));
+        return files(repository, BmsParser.builder().build());
     }
 
     public static List<Path> jobs(Path repository) throws IOException {
-        return files(repository, Corpus::isJob);
+        return files(repository, JclParser.builder().build());
     }
 
     /**
@@ -91,42 +94,14 @@ public final class Corpus {
         return true;
     }
 
-    private static List<Path> files(Path repository, Predicate<Path> kind) throws IOException {
+    private static List<Path> files(Path repository, Parser parser) throws IOException {
         try (Stream<Path> paths = Files.walk(repository)) {
             return paths
               .filter(Files::isRegularFile)
               .filter(p -> isSource(repository.relativize(p)))
-              .filter(kind)
+              .filter(parser::accept)
               .sorted()
               .collect(toList());
         }
-    }
-
-    // MainframeJCL, adcdsetup and Zowe's SZWESAMP keep their members as they came off the PDS, as
-    // .txt or with no extension at all, so a job there is known by its first card.
-    private static boolean isJob(Path path) {
-        if (hasExtension(path, ".jcl", ".prc", ".proc")) {
-            return true;
-        }
-        String name = path.getFileName().toString();
-        if (name.contains(".") && !hasExtension(path, ".txt")) {
-            return false;
-        }
-        try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.ISO_8859_1)) {
-            String first = reader.readLine();
-            return first != null && first.startsWith("//");
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-    private static boolean hasExtension(Path path, String... extensions) {
-        String name = path.getFileName().toString().toLowerCase();
-        for (String extension : extensions) {
-            if (name.endsWith(extension)) {
-                return true;
-            }
-        }
-        return false;
     }
 }

@@ -195,9 +195,9 @@ public interface Jcl extends Tree {
 
         /**
          * Everything after the operation, in source order: the {@link Parameter}s of the operand
-         * field, the words of any comment field, and the {@code //} beginning each continuation line.
-         * Keeping them in one ordered list is what lets the statement print back exactly, however it
-         * was laid out.
+         * field, the words of any comment field, the {@code //} beginning each continuation line,
+         * and any {@link Comment} card written between two of its lines. Keeping them in one
+         * ordered list is what lets the statement print back exactly, however it was laid out.
          */
         List<Jcl> operands;
 

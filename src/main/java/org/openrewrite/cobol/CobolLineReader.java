@@ -66,7 +66,12 @@ public class CobolLineReader {
             }
 
             String contentArea;
-            if (line.length() < contentAreaAStart + 1) {
+            int compilerOptions = compilerOptionsStart(line);
+            if (compilerOptions >= 0) {
+                // CBL and PROCESS may begin in the columns a sequence number would otherwise occupy.
+                indicator = "";
+                contentArea = line.substring(compilerOptions, Math.min(line.length(), contentAreaBEnd));
+            } else if (line.length() < contentAreaAStart + 1) {
                 contentArea = "";
             } else if (line.length() == contentAreaAStart + 1) {
                 contentArea = line.substring(contentAreaAStart);
@@ -86,8 +91,10 @@ public class CobolLineReader {
 
             boolean isValidText = !(" ".equals(indicator) && contentArea.trim().isEmpty());
 
+            // A paragraph header belongs in area A, but IBM accepts it in area B and generated code puts it there.
+            String paragraph = trimLeadingWhitespace(contentArea);
             if (inCommentEntry && !line.isEmpty()) {
-                if (startsWithTrigger(contentArea, triggersEnd)) {
+                if (startsWithTrigger(paragraph, triggersEnd)) {
                     inCommentEntry = false;
                 } else {
                     // Mark the comment entry.
@@ -97,12 +104,12 @@ public class CobolLineReader {
 
             // Comment entries are a specific type of comment that occur in the Identification Division.
             // Each comment entry needs to be marked uniquely to be recognized by the grammar.
-            if (!isCommentLine && startsWithTrigger(contentArea, triggersStart)) {
+            if (!isCommentLine && startsWithTrigger(paragraph, triggersStart)) {
                 inCommentEntry = true;
-                String firstWords = getFirstWords(contentArea);
+                int header = contentArea.length() - paragraph.length() + getFirstWords(paragraph).length();
                 // Comment entries in older COBOL dialects may start in line with the paragraph start.
-                if (!contentArea.substring(firstWords.length()).trim().isEmpty()) {
-                    contentArea = firstWords + " *>CE " + contentArea.substring(firstWords.length());
+                if (!contentArea.substring(header).trim().isEmpty()) {
+                    contentArea = contentArea.substring(0, header) + " *>CE " + contentArea.substring(header);
                 }
             }
 

@@ -73,10 +73,17 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
     @Override
     public Jcl.CompilationUnit visitCompilationUnit(JCLParser.CompilationUnitContext ctx) {
         List<Statement> statements = new ArrayList<>(ctx.statement().size());
-        List<JCLParser.JclContext> pending = new ArrayList<>();
+        List<JCLParser.StatementContext> pending = new ArrayList<>();
 
-        for (JCLParser.StatementContext statement : ctx.statement()) {
+        List<JCLParser.StatementContext> all = ctx.statement();
+        for (int i = 0; i < all.size(); i++) {
+            JCLParser.StatementContext statement = all.get(i);
             if (statement.jcl() == null) {
+                // A comment card between a statement's lines does not end the statement.
+                if (statement.comment() != null && !pending.isEmpty() && continuesAfterComments(all, i)) {
+                    pending.add(statement);
+                    continue;
+                }
                 flush(pending, statements);
                 statements.add((Statement) visitStatement(statement));
                 continue;
@@ -84,7 +91,7 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
             if (beginsStatement(statement.jcl())) {
                 flush(pending, statements);
             }
-            pending.add(statement.jcl());
+            pending.add(statement);
         }
         flush(pending, statements);
 
@@ -143,17 +150,22 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
      * so that the statement still prints back exactly while only the parts that mean something are
      * typed.
      */
-    private void flush(List<JCLParser.JclContext> pending, List<Statement> statements) {
+    private void flush(List<JCLParser.StatementContext> pending, List<Statement> statements) {
         if (pending.isEmpty()) {
             return;
         }
-        JCLParser.JclContext first = pending.get(0);
+        JCLParser.JclContext first = pending.get(0).jcl();
         Space prefix = whitespace();
-        List<Jcl.Word> words = new ArrayList<>(pending.size());
+        List<Jcl> words = new ArrayList<>(pending.size());
         List<Boolean> startsLine = new ArrayList<>(pending.size());
-        for (JCLParser.JclContext jcl : pending) {
-            words.add(word(jcl));
-            startsLine.add(beginsLine(jcl));
+        for (JCLParser.StatementContext statement : pending) {
+            if (statement.jcl() == null) {
+                words.add(visitStatement(statement));
+                startsLine.add(false);
+            } else {
+                words.add(word(statement.jcl()));
+                startsLine.add(beginsLine(statement.jcl()));
+            }
         }
         boolean endsStream = endsStream(first);
         pending.clear();
@@ -161,24 +173,32 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
         // The delimiter statement ends in-stream data. It is not a job control statement: it has no
         // name field and no operation, and anything after it is a comment.
         if (endsStream) {
+            List<Jcl.Word> comment = new ArrayList<>(words.size() - 1);
+            for (Jcl word : words.subList(1, words.size())) {
+                comment.add((Jcl.Word) word);
+            }
             statements.add(new Jcl.Delimiter(randomId(), prefix, Markers.EMPTY,
-                    words.get(0).withPrefix(EMPTY), words.subList(1, words.size())));
+                    ((Jcl.Word) words.get(0)).withPrefix(EMPTY), comment));
             return;
         }
         // The null statement, // alone, marks the end of a job. Also not a job control statement.
-        if (words.size() == 1 && "//".equals(words.get(0).getText())) {
+        if (words.size() == 1 && "//".equals(((Jcl.Word) words.get(0)).getText())) {
             statements.add(new Jcl.NullStatement(randomId(), prefix, Markers.EMPTY,
-                    words.get(0).withPrefix(EMPTY)));
+                    ((Jcl.Word) words.get(0)).withPrefix(EMPTY)));
             return;
         }
 
-        Jcl.Word name = words.get(0).withPrefix(EMPTY);
-        Jcl.Word operation = words.size() > 1 ? words.get(1) : null;
+        Jcl.Word name = ((Jcl.Word) words.get(0)).withPrefix(EMPTY);
+        Jcl.Word operation = words.size() > 1 ? (Jcl.Word) words.get(1) : null;
 
         List<Jcl> operands = new ArrayList<>();
         boolean expectOperand = operation != null;
         for (int i = 2; i < words.size(); i++) {
-            Jcl.Word word = words.get(i);
+            if (words.get(i) instanceof Jcl.Comment) {
+                operands.add(words.get(i));
+                continue;
+            }
+            Jcl.Word word = (Jcl.Word) words.get(i);
             if (startsLine.get(i)) {
                 // The // opening a continuation line. Kept as a word: it is punctuation, not an
                 // operand, and the operand field starts again after it.
@@ -191,9 +211,9 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
                 // can span several words — the ones with nothing between them.
                 StringBuilder run = new StringBuilder(word.getText());
                 Jcl.Word last = word;
-                while (i + 1 < words.size() && !startsLine.get(i + 1) &&
+                while (i + 1 < words.size() && words.get(i + 1) instanceof Jcl.Word && !startsLine.get(i + 1) &&
                        words.get(i + 1).getPrefix().getWhitespace().isEmpty()) {
-                    last = words.get(++i);
+                    last = (Jcl.Word) words.get(++i);
                     run.append(last.getText());
                 }
                 operands.addAll(parameters(word.getPrefix(), run.toString(), last.getMarkers()));
@@ -323,6 +343,22 @@ public class JclParserVisitor extends JCLParserBaseVisitor<Jcl> {
             word = word.withMarkers(word.getMarkers().addIfAbsent(mapCommentArea(ctx.jclCommentArea())));
         }
         return word;
+    }
+
+    /**
+     * Whether the first JCL word after the comment cards from {@code from} on continues the
+     * statement before them.
+     */
+    private boolean continuesAfterComments(List<JCLParser.StatementContext> all, int from) {
+        for (int i = from; i < all.size(); i++) {
+            if (all.get(i).jcl() != null) {
+                return lineMarker(all.get(i).jcl()) == JCLLexer.JCL_CONTINUATION;
+            }
+            if (all.get(i).comment() == null) {
+                return false;
+            }
+        }
+        return false;
     }
 
     /**

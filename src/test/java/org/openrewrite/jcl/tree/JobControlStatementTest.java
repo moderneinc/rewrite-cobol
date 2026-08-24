@@ -63,6 +63,35 @@ class JobControlStatementTest implements RewriteTest {
     }
 
     /**
+     * A comment card between two lines of a statement does not end it. Real members carry the
+     * parameters somebody swapped out this way, and the line after was being read as a statement
+     * whose operation was its first operand.
+     */
+    @Test
+    void aCommentCardBetweenContinuationLines() {
+        rewriteRun(
+          jcl(
+            """
+              //SYSLMOD  DD DSN=&LOADLIB(&MEM),
+              //*           DISP=(OLD,KEEP),SPACE=(CYL,(10,20,10)),
+              //*           UNIT=3390,DSNTYPE=LIBRARY
+              //            DISP=SHR
+              //SYSUT1   DD UNIT=3390
+              """,
+            spec -> spec.afterRecipe(cu -> {
+                assertThat(cu.getStatements()).hasSize(2);
+                Jcl.JobControlStatement dd = statementsIn(cu).get(0);
+                assertThat(dd.getSimpleName()).isEqualTo("SYSLMOD");
+                assertThat(dd.getParameter("DSN").getValueText()).isEqualTo("&LOADLIB(&MEM)");
+                assertThat(dd.getParameter("DISP").getValueText()).isEqualTo("SHR");
+                // Two cards of two words each; a comment is one node per word.
+                assertThat(dd.getOperands()).filteredOn(o -> o instanceof Jcl.Comment).hasSize(4);
+            })
+          )
+        );
+    }
+
+    /**
      * The whole reason the words have to be grouped: a statement written over four lines is one
      * statement, and its parameters belong to it wherever they were written.
      */

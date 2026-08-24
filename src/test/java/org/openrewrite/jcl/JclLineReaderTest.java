@@ -140,8 +140,19 @@ class JclLineReaderTest {
     @Test
     void jes3() {
         assertThat(JclLineReader
+          .readLines("//*MAIN CLASS=A,SYSTEM=SY1"))
+          .isEqualTo("^^JES3^^//*MAIN CLASS=A,SYSTEM=SY1");
+    }
+
+    /**
+     * JES3 statements are a fixed set. A card somebody commented out begins the same way and is a
+     * comment, not a JES3 statement with a DD for an operand.
+     */
+    @Test
+    void aCommentedOutCardIsAComment() {
+        assertThat(JclLineReader
           .readLines("//*SYSTSPRT DD SYSOUT=*"))
-          .isEqualTo("^^JES3^^//*SYSTSPRT DD SYSOUT=*");
+          .isEqualTo("^^COMMENT^^//*SYSTSPRT DD SYSOUT=*");
     }
 
     @Test
@@ -280,5 +291,140 @@ class JclLineReaderTest {
         assertThat(JclLineReader
           .readLines("%s".formatted(before)))
           .isEqualTo("%s".formatted(after));
+    }
+
+    /**
+     * A data line is data in every column. Carving columns 73 on into a comment area cut the text
+     * of a member whose lines were never held to 72 columns, and the tree no longer printed back.
+     */
+    @Test
+    void dataPastColumn72() {
+        String data = "  " + "x".repeat(78);
+        assertThat(JclLineReader
+          .readLines(
+            """
+              //SYSIN    DD *
+              %s
+              /*
+              """.formatted(data)))
+          .isEqualTo(
+            """
+              ^^JCL_STATEMENT^^//SYSIN    DD *
+              ^^STREAM^^%s
+              ^^STREAM_END^^/*
+              """.formatted(data));
+    }
+
+    /**
+     * With DLM in force, only the delimiter ends the data — a line beginning /* is data, which is
+     * the whole point of naming a delimiter.
+     */
+    @Test
+    void dlmKeepsDelimiterLookalikesAsData() {
+        assertThat(JclLineReader
+          .readLines(
+            """
+              //SYSTSIN  DD DATA,DLM=$$
+              /* Define the keyring */
+              RACDCERT ADDRING(ZOWERING) ID(ZWESVUSR)
+              $$
+              """))
+          .isEqualTo(
+            """
+              ^^JCL_STATEMENT^^//SYSTSIN  DD DATA,DLM=$$
+              ^^STREAM^^/* Define the keyring */
+              ^^STREAM^^RACDCERT ADDRING(ZOWERING) ID(ZWESVUSR)
+              ^^STREAM_END^^$$
+              """);
+    }
+
+    /**
+     * DD DATA exists to pass JCL through: // in the data is data. In a DD * it ends the data.
+     */
+    @Test
+    void ddDataKeepsJclAsData() {
+        assertThat(JclLineReader
+          .readLines(
+            """
+              //SYSUT1   DD DATA
+              //INNER    JOB
+              /*
+              //SYSUT2   DD *
+              //NEXT     EXEC PGM=X
+              """))
+          .isEqualTo(
+            """
+              ^^JCL_STATEMENT^^//SYSUT1   DD DATA
+              ^^STREAM^^//INNER    JOB
+              ^^STREAM_END^^/*
+              ^^JCL_STATEMENT^^//SYSUT2   DD *
+              ^^JCL_STATEMENT^^//NEXT     EXEC PGM=X
+              """);
+    }
+
+    /**
+     * A literal too long for one card carries on at column 16 of the next, and may carry on again
+     * from there. Whether the second card continues is known only from the first: it has no comma
+     * and, on its own, an even number of quotes.
+     */
+    @Test
+    void aLiteralOverThreeCards() {
+        assertThat(JclLineReader
+          .readLines(
+            """
+              //INHFS    DD PATH='/usr/cicsts/work/cicsbbbb/CPFWLP/bbbbbbb/CPFWLP/wlp
+              //             /usr/servers/defaultServer/logs/messages_20.20.22_22.17.
+              //             18.0.log'
+              //OUTMVS   DD DISP=SHR,DSN=USER.MESSAGES.LOG
+              """))
+          .isEqualTo(
+            """
+              ^^JCL_STATEMENT^^//INHFS    DD PATH='/usr/cicsts/work/cicsbbbb/CPFWLP/bbbbbbb/CPFWLP/wlp
+              ^^JCL_CONT^^//             /usr/servers/defaultServer/logs/messages_20.20.22_22.17.
+              ^^JCL_CONT^^//             18.0.log'
+              ^^JCL_STATEMENT^^//OUTMVS   DD DISP=SHR,DSN=USER.MESSAGES.LOG
+              """);
+    }
+
+    /**
+     * An apostrophe in the comment field is not a quote. Counting it made the statement continue
+     * onto the card after it.
+     */
+    @Test
+    void anApostropheInACommentFieldIsNotAQuote() {
+        assertThat(JclLineReader
+          .readLines(
+            """
+              //STEP1    EXEC PGM=IEFBR14  DON'T RUN THIS
+              //STEP2    EXEC PGM=IEFBR14
+              """))
+          .isEqualTo(
+            """
+              ^^JCL_STATEMENT^^//STEP1    EXEC PGM=IEFBR14  DON'T RUN THIS
+              ^^JCL_STATEMENT^^//STEP2    EXEC PGM=IEFBR14
+              """);
+    }
+
+    /**
+     * A literal still open at column 72 and closed after it is the operand, not a comment area: the
+     * line was never held to 72 columns, and cutting it there would leave the quote unclosed.
+     */
+    @Test
+    void aLiteralClosedPastColumn72IsNotACommentArea() {
+        String card = "//${instance-UKO_SERVER_STC_NAME} PROC PARMS='${instance-UKO_SERVER_STC_NAME}'";
+        assertThat(card.length()).isGreaterThan(72);
+        assertThat(JclLineReader.readLines(card)).isEqualTo("^^JCL_STATEMENT^^" + card);
+    }
+
+    @Test
+    void isJcl() {
+        assertThat(JclLineReader.isJcl("//IBMUSERK  JOB ACCT#,\n// CLASS=A\n")).isTrue();
+        assertThat(JclLineReader.isJcl("//* a comment first\n//S1 EXEC PGM=X\n")).isTrue();
+        assertThat(JclLineReader.isJcl("//JOBCARD\n//S1 EXEC PGM=X\n")).isTrue();
+        assertThat(JclLineReader.isJcl("\n//    SET HLQ='IBMUSER'\n")).isTrue();
+        assertThat(JclLineReader.isJcl("/* REXX */\nsay 'hello'\n")).isFalse();
+        assertThat(JclLineReader.isJcl("// A C++ comment\nint main() {}\n")).isFalse();
+        assertThat(JclLineReader.isJcl("* CICS SIT overrides\nSIT=6$,\n")).isFalse();
+        assertThat(JclLineReader.isJcl("")).isFalse();
     }
 }

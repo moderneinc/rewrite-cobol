@@ -20,12 +20,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.openrewrite.InMemoryExecutionContext;
 import org.openrewrite.ParseExceptionResult;
+import org.openrewrite.Parser;
 import org.openrewrite.SourceFile;
 import org.openrewrite.cobol.Corpus;
 import org.openrewrite.jcl.JclParser;
 import org.openrewrite.jcl.tree.Jcl;
 import org.openrewrite.jcl.tree.Statement;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,6 +38,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -77,8 +80,11 @@ class JclCorpusTest {
                 members++;
                 String name = corpus.relativize(member).toString();
                 String source = new String(Files.readAllBytes(member));
+                // Parsed by path rather than from the string: a member named .jcl that holds no JCL
+                // is refused by name, and a string has no name.
                 List<SourceFile> parsed = JclParser.builder().build()
-                        .parse(new InMemoryExecutionContext(), source)
+                        .parseInputs(singletonList(new Parser.Input(member, () -> new ByteArrayInputStream(source.getBytes()))),
+                                corpus, new InMemoryExecutionContext())
                         .collect(Collectors.toList());
                 if (parsed.isEmpty() || !(parsed.get(0) instanceof Jcl.CompilationUnit)) {
                     notRead.add(name + ": " + cause(parsed));
