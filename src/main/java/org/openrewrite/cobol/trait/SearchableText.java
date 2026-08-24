@@ -22,15 +22,11 @@ import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
 import org.openrewrite.Tree;
 import org.openrewrite.TreeVisitor;
-import org.openrewrite.cobol.CobolIsoVisitor;
-import org.openrewrite.cobol.CobolPreprocessorVisitor;
 import org.openrewrite.cobol.SourcePositions;
-import org.openrewrite.cobol.marker.CopiedStatement;
 import org.openrewrite.cobol.marker.CopiedWord;
 import org.openrewrite.cobol.marker.ElidedExec;
 import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.CobolLine;
-import org.openrewrite.cobol.tree.CobolPreprocessor;
 import org.openrewrite.cobol.tree.ColumnArea;
 import org.openrewrite.cobol.tree.CommentArea;
 import org.openrewrite.marker.Range;
@@ -357,51 +353,14 @@ public class SearchableText implements Trait<Cobol.Word> {
                    !word.getMarkers().findFirst(ElidedExec.class).isPresent();
         }
 
-        /**
-         * The words of an {@code EXEC} block are reached by the preprocessor's visitor re-entering the
-         * COBOL one rather than by descending the tree, so the visitor has to be a COBOL visitor for
-         * a block's words to be seen at all.
-         */
         @Override
         public <P> TreeVisitor<? extends Tree, P> asVisitor(VisitFunction2<SearchableText, P> visitor) {
-            return new CobolIsoVisitor<P>() {
+            return new CopybookSkippingVisitor<P>() {
                 @Override
                 public Cobol.Word visitWord(Cobol.Word word, P p) {
                     Cobol.Word visited = super.visitWord(word, p);
                     SearchableText text = test(new Cursor(getCursor().getParentOrThrow(), visited));
                     return text == null ? visited : (Cobol.Word) visitor.visit(text, p);
-                }
-
-                /**
-                 * What a copybook holds is the copybook's text, and a copy statement written inside one
-                 * prints nowhere in this program; neither is descended into, the way the printer skips
-                 * them.
-                 */
-                @Override
-                protected CobolPreprocessorVisitor<P> getCobolPreprocessorVisitor() {
-                    if (cobolPreprocessorVisitor == null) {
-                        cobolPreprocessorVisitor = new CobolPreprocessorVisitor<P>(this) {
-                            @Override
-                            public CobolPreprocessor visitCopybook(CobolPreprocessor.Copybook copybook, P p) {
-                                return copybook;
-                            }
-
-                            @Override
-                            public CobolPreprocessor visitCopyStatement(CobolPreprocessor.CopyStatement copy, P p) {
-                                return isCopied(copy) ? copy : super.visitCopyStatement(copy, p);
-                            }
-
-                            @Override
-                            public CobolPreprocessor visitExecSqlIncludeStatement(CobolPreprocessor.ExecSqlIncludeStatement include, P p) {
-                                return isCopied(include) ? include : super.visitExecSqlIncludeStatement(include, p);
-                            }
-
-                            private boolean isCopied(CobolPreprocessor statement) {
-                                return statement.getMarkers().findFirst(CopiedStatement.class).isPresent();
-                            }
-                        };
-                    }
-                    return cobolPreprocessorVisitor;
                 }
             };
         }

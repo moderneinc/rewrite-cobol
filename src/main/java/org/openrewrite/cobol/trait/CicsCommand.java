@@ -319,16 +319,9 @@ public class CicsCommand implements Trait<Cobol.Word> {
      * The words of an {@code EXEC} block body, flattened across continuation lines.
      */
     static List<String> tokens(CobolPreprocessor.ExecStatement exec) {
-        if (!(exec.getCobol() instanceof CobolPreprocessor.CharData)) {
-            return emptyList();
-        }
         List<String> tokens = new ArrayList<>();
-        for (CobolPreprocessor.CharDataLine line : ((CobolPreprocessor.CharData) exec.getCobol()).getCobols()) {
-            for (CobolPreprocessor word : line.getWords()) {
-                if (word instanceof CobolPreprocessor.Word) {
-                    tokens.add(((CobolPreprocessor.Word) word).getCobolWord().getWord());
-                }
-            }
+        for (Cobol.Word word : Execs.wordsOf(exec)) {
+            tokens.add(word.getWord());
         }
         return tokens;
     }

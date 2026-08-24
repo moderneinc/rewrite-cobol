@@ -20,9 +20,6 @@ import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
 import org.openrewrite.Tree;
 import org.openrewrite.TreeVisitor;
-import org.openrewrite.cobol.CobolIsoVisitor;
-import org.openrewrite.cobol.CobolPreprocessorIsoVisitor;
-import org.openrewrite.cobol.CobolPreprocessorVisitor;
 import org.openrewrite.cobol.marker.CopiedWord;
 import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
@@ -36,7 +33,6 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -249,7 +245,7 @@ public class DataName implements Trait<Cobol.Word> {
     }
 
     private List<Definition> candidates(Index index) {
-        List<Definition> named = index.byName.get(upper(getName()));
+        List<Definition> named = index.byName.get(Names.upperOf(getTree()));
         if (named == null) {
             return emptyList();
         }
@@ -327,10 +323,10 @@ public class DataName implements Trait<Cobol.Word> {
      */
     private static boolean isOperand(CobolPreprocessor.ExecStatement exec, Cobol.Word word) {
         List<CobolPreprocessor.Word> header = exec.getWords();
-        boolean sql = header.size() > 1 && upper(header.get(1).getCobolWord().getWord()).startsWith("SQL");
+        boolean sql = header.size() > 1 && header.get(1).getCobolWord().getWord().regionMatches(true, 0, "SQL", 0, 3);
         int depth = 0;
         String previous = "";
-        for (Cobol.Word each : wordsOf(exec)) {
+        for (Cobol.Word each : Execs.wordsOf(exec)) {
             if (each.getId().equals(word.getId())) {
                 return sql ? ":".equals(previous) : depth > 0;
             }
@@ -345,18 +341,6 @@ public class DataName implements Trait<Cobol.Word> {
         return false;
     }
 
-    private static List<Cobol.Word> wordsOf(CobolPreprocessor.ExecStatement exec) {
-        List<Cobol.Word> words = new ArrayList<>();
-        new CobolPreprocessorIsoVisitor<Integer>() {
-            @Override
-            public CobolPreprocessor.Word visitWord(CobolPreprocessor.Word word, Integer p) {
-                words.add(word.getCobolWord());
-                return word;
-            }
-        }.visit(exec.getCobol(), 0);
-        return words;
-    }
-
     private static boolean is(@Nullable Cobol node, @Nullable Cobol word) {
         return node != null && word != null && node.getId().equals(word.getId());
     }
@@ -368,10 +352,6 @@ public class DataName implements Trait<Cobol.Word> {
             }
         }
         return false;
-    }
-
-    private static String upper(String name) {
-        return name.toUpperCase(Locale.ROOT);
     }
 
     @Value
@@ -388,8 +368,8 @@ public class DataName implements Trait<Cobol.Word> {
         @Nullable
         Definition parent;
 
-        String getName() {
-            return word == null ? "" : upper(((Cobol.Word) word.getValue()).getWord());
+        @Nullable String getName() {
+            return word == null ? null : Names.upperOf(word.getValue());
         }
 
         @Nullable Definition namedParent() {
@@ -437,7 +417,7 @@ public class DataName implements Trait<Cobol.Word> {
         static Index of(Cursor program) {
             Index index = new Index();
             List<Cursor> usages = new ArrayList<>();
-            new CobolIsoVisitor<Deque<Definition>>() {
+            new CopybookSkippingVisitor<Deque<Definition>>() {
                 @Override
                 public Cobol.ProgramUnit visitProgramUnit(Cobol.ProgramUnit unit, Deque<Definition> open) {
                     // A nested program's names are its own, indexed from its own cursor.
@@ -460,20 +440,6 @@ public class DataName implements Trait<Cobol.Word> {
                         usages.add(at);
                     }
                     return visited;
-                }
-
-                @Override
-                protected CobolPreprocessorVisitor<Deque<Definition>> getCobolPreprocessorVisitor() {
-                    if (cobolPreprocessorVisitor == null) {
-                        cobolPreprocessorVisitor = new CobolPreprocessorVisitor<Deque<Definition>>(this) {
-                            @Override
-                            public CobolPreprocessor visitCopybook(CobolPreprocessor.Copybook copybook,
-                                                                   Deque<Definition> open) {
-                                return copybook;
-                            }
-                        };
-                    }
-                    return cobolPreprocessorVisitor;
                 }
             }.visit(program.getValue(), new ArrayDeque<>(), program.getParentOrThrow());
 
@@ -526,7 +492,7 @@ public class DataName implements Trait<Cobol.Word> {
             }
             if (named) {
                 byWord.put(name.getId(), definition);
-                byName.computeIfAbsent(upper(name.getWord()), k -> new ArrayList<>(1)).add(definition);
+                byName.computeIfAbsent(Names.upperOf(name), k -> new ArrayList<>(1)).add(definition);
             }
         }
 
@@ -558,33 +524,14 @@ public class DataName implements Trait<Cobol.Word> {
                    usage.candidates(usage.index()).isEmpty() ? null : usage;
         }
 
-        /**
-         * The words of an {@code EXEC} block are reached by the preprocessor's visitor re-entering
-         * the COBOL one, so this has to be a COBOL visitor for them to be seen. A copybook's words
-         * are in the tree already, marked as copied; through the copy statement they would be
-         * reached a second time.
-         */
         @Override
         public <P> TreeVisitor<? extends Tree, P> asVisitor(VisitFunction2<DataName, P> visitor) {
-            return new CobolIsoVisitor<P>() {
+            return new CopybookSkippingVisitor<P>() {
                 @Override
                 public Cobol.Word visitWord(Cobol.Word word, P p) {
                     Cobol.Word visited = super.visitWord(word, p);
                     DataName name = test(new Cursor(getCursor().getParentOrThrow(), visited));
                     return name == null ? visited : (Cobol.Word) visitor.visit(name, p);
-                }
-
-                @Override
-                protected CobolPreprocessorVisitor<P> getCobolPreprocessorVisitor() {
-                    if (cobolPreprocessorVisitor == null) {
-                        cobolPreprocessorVisitor = new CobolPreprocessorVisitor<P>(this) {
-                            @Override
-                            public CobolPreprocessor visitCopybook(CobolPreprocessor.Copybook copybook, P p) {
-                                return copybook;
-                            }
-                        };
-                    }
-                    return cobolPreprocessorVisitor;
                 }
             };
         }
