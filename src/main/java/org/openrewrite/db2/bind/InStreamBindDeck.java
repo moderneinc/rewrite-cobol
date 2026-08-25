@@ -16,10 +16,8 @@
 package org.openrewrite.db2.bind;
 
 import lombok.Value;
-import org.openrewrite.Cursor;
-import org.openrewrite.PrintOutputCapture;
+import org.openrewrite.controlcard.InStreamCards;
 import org.openrewrite.db2.bind.tree.Bind;
-import org.openrewrite.jcl.internal.JclPrinter;
 import org.openrewrite.jcl.tree.Jcl;
 
 import java.util.ArrayList;
@@ -52,70 +50,15 @@ public class InStreamBindDeck {
     Bind.CompilationUnit deck;
 
     public static List<InStreamBindDeck> of(Jcl.CompilationUnit cu) {
-        List<String> ddNames = new ArrayList<>();
-        List<int[]> spans = new ArrayList<>();
-
-        PrintOutputCapture<Integer> out = new PrintOutputCapture<>(0);
-        new JclPrinter<Integer>() {
-            int stream = -1;
-
-            @Override
-            public Jcl visitJobControlStatement(Jcl.JobControlStatement statement, PrintOutputCapture<Integer> p) {
-                Jcl printed = super.visitJobControlStatement(statement, p);
-                if (isSystsin(statement)) {
-                    ddNames.add(statement.getSimpleName());
-                    spans.add(new int[]{p.out.length(), p.out.length()});
-                    stream = spans.size() - 1;
-                } else {
-                    stream = -1;
-                }
-                return printed;
-            }
-
-            @Override
-            public Jcl visitDataDefinitionStream(Jcl.DataDefinitionStream ddStream, PrintOutputCapture<Integer> p) {
-                Jcl printed = super.visitDataDefinitionStream(ddStream, p);
-                if (stream >= 0) {
-                    spans.get(stream)[1] = p.out.length();
-                }
-                return printed;
-            }
-        }.visit(cu, out, new Cursor(null, Cursor.ROOT_VALUE));
-
-        String job = out.getOut();
-        List<InStreamBindDeck> decks = new ArrayList<>(ddNames.size());
-        for (int i = 0; i < ddNames.size(); i++) {
-            int start = spans.get(i)[0];
-            int end = spans.get(i)[1];
-            while (start < end && (job.charAt(start) == '\n' || job.charAt(start) == '\r')) {
-                start++;
-            }
-            String source = job.substring(start, end);
-            // A DD naming an external member prints nothing — grafted content is not the job's own
-            // source — so it leaves an empty run here and is read as the deck it is instead.
-            if (BindLineReader.isBindDeck(source)) {
-                decks.add(new InStreamBindDeck(ddNames.get(i), lineOf(job, start),
-                        BindParser.parse(cu.getSourcePath(), source)));
+        List<InStreamBindDeck> decks = new ArrayList<>();
+        for (InStreamCards cards : InStreamCards.of(cu)) {
+            // A DD name reads without the procedure step an override names, so //BIND.SYSTSIN is the
+            // same DD as //SYSTSIN.
+            if ("SYSTSIN".equalsIgnoreCase(cards.getDdName()) && BindLineReader.isBindDeck(cards.getText())) {
+                decks.add(new InStreamBindDeck(cards.getDdName(), cards.getLine(),
+                        BindParser.parse(cu.getSourcePath(), cards.getText())));
             }
         }
         return decks;
-    }
-
-    /**
-     * {@code getSimpleName} drops the procedure step an override names, so {@code //BIND.SYSTSIN}
-     * reads the same as {@code //SYSTSIN}.
-     */
-    private static boolean isSystsin(Jcl.JobControlStatement dd) {
-        return dd.isOperation("DD") && "SYSTSIN".equalsIgnoreCase(dd.getSimpleName());
-    }
-
-    private static int lineOf(String text, int offset) {
-        int line = 1;
-        for (int i = 0; i < offset; i++) {
-            if (text.charAt(i) == '\n') {
-                line++;
-            }
-        }
-        return line;
     }
 }

@@ -27,6 +27,7 @@ import org.openrewrite.InMemoryExecutionContext;
 import org.openrewrite.Parser;
 import org.openrewrite.SourceFile;
 import org.openrewrite.cobol.WrongLanguageException;
+import org.openrewrite.controlcard.ControlCards;
 import org.openrewrite.db2.bind.internal.BindParserVisitor;
 import org.openrewrite.db2.bind.internal.grammar.BindLexer;
 import org.openrewrite.db2.bind.tree.Bind;
@@ -36,8 +37,6 @@ import org.openrewrite.tree.ParseError;
 import org.openrewrite.tree.ParsingEventListener;
 import org.openrewrite.tree.ParsingExecutionContextView;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -128,17 +127,8 @@ public class BindParser implements Parser {
         }
         // A CARDLIB member is a PDS member, so it reaches a repository with no extension at all and
         // is known by nothing but its first subcommand.
-        return name.indexOf('.') < 0 && Files.isRegularFile(path) && BindLineReader.isBindDeck(head(path));
-    }
-
-    private static String head(Path path) {
-        try (InputStream in = Files.newInputStream(path)) {
-            byte[] bytes = new byte[4096];
-            int read = in.read(bytes);
-            return read < 0 ? "" : new String(bytes, 0, read, StandardCharsets.ISO_8859_1);
-        } catch (IOException e) {
-            return "";
-        }
+        return name.indexOf('.') < 0 && Files.isRegularFile(path) &&
+               BindLineReader.isBindDeck(ControlCards.head(path));
     }
 
     @Override

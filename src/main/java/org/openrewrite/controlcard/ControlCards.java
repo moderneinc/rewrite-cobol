@@ -56,7 +56,7 @@ public final class ControlCards {
      * The opening cards of a member. A deck is typed by its first statement, so there is no reason to
      * read further, and a control card library holds members big enough that it matters.
      */
-    private static String head(Path path) {
+    public static String head(Path path) {
         try (InputStream in = Files.newInputStream(path)) {
             byte[] bytes = new byte[4096];
             int read = in.read(bytes);
