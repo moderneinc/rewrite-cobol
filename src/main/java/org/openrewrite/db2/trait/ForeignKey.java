@@ -23,7 +23,6 @@ import org.openrewrite.trait.SimpleTraitMatcher;
 import org.openrewrite.trait.Trait;
 
 import java.util.List;
-import java.util.Locale;
 
 /**
  * One table pointing at another — the edge the relationship graph draws between two tables without
@@ -63,11 +62,6 @@ public class ForeignKey implements Trait<Db2.Constraint> {
         return Constraints.columnNames(getTree().getReferencedColumns());
     }
 
-    /**
-     * {@code RESTRICT}, {@code CASCADE}, {@code SET NULL} or {@code NO ACTION} — what DB2 does to
-     * this table's rows when a referenced row goes away. Null when the DDL leaves it to the default
-     * of {@code NO ACTION}.
-     */
     /**
      * {@code RESTRICT}, {@code CASCADE}, {@code SET NULL} or {@code NO ACTION} — what DB2 does to
      * this table's rows when a referenced row goes away. Null when the DDL leaves it to the default

@@ -153,12 +153,16 @@ did parse prints back byte-identical to the input, which is the property recipes
 independent count of the source. A map set that groups its continuation lines wrongly still prints
 back perfectly — it just says something else — so printing alone would not catch it.
 
-`Db2CorpusTest` does the same for the schema, over both places DDL is written: 97 files of DDL and
+`Db2CorpusTest` does the same for the schema, over both places DDL is written: 48 files of DDL and
 the 23 `SYSIN` streams the corpus's jobs submit. It reads 22 tables, 192 columns, 31 indexes and
 9 foreign keys, and counts each `CREATE TABLE`, `CREATE INDEX` and `PRIMARY KEY` it read against an
-independent count of the source. It also names the members it holds out — a Postgres port of one
-schema, a file that sets its own statement terminator, and members whose banner comment is damaged —
-and asserts how many there are, so that set cannot grow without someone saying why.
+independent count of the source. The fixture is required to read where the rest is reported: its
+`ddl/` members, its four catalog query decks and the index `CLMJ004` creates in-stream are checked
+object by object against INTERLINKS sections 15 and 16, which is where the 2 tables, 18 columns,
+2 primary keys, 1 foreign key and 5 indexes are written down. It also names the members it holds
+out — a Postgres port of one schema, a file that sets its own statement terminator, and members
+whose banner comment is damaged — and asserts how many there are, so that set cannot grow without
+someone saying why.
 `BindCorpusTest` does the same for bind cards, over the fixture's ten `CARDLIB` decks and the eleven
 decks the corpus writes in-stream, counting every `BIND` and `REBIND` it read against a line scan of
 the source. It runs under `JCL_CORPUS`: a bind deck is reached through the jobs that run it.

@@ -24,7 +24,6 @@ import org.openrewrite.trait.Trait;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * An index, which is how a batch job reaches a table cheaply and so which columns a query is
