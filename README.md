@@ -183,6 +183,12 @@ the corpus writes in-stream, and requires that no member is claimed by both pars
 the fixture's `ctlcard` library member by member against INTERLINKS section 8.3, which is where the
 six IDCAMS members, the two sort members and the eleven that are neither are written down.
 
+`SourcePositionsCorpusTest` reads every JCL position back out of the source, since a position landing
+anywhere but on the word it names is worse than no position at all. Over the 545 members it reads
+199,046 words back and compares each to the text at the offset reported for it, and requires every one
+of the 100,000 statements to be placed: 78,621 in the member they were written in, and the 21,379 a
+procedure or INCLUDE member wrote against the `EXEC` or `INCLUDE` card that brought them in.
+
 ## Contributing
 
 We appreciate all types of contributions. See the [contributing guide](https://github.com/openrewrite/.github/blob/main/CONTRIBUTING.md) for detailed instructions on how to get started.

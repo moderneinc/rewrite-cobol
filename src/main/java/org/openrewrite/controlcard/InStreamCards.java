@@ -16,10 +16,10 @@
 package org.openrewrite.controlcard;
 
 import lombok.Value;
-import org.openrewrite.Cursor;
-import org.openrewrite.PrintOutputCapture;
-import org.openrewrite.jcl.internal.JclPrinter;
+import org.openrewrite.jcl.SourcePositions;
 import org.openrewrite.jcl.tree.Jcl;
+import org.openrewrite.jcl.tree.Statement;
+import org.openrewrite.marker.Range;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,60 +53,36 @@ public class InStreamCards {
     String text;
 
     public static List<InStreamCards> of(Jcl.CompilationUnit cu) {
-        List<String> ddNames = new ArrayList<>();
-        List<int[]> spans = new ArrayList<>();
-
-        PrintOutputCapture<Integer> out = new PrintOutputCapture<>(0);
-        new JclPrinter<Integer>() {
-            int stream = -1;
-
-            @Override
-            public Jcl visitJobControlStatement(Jcl.JobControlStatement statement, PrintOutputCapture<Integer> p) {
-                Jcl printed = super.visitJobControlStatement(statement, p);
-                if (statement.isOperation("DD")) {
-                    ddNames.add(statement.getSimpleName());
-                    spans.add(new int[]{p.out.length(), p.out.length()});
-                    stream = spans.size() - 1;
-                } else {
-                    stream = -1;
+        SourcePositions positions = SourcePositions.of(cu);
+        List<Statement> statements = cu.getStatements();
+        List<InStreamCards> decks = new ArrayList<>();
+        for (int i = 0; i < statements.size(); i++) {
+            if (!(statements.get(i) instanceof Jcl.JobControlStatement) ||
+                !((Jcl.JobControlStatement) statements.get(i)).isOperation("DD")) {
+                continue;
+            }
+            int start = -1;
+            int end = -1;
+            int line = 0;
+            for (int j = i + 1; j < statements.size() &&
+                                !(statements.get(j) instanceof Jcl.JobControlStatement); j++) {
+                // Whole cards rather than words: a control card means something different in another
+                // column. Content grafted in from an external member is not the job's own and has none.
+                Range card = statements.get(j) instanceof Jcl.DataDefinitionStream ?
+                        positions.card(statements.get(j)) : null;
+                if (card != null) {
+                    if (start < 0) {
+                        start = card.getStart().getOffset();
+                        line = card.getStart().getLine();
+                    }
+                    end = card.getEnd().getOffset();
                 }
-                return printed;
             }
-
-            @Override
-            public Jcl visitDataDefinitionStream(Jcl.DataDefinitionStream ddStream, PrintOutputCapture<Integer> p) {
-                Jcl printed = super.visitDataDefinitionStream(ddStream, p);
-                if (stream >= 0) {
-                    spans.get(stream)[1] = p.out.length();
-                }
-                return printed;
-            }
-        }.visit(cu, out, new Cursor(null, Cursor.ROOT_VALUE));
-
-        String job = out.getOut();
-        List<InStreamCards> decks = new ArrayList<>(ddNames.size());
-        for (int i = 0; i < ddNames.size(); i++) {
-            int start = spans.get(i)[0];
-            int end = spans.get(i)[1];
-            while (start < end && (job.charAt(start) == '\n' || job.charAt(start) == '\r')) {
-                start++;
-            }
-            // A DD with no in-stream data leaves an empty run here, as does one naming an external
-            // member: grafted content is not the job's own source and prints nothing.
-            if (start < end) {
-                decks.add(new InStreamCards(ddNames.get(i), lineOf(job, start), job.substring(start, end)));
+            if (start >= 0) {
+                decks.add(new InStreamCards(((Jcl.JobControlStatement) statements.get(i)).getSimpleName(),
+                        line, positions.getSource().substring(start, end)));
             }
         }
         return decks;
-    }
-
-    private static int lineOf(String text, int offset) {
-        int line = 1;
-        for (int i = 0; i < offset; i++) {
-            if (text.charAt(i) == '\n') {
-                line++;
-            }
-        }
-        return line;
     }
 }

@@ -155,9 +155,18 @@ public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
     @Override
     public Jcl visitWord(Jcl.Word word, PrintOutputCapture<P> p) {
         beforeSyntax(word, Space.Location.WORD_PREFIX, p);
+        int start = p.out.length();
         p.append(word.getText());
+        wordPrinted(word, start, p.out.length());
         afterSyntax(word, p);
         return word;
+    }
+
+    /**
+     * Where a word's characters landed in the output, for a printer measuring the source rather than
+     * producing it.
+     */
+    public void wordPrinted(Jcl.Word word, int start, int end) {
     }
 
     @Override
