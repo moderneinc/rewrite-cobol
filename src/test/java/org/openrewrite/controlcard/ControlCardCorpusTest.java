@@ -150,8 +150,11 @@ class ControlCardCorpusTest {
 
         int decks = 0;
         int inStream = 0;
+        boolean applications = false;
         for (Path repository : Corpus.repositories(corpus)) {
-            for (Path job : Corpus.jobs(repository)) {
+            List<Path> jobs = Corpus.jobs(repository);
+            applications |= !jobs.isEmpty() && !Corpus.isFixture(repository);
+            for (Path job : jobs) {
                 String name = corpus.relativize(job).toString();
                 Jcl.CompilationUnit cu = parseJob(job, new String(Files.readAllBytes(job)));
                 if (cu == null) {
@@ -194,9 +197,12 @@ class ControlCardCorpusTest {
         assertThat(failures).isEmpty();
         assertThat(statements).isGreaterThanOrEqualTo(written);
         assertThat(fixtureFound).as("mainframe-fixtures under %s", corpus).isTrue();
-        // A shop that keeps its cards in a library also writes them in the odd job, so a corpus
-        // reporting none of one shape means that shape is not being found at all.
-        assertThat(decks).isPositive();
+        // A shop that keeps its cards in a library also writes them in the odd job, so real
+        // applications reporting none of one shape mean that shape is not being found at all.
+        // CLAIMS writes every card as a member, so a root holding the fixture alone has none.
+        if (applications) {
+            assertThat(decks).isPositive();
+        }
     }
 
     /**

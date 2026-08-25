@@ -112,8 +112,11 @@ class BindCorpusTest {
 
         int inStream = 0;
         int inStreamCommands = 0;
+        boolean applications = false;
         for (Path repository : Corpus.repositories(corpus)) {
-            for (Path job : Corpus.jobs(repository)) {
+            List<Path> jobs = Corpus.jobs(repository);
+            applications |= !jobs.isEmpty() && !Corpus.isFixture(repository);
+            for (Path job : jobs) {
                 String name = corpus.relativize(job).toString();
                 String source = new String(Files.readAllBytes(job));
                 Jcl.CompilationUnit cu = parseJob(job, source);
@@ -147,9 +150,12 @@ class BindCorpusTest {
         assertThat(failures).isEmpty();
         assertThat(commands).isEqualTo(written);
         assertThat(fixtureFound).as("mainframe-fixtures under %s", corpus).isTrue();
-        // A shop that keeps its decks in a library also writes them in the odd job, so a corpus
-        // reporting none of one shape means that shape is not being found at all.
-        assertThat(inStream).isPositive();
+        // A shop that keeps its decks in a library also writes them in the odd job, so real
+        // applications reporting none of one shape mean that shape is not being found at all.
+        // CLAIMS writes every deck as a member, so a root holding the fixture alone has none.
+        if (applications) {
+            assertThat(inStream).isPositive();
+        }
     }
 
     /**
