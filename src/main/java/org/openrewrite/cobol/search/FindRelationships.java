@@ -558,7 +558,7 @@ public class FindRelationships extends Recipe {
                 return line.withWords(ListUtils.map(line.getWords(), (j, w) -> {
                     if (w instanceof CobolPreprocessor.Word) {
                         CobolPreprocessor.Word word = (CobolPreprocessor.Word) w;
-                                                // TODO: include condition is for backwards compatibility and may be removed after new LSTs are generated.
+                        // TODO: include condition is for backwards compatibility and may be removed after new LSTs are generated.
                         if ("include".equalsIgnoreCase(word.getCobolWord().getWord()) &&
                                 j == 0 && 2 <= line.getWords().size() && line.getWords().get(1) instanceof CobolPreprocessor.Word) {
                             String copybookName = ((CobolPreprocessor.Word) line.getWords().get(1)).getCobolWord().getWord();

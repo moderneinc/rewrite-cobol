@@ -55,8 +55,7 @@ public class ScheduledJob implements Trait<ControlM> {
      * and it is null for a SMART table, which runs the jobs under it rather than a member of its own.
      */
     public @Nullable String getMemberName() {
-        ControlM.Element element = element();
-        return element == null ? Schedules.panelValue(definition(), "MEMNAME") : element.getAttributeText("MEMNAME");
+        return value("MEMNAME", "MEMNAME");
     }
 
     /**
@@ -65,13 +64,11 @@ public class ScheduledJob implements Trait<ControlM> {
      * wrong job to the wrong JCL.
      */
     public @Nullable String getLibrary() {
-        ControlM.Element element = element();
-        return element == null ? Schedules.panelValue(definition(), "MEMLIB") : element.getAttributeText("MEMLIB");
+        return value("MEMLIB", "MEMLIB");
     }
 
     public @Nullable String getApplication() {
-        ControlM.Element element = element();
-        return element == null ? Schedules.panelValue(definition(), "APPL") : element.getAttributeText("APPLICATION");
+        return value("APPLICATION", "APPL");
     }
 
     /**
@@ -103,8 +100,7 @@ public class ScheduledJob implements Trait<ControlM> {
      * JES, {@code SMART Table} for a table, and a dozen others for the work Control-M does itself.
      */
     public @Nullable String getTaskType() {
-        ControlM.Element element = element();
-        return element == null ? Schedules.panelValue(definition(), "TASKTYPE") : element.getAttributeText("TASKTYPE");
+        return value("TASKTYPE", "TASKTYPE");
     }
 
     /**
@@ -123,8 +119,7 @@ public class ScheduledJob implements Trait<ControlM> {
      * The user the job runs under, from {@code RUN_AS} or the panel's {@code OWNER}.
      */
     public @Nullable String getOwner() {
-        ControlM.Element element = element();
-        return element == null ? Schedules.panelValue(definition(), "OWNER") : element.getAttributeText("RUN_AS");
+        return value("RUN_AS", "OWNER");
     }
 
     public @Nullable String getDescription() {
@@ -228,6 +223,15 @@ public class ScheduledJob implements Trait<ControlM> {
      */
     public @Nullable GroupMembership getGroupMembership() {
         return new GroupMembership.Matcher().get(cursor).orElse(null);
+    }
+
+    /**
+     * The same fact under the name each dialect writes it with: an attribute of the export's element,
+     * or a field of the panel's definition section.
+     */
+    private @Nullable String value(String attribute, String panelField) {
+        ControlM.Element element = element();
+        return element == null ? Schedules.panelValue(definition(), panelField) : element.getAttributeText(attribute);
     }
 
     private ControlM.@Nullable Element element() {

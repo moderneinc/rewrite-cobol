@@ -23,6 +23,7 @@ import org.openrewrite.trait.SimpleTraitMatcher;
 import org.openrewrite.trait.Trait;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A job naming a calendar its scheduling days are read against.
@@ -70,7 +71,7 @@ public class CalendarReference implements Trait<ControlM> {
     }
 
     private static @Nullable Kind kindOf(String field) {
-        switch (field.toUpperCase()) {
+        switch (field.toUpperCase(Locale.ROOT)) {
             case "CONFCAL":
                 return Kind.CONFIRMATION;
             case "DAYSCAL":

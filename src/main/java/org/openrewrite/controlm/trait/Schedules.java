@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -140,7 +141,7 @@ public final class Schedules {
      * Whether a word of the panel's schedule section names a field rather than a value.
      */
     static boolean isScheduleField(String word) {
-        return SCHEDULE_FIELDS.contains(word.toUpperCase());
+        return SCHEDULE_FIELDS.contains(word.toUpperCase(Locale.ROOT));
     }
 
     /**
