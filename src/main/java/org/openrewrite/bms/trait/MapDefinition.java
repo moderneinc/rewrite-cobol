@@ -54,6 +54,19 @@ public class MapDefinition implements Trait<Bms.MacroStatement> {
     }
 
     /**
+     * How many columns wide the map is: its own {@code SIZE}, or the page width of the device the
+     * mapset is written for when it declares none. A scalar {@code POS=n} counts against this.
+     */
+    public int getWidth() {
+        Integer columns = getColumns();
+        if (columns != null && columns > 0) {
+            return columns;
+        }
+        Mapset mapset = getMapset();
+        return mapset == null ? Mapset.PAGE_COLUMNS : mapset.getPageColumns();
+    }
+
+    /**
      * Where the map begins on the screen, from {@code LINE=}. Absent on a map that fills the screen.
      */
     public @Nullable Integer getLine() {

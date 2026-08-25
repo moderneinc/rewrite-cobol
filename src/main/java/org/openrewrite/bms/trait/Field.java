@@ -108,8 +108,14 @@ public class Field implements Trait<Bms.MacroStatement> {
         return name.isEmpty() ? null : name;
     }
 
+    /**
+     * Where the field starts, from {@code POS}. The scalar form is a displacement from the start of
+     * the map, so it is decoded against the width of the map the field is written under.
+     */
     public @Nullable Position getPosition() {
-        return Position.of(Operands.textOf(getTree(), "POS"));
+        MapDefinition map = getMap();
+        return Position.of(Operands.textOf(getTree(), "POS"),
+                map == null ? Mapset.PAGE_COLUMNS : map.getWidth());
     }
 
     /**

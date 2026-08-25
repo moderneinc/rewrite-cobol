@@ -19,7 +19,7 @@ import lombok.Value;
 import org.jspecify.annotations.Nullable;
 
 /**
- * Where a field sits on the screen, one-based, as {@code POS} writes it.
+ * Where a field sits on the screen, counted from one.
  */
 @Value
 public class Position {
@@ -28,17 +28,19 @@ public class Position {
     int column;
 
     /**
-     * Reads {@code (line,column)}. The scalar form {@code POS=n} — an offset from the start of the
-     * map — is not read here, because turning it into a line and column needs the map's own width
-     * and this is a value, not a lookup. Null for anything else.
+     * Reads {@code POS} in either form BMS writes it: {@code (line,column)} counted from one, or the
+     * scalar {@code n}, a displacement from the start of the map counted from zero, which becomes a
+     * line and a column only against {@code width}. Null for anything else.
      */
-    static @Nullable Position of(@Nullable String text) {
+    static @Nullable Position of(@Nullable String text, int width) {
         if (text == null) {
             return null;
         }
         String trimmed = text.trim();
         if (!trimmed.startsWith("(") || !trimmed.endsWith(")")) {
-            return null;
+            Integer offset = Operands.integerOf(trimmed);
+            return offset == null || offset < 0 || width <= 0 ? null :
+                    new Position(offset / width + 1, offset % width + 1);
         }
         String[] parts = trimmed.substring(1, trimmed.length() - 1).split(",", -1);
         if (parts.length != 2) {

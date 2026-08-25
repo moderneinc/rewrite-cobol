@@ -29,6 +29,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -45,6 +47,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @EnabledIfEnvironmentVariable(named = "BMS_CORPUS", matches = ".+")
 class BmsCorpusTest {
 
+    private static final Pattern SCALAR_POSITION = Pattern.compile("POS=\\d", Pattern.CASE_INSENSITIVE);
+
     @Test
     void readsRealMapsets() throws IOException {
         Path corpus = Paths.get(System.getenv("BMS_CORPUS"));
@@ -56,7 +60,9 @@ class BmsCorpusTest {
         int named = 0;
         int inputs = 0;
         int positioned = 0;
+        int scalar = 0;
         int written = 0;
+        int writtenScalar = 0;
         List<String> failures = new ArrayList<>();
         boolean fixtureFound = false;
 
@@ -101,6 +107,7 @@ class BmsCorpusTest {
                         written += inSource;
                     }
                 }
+                writtenScalar += countScalarPositions(source);
 
                 // An operand read as an operation is what a mishandled continuation looks like, and
                 // it is silent: the statement still prints back, it just says something else.
@@ -131,6 +138,9 @@ class BmsCorpusTest {
                             if (field.getPosition() != null) {
                                 positioned++;
                             }
+                            if (isScalarPosition(field)) {
+                                scalar++;
+                            }
                         }
                     }
                 }
@@ -140,8 +150,8 @@ class BmsCorpusTest {
         assertThat(members).as("no .bms found under %s", corpus).isPositive();
 
         System.out.printf("BMS corpus: %d files, %d mapsets, %d maps, %d fields " +
-                        "(%d named, %d input, %d positioned)%n",
-                members, mapsets, maps, fields, named, inputs, positioned);
+                        "(%d named, %d input, %d positioned, %d of them by offset)%n",
+                members, mapsets, maps, fields, named, inputs, positioned, scalar);
         if (!failures.isEmpty()) {
             System.out.println("failures:");
             failures.forEach(f -> System.out.println("  " + f));
@@ -163,9 +173,32 @@ class BmsCorpusTest {
         // read, not one the screen leaves unplaced.
         assertThat(positioned).isEqualTo(fields);
 
+        // A scalar POS is one number and reads as a position either way, so counting the ones the
+        // source writes is the only thing that says the offset form was decoded rather than skipped.
+        assertThat(scalar).as("fields positioned by offset").isEqualTo(writtenScalar);
+
         // A screen nobody can type into is a screen nobody uses, so a corpus of real applications
         // reporting no inputs would mean the attributes are not being read.
         assertThat(inputs).isPositive();
+    }
+
+    private static boolean isScalarPosition(Field field) {
+        Bms.KeywordOperand pos = field.getTree().getParameter("POS");
+        return pos != null && !pos.getValueText().trim().startsWith("(");
+    }
+
+    private static int countScalarPositions(String source) {
+        int count = 0;
+        for (String line : source.split("\n", -1)) {
+            if (line.startsWith("*")) {
+                continue;
+            }
+            Matcher matcher = SCALAR_POSITION.matcher(line);
+            while (matcher.find()) {
+                count++;
+            }
+        }
+        return count;
     }
 
     private static int countMacro(String source, String macro) {

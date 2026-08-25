@@ -36,10 +36,28 @@ import java.util.Locale;
 @Value
 public class Mapset implements Trait<Bms.MacroStatement> {
 
+    static final int PAGE_COLUMNS = 80;
+
     Cursor cursor;
 
     public String getName() {
         return getTree().getSimpleName();
+    }
+
+    /**
+     * The device the maps here are written for, from {@code TERM=}.
+     */
+    public @Nullable String getTerminal() {
+        return Operands.textOf(getTree(), "TERM");
+    }
+
+    /**
+     * How wide a page is on that device. A map that declares no {@code SIZE} is one page, so this is
+     * the width its fields are placed in. Only the model 1 display is narrower than 80 columns.
+     */
+    public int getPageColumns() {
+        String terminal = getTerminal();
+        return terminal != null && "3270-1".equalsIgnoreCase(terminal.trim()) ? 40 : PAGE_COLUMNS;
     }
 
     /**

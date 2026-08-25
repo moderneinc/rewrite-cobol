@@ -201,6 +201,72 @@ class FieldTest implements RewriteTest {
     }
 
     /**
+     * The other form of {@code POS}: one number, counted from zero, running along the map a row at a
+     * time. Nothing on the field says where that lands — only the map's width does.
+     */
+    @Test
+    void aScalarPosIsAnOffsetIntoTheMap() {
+        rewriteRun(
+          bms(
+            """
+              COSGN0A DFHMDI SIZE=(24,80)
+                      DFHMDF ATTRB=(ASKIP,NORM),LENGTH=6,POS=0,INITIAL='Tran :'
+              USERID  DFHMDF ATTRB=(UNPROT,FSET,NORM),LENGTH=8,POS=739
+              ERRMSG  DFHMDF ATTRB=(PROT,BRT),LENGTH=78,POS=1760
+              """,
+            spec -> spec.afterRecipe(cu -> {
+                List<Field> fields = new Field.Matcher().lower(cu).collect(Collectors.toList());
+                assertThat(fields).extracting(Field::getPosition)
+                  .containsExactly(new Position(1, 1), new Position(10, 20), new Position(23, 1));
+            })
+          )
+        );
+    }
+
+    /**
+     * The same number on a narrower map is somewhere else entirely, which is why this cannot be read
+     * off the field alone.
+     */
+    @Test
+    void theSameOffsetOnANarrowerMapIsADifferentPlace() {
+        rewriteRun(
+          bms(
+            """
+              COSGN0A DFHMDI SIZE=(12,40)
+              USERID  DFHMDF ATTRB=(UNPROT),LENGTH=8,POS=45
+              """,
+            spec -> spec.afterRecipe(cu -> {
+                Field field = new Field.Matcher().lower(cu).findFirst().orElseThrow();
+                assertThat(field.getPosition()).isEqualTo(new Position(2, 6));
+            })
+          )
+        );
+    }
+
+    /**
+     * A map that declares no {@code SIZE} is a page of whatever the mapset's device is, so that is
+     * the width the offset counts against.
+     */
+    @Test
+    void aMapWithoutASizeIsAPageOfTheMapsetsDevice() {
+        rewriteRun(
+          bms(
+            """
+              COSGN00 DFHMSD LANG=COBOL,MODE=INOUT,TERM=3270-1
+              COSGN0A DFHMDI CTRL=FREEKB
+              USERID  DFHMDF ATTRB=(UNPROT),LENGTH=8,POS=45
+                      DFHMSD TYPE=FINAL
+                      END
+              """,
+            spec -> spec.afterRecipe(cu -> {
+                Field field = new Field.Matcher().lower(cu).findFirst().orElseThrow();
+                assertThat(field.getPosition()).isEqualTo(new Position(2, 6));
+            })
+          )
+        );
+    }
+
+    /**
      * A password field is written by hiding what is typed, so this is how a report finds one.
      */
     @Test
