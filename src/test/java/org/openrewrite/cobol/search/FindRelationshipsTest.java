@@ -30,6 +30,8 @@ import static org.openrewrite.cobol.Assertions.copybook;
 import static org.openrewrite.cobol.table.CobolRelationships.ResourceAction.*;
 import static org.openrewrite.cobol.table.CobolRelationships.ResourceType.*;
 import static org.openrewrite.controlm.Assertions.controlM;
+import static org.openrewrite.db2.bind.Assertions.bind;
+import static org.openrewrite.jcl.Assertions.jcl;
 import static org.openrewrite.test.SourceSpecs.text;
 
 class FindRelationshipsTest extends CobolTest {
@@ -72,21 +74,29 @@ class FindRelationshipsTest extends CobolTest {
           """;
         rewriteRun(
           spec -> spec.dataTable(Row.class, rows -> {
-              assertThat(rows).extracting(Row::getDependent).contains("IC201A", "LINKEDIT1", "BINDCARDPACKAGE", "BINDCARDPLAN");
-              assertThat(rows).extracting(Row::getDependency).contains("IC202A", "IC201A", "LINKEDIT1");
-              assertThat(rows).extracting(Row::getDependencyType).contains(COBOL, COBOL, LINKEDIT);
-              assertThat(rows).extracting(Row::getAction).contains(CALL, INCLUDE, PLAN, MEMBER);
+              assertThat(rows).extracting(Row::getDependent).contains("IC201A", "BINDCARDPACKAGE", "BINDCARDPLAN");
+              assertThat(rows).extracting(Row::getDependency).contains("IC202A", "IC201A", "PROD0.*");
+              assertThat(rows).extracting(Row::getAction).contains(CALL, INCLUDE, DEFINES, BINDS);
               assertThat(rows).filteredOn(r -> r.getDependentType() == LINKEDIT).singleElement().satisfies(r -> {
                   assertThat(r.getDependentPath()).isEqualTo("linkeditcards/LINKEDIT1");
                   assertThat(lineAt(linkEdit, r.getDependentLine())).isEqualTo("INCLUDE OBJLIB(IC201A)    MODULE FOO");
               });
-              assertThat(rows).filteredOn(r -> r.getAction() == PLAN).singleElement().satisfies(r -> {
+              // The plan lists a collection rather than the packages in it, so what it reaches is a
+              // wildcard and not yet a program.
+              assertThat(rows).filteredOn(r -> r.getDependentType() == BINDPLAN).singleElement().satisfies(r -> {
+                  assertThat(r.getDependent()).isEqualTo("LINKEDIT1");
+                  assertThat(r.getDependency()).isEqualTo("PROD0.*");
+                  assertThat(r.getDependencyType()).isEqualTo(BINDPACKAGE);
                   assertThat(r.getDependentPath()).isEqualTo("bindcards/BINDCARDPLAN");
                   assertThat(lineAt(bindPlan, r.getDependentLine())).contains("BIND PLAN(LINKEDIT1)");
               });
-              assertThat(rows).filteredOn(r -> r.getAction() == MEMBER).singleElement().satisfies(r -> {
+              // DB2 names the package after the DBRM, and the DBRM after the program the precompile
+              // read, so this is the one edge that reaches the COBOL.
+              assertThat(rows).filteredOn(r -> r.getDependencyType() == DBRM).singleElement().satisfies(r -> {
+                  assertThat(r.getDependent()).isEqualTo("EXT.IC201A");
+                  assertThat(r.getDependency()).isEqualTo("IC201A");
                   assertThat(r.getDependentPath()).isEqualTo("bindcards/BINDCARDPACKAGE");
-                  assertThat(lineAt(bindPackage, r.getDependentLine())).contains("MEMBER(IC201A)");
+                  assertThat(lineAt(bindPackage, r.getDependentLine())).contains("BIND PACKAGE(&PROD0.EXT)");
               });
           }),
           cobol(
@@ -95,8 +105,42 @@ class FindRelationshipsTest extends CobolTest {
             spec -> spec.after(s -> s).path("IC201A.CBL")
           ),
           text(linkEdit, spec -> spec.path("linkeditcards/LINKEDIT1")),
-          text(bindPackage, spec -> spec.path("bindcards/BINDCARDPACKAGE")),
-          text(bindPlan, spec -> spec.path("bindcards/BINDCARDPLAN"))
+          bind(bindPackage, spec -> spec.path("bindcards/BINDCARDPACKAGE")),
+          bind(bindPlan, spec -> spec.path("bindcards/BINDCARDPLAN"))
+        );
+    }
+
+    @Test
+    void bindDeckWrittenInAJob() {
+        rewriteRun(
+          spec -> spec.dataTable(Row.class, rows -> {
+              assertThat(rows).filteredOn(r -> r.getDependencyType() == DBRM).singleElement().satisfies(r -> {
+                  assertThat(r.getDependent()).isEqualTo("CARDDEMO.CBACT01C");
+                  assertThat(r.getDependency()).isEqualTo("CBACT01C");
+                  // The anchor is the job's own line, not the deck's, so it points at the card a
+                  // reader would open the job to find.
+                  assertThat(r.getDependentPath()).isEqualTo("jcl/BINDCARD.jcl");
+                  assertThat(r.getDependentLine()).isEqualTo(5);
+              });
+              assertThat(rows).filteredOn(r -> r.getDependentType() == JCL).singleElement().satisfies(r -> {
+                  assertThat(r.getDependent()).isEqualTo("BINDCARD");
+                  assertThat(r.getAction()).isEqualTo(DEFINES);
+                  assertThat(r.getDependency()).isEqualTo("CARDDEMO.CBACT01C");
+              });
+          }),
+          jcl(
+            """
+              //BINDCARD JOB (),CLASS=A
+              //BIND    EXEC PGM=IKJEFT01
+              //SYSTSIN DD *
+               DSN SYSTEM(DBC1)
+               BIND PACKAGE(CARDDEMO) MEMBER(CBACT01C) -
+                    ACTION(REPLACE) ISOLATION(CS)
+               END
+              /*
+              """,
+            spec -> spec.path("jcl/BINDCARD.jcl")
+          )
         );
     }
 

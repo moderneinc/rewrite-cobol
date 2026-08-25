@@ -56,6 +56,13 @@ tasks.register<JavaExec>("generateAntlrSourcesDb2") {
             "-package", "org.openrewrite.db2.internal.grammar",
             "-visitor"
     ) + fileTree("src/main/antlr-db2").matching { include("**/*.g4") }.map { it.path }
+tasks.register<JavaExec>("generateAntlrSourcesBind") {
+    mainClass.set("org.antlr.v4.Tool")
+    args = listOf(
+            "-o", "src/main/java/org/openrewrite/db2/bind/internal/grammar",
+            "-package", "org.openrewrite.db2.bind.internal.grammar",
+            "-visitor"
+    ) + fileTree("src/main/antlr-bind").matching { include("**/*.g4") }.map { it.path }
 
     classpath = configurations["antlr"]
 

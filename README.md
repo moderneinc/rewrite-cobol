@@ -21,7 +21,7 @@
 
 ## What is this?
 
-This project implements a [Rewrite module](https://github.com/openrewrite/rewrite) that provides parsers, visitors, and recipes for COBOL and related mainframe technologies. It supports parsing and transforming COBOL source code, JCL (Job Control Language), BMS map sets, DB2 DDL, and Control-M job definitions.
+This project implements a [Rewrite module](https://github.com/openrewrite/rewrite) that provides parsers, visitors, and recipes for COBOL and related mainframe technologies. It supports parsing and transforming COBOL source code, JCL (Job Control Language), BMS map sets, DB2 DDL, DB2 bind cards, and Control-M job definitions.
 
 ### Language Support
 
@@ -29,6 +29,7 @@ This project implements a [Rewrite module](https://github.com/openrewrite/rewrit
 - **JCL** — Job Control Language parsing (`.jcl`, `.prc` and `.proc` files, a `.txt` or extensionless PDS member whose first card is JCL, and the `.j2` Jinja templates an installation ships its jobs as)
 - **BMS** — CICS Basic Mapping Support map sets (`.bms`): the `DFHMSD`/`DFHMDI`/`DFHMDF` macros, and the symbolic map names they generate, which is what joins a screen field to the COBOL data item a program reads it from
 - **DB2 DDL** — DB2 for z/OS DDL (`.ddl`, `.sql`, and the `SYSIN` streams of the jobs that create a schema): every statement the SQL reference documents is modelled, so a statement that cannot be read is a syntax error rather than a node that says nothing
+- **Bind cards** — DSN command decks (`.bnd`, and an extensionless CARDLIB member whose first subcommand binds): `BIND PLAN`, `BIND PACKAGE` and `REBIND` with their keyword operands, read from a member of their own or from the in-stream `SYSTSIN` of the job that runs them
 - **Control-M** — Control-M job scheduling definition parsing
 
 ### Recipes
@@ -87,9 +88,10 @@ walk cannot see, a symbolic link say, would otherwise pass as an empty applicati
 
 Clone them side by side into one directory and point the tests at it. The tests find files the way
 the parsers accept them, whatever the case of the extension: programs by `.cbl`, `.cob` and
-`.cobol`, copybooks by `.cpy`, `.copy` and `.dcl`, map sets by `.bms`, and jobs by `.jcl`, `.prc`
-and `.proc` — or, since MainframeJCL, ADCD setup and Zowe's SZWESAMP keep their members as they came
-off the PDS, by a `.txt` or extensionless file whose first card is JCL. A member whose name promises
+`.cobol`, copybooks by `.cpy`, `.copy` and `.dcl`, map sets by `.bms`, bind decks by `.bnd`, and
+jobs by `.jcl`, `.prc` and `.proc` — or, since MainframeJCL, ADCD setup and Zowe's SZWESAMP keep
+their members as they came off the PDS, by a `.txt` or extensionless file whose first card is JCL,
+and by an extensionless file whose first subcommand binds. A member whose name promises
 a language its content is not — CBSA's `DFH$SIP1.jcl` is a CICS parameter member — is reported as
 such, under `WrongLanguageException`, rather than as a grammar failure. The corpus tests skip
 themselves when the variables are unset, so a normal `./gradlew test` does not need them:
@@ -139,6 +141,9 @@ the 23 `SYSIN` streams the corpus's jobs submit. It reads 22 tables, 192 columns
 independent count of the source. It also names the members it holds out — a Postgres port of one
 schema, a file that sets its own statement terminator, and members whose banner comment is damaged —
 and asserts how many there are, so that set cannot grow without someone saying why.
+`BindCorpusTest` does the same for bind cards, over the fixture's ten `CARDLIB` decks and the eleven
+decks the corpus writes in-stream, counting every `BIND` and `REBIND` it read against a line scan of
+the source. It runs under `JCL_CORPUS`: a bind deck is reached through the jobs that run it.
 
 ## Contributing
 

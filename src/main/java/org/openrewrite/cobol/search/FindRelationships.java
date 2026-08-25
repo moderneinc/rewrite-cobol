@@ -35,19 +35,23 @@ import org.openrewrite.cobol.tree.Name;
 import org.openrewrite.controlm.ControlMIsoVisitor;
 import org.openrewrite.controlm.internal.ControlMPrinter;
 import org.openrewrite.controlm.tree.ControlM;
+import org.openrewrite.db2.bind.BindIsoVisitor;
+import org.openrewrite.db2.bind.InStreamBindDeck;
+import org.openrewrite.db2.bind.trait.BindCommand;
+import org.openrewrite.db2.bind.tree.Bind;
 import org.openrewrite.internal.ListUtils;
 import org.openrewrite.internal.StringUtils;
+import org.openrewrite.jcl.JclIsoVisitor;
+import org.openrewrite.jcl.tree.Jcl;
 import org.openrewrite.marker.Range;
 import org.openrewrite.marker.SearchResult;
 import org.openrewrite.text.PlainText;
 import org.openrewrite.text.PlainTextVisitor;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -57,6 +61,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static java.util.regex.Pattern.MULTILINE;
 import static org.openrewrite.cobol.table.CobolRelationships.ResourceAction.*;
@@ -290,73 +295,23 @@ public class FindRelationships extends Recipe {
             }
         };
 
-        PlainTextVisitor<ExecutionContext> bindCardVisitor = new PlainTextVisitor<ExecutionContext>() {
-            final Pattern bindPattern = Pattern.compile("^BIND\\s+(?<keyword>PACKAGE|PLAN)\\((?<linkedit>[&.A-Z0-9]+)\\)\\s+OWNER\\(([&A-Z0-9]+)\\)", MULTILINE);
-            final Pattern memberPattern = Pattern.compile("\\s+MEMBER\\((?<member>[A-Z0-9]+)\\)", MULTILINE);
-
+        BindIsoVisitor<ExecutionContext> bindCardVisitor = new BindIsoVisitor<ExecutionContext>() {
             @Override
-            public PlainText visitText(PlainText pt, ExecutionContext ctx) {
-                String text = pt.getText();
+            public Bind.CompilationUnit visitCompilationUnit(Bind.CompilationUnit cu, ExecutionContext ctx) {
+                bindRelationships(cu, memberName(cu.getSourcePath()), CONTROL_CARD,
+                        cu.getSourcePath().toString(), 0, ctx);
+                return cu;
+            }
+        };
 
-                // A card can hold more than one BIND. Each one's MEMBERs are the ones written before
-                // the next BIND begins, so the members are matched within that region rather than
-                // across the whole card.
-                List<int[]> bindRegions = new ArrayList<>();
-                List<String> keywords = new ArrayList<>();
-                List<String> linkedits = new ArrayList<>();
-                Matcher m = bindPattern.matcher(text);
-                while (m.find()) {
-                    if (!bindRegions.isEmpty()) {
-                        bindRegions.get(bindRegions.size() - 1)[1] = m.start();
-                    }
-                    bindRegions.add(new int[]{m.end(), text.length()});
-                    keywords.add(m.group("keyword"));
-                    linkedits.add(m.group("linkedit"));
+        JclIsoVisitor<ExecutionContext> jclVisitor = new JclIsoVisitor<ExecutionContext>() {
+            @Override
+            public Jcl.CompilationUnit visitCompilationUnit(Jcl.CompilationUnit cu, ExecutionContext ctx) {
+                for (InStreamBindDeck stream : InStreamBindDeck.of(cu)) {
+                    bindRelationships(stream.getDeck(), memberName(cu.getSourcePath()), JCL,
+                            cu.getSourcePath().toString(), stream.getLine() - 1, ctx);
                 }
-
-                for (int bind = 0; bind < bindRegions.size(); bind++) {
-                    String packageOrPlan = keywords.get(bind);
-                    if ("PLAN".equals(packageOrPlan)) {
-                        String linkedit = linkedits.get(bind);
-                        cobolRelationships.insertRow(ctx,
-                                new CobolRelationships.Row(
-                                        pt.getSourcePath().getFileName().toString(),
-                                        BINDPLAN,
-                                        PLAN,
-                                        linkedit,
-                                        LINKEDIT,
-                                        false,
-                                        "",
-                                        pt.getSourcePath().toString(),
-                                        lineOf(text, m.start()),
-                                        null,
-                                        null
-                                )
-                        );
-                    } else {
-                        Matcher memberMatcher = memberPattern.matcher(
-                                text.substring(bindRegions.get(bind)[0], bindRegions.get(bind)[1]));
-                        while (memberMatcher.find()) {
-                            String member = memberMatcher.group("member");
-                            cobolRelationships.insertRow(ctx,
-                                    new CobolRelationships.Row(
-                                            pt.getSourcePath().getFileName().toString(),
-                                            BINDPACKAGE,
-                                            MEMBER,
-                                            member,
-                                            COBOL,
-                                            false,
-                                            "",
-                                            pt.getSourcePath().toString(),
-                                            lineOf(text, memberMatcher.start("member")),
-                                            null,
-                                            null
-                                    )
-                            );
-                        }
-                    }
-                }
-                return pt;
+                return cu;
             }
         };
 
@@ -466,7 +421,11 @@ public class FindRelationships extends Recipe {
                     t = cobolVisitor.visit(t, ctx);
                 } else if (tree instanceof PlainText) {
                     t = linkEditVisitor.visit(t, ctx);
+                } else if (tree instanceof Bind) {
                     t = bindCardVisitor.visit(t, ctx);
+
+                } else if (tree instanceof Jcl) {
+                    t = jclVisitor.visit(t, ctx);
                 } else if (tree instanceof CobolPreprocessor) {
                     t = preprocessorVisitor.visit(t, ctx);
                 } else if (tree instanceof ControlM) {
@@ -475,6 +434,62 @@ public class FindRelationships extends Recipe {
                 return t;
             }
         };
+    }
+
+    /**
+     * The chain a bind deck writes down, which nothing else in an estate does: the deck declares a
+     * plan or a package, the plan lists the packages it may run, and a package is bound from the DBRM
+     * a DB2 precompile left under the program's own name. A {@code REBIND} declares nothing — it names
+     * objects that already exist, so it is a reference to them.
+     *
+     * @param deckType   what the deck is, which differs by where it was written: a {@code CARDLIB}
+     *                   member is a control card, a deck written in-stream is the job.
+     * @param lineOffset how many lines of the source come before the deck's first card, which is
+     *                   nothing for a member of its own and the SYSTSIN's position for an in-stream one.
+     */
+    private void bindRelationships(Bind.CompilationUnit deck, String deckName,
+                                   CobolRelationships.ResourceType deckType, String sourcePath,
+                                   int lineOffset, ExecutionContext ctx) {
+        Set<String> seen = new HashSet<>();
+        for (BindCommand command : new BindCommand.Matcher().lower(deck).collect(Collectors.toList())) {
+            int line = lineOffset + command.getLine();
+            boolean rebind = command.getKind() == BindCommand.Kind.REBIND;
+            String collection = command.getCollection();
+
+            for (String plan : command.getPlans()) {
+                if (rebind) {
+                    insertBindRow(seen, deckName, deckType, REFERENCES, plan, BINDPLAN, sourcePath, line, ctx);
+                    continue;
+                }
+                insertBindRow(seen, deckName, deckType, DEFINES, plan, BINDPLAN, sourcePath, line, ctx);
+                for (String packageName : command.getPackageList()) {
+                    insertBindRow(seen, plan, BINDPLAN, BINDS, packageName, BINDPACKAGE, sourcePath, line, ctx);
+                }
+                for (String member : command.getMembers()) {
+                    insertBindRow(seen, plan, BINDPLAN, BINDS, member, DBRM, sourcePath, line, ctx);
+                }
+            }
+
+            for (String packageName : command.getPackages()) {
+                String qualified = collection == null ? packageName : collection + '.' + packageName;
+                if (rebind) {
+                    insertBindRow(seen, deckName, deckType, REFERENCES, qualified, BINDPACKAGE, sourcePath, line, ctx);
+                    continue;
+                }
+                insertBindRow(seen, deckName, deckType, DEFINES, qualified, BINDPACKAGE, sourcePath, line, ctx);
+                insertBindRow(seen, qualified, BINDPACKAGE, BINDS, packageName, DBRM, sourcePath, line, ctx);
+            }
+        }
+    }
+
+    private void insertBindRow(Set<String> seen, String dependent, CobolRelationships.ResourceType dependentType,
+                               CobolRelationships.ResourceAction action, String dependency,
+                               CobolRelationships.ResourceType dependencyType, String sourcePath, int line,
+                               ExecutionContext ctx) {
+        if (seen.add(dependent + ':' + action + ':' + dependency + ':' + line)) {
+            cobolRelationships.insertRow(ctx, new CobolRelationships.Row(dependent, dependentType, action,
+                    dependency, dependencyType, false, "", sourcePath, line, null, null));
+        }
     }
 
     public CobolPreprocessor.CharDataSql getSqlRelationships(
