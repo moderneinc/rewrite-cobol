@@ -36,7 +36,9 @@ import org.openrewrite.marker.SearchResult;
 import org.openrewrite.text.PlainText;
 import org.openrewrite.text.PlainTextVisitor;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -244,11 +246,27 @@ public class FindRelationships extends Recipe {
             @Override
             public PlainText visitText(PlainText pt, ExecutionContext ctx) {
                 String text = pt.getText();
+
+                // A card can hold more than one BIND. Each one's MEMBERs are the ones written before
+                // the next BIND begins, so the members are matched within that region rather than
+                // across the whole card.
+                List<int[]> bindRegions = new ArrayList<>();
+                List<String> keywords = new ArrayList<>();
+                List<String> linkedits = new ArrayList<>();
                 Matcher m = bindPattern.matcher(text);
-                if (m.find()) {
-                    String packageOrPlan = m.group("keyword");
+                while (m.find()) {
+                    if (!bindRegions.isEmpty()) {
+                        bindRegions.get(bindRegions.size() - 1)[1] = m.start();
+                    }
+                    bindRegions.add(new int[]{m.end(), text.length()});
+                    keywords.add(m.group("keyword"));
+                    linkedits.add(m.group("linkedit"));
+                }
+
+                for (int bind = 0; bind < bindRegions.size(); bind++) {
+                    String packageOrPlan = keywords.get(bind);
                     if ("PLAN".equals(packageOrPlan)) {
-                        String linkedit = m.group("linkedit");
+                        String linkedit = linkedits.get(bind);
                         cobolRelationships.insertRow(ctx,
                                 new CobolRelationships.Row(
                                         pt.getSourcePath().getFileName().toString(),
@@ -261,7 +279,8 @@ public class FindRelationships extends Recipe {
                                 )
                         );
                     } else {
-                        Matcher memberMatcher = memberPattern.matcher(text);
+                        Matcher memberMatcher = memberPattern.matcher(
+                                text.substring(bindRegions.get(bind)[0], bindRegions.get(bind)[1]));
                         while (memberMatcher.find()) {
                             String member = memberMatcher.group("member");
                             cobolRelationships.insertRow(ctx,
