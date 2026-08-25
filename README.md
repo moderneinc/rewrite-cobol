@@ -27,12 +27,13 @@ This project implements a [Rewrite module](https://github.com/openrewrite/rewrit
 
 - **COBOL** — Full parsing of COBOL-85 (IBM ANSI 85 and HP Tandem dialects), including preprocessor directives (COPY, REPLACE) and copybook resolution; programs by `.cbl`, `.cob` and `.cobol`, copybooks by `.cpy`, `.copy` and `.dcl`
 - **JCL** — Job Control Language parsing (`.jcl`, `.prc` and `.proc` files, a `.txt` or extensionless PDS member whose first card is JCL, and the `.j2` Jinja templates an installation ships its jobs as)
+- **JCL** — Job Control Language parsing (`.jcl`, `.prc` and `.proc` files, and a `.txt` or extensionless PDS member whose first card is JCL), and the resolution a job's cards leave to other members: the procedures and INCLUDE members a step runs through, the DD overrides merged in, and the symbols a data set name is written with, which is what a step's real program and real data sets are read from
 - **BMS** — CICS Basic Mapping Support map sets (`.bms`): the `DFHMSD`/`DFHMDI`/`DFHMDF` macros, and the symbolic map names they generate, which is what joins a screen field to the COBOL data item a program reads it from
 - **DB2 DDL** — DB2 for z/OS DDL (`.ddl`, `.sql`, and the `SYSIN` streams of the jobs that create a schema): every statement the SQL reference documents is modelled, so a statement that cannot be read is a syntax error rather than a node that says nothing
 - **Bind cards** — DSN command decks (`.bnd`, and an extensionless CARDLIB member whose first subcommand binds): `BIND PLAN`, `BIND PACKAGE` and `REBIND` with their keyword operands, read from a member of their own or from the in-stream `SYSTSIN` of the job that runs them
 - **Sort cards** — DFSORT and ICETOOL control statements: `SORT`/`MERGE FIELDS`, `INCLUDE`/`OMIT COND`, `INREC`/`OUTREC`/`OUTFIL`, `SUM`, `OPTION`, with the control fields read as byte positions into the record, which is what joins a sort card to the copybook that describes it
 - **IDCAMS cards** — Access method services commands: `DEFINE CLUSTER`/`AIX`/`PATH`/`GDG` with their parameter groups, `REPRO`, `DELETE`, `LISTCAT`, `PRINT` and `ALTER`, which is where a VSAM file's key, record size and components are written down
-- **Control-M** — Control-M job scheduling definition parsing
+- **Control-M** — Job scheduling definitions, both dialects a shop has: the z/OS panel (`.ctms`) and the XML an export writes (`.controlm`). The JCL member each job runs, the `IN` and `OUT` conditions that order them, the SMART table they sit in and the calendars they run on, which is what turns a library of jobs into the order they actually run in
 
 ### Recipes
 
@@ -65,10 +66,10 @@ its own:
 | Zowe install packaging | [zowe/zowe-install-packaging](https://github.com/zowe/zowe-install-packaging) | — | 48 of 51 | — | — | — | — |
 | MainframeJCL | [billrain/MainframeJCL](https://github.com/billrain/MainframeJCL) | — | 83 of 108 | — | — | — | — |
 | zorow | [openmainframeproject/zorow](https://github.com/openmainframeproject/zorow) | — | 47 of 56 | — | — | — | — |
-| CLAIMS fixture | [moderneinc/mainframe-fixtures](https://github.com/moderneinc/mainframe-fixtures) | 14 of 14 | 33 of 33 | 5 | 4 | 4 | 1 |
+| CLAIMS fixture | [moderneinc/mainframe-fixtures](https://github.com/moderneinc/mainframe-fixtures) | 19 of 19 | 40 of 40 | 5 | 4 | 4 | 6 |
 
-Programs and Jobs say how many files of each kind the parser read, and out of how many: 211 of 224
-COBOL programs and 498 of 538 JCL members, plus all 49 BMS map sets in the seven applications that
+Programs and Jobs say how many files of each kind the parser read, and out of how many: 216 of 229
+COBOL programs and 505 of 545 JCL members, plus all 49 BMS map sets in the seven applications that
 have them. The technology columns say how many programs use each. A program counts as read when it
 parsed and printed back byte for byte; a job when it also had exactly the EXEC cards the traits
 found and nothing in it was left unplaced. The gaps are the measurement: `CorpusCoverageTest` groups
@@ -82,28 +83,38 @@ adds the 110 jobs, among them DB2 DDL and BIND in JCL, where Bank of Z has one.
 
 The last row is not a public application but a fixture: one fictional insurance claims
 application, CLAIMS, written so that every `COPY`, `CALL`, `EXEC PROC`, `SEND MAP` and `SYSIN`
-member in it resolves to a member of the same repository, and every member of it parses. The
-public applications are measured; the fixture is required. The tests know it by its directory
-name, `mainframe-fixtures`, and fail when a program, copybook, job, procedure or map set of it does
-not parse, read or print back — or when the corpus root does not contain it, since a fixture the
-walk cannot see, a symbolic link say, would otherwise pass as an empty application.
+member in it resolves to a member of the same repository, and every member of it a parser here reads
+parses. It also holds member kinds nothing here reads yet — IMS DBD, PSB, MFS and stage 1 decks,
+HLASM programs and macros, binder decks and load module listings, CLISTs, REXX execs and run book
+members — and the walks skip those rather than counting them against a parser. The public
+applications are measured; the fixture is required. The tests know it by its directory name,
+`mainframe-fixtures`, and fail when a program, copybook, job, procedure, map set, bind deck, control
+card or schedule of it does not parse, read or print back — or when the corpus root does not contain
+it, since a fixture the walk cannot see, a symbolic link say, would otherwise pass as an empty
+application.
 
 Clone them side by side into one directory and point the tests at it. The tests find files the way
 the parsers accept them, whatever the case of the extension: programs by `.cbl`, `.cob` and
-`.cobol`, copybooks by `.cpy`, `.copy` and `.dcl`, map sets by `.bms`, bind decks by `.bnd`, and
-jobs by `.jcl`, `.prc` and `.proc` — or, since MainframeJCL, ADCD setup and Zowe's SZWESAMP keep
-their members as they came off the PDS, by a `.txt` or extensionless file whose first card is JCL,
-and by an extensionless file whose first subcommand binds. Control card members are typed by what
-they say rather than by what they are called: a `.ctl`, `.prm` or extensionless member is a sort
-deck or an IDCAMS deck if its first statement is one, and anything else stays plain. A member whose name promises
-a language its content is not — CBSA's `DFH$SIP1.jcl` is a CICS parameter member — is reported as
-such, under `WrongLanguageException`, rather than as a grammar failure. The corpus tests skip
-themselves when the variables are unset, so a normal `./gradlew test` does not need them:
+`.cobol`, copybooks by `.cpy`, `.copy` and `.dcl`, map sets by `.bms`, bind decks by `.bnd`,
+schedules by `.ctms` and `.controlm`, and jobs by `.jcl`, `.prc` and `.proc` — or, since
+MainframeJCL, ADCD setup and Zowe's SZWESAMP keep their members as they came off the PDS, by a
+`.txt` or extensionless file whose first card is JCL, and by an extensionless file whose first
+subcommand binds. Control card members are typed by what they say rather than by what they are
+called: a `.ctl`, `.prm` or extensionless member is a sort deck or an IDCAMS deck if its first
+statement is one, and anything else stays plain. A member whose name promises a language its content
+is not — CBSA's `DFH$SIP1.jcl` is a CICS parameter member — is reported as such, under
+`WrongLanguageException`, rather than as a grammar failure. The corpus tests skip themselves when
+the variables are unset, so a normal `./gradlew test` does not need them:
 
 ```bash
 COBOL_CORPUS=/path/to/corpus JCL_CORPUS=/path/to/corpus BMS_CORPUS=/path/to/corpus \
   DB2_CORPUS=/path/to/corpus ./gradlew test
+CONTROLM_CORPUS=/path/to/corpus ./gradlew test --rerun
 ```
+
+Bind decks and control cards ride on `JCL_CORPUS`, since a deck is reached through the step that
+runs it. `--rerun` matters: the corpus path is an environment variable, not a task input, so a
+run left up to date by an earlier `./gradlew test` is replayed without reading the corpus at all.
 
 The numbers above were taken at these commits. CBSA's `main` is a README; the application is on the
 `July2024Refresh` branch. DBB Samples declares an EBCDIC working-tree encoding in `.gitattributes`,
@@ -128,7 +139,7 @@ not text the parser can read.
 | Zowe install packaging | `v3.x/staging` 20977c3 | EPL-2.0 |
 | MainframeJCL | `main` 598744a | MIT |
 | zorow | `master` 9f1fdf0 | Apache-2.0 |
-| CLAIMS fixture | `main` facf2c0 | Apache-2.0 |
+| CLAIMS fixture | `main` c23c837 | Apache-2.0 |
 
 `CorpusCoverageTest` reports how much of each application parses rather than requiring all of it to:
 what the parser cannot yet read is the point of the measurement. It asserts that every program it
