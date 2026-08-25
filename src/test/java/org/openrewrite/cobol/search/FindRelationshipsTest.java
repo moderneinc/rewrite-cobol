@@ -25,6 +25,7 @@ import org.openrewrite.test.RecipeSpec;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.openrewrite.cobol.Assertions.cobol;
 import static org.openrewrite.cobol.Assertions.copybook;
 import static org.openrewrite.cobol.table.CobolRelationships.ResourceAction.*;
@@ -297,11 +298,18 @@ class FindRelationshipsTest extends CobolTest {
     void multipleBindsOnOneCard() {
         rewriteRun(
           spec -> spec.dataTable(Row.class, rows -> {
-              assertThat(rows).extracting(Row::getDependency)
-                .containsExactlyInAnyOrder("FIRSTPGM", "SECONDPGM", "LINKEDIT9");
-              assertThat(rows).extracting(Row::getAction).contains(MEMBER, PLAN);
+              // Each BIND's MEMBER belongs to that BIND, not to the first one on the card.
+              assertThat(rows).filteredOn(r -> r.getDependencyType() == DBRM)
+                .extracting(Row::getDependent, Row::getDependency)
+                .containsExactlyInAnyOrder(
+                  tuple("EXT.FIRSTPGM", "FIRSTPGM"),
+                  tuple("EXT.SECONDPGM", "SECONDPGM"));
+              assertThat(rows).filteredOn(r -> r.getDependentType() == BINDPLAN).singleElement().satisfies(r -> {
+                  assertThat(r.getDependent()).isEqualTo("LINKEDIT9");
+                  assertThat(r.getDependency()).isEqualTo("PROD0.*");
+              });
           }),
-          text(
+          bind(
             """
               BIND PACKAGE(&PROD0.EXT) OWNER(&SBS100S) -
                  QUALIFIER(&SBS100S.EXT) MEMBER(FIRSTPGM) -
