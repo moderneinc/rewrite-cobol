@@ -35,7 +35,7 @@ import static org.openrewrite.controlcard.sort.Assertions.sortCard;
 import static org.openrewrite.controlm.Assertions.controlM;
 import static org.openrewrite.db2.bind.Assertions.bind;
 import static org.openrewrite.jcl.Assertions.jcl;
-import static org.openrewrite.test.SourceSpecs.text;
+import static org.openrewrite.linkedit.Assertions.linkEdit;
 
 class FindRelationshipsTest extends CobolTest {
 
@@ -80,7 +80,11 @@ class FindRelationshipsTest extends CobolTest {
               assertThat(rows).extracting(Row::getDependent).contains("IC201A", "BINDCARDPACKAGE", "BINDCARDPLAN");
               assertThat(rows).extracting(Row::getDependency).contains("IC202A", "IC201A", "PROD0.*");
               assertThat(rows).extracting(Row::getAction).contains(CALL, INCLUDE, DEFINES, BINDS);
+              // Which library an object is read from is the shop's own business, so the DD name is
+              // carried rather than judged. The commented-out card names nothing.
               assertThat(rows).filteredOn(r -> r.getDependentType() == LINKEDIT).singleElement().satisfies(r -> {
+                  assertThat(r.getDependency()).isEqualTo("IC201A");
+                  assertThat(r.getActionMetadata()).isEqualTo("OBJLIB");
                   assertThat(r.getDependentPath()).isEqualTo("linkeditcards/LINKEDIT1");
                   assertThat(lineAt(linkEdit, r.getDependentLine())).isEqualTo("INCLUDE OBJLIB(IC201A)    MODULE FOO");
               });
@@ -107,7 +111,7 @@ class FindRelationshipsTest extends CobolTest {
             "",
             spec -> spec.after(s -> s).path("IC201A.CBL")
           ),
-          text(linkEdit, spec -> spec.path("linkeditcards/LINKEDIT1")),
+          linkEdit(linkEdit, spec -> spec.path("linkeditcards/LINKEDIT1")),
           bind(bindPackage, spec -> spec.path("bindcards/BINDCARDPACKAGE")),
           bind(bindPlan, spec -> spec.path("bindcards/BINDCARDPLAN"))
         );
@@ -143,6 +147,38 @@ class FindRelationshipsTest extends CobolTest {
               /*
               """,
             spec -> spec.path("jcl/BINDCARD.jcl")
+          )
+        );
+    }
+
+    @Test
+    void linkEditDeckWrittenInAJob() {
+        rewriteRun(
+          spec -> spec.dataTable(Row.class, rows -> {
+              assertThat(rows).filteredOn(r -> r.getDependencyType() == LOAD_MODULE).singleElement().satisfies(r -> {
+                  assertThat(r.getDependent()).isEqualTo("BASE64");
+                  assertThat(r.getDependentType()).isEqualTo(JCL);
+                  assertThat(r.getDependency()).isEqualTo("BASE64O");
+                  // The anchor is the job's own line, not the deck's, so it points at the card a
+                  // reader would open the job to find.
+                  assertThat(r.getDependentPath()).isEqualTo("jcl/BASE64.jcl");
+                  assertThat(r.getDependentLine()).isEqualTo(6);
+              });
+              assertThat(rows).filteredOn(r -> r.getDependentType() == LOAD_MODULE)
+                .extracting(Row::getAction, Row::getDependency)
+                .containsExactlyInAnyOrder(tuple(CONTAINS, "BASE64O"), tuple(CONTAINS, "BASE64E"));
+          }),
+          jcl(
+            """
+              //BASE64   JOB (),CLASS=A
+              //COBOL    EXEC PROC=LINKEDIT,COND=(4,LE)
+              //BINDER.SYSLIN DD *
+                INCLUDE OBJLIB(BASE64O)
+                INCLUDE OBJLIB(BASE64E)
+                NAME BASE64O(R)
+              /*
+              """,
+            spec -> spec.path("jcl/BASE64.jcl")
           )
         );
     }
@@ -321,6 +357,42 @@ class FindRelationshipsTest extends CobolTest {
                  PKLIST(PROD0.*)
               """,
             spec -> spec.path("bindcards/MULTIBIND"))
+        );
+    }
+
+    /**
+     * A load module exists because a link-edit deck named it, and the step that runs it says only that
+     * it runs it. What the deck leaves out is an answer too: the reserve calculation is included and so
+     * is bound in, while the one CLMB030 calls through a data name is a module of its own.
+     */
+    @Test
+    void aDeckNamesTheLoadModuleAndWhatIsBoundIntoIt() {
+        String deck = """
+          *  CLMC020 - CLAIM INQUIRY.  CLMU020 IS CALLED STATICALLY.
+            INCLUDE SYSLIB(DFHECI)
+            INCLUDE OBJLIB(CLMU020)
+            ENTRY CLMC020
+            ALIAS CLMINQ
+            NAME CLMC020(R)
+          """;
+        rewriteRun(
+          spec -> spec.dataTable(Row.class, rows -> {
+              assertThat(rows).filteredOn(r -> r.getDependencyType() == LOAD_MODULE)
+                .extracting(Row::getDependent, Row::getAction, Row::getDependency)
+                .containsExactly(
+                  tuple("CLMC020", DEFINES, "CLMC020"),
+                  // An alias is a directory entry of its own, so a step naming it finds this module.
+                  tuple("CLMC020", DEFINES, "CLMINQ"));
+              assertThat(rows).filteredOn(r -> r.getDependentType() == LOAD_MODULE)
+                .extracting(Row::getAction, Row::getDependency)
+                .containsExactlyInAnyOrder(
+                  tuple(ENTRY, "CLMC020"),
+                  tuple(CONTAINS, "DFHECI"),
+                  tuple(CONTAINS, "CLMU020"));
+              assertThat(rows).filteredOn(r -> r.getAction() == INCLUDE).allSatisfy(r ->
+                assertThat(lineAt(deck, r.getDependentLine())).contains("INCLUDE " + r.getActionMetadata()));
+          }),
+          linkEdit(deck, spec -> spec.path("CLMC020.lnk"))
         );
     }
 

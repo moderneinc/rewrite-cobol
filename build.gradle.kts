@@ -71,6 +71,19 @@ tasks.register<JavaExec>("generateAntlrSourcesBind") {
     finalizedBy("licenseFormat")
 }
 
+tasks.register<JavaExec>("generateAntlrSourcesLinkEdit") {
+    mainClass.set("org.antlr.v4.Tool")
+    args = listOf(
+            "-o", "src/main/java/org/openrewrite/linkedit/internal/grammar",
+            "-package", "org.openrewrite.linkedit.internal.grammar",
+            "-visitor"
+    ) + fileTree("src/main/antlr-linkedit").matching { include("**/*.g4") }.map { it.path }
+
+    classpath = configurations["antlr"]
+
+    finalizedBy("licenseFormat")
+}
+
 tasks.register<JavaExec>("generateAntlrSourcesSort") {
     mainClass.set("org.antlr.v4.Tool")
     args = listOf(

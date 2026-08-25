@@ -49,10 +49,12 @@ import org.openrewrite.internal.ListUtils;
 import org.openrewrite.internal.StringUtils;
 import org.openrewrite.jcl.JclIsoVisitor;
 import org.openrewrite.jcl.tree.Jcl;
+import org.openrewrite.linkedit.InStreamLinkEditDeck;
+import org.openrewrite.linkedit.LinkEditIsoVisitor;
+import org.openrewrite.linkedit.trait.LinkEditDeck;
+import org.openrewrite.linkedit.tree.LinkEdit;
 import org.openrewrite.marker.Range;
 import org.openrewrite.marker.SearchResult;
-import org.openrewrite.text.PlainText;
-import org.openrewrite.text.PlainTextVisitor;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -65,11 +67,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static java.util.regex.Pattern.MULTILINE;
 import static org.openrewrite.cobol.table.CobolRelationships.ResourceAction.*;
 import static org.openrewrite.cobol.table.CobolRelationships.ResourceType.*;
 
@@ -272,32 +271,12 @@ public class FindRelationships extends Recipe {
             }
         };
 
-        PlainTextVisitor<ExecutionContext> linkEditVisitor = new PlainTextVisitor<ExecutionContext>() {
-            final Pattern includePattern = Pattern.compile("^INCLUDE\\s+(SYS|OBJ)LIB\\((?<include>[A-Z0-9]+)\\)", MULTILINE);
-
+        LinkEditIsoVisitor<ExecutionContext> linkEditVisitor = new LinkEditIsoVisitor<ExecutionContext>() {
             @Override
-            public PlainText visitText(PlainText pt, ExecutionContext ctx) {
-                String text = pt.getText();
-                Matcher m = includePattern.matcher(text);
-                while (m.find()) {
-                    String programName = m.group("include");
-                    cobolRelationships.insertRow(ctx,
-                            new CobolRelationships.Row(
-                                    pt.getSourcePath().getFileName().toString(),
-                                    LINKEDIT,
-                                    INCLUDE,
-                                    programName,
-                                    COBOL,
-                                    false,
-                                    "",
-                                    pt.getSourcePath().toString(),
-                                    lineOf(text, m.start()),
-                                    null,
-                                    null
-                            )
-                    );
-                }
-                return pt;
+            public LinkEdit.CompilationUnit visitCompilationUnit(LinkEdit.CompilationUnit cu, ExecutionContext ctx) {
+                linkEditRelationships(cu, memberName(cu.getSourcePath()), LINKEDIT,
+                        cu.getSourcePath().toString(), 0, ctx);
+                return cu;
             }
         };
 
@@ -324,6 +303,10 @@ public class FindRelationships extends Recipe {
             public Jcl.CompilationUnit visitCompilationUnit(Jcl.CompilationUnit cu, ExecutionContext ctx) {
                 for (InStreamBindDeck stream : InStreamBindDeck.of(cu)) {
                     bindRelationships(stream.getDeck(), memberName(cu.getSourcePath()), JCL,
+                            cu.getSourcePath().toString(), stream.getLine() - 1, ctx);
+                }
+                for (InStreamLinkEditDeck stream : InStreamLinkEditDeck.of(cu)) {
+                    linkEditRelationships(stream.getDeck(), memberName(cu.getSourcePath()), JCL,
                             cu.getSourcePath().toString(), stream.getLine() - 1, ctx);
                 }
                 for (InStreamCards cards : InStreamCards.of(cu)) {
@@ -441,7 +424,7 @@ public class FindRelationships extends Recipe {
                 Tree t = tree;
                 if (tree instanceof Cobol) {
                     t = cobolVisitor.visit(t, ctx);
-                } else if (tree instanceof PlainText) {
+                } else if (tree instanceof LinkEdit) {
                     t = linkEditVisitor.visit(t, ctx);
                 } else if (tree instanceof Bind) {
                     t = bindCardVisitor.visit(t, ctx);
@@ -506,6 +489,49 @@ public class FindRelationships extends Recipe {
     }
 
     /**
+     * The load module a link-edit deck builds and what it is built from, which nothing else in an
+     * estate writes down: a step names a module and the module names its programs here. A subroutine
+     * an {@code INCLUDE} names is bound into the module and reached without the system ever looking
+     * the name up; one the deck leaves out is called dynamically and is a module of its own.
+     *
+     * @param deckType   what the deck is, which differs by where it was written: a {@code LINKLIB}
+     *                   member is a link-edit deck, a deck written in-stream is the job.
+     * @param lineOffset how many lines of the source come before the deck's first card, which is
+     *                   nothing for a member of its own and the DD's position for an in-stream one.
+     */
+    private void linkEditRelationships(LinkEdit.CompilationUnit deck, String deckName,
+                                       CobolRelationships.ResourceType deckType, String sourcePath,
+                                       int lineOffset, ExecutionContext ctx) {
+        Set<String> seen = new HashSet<>();
+        LinkEditDeck linkEdit = new LinkEditDeck.Matcher().require(deck, null);
+        LinkEditDeck.Name module = linkEdit.getModule();
+
+        if (module != null) {
+            int line = lineOffset + module.getLine();
+            insertDeckRow(seen, deckName, deckType, DEFINES, module.getText(), LOAD_MODULE, sourcePath, line, ctx);
+            for (LinkEditDeck.Name alias : linkEdit.getAliases()) {
+                insertDeckRow(seen, deckName, deckType, DEFINES, alias.getText(), LOAD_MODULE, sourcePath,
+                        lineOffset + alias.getLine(), ctx);
+            }
+            LinkEditDeck.Name entry = linkEdit.getEntry();
+            if (entry != null) {
+                insertDeckRow(seen, module.getText(), LOAD_MODULE, ENTRY, entry.getText(), COBOL, sourcePath,
+                        lineOffset + entry.getLine(), ctx);
+            }
+        }
+
+        for (LinkEditDeck.Include include : linkEdit.getIncludes()) {
+            int line = lineOffset + include.getLine();
+            insertDeckRow(seen, deckName, deckType, INCLUDE, include.getMember(), COBOL, sourcePath, line,
+                    include.getDdName(), ctx);
+            if (module != null) {
+                insertDeckRow(seen, module.getText(), LOAD_MODULE, CONTAINS, include.getMember(), COBOL,
+                        sourcePath, line, ctx);
+            }
+        }
+    }
+
+    /**
      * What an IDCAMS deck creates, which nothing else in an estate says: a VSAM file exists because a
      * {@code DEFINE} made it, and the JCL that reads it names it on a DD without saying where it came
      * from. The components of a cluster are catalog entries of their own, so a job may name either.
@@ -534,9 +560,16 @@ public class FindRelationships extends Recipe {
                                CobolRelationships.ResourceAction action, String dependency,
                                CobolRelationships.ResourceType dependencyType, String sourcePath, int line,
                                ExecutionContext ctx) {
+        insertDeckRow(seen, dependent, dependentType, action, dependency, dependencyType, sourcePath, line, "", ctx);
+    }
+
+    private void insertDeckRow(Set<String> seen, String dependent, CobolRelationships.ResourceType dependentType,
+                               CobolRelationships.ResourceAction action, String dependency,
+                               CobolRelationships.ResourceType dependencyType, String sourcePath, int line,
+                               String actionMetadata, ExecutionContext ctx) {
         if (seen.add(dependent + ':' + action + ':' + dependency + ':' + line)) {
             cobolRelationships.insertRow(ctx, new CobolRelationships.Row(dependent, dependentType, action,
-                    dependency, dependencyType, false, "", sourcePath, line, null, null));
+                    dependency, dependencyType, false, actionMetadata, sourcePath, line, null, null));
         }
     }
 
@@ -703,16 +736,6 @@ public class FindRelationships extends Recipe {
 
     private static @Nullable Integer lineOf(@Nullable Range range) {
         return range == null ? null : range.getStart().getLine();
-    }
-
-    private static int lineOf(String text, int offset) {
-        int line = 1;
-        for (int i = 0; i < offset; i++) {
-            if (text.charAt(i) == '\n') {
-                line++;
-            }
-        }
-        return line;
     }
 
     /**
