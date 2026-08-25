@@ -232,6 +232,20 @@ public interface Jcl extends Tree {
         }
 
         /**
+         * The first parameter, when it was written without a keyword: the procedure name on
+         * {@code EXEC MYPROC}, the accounting information on a JOB card, the {@code *} of a
+         * {@code DD *}. Null when the statement leads with a keyword.
+         * <p>
+         * Which positional field it is depends on the operation, and only the first one can be told
+         * from the others by position alone, so only the first is offered here.
+         */
+        public Jcl.@Nullable PositionalParameter getPositionalParameter() {
+            List<Parameter> parameters = getParameters();
+            return parameters.isEmpty() || !(parameters.get(0) instanceof PositionalParameter) ? null :
+                    (PositionalParameter) parameters.get(0);
+        }
+
+        /**
          * The keyword parameter of this name, or null. Keyword parameters are unique within a
          * statement, so the first is the only one.
          */
@@ -243,6 +257,46 @@ public interface Jcl extends Tree {
                 }
             }
             return null;
+        }
+    }
+
+    /**
+     * The body of a procedure or an INCLUDE group, resolved and placed after the statement that
+     * named it. Nothing here was written in this member, so the printer leaves it out and the
+     * source still prints back byte for byte; the expanded listing is printed from it instead.
+     * <p>
+     * A step written inside one is a step the job runs, and the DD statements under it already have
+     * the caller's overrides applied. Nested expansion — a procedure that includes a member, or
+     * runs another procedure — is an expansion inside this one.
+     */
+    @Value
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+    @With
+    class Expansion implements Jcl, Statement {
+
+        @EqualsAndHashCode.Include
+        UUID id;
+
+        Space prefix;
+        Markers markers;
+
+        /**
+         * The member expanded, e.g. {@code CLMBATCH} or {@code @JOBCARD}.
+         */
+        String memberName;
+
+        Kind kind;
+
+        List<Statement> statements;
+
+        @Override
+        public <P> Jcl acceptJcl(JclVisitor<P> v, P p) {
+            return v.visitExpansion(this, p);
+        }
+
+        public enum Kind {
+            PROCEDURE,
+            INCLUDE
         }
     }
 

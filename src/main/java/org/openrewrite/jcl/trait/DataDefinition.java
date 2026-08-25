@@ -136,15 +136,19 @@ public class DataDefinition implements Trait<Jcl.JobControlStatement> {
 
     private @Nullable String value(String keyword) {
         Jcl.KeywordParameter parameter = getTree().getParameter(keyword);
-        return parameter == null ? null : parameter.getValueText();
+        return parameter == null ? null : Steps.resolved(parameter);
     }
 
+    /**
+     * The data set named, with its symbols filled in: {@code &HLQ..CLMMAST} is a name no catalog
+     * holds, and {@code CLM.PROD.CLMMAST} is the data set the step opens.
+     */
     private static @Nullable String dataSetName(Jcl.JobControlStatement dd) {
         Jcl.KeywordParameter dsn = dd.getParameter("DSN");
         if (dsn == null) {
             dsn = dd.getParameter("DSNAME");
         }
-        return dsn == null ? null : dsn.getValueText();
+        return dsn == null ? null : Steps.resolved(dsn);
     }
 
     private static @Nullable DataSet dataSetOf(Jcl.JobControlStatement dd) {

@@ -68,6 +68,34 @@ public class ParserAssertions {
         return jcl;
     }
 
+    /**
+     * Writes a member of the procedure library — a procedure or an INCLUDE group — to a temp file
+     * named by member name and returns its path, for resolution by
+     * {@link org.openrewrite.jcl.ExpandJobVisitor}.
+     */
+    public static Path procedureMember(String memberName, String content) {
+        try {
+            Path dir = Files.createTempDirectory("jcl-proc");
+            dir.toFile().deleteOnExit();
+            Path file = dir.resolve(memberName + ".prc");
+            Files.write(file, content.getBytes(StandardCharsets.UTF_8));
+            file.toFile().deleteOnExit();
+            return file;
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public static SourceSpecs jclWithProcedures(@Nullable String before, List<Path> procedureLibrary,
+                                                Consumer<SourceSpec<Jcl.CompilationUnit>> spec) {
+        SourceSpec<Jcl.CompilationUnit> jcl = new SourceSpec<>(
+                Jcl.CompilationUnit.class, null, JclParser.builder().procedureLibrary(procedureLibrary),
+                before, SourceSpec.ValidateSource.noop,
+                ParserAssertions::customizeExecutionContext);
+        acceptSpec(spec, jcl);
+        return jcl;
+    }
+
     public static SourceSpecs jcl(@Nullable String before) {
         return jcl(before, s -> {
         });

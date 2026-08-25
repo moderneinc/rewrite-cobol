@@ -38,6 +38,7 @@ import org.openrewrite.tree.ParsingExecutionContextView;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -49,6 +50,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 
 @AllArgsConstructor
 public class JclParser implements Parser {
@@ -74,6 +76,14 @@ public class JclParser implements Parser {
      */
     private final List<Path> parmMembers;
 
+    /**
+     * Paths to the members a job's {@code EXEC} and {@code INCLUDE} statements name — the
+     * procedures and INCLUDE groups of the procedure library, supplied out-of-band and resolved by
+     * member name (the file name without its extension). Anything {@link #accept} takes is a
+     * candidate, so in a portfolio checked out whole this is simply every JCL member in it.
+     */
+    private final List<Path> procedureLibrary;
+
     @Override
     public Stream<SourceFile> parseInputs(Iterable<Input> sourceFiles, @Nullable Path relativeTo, ExecutionContext ctx) {
         ParsingExecutionContextView pctx = ParsingExecutionContextView.view(ctx);
@@ -84,6 +94,8 @@ public class JclParser implements Parser {
         // JCL source rather than rebuilding it (and re-tokenizing every member) per source.
         ExpandExternalSysinVisitor<ExecutionContext> sysinExpander = parmMembers.isEmpty() ? null :
                 new ExpandExternalSysinVisitor<>(readParmMembers(parmMembers, ctx));
+        ExpandJobVisitor<ExecutionContext> jobExpander = procedureLibrary.isEmpty() ? null :
+                new ExpandJobVisitor<>(readProcedureLibrary(procedureLibrary, ctx));
 
         return accepted
                 .map(sourceFile -> {
@@ -121,6 +133,9 @@ public class JclParser implements Parser {
                         if (sysinExpander != null) {
                             cu = sysinExpander.visitCompilationUnit(cu, ctx);
                         }
+                        if (jobExpander != null) {
+                            cu = jobExpander.visitCompilationUnit(cu, ctx);
+                        }
 
                         sample.stop(MetricsHelper.successTags(timer).register(Metrics.globalRegistry));
                         parsingListener.parsed(sourceFile, cu);
@@ -141,16 +156,51 @@ public class JclParser implements Parser {
     private static Map<String, String> readParmMembers(List<Path> paths, ExecutionContext ctx) {
         Map<String, String> members = new HashMap<>();
         for (Path path : paths) {
-            String fileName = path.getFileName().toString();
-            int dot = fileName.indexOf('.');
-            String key = (dot < 0 ? fileName : fileName.substring(0, dot)).toUpperCase(Locale.ROOT);
             try (InputStream in = Files.newInputStream(path)) {
-                members.putIfAbsent(key, new EncodingDetectingInputStream(in).readFully());
+                members.putIfAbsent(memberName(path), new EncodingDetectingInputStream(in).readFully());
             } catch (IOException e) {
                 ctx.getOnError().accept(e);
             }
         }
         return members;
+    }
+
+    /**
+     * Parses each procedure library member once, keyed by member name. A member that does not parse
+     * is reported and left out, so one bad member costs the procedures it holds rather than the
+     * whole portfolio. The parser used has no library of its own: what a member of it in turn
+     * refers to is resolved by {@link ExpandJobVisitor} as it expands, not by parsing it twice.
+     */
+    private static Map<String, Jcl.CompilationUnit> readProcedureLibrary(List<Path> paths, ExecutionContext ctx) {
+        Map<String, Jcl.CompilationUnit> members = new HashMap<>();
+        JclParser parser = new JclParser(emptyList(), emptyList());
+        for (Path path : paths) {
+            String key = memberName(path);
+            if (members.containsKey(key)) {
+                continue;
+            }
+            parser.parseInputs(singletonList(new Parser.Input(path, () -> {
+                try {
+                    return Files.newInputStream(path);
+                } catch (IOException e) {
+                    throw new UncheckedIOException(e);
+                }
+            })), null, ctx).forEach(parsed -> {
+                if (parsed instanceof Jcl.CompilationUnit) {
+                    members.put(key, (Jcl.CompilationUnit) parsed);
+                }
+            });
+        }
+        return members;
+    }
+
+    /**
+     * The member name a data set reference resolves against: the file name without its extension.
+     */
+    private static String memberName(Path path) {
+        String fileName = path.getFileName().toString();
+        int dot = fileName.lastIndexOf('.');
+        return (dot < 0 ? fileName : fileName.substring(0, dot)).toUpperCase(Locale.ROOT);
     }
 
     @Override
@@ -204,6 +254,7 @@ public class JclParser implements Parser {
 
     public static class Builder extends org.openrewrite.Parser.Builder {
         private List<Path> parmMembers = emptyList();
+        private List<Path> procedureLibrary = emptyList();
 
         public Builder() {
             super(Jcl.CompilationUnit.class);
@@ -214,9 +265,14 @@ public class JclParser implements Parser {
             return this;
         }
 
+        public Builder procedureLibrary(List<Path> procedureLibrary) {
+            this.procedureLibrary = procedureLibrary;
+            return this;
+        }
+
         @Override
         public JclParser build() {
-            return new JclParser(parmMembers);
+            return new JclParser(parmMembers, procedureLibrary);
         }
 
         @Override

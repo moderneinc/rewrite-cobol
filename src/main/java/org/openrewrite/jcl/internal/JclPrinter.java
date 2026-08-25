@@ -83,6 +83,12 @@ public class JclPrinter<P> extends JclVisitor<PrintOutputCapture<P>> {
     }
 
     @Override
+    public Jcl visitExpansion(Jcl.Expansion expansion, PrintOutputCapture<P> p) {
+        // A procedure or INCLUDE body resolved into the tree; not part of the original source.
+        return expansion;
+    }
+
+    @Override
     public Jcl visitDelimiter(Jcl.Delimiter delimiter, PrintOutputCapture<P> p) {
         beforeSyntax(delimiter, Space.Location.DELIMITER_PREFIX, p);
         visit(delimiter.getDelimiter(), p);

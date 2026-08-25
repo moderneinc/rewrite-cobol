@@ -40,6 +40,11 @@ public class JclIsoVisitor<P> extends JclVisitor<P> {
     }
 
     @Override
+    public Jcl.Expansion visitExpansion(Jcl.Expansion expansion, P p) {
+        return (Jcl.Expansion) super.visitExpansion(expansion, p);
+    }
+
+    @Override
     public Jcl.Delimiter visitDelimiter(Jcl.Delimiter delimiter, P p) {
         return (Jcl.Delimiter) super.visitDelimiter(delimiter, p);
     }

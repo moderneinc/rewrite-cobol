@@ -20,14 +20,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.openrewrite.InMemoryExecutionContext;
 import org.openrewrite.ParseExceptionResult;
-import org.openrewrite.Parser;
 import org.openrewrite.SourceFile;
 import org.openrewrite.cobol.Corpus;
 import org.openrewrite.jcl.JclParser;
 import org.openrewrite.jcl.tree.Jcl;
 import org.openrewrite.jcl.tree.Statement;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -38,7 +36,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -67,6 +64,9 @@ class JclCorpusTest {
         int dds = 0;
         int dataSets = 0;
         int concatenations = 0;
+        int expanded = 0;
+        int throughProcedures = 0;
+        int missingMembers = 0;
         List<String> notPrintedBack = new ArrayList<>();
         List<String> notRead = new ArrayList<>();
         List<String> fixtureNotRead = new ArrayList<>();
@@ -80,21 +80,21 @@ class JclCorpusTest {
             }
             int read = 0;
             int unread = notRead.size();
-            for (Path member : jobs) {
+            // Every JCL member of the application is a candidate procedure library member, which is
+            // what a portfolio checked out whole gives a build.
+            List<SourceFile> parsed = JclParser.builder().procedureLibrary(jobs).build()
+                    .parseInputs(Corpus.inputs(jobs), corpus, new InMemoryExecutionContext())
+                    .collect(Collectors.toList());
+            for (int i = 0; i < jobs.size(); i++) {
                 members++;
+                Path member = jobs.get(i);
                 String name = corpus.relativize(member).toString();
                 String source = new String(Files.readAllBytes(member));
-                // Parsed by path rather than from the string: a member named .jcl that holds no JCL
-                // is refused by name, and a string has no name.
-                List<SourceFile> parsed = JclParser.builder().build()
-                        .parseInputs(singletonList(new Parser.Input(member, () -> new ByteArrayInputStream(source.getBytes()))),
-                                corpus, new InMemoryExecutionContext())
-                        .collect(Collectors.toList());
-                if (parsed.isEmpty() || !(parsed.get(0) instanceof Jcl.CompilationUnit)) {
-                    notRead.add(name + ": " + cause(parsed));
+                if (i >= parsed.size() || !(parsed.get(i) instanceof Jcl.CompilationUnit)) {
+                    notRead.add(name + ": " + cause(parsed.subList(Math.min(i, parsed.size()), parsed.size())));
                     continue;
                 }
-                Jcl.CompilationUnit cu = (Jcl.CompilationUnit) parsed.get(0);
+                Jcl.CompilationUnit cu = (Jcl.CompilationUnit) parsed.get(i);
                 if (!source.equals(cu.printAll())) {
                     notPrintedBack.add(name);
                     continue;
@@ -109,6 +109,15 @@ class JclCorpusTest {
 
                 for (Step step : new Step.Matcher().lower(cu).collect(Collectors.toList())) {
                     steps++;
+                    if (step.getExpandedFrom() != null) {
+                        expanded++;
+                    }
+                    if (step.getCallingStep() != null) {
+                        throughProcedures++;
+                    }
+                    if (step.isProcedureMissing()) {
+                        missingMembers++;
+                    }
                     if (step.getProgram() != null) {
                         programs++;
                     }
@@ -129,9 +138,11 @@ class JclCorpusTest {
         }
         assertThat(members).as("no JCL found under %s", corpus).isPositive();
 
-        System.out.printf("JCL: %d members, %d steps (%d naming a program), %d DD, %d data sets, " +
-                        "%d concatenations%n",
-                members, steps, programs, dds, dataSets, concatenations);
+        System.out.printf("JCL: %d members, %d steps (%d naming a program, %d resolved out of another " +
+                        "member and %d of those through a procedure, %d calling a procedure that is not " +
+                        "in the portfolio), %d DD, %d data sets, %d concatenations%n",
+                members, steps, programs, expanded, throughProcedures, missingMembers, dds, dataSets,
+                concatenations);
         if (!notRead.isEmpty()) {
             System.out.println("not read:");
             notRead.forEach(f -> System.out.println("  " + f));
@@ -151,13 +162,77 @@ class JclCorpusTest {
     }
 
     /**
+     * What the fixture's jobs run once their procedures and INCLUDE members are resolved, against
+     * the counts its own INTERLINKS.md section 8 gives — which were written by reading the members,
+     * not by running this. Every number here is one a person can check by eye against that file.
+     */
+    @Test
+    void runsTheFixturesJobsThroughItsProcedures() throws IOException {
+        Path corpus = Paths.get(System.getenv("JCL_CORPUS"));
+        Path fixture = null;
+        for (Path repository : Corpus.repositories(corpus)) {
+            if (Corpus.isFixture(repository)) {
+                fixture = repository;
+            }
+        }
+        assertThat(fixture).as("mainframe-fixtures under %s", corpus).isNotNull();
+
+        List<Path> library = Corpus.jobs(fixture);
+        List<SourceFile> parsed = JclParser.builder().procedureLibrary(library).build()
+                .parseInputs(Corpus.inputs(library), corpus, new InMemoryExecutionContext())
+                .collect(Collectors.toList());
+
+        int jobs = 0;
+        int written = 0;
+        int callsAProcedure = 0;
+        int namesAProgram = 0;
+        int callsAProcedureOutsideTheFixture = 0;
+        int reachedThroughAProcedure = 0;
+        int jobCards = 0;
+        for (int i = 0; i < library.size(); i++) {
+            if (!"jcl".equals(library.get(i).getParent().getFileName().toString())) {
+                continue;
+            }
+            jobs++;
+            Jcl.CompilationUnit cu = (Jcl.CompilationUnit) parsed.get(i);
+            for (Step step : new Step.Matcher().lower(cu).collect(Collectors.toList())) {
+                if (step.getExpandedFrom() == null) {
+                    written++;
+                    callsAProcedure += step.getProcedure() == null ? 0 : 1;
+                    namesAProgram += step.getProgram() == null ? 0 : 1;
+                    callsAProcedureOutsideTheFixture += step.isProcedureMissing() ? 1 : 0;
+                } else if (step.getCallingStep() != null) {
+                    reachedThroughAProcedure++;
+                }
+            }
+            jobCards += new Job.Matcher().lower(cu)
+                    .peek(job -> assertThat(job.getProcedureLibraries()).contains("CLM.PROD.PROCLIB"))
+                    .count();
+        }
+
+        assertThat(jobs).isEqualTo(24);
+        assertThat(written).isEqualTo(84);
+        assertThat(callsAProcedure).isEqualTo(67);
+        assertThat(namesAProgram).isEqualTo(17);
+        // DBDGEN, PSBGEN, ACBGEN, MFSUTL and IMSCOBOL are IMS's own and are not in the repository.
+        assertThat(callsAProcedureOutsideTheFixture).isEqualTo(20);
+        assertThat(reachedThroughAProcedure).isEqualTo(81);
+        // Every job includes the one job card member, and the 17 steps that name a program plus the
+        // 81 reached through a procedure are the 98 steps INTERLINKS says the 24 jobs run.
+        assertThat(jobCards).isEqualTo(24);
+        assertThat(namesAProgram + reachedThroughAProcedure).isEqualTo(98);
+    }
+
+    /**
      * Why a member that parsed does not count as read, or null when it does. The traits must find
      * exactly the EXEC cards the source has; counting them independently is the only thing that
      * turns "it ran without complaining" into evidence that the file was read correctly.
      */
     private static @Nullable String misread(Jcl.CompilationUnit cu, String source) {
         int written = countExecCards(source);
-        long read = new Step.Matcher().lower(cu).count();
+        // Only the steps written in this member: the rest were resolved out of a procedure it calls,
+        // and no EXEC card of this member was written for them.
+        long read = new Step.Matcher().lower(cu).filter(step -> step.getExpandedFrom() == null).count();
         if (written != read) {
             return read + " steps read, " + written + " EXEC cards written";
         }

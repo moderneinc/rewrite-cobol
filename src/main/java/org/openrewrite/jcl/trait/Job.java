@@ -19,8 +19,12 @@ import lombok.Value;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
 import org.openrewrite.jcl.tree.Jcl;
+import org.openrewrite.jcl.tree.Statement;
 import org.openrewrite.trait.SimpleTraitMatcher;
 import org.openrewrite.trait.Trait;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A JOB statement.
@@ -43,7 +47,49 @@ public class Job implements Trait<Jcl.JobControlStatement> {
      */
     public @Nullable String getParameter(String keyword) {
         Jcl.KeywordParameter parameter = getTree().getParameter(keyword);
-        return parameter == null ? null : parameter.getValueText();
+        return parameter == null ? null : Steps.resolved(parameter);
+    }
+
+    /**
+     * The data sets a {@code JCLLIB ORDER=} says to search for the job's procedures and INCLUDE
+     * members, in order, symbols filled in.
+     * <p>
+     * They are reported rather than searched: a data set name says nothing about where the member
+     * is checked in, so expansion resolves by member name across everything supplied. What the
+     * order is good for is saying which library a job expects to be built against, and finding the
+     * jobs that expect one that is not in the portfolio.
+     */
+    public List<String> getProcedureLibraries() {
+        List<String> libraries = new ArrayList<>();
+        for (Statement statement : cursor.firstEnclosingOrThrow(Jcl.CompilationUnit.class).getStatements()) {
+            if (!(statement instanceof Jcl.JobControlStatement) ||
+                !((Jcl.JobControlStatement) statement).isOperation("JCLLIB")) {
+                continue;
+            }
+            Jcl.KeywordParameter order = ((Jcl.JobControlStatement) statement).getParameter("ORDER");
+            if (order != null) {
+                libraries.addAll(dataSets(Steps.resolved(order)));
+            }
+        }
+        return libraries;
+    }
+
+    private static List<String> dataSets(String text) {
+        String value = text.trim();
+        if (value.startsWith("(") && value.endsWith(")")) {
+            value = value.substring(1, value.length() - 1);
+        }
+        List<String> names = new ArrayList<>();
+        for (String element : value.split(",")) {
+            String name = element.trim();
+            if (name.length() > 1 && name.startsWith("'") && name.endsWith("'")) {
+                name = name.substring(1, name.length() - 1);
+            }
+            if (!name.isEmpty()) {
+                names.add(name);
+            }
+        }
+        return names;
     }
 
     public static class Matcher extends SimpleTraitMatcher<Job> {

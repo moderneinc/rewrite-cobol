@@ -19,7 +19,9 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
+import org.openrewrite.jcl.marker.ResolvedText;
 import org.openrewrite.jcl.tree.Jcl;
+import org.openrewrite.jcl.tree.Parameter;
 import org.openrewrite.jcl.tree.Statement;
 
 import java.util.ArrayList;
@@ -59,11 +61,7 @@ final class Steps {
      * one of them turns out to be the EXEC.
      */
     static @Nullable Step stepOf(Cursor cursor) {
-        Jcl.CompilationUnit cu = cursor.firstEnclosing(Jcl.CompilationUnit.class);
-        if (cu == null) {
-            return null;
-        }
-        List<Statement> statements = cu.getStatements();
+        List<Statement> statements = enclosing(cursor);
         for (int i = indexOf(statements, cursor.getValue()) - 1; i >= 0; i--) {
             Statement statement = statements.get(i);
             if (isOperation(statement, "EXEC")) {
@@ -82,11 +80,7 @@ final class Steps {
      * the step is a DD in its own right, and dropping it would lose a data set nothing else names.
      */
     static boolean continuesADataDefinition(Cursor cursor) {
-        Jcl.CompilationUnit cu = cursor.firstEnclosing(Jcl.CompilationUnit.class);
-        if (cu == null) {
-            return false;
-        }
-        List<Statement> statements = cu.getStatements();
+        List<Statement> statements = enclosing(cursor);
         for (int i = indexOf(statements, cursor.getValue()) - 1; i >= 0; i--) {
             Statement statement = statements.get(i);
             if (isOperation(statement, "DD")) {
@@ -100,11 +94,7 @@ final class Steps {
     }
 
     private static List<Statement> following(Cursor cursor, Predicate<Statement> stop) {
-        Jcl.CompilationUnit cu = cursor.firstEnclosing(Jcl.CompilationUnit.class);
-        if (cu == null) {
-            return emptyList();
-        }
-        List<Statement> statements = cu.getStatements();
+        List<Statement> statements = enclosing(cursor);
         int from = indexOf(statements, cursor.getValue());
         if (from < 0) {
             return emptyList();
@@ -114,6 +104,41 @@ final class Steps {
             within.add(statements.get(i));
         }
         return within;
+    }
+
+    /**
+     * The run of cards a statement is written in: the member's own, or the body of the procedure or
+     * INCLUDE member expanded into it. A card resolved out of a procedure belongs to the cards of
+     * that procedure and to nothing in the calling member.
+     */
+    static List<Statement> enclosing(Cursor cursor) {
+        Cursor parent = cursor.getParent();
+        if (parent != null && parent.getValue() instanceof Jcl.Expansion) {
+            return ((Jcl.Expansion) parent.getValue()).getStatements();
+        }
+        Jcl.CompilationUnit cu = cursor.firstEnclosing(Jcl.CompilationUnit.class);
+        return cu == null ? emptyList() : cu.getStatements();
+    }
+
+    /**
+     * The expansion a statement was resolved into, or null for one written in the member itself.
+     */
+    static Jcl.@Nullable Expansion expansionOf(Cursor cursor) {
+        Cursor parent = cursor.getParent();
+        return parent != null && parent.getValue() instanceof Jcl.Expansion ?
+                (Jcl.Expansion) parent.getValue() : null;
+    }
+
+    /**
+     * What a parameter says once its symbols are filled in, which is what it says at all when the
+     * job runs. The same as the text as written wherever nothing was substituted.
+     */
+    static String resolved(Parameter parameter) {
+        return parameter.getMarkers().findFirst(ResolvedText.class)
+                .map(ResolvedText::getText)
+                .orElseGet(() -> parameter instanceof Jcl.KeywordParameter ?
+                        ((Jcl.KeywordParameter) parameter).getValueText() :
+                        ((Jcl.PositionalParameter) parameter).getValueText());
     }
 
     private static int indexOf(List<Statement> statements, Object statement) {
