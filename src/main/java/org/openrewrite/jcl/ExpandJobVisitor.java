@@ -216,8 +216,6 @@ public class ExpandJobVisitor<P> extends JclIsoVisitor<P> {
                 Jcl.Expansion.Kind.INCLUDE, onNewLine(body)));
     }
 
-    // ---------------------------------------------------------------- symbols
-
     private void set(Jcl.JobControlStatement statement, Scope scope) {
         for (Parameter parameter : statement.getParameters()) {
             if (parameter instanceof Jcl.KeywordParameter) {
@@ -234,7 +232,7 @@ public class ExpandJobVisitor<P> extends JclIsoVisitor<P> {
         if (symlist == null) {
             return;
         }
-        for (String name : list(valueOf(symlist, scope))) {
+        for (String name : Operands.list(valueOf(symlist, scope))) {
             if ("*".equals(name)) {
                 scope.exportAll = true;
             } else {
@@ -366,8 +364,6 @@ public class ExpandJobVisitor<P> extends JclIsoVisitor<P> {
         return resolved == null ? text : resolved.getText();
     }
 
-    // ---------------------------------------------------------------- procedures
-
     /**
      * The procedure a step calls, or null when it names a program. {@code EXEC MYPROC} and
      * {@code EXEC PROC=MYPROC} say the same thing.
@@ -471,8 +467,6 @@ public class ExpandJobVisitor<P> extends JclIsoVisitor<P> {
         }
         return defaults;
     }
-
-    // ---------------------------------------------------------------- DD overrides
 
     /**
      * The DD statements written under an {@code EXEC} that calls a procedure. Each is kept with the
@@ -664,8 +658,6 @@ public class ExpandJobVisitor<P> extends JclIsoVisitor<P> {
         return new Jcl.Word(randomId(), Space.EMPTY, Markers.EMPTY, text);
     }
 
-    // ---------------------------------------------------------------- grafting
-
     private static Statement mark(Statement statement, @Nullable Marker... markers) {
         Markers marked = statement.getMarkers();
         for (Marker marker : markers) {
@@ -717,27 +709,6 @@ public class ExpandJobVisitor<P> extends JclIsoVisitor<P> {
     private static boolean isOperation(Statement statement, String operation) {
         return statement instanceof Jcl.JobControlStatement &&
                ((Jcl.JobControlStatement) statement).isOperation(operation);
-    }
-
-    /**
-     * Splits {@code (A,B)} or {@code A} into its elements, quotes taken off.
-     */
-    private static List<String> list(String text) {
-        String value = text.trim();
-        if (value.startsWith("(") && value.endsWith(")")) {
-            value = value.substring(1, value.length() - 1);
-        }
-        List<String> elements = new ArrayList<>();
-        for (String element : value.split(",")) {
-            String trimmed = element.trim();
-            if (trimmed.length() > 1 && trimmed.startsWith("'") && trimmed.endsWith("'")) {
-                trimmed = trimmed.substring(1, trimmed.length() - 1);
-            }
-            if (!trimmed.isEmpty()) {
-                elements.add(trimmed);
-            }
-        }
-        return elements;
     }
 
     private static final class Scope {

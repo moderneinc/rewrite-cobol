@@ -18,6 +18,7 @@ package org.openrewrite.jcl.trait;
 import lombok.Value;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
+import org.openrewrite.jcl.Operands;
 import org.openrewrite.jcl.tree.Jcl;
 import org.openrewrite.jcl.tree.Statement;
 import org.openrewrite.trait.SimpleTraitMatcher;
@@ -68,28 +69,10 @@ public class Job implements Trait<Jcl.JobControlStatement> {
             }
             Jcl.KeywordParameter order = ((Jcl.JobControlStatement) statement).getParameter("ORDER");
             if (order != null) {
-                libraries.addAll(dataSets(Steps.resolved(order)));
+                libraries.addAll(Operands.list(Steps.resolved(order)));
             }
         }
         return libraries;
-    }
-
-    private static List<String> dataSets(String text) {
-        String value = text.trim();
-        if (value.startsWith("(") && value.endsWith(")")) {
-            value = value.substring(1, value.length() - 1);
-        }
-        List<String> names = new ArrayList<>();
-        for (String element : value.split(",")) {
-            String name = element.trim();
-            if (name.length() > 1 && name.startsWith("'") && name.endsWith("'")) {
-                name = name.substring(1, name.length() - 1);
-            }
-            if (!name.isEmpty()) {
-                names.add(name);
-            }
-        }
-        return names;
     }
 
     public static class Matcher extends SimpleTraitMatcher<Job> {
