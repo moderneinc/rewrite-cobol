@@ -21,7 +21,7 @@
 
 ## What is this?
 
-This project implements a [Rewrite module](https://github.com/openrewrite/rewrite) that provides parsers, visitors, and recipes for COBOL and related mainframe technologies. It supports parsing and transforming COBOL source code, JCL (Job Control Language), BMS map sets, DB2 DDL, DB2 bind cards, and Control-M job definitions.
+This project implements a [Rewrite module](https://github.com/openrewrite/rewrite) that provides parsers, visitors, and recipes for COBOL and related mainframe technologies. It supports parsing and transforming COBOL source code, JCL (Job Control Language), BMS map sets, DB2 DDL, DB2 bind cards, DFSORT and IDCAMS control cards, and Control-M job definitions.
 
 ### Language Support
 
@@ -30,6 +30,8 @@ This project implements a [Rewrite module](https://github.com/openrewrite/rewrit
 - **BMS** — CICS Basic Mapping Support map sets (`.bms`): the `DFHMSD`/`DFHMDI`/`DFHMDF` macros, and the symbolic map names they generate, which is what joins a screen field to the COBOL data item a program reads it from
 - **DB2 DDL** — DB2 for z/OS DDL (`.ddl`, `.sql`, and the `SYSIN` streams of the jobs that create a schema): every statement the SQL reference documents is modelled, so a statement that cannot be read is a syntax error rather than a node that says nothing
 - **Bind cards** — DSN command decks (`.bnd`, and an extensionless CARDLIB member whose first subcommand binds): `BIND PLAN`, `BIND PACKAGE` and `REBIND` with their keyword operands, read from a member of their own or from the in-stream `SYSTSIN` of the job that runs them
+- **Sort cards** — DFSORT and ICETOOL control statements: `SORT`/`MERGE FIELDS`, `INCLUDE`/`OMIT COND`, `INREC`/`OUTREC`/`OUTFIL`, `SUM`, `OPTION`, with the control fields read as byte positions into the record, which is what joins a sort card to the copybook that describes it
+- **IDCAMS cards** — Access method services commands: `DEFINE CLUSTER`/`AIX`/`PATH`/`GDG` with their parameter groups, `REPRO`, `DELETE`, `LISTCAT`, `PRINT` and `ALTER`, which is where a VSAM file's key, record size and components are written down
 - **Control-M** — Control-M job scheduling definition parsing
 
 ### Recipes
@@ -91,7 +93,9 @@ the parsers accept them, whatever the case of the extension: programs by `.cbl`,
 `.cobol`, copybooks by `.cpy`, `.copy` and `.dcl`, map sets by `.bms`, bind decks by `.bnd`, and
 jobs by `.jcl`, `.prc` and `.proc` — or, since MainframeJCL, ADCD setup and Zowe's SZWESAMP keep
 their members as they came off the PDS, by a `.txt` or extensionless file whose first card is JCL,
-and by an extensionless file whose first subcommand binds. A member whose name promises
+and by an extensionless file whose first subcommand binds. Control card members are typed by what
+they say rather than by what they are called: a `.ctl`, `.prm` or extensionless member is a sort
+deck or an IDCAMS deck if its first statement is one, and anything else stays plain. A member whose name promises
 a language its content is not — CBSA's `DFH$SIP1.jcl` is a CICS parameter member — is reported as
 such, under `WrongLanguageException`, rather than as a grammar failure. The corpus tests skip
 themselves when the variables are unset, so a normal `./gradlew test` does not need them:
@@ -144,6 +148,11 @@ and asserts how many there are, so that set cannot grow without someone saying w
 `BindCorpusTest` does the same for bind cards, over the fixture's ten `CARDLIB` decks and the eleven
 decks the corpus writes in-stream, counting every `BIND` and `REBIND` it read against a line scan of
 the source. It runs under `JCL_CORPUS`: a bind deck is reached through the jobs that run it.
+
+`ControlCardCorpusTest` does the same for sort and IDCAMS cards, over 16 members and the 153 decks
+the corpus writes in-stream, and requires that no member is claimed by both parsers. It also checks
+the fixture's `ctlcard` library member by member against INTERLINKS section 8.3, which is where the
+six IDCAMS members, the two sort members and the eleven that are neither are written down.
 
 ## Contributing
 

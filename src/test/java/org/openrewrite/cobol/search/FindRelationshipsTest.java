@@ -29,6 +29,8 @@ import static org.openrewrite.cobol.Assertions.cobol;
 import static org.openrewrite.cobol.Assertions.copybook;
 import static org.openrewrite.cobol.table.CobolRelationships.ResourceAction.*;
 import static org.openrewrite.cobol.table.CobolRelationships.ResourceType.*;
+import static org.openrewrite.controlcard.idcams.Assertions.idcamsCard;
+import static org.openrewrite.controlcard.sort.Assertions.sortCard;
 import static org.openrewrite.controlm.Assertions.controlM;
 import static org.openrewrite.db2.bind.Assertions.bind;
 import static org.openrewrite.jcl.Assertions.jcl;
@@ -140,6 +142,76 @@ class FindRelationshipsTest extends CobolTest {
               /*
               """,
             spec -> spec.path("jcl/BINDCARD.jcl")
+          )
+        );
+    }
+
+    /**
+     * A VSAM file exists because a {@code DEFINE} made it, and the jobs that read it say only that
+     * they read it. A sort card yields no such edge: {@code SORTIN} is a DD name, and only the JCL
+     * says what it is bound to.
+     */
+    @Test
+    void idcamsDefineNamesTheDataSetItMakes() {
+        String define = """
+          /* DEFCLM01 - CLAIM MASTER KSDS. */
+          DELETE CLM.PROD.CLMMAST CLUSTER PURGE
+          SET MAXCC = 0
+          DEFINE CLUSTER (NAME(CLM.PROD.CLMMAST)      -
+                          INDEXED KEYS(10 0))         -
+                 DATA    (NAME(CLM.PROD.CLMMAST.DATA))
+          """;
+        rewriteRun(
+          spec -> spec.dataTable(Row.class, rows -> {
+              assertThat(rows).filteredOn(r -> r.getDependencyType() == DATA_SET)
+                .extracting(Row::getDependency)
+                .containsExactly("CLM.PROD.CLMMAST", "CLM.PROD.CLMMAST.DATA");
+              assertThat(rows).filteredOn(r -> r.getDependencyType() == DATA_SET).allSatisfy(r -> {
+                  assertThat(r.getDependent()).isEqualTo("DEFCLM01");
+                  assertThat(r.getDependentType()).isEqualTo(CONTROL_CARD);
+                  assertThat(r.getAction()).isEqualTo(DEFINES);
+                  assertThat(r.getDependentPath()).isEqualTo("ctlcard/DEFCLM01.ctl");
+                  assertThat(lineAt(define, r.getDependentLine())).contains("DEFINE CLUSTER");
+              });
+          }),
+          idcamsCard(define, spec -> spec.path("ctlcard/DEFCLM01.ctl")),
+          sortCard(
+            """
+              * SRTCLM01 - SORT THE DAILY CLAIM EXTRACT.
+                SORT FIELDS=(53,4,CH,A,1,10,CH,A)
+                INCLUDE COND=(57,1,CH,EQ,C'O')
+              """,
+            spec -> spec.path("ctlcard/SRTCLM01.ctl")
+          )
+        );
+    }
+
+    @Test
+    void idcamsDeckWrittenInAJob() {
+        rewriteRun(
+          spec -> spec.dataTable(Row.class, rows ->
+            assertThat(rows).filteredOn(r -> r.getDependencyType() == DATA_SET).singleElement().satisfies(r -> {
+                assertThat(r.getDependent()).isEqualTo("DEFKSDS");
+                assertThat(r.getDependentType()).isEqualTo(JCL);
+                assertThat(r.getDependency()).isEqualTo("SYSD.STOCK.HISTORY");
+                // The anchor is the job's own line, not the deck's, so it points at the card a
+                // reader would open the job to find.
+                assertThat(r.getDependentPath()).isEqualTo("jcl/DEFKSDS.jcl");
+                assertThat(r.getDependentLine()).isEqualTo(5);
+            })),
+          jcl(
+            """
+              //DEFKSDS JOB (P0L1),'STOCK TRADER KSDS',MSGCLASS=A
+              //STEPNAME EXEC PGM=IDCAMS
+              //SYSPRINT DD   SYSOUT=*
+              //SYSIN    DD   *
+                  DEFINE CLUSTER (NAME(SYSD.STOCK.HISTORY)                -
+                                  INDEXED                                 -
+                                  RECSZ(100 100)                          -
+                                  KEYS(29 0))
+              /*
+              """,
+            spec -> spec.path("jcl/DEFKSDS.jcl")
           )
         );
     }

@@ -69,6 +69,32 @@ tasks.register<JavaExec>("generateAntlrSourcesBind") {
     finalizedBy("licenseFormat")
 }
 
+tasks.register<JavaExec>("generateAntlrSourcesSort") {
+    mainClass.set("org.antlr.v4.Tool")
+    args = listOf(
+            "-o", "src/main/java/org/openrewrite/controlcard/sort/internal/grammar",
+            "-package", "org.openrewrite.controlcard.sort.internal.grammar",
+            "-visitor"
+    ) + fileTree("src/main/antlr-sort").matching { include("**/*.g4") }.map { it.path }
+
+    classpath = configurations["antlr"]
+
+    finalizedBy("licenseFormat")
+}
+
+tasks.register<JavaExec>("generateAntlrSourcesIdcams") {
+    mainClass.set("org.antlr.v4.Tool")
+    args = listOf(
+            "-o", "src/main/java/org/openrewrite/controlcard/idcams/internal/grammar",
+            "-package", "org.openrewrite.controlcard.idcams.internal.grammar",
+            "-visitor"
+    ) + fileTree("src/main/antlr-idcams").matching { include("**/*.g4") }.map { it.path }
+
+    classpath = configurations["antlr"]
+
+    finalizedBy("licenseFormat")
+}
+
 tasks.register<JavaExec>("generateAntlrSourcesControlM") {
     mainClass.set("org.antlr.v4.Tool")
     args = listOf(

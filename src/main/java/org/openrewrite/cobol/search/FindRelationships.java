@@ -32,6 +32,12 @@ import org.openrewrite.cobol.table.CobolRelationships;
 import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
 import org.openrewrite.cobol.tree.Name;
+import org.openrewrite.controlcard.InStreamCards;
+import org.openrewrite.controlcard.idcams.IdcamsIsoVisitor;
+import org.openrewrite.controlcard.idcams.IdcamsLineReader;
+import org.openrewrite.controlcard.idcams.IdcamsParser;
+import org.openrewrite.controlcard.idcams.trait.IdcamsCommand;
+import org.openrewrite.controlcard.idcams.tree.Idcams;
 import org.openrewrite.controlm.ControlMIsoVisitor;
 import org.openrewrite.controlm.internal.ControlMPrinter;
 import org.openrewrite.controlm.tree.ControlM;
@@ -304,12 +310,28 @@ public class FindRelationships extends Recipe {
             }
         };
 
+        IdcamsIsoVisitor<ExecutionContext> idcamsCardVisitor = new IdcamsIsoVisitor<ExecutionContext>() {
+            @Override
+            public Idcams.CompilationUnit visitCompilationUnit(Idcams.CompilationUnit cu, ExecutionContext ctx) {
+                idcamsRelationships(cu, memberName(cu.getSourcePath()), CONTROL_CARD,
+                        cu.getSourcePath().toString(), 0, ctx);
+                return cu;
+            }
+        };
+
         JclIsoVisitor<ExecutionContext> jclVisitor = new JclIsoVisitor<ExecutionContext>() {
             @Override
             public Jcl.CompilationUnit visitCompilationUnit(Jcl.CompilationUnit cu, ExecutionContext ctx) {
                 for (InStreamBindDeck stream : InStreamBindDeck.of(cu)) {
                     bindRelationships(stream.getDeck(), memberName(cu.getSourcePath()), JCL,
                             cu.getSourcePath().toString(), stream.getLine() - 1, ctx);
+                }
+                for (InStreamCards cards : InStreamCards.of(cu)) {
+                    if (IdcamsLineReader.isIdcamsDeck(cards.getText())) {
+                        idcamsRelationships(IdcamsParser.parse(cu.getSourcePath(), cards.getText()),
+                                memberName(cu.getSourcePath()), JCL, cu.getSourcePath().toString(),
+                                cards.getLine() - 1, ctx);
+                    }
                 }
                 return cu;
             }
@@ -423,7 +445,8 @@ public class FindRelationships extends Recipe {
                     t = linkEditVisitor.visit(t, ctx);
                 } else if (tree instanceof Bind) {
                     t = bindCardVisitor.visit(t, ctx);
-
+                } else if (tree instanceof Idcams) {
+                    t = idcamsCardVisitor.visit(t, ctx);
                 } else if (tree instanceof Jcl) {
                     t = jclVisitor.visit(t, ctx);
                 } else if (tree instanceof CobolPreprocessor) {
@@ -458,31 +481,56 @@ public class FindRelationships extends Recipe {
 
             for (String plan : command.getPlans()) {
                 if (rebind) {
-                    insertBindRow(seen, deckName, deckType, REFERENCES, plan, BINDPLAN, sourcePath, line, ctx);
+                    insertDeckRow(seen, deckName, deckType, REFERENCES, plan, BINDPLAN, sourcePath, line, ctx);
                     continue;
                 }
-                insertBindRow(seen, deckName, deckType, DEFINES, plan, BINDPLAN, sourcePath, line, ctx);
+                insertDeckRow(seen, deckName, deckType, DEFINES, plan, BINDPLAN, sourcePath, line, ctx);
                 for (String packageName : command.getPackageList()) {
-                    insertBindRow(seen, plan, BINDPLAN, BINDS, packageName, BINDPACKAGE, sourcePath, line, ctx);
+                    insertDeckRow(seen, plan, BINDPLAN, BINDS, packageName, BINDPACKAGE, sourcePath, line, ctx);
                 }
                 for (String member : command.getMembers()) {
-                    insertBindRow(seen, plan, BINDPLAN, BINDS, member, DBRM, sourcePath, line, ctx);
+                    insertDeckRow(seen, plan, BINDPLAN, BINDS, member, DBRM, sourcePath, line, ctx);
                 }
             }
 
             for (String packageName : command.getPackages()) {
                 String qualified = collection == null ? packageName : collection + '.' + packageName;
                 if (rebind) {
-                    insertBindRow(seen, deckName, deckType, REFERENCES, qualified, BINDPACKAGE, sourcePath, line, ctx);
+                    insertDeckRow(seen, deckName, deckType, REFERENCES, qualified, BINDPACKAGE, sourcePath, line, ctx);
                     continue;
                 }
-                insertBindRow(seen, deckName, deckType, DEFINES, qualified, BINDPACKAGE, sourcePath, line, ctx);
-                insertBindRow(seen, qualified, BINDPACKAGE, BINDS, packageName, DBRM, sourcePath, line, ctx);
+                insertDeckRow(seen, deckName, deckType, DEFINES, qualified, BINDPACKAGE, sourcePath, line, ctx);
+                insertDeckRow(seen, qualified, BINDPACKAGE, BINDS, packageName, DBRM, sourcePath, line, ctx);
             }
         }
     }
 
-    private void insertBindRow(Set<String> seen, String dependent, CobolRelationships.ResourceType dependentType,
+    /**
+     * What an IDCAMS deck creates, which nothing else in an estate says: a VSAM file exists because a
+     * {@code DEFINE} made it, and the JCL that reads it names it on a DD without saying where it came
+     * from. The components of a cluster are catalog entries of their own, so a job may name either.
+     * <p>
+     * A DFSORT deck yields nothing here on purpose: {@code SORTIN} and {@code SORTOUT} are DD names,
+     * and only the JCL says what they are bound to.
+     *
+     * @param deckType   what the deck is, which differs by where it was written: a control card
+     *                   library member is a control card, a deck written in-stream is the job.
+     * @param lineOffset how many lines of the source come before the deck's first card, which is
+     *                   nothing for a member of its own and the DD's position for an in-stream one.
+     */
+    private void idcamsRelationships(Idcams.CompilationUnit deck, String deckName,
+                                     CobolRelationships.ResourceType deckType, String sourcePath,
+                                     int lineOffset, ExecutionContext ctx) {
+        Set<String> seen = new HashSet<>();
+        for (IdcamsCommand command : new IdcamsCommand.Matcher().lower(deck).collect(Collectors.toList())) {
+            int line = lineOffset + command.getLine();
+            for (String name : command.getDefinedNames()) {
+                insertDeckRow(seen, deckName, deckType, DEFINES, name, DATA_SET, sourcePath, line, ctx);
+            }
+        }
+    }
+
+    private void insertDeckRow(Set<String> seen, String dependent, CobolRelationships.ResourceType dependentType,
                                CobolRelationships.ResourceAction action, String dependency,
                                CobolRelationships.ResourceType dependencyType, String sourcePath, int line,
                                ExecutionContext ctx) {
