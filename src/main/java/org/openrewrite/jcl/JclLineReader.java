@@ -119,14 +119,22 @@ public class JclLineReader {
                 quoteOpen = false;
             }
             // Only when columns 73-80 hold something. A line merely padded out to 80 would otherwise
-            // open a comment area with nothing in it, which `jclCommentArea` cannot match — it needs
+            // open a comment area with nothing in it, which `commentArea` cannot match — it needs
             // a word, and blanks are hidden — so the parser would recover by swallowing the next
-            // statement's name field. Nor when a literal open at column 72 closes after it: the line
-            // was never held to 72 columns.
-            if (line.length() > 72 && !line.substring(72).trim().isEmpty() &&
+            // statement's name field. Nor when a literal open at column 72 closes after it, nor when
+            // column 72 itself holds something: either way the line was never held to 72 columns,
+            // and splitting it cuts a literal or a word in half that nothing downstream can put
+            // back together.
+            if (line.length() > 72 && line.charAt(71) == ' ' && !line.substring(72).trim().isEmpty() &&
                 !(line.substring(72).indexOf('\'') >= 0 && quoteOpenAfter(operandField(line.substring(0, 72), quoteOpen), quoteOpen))) {
-                commentArea = line.substring(72);
-                line = line.substring(0, 72);
+                // The blanks in front stay with the statement: `CA_START` takes the whole rest of
+                // the line, so a comment area beginning with them is found twice in the source.
+                int start = 72;
+                while (line.charAt(start) == ' ') {
+                    start++;
+                }
+                commentArea = line.substring(start);
+                line = line.substring(0, start);
             }
 
             // A DD with DLM= ends its data at a string of its own choosing rather than at /*, which

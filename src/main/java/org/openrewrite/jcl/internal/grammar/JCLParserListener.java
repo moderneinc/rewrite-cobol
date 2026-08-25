@@ -63,16 +63,6 @@ public interface JCLParserListener extends ParseTreeListener {
 	 */
 	void exitJclWord(JCLParser.JclWordContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link JCLParser#jclCommentArea}.
-	 * @param ctx the parse tree
-	 */
-	void enterJclCommentArea(JCLParser.JclCommentAreaContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link JCLParser#jclCommentArea}.
-	 * @param ctx the parse tree
-	 */
-	void exitJclCommentArea(JCLParser.JclCommentAreaContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link JCLParser#jclTrailingComment}.
 	 * @param ctx the parse tree
 	 */
@@ -103,16 +93,6 @@ public interface JCLParserListener extends ParseTreeListener {
 	 */
 	void exitJes2Word(JCLParser.Jes2WordContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link JCLParser#jes2CommentArea}.
-	 * @param ctx the parse tree
-	 */
-	void enterJes2CommentArea(JCLParser.Jes2CommentAreaContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link JCLParser#jes2CommentArea}.
-	 * @param ctx the parse tree
-	 */
-	void exitJes2CommentArea(JCLParser.Jes2CommentAreaContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link JCLParser#jes3}.
 	 * @param ctx the parse tree
 	 */
@@ -132,16 +112,6 @@ public interface JCLParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitJes3Word(JCLParser.Jes3WordContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link JCLParser#jes3CommentArea}.
-	 * @param ctx the parse tree
-	 */
-	void enterJes3CommentArea(JCLParser.Jes3CommentAreaContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link JCLParser#jes3CommentArea}.
-	 * @param ctx the parse tree
-	 */
-	void exitJes3CommentArea(JCLParser.Jes3CommentAreaContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link JCLParser#stream}.
 	 * @param ctx the parse tree
@@ -163,16 +133,6 @@ public interface JCLParserListener extends ParseTreeListener {
 	 */
 	void exitStreamWord(JCLParser.StreamWordContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link JCLParser#streamCommentArea}.
-	 * @param ctx the parse tree
-	 */
-	void enterStreamCommentArea(JCLParser.StreamCommentAreaContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link JCLParser#streamCommentArea}.
-	 * @param ctx the parse tree
-	 */
-	void exitStreamCommentArea(JCLParser.StreamCommentAreaContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link JCLParser#controlM}.
 	 * @param ctx the parse tree
 	 */
@@ -192,16 +152,6 @@ public interface JCLParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitControlMWord(JCLParser.ControlMWordContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link JCLParser#controlMCommentArea}.
-	 * @param ctx the parse tree
-	 */
-	void enterControlMCommentArea(JCLParser.ControlMCommentAreaContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link JCLParser#controlMCommentArea}.
-	 * @param ctx the parse tree
-	 */
-	void exitControlMCommentArea(JCLParser.ControlMCommentAreaContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link JCLParser#comment}.
 	 * @param ctx the parse tree
@@ -223,16 +173,6 @@ public interface JCLParserListener extends ParseTreeListener {
 	 */
 	void exitCommentWord(JCLParser.CommentWordContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link JCLParser#commentCommentArea}.
-	 * @param ctx the parse tree
-	 */
-	void enterCommentCommentArea(JCLParser.CommentCommentAreaContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link JCLParser#commentCommentArea}.
-	 * @param ctx the parse tree
-	 */
-	void exitCommentCommentArea(JCLParser.CommentCommentAreaContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link JCLParser#unknown}.
 	 * @param ctx the parse tree
 	 */
@@ -253,13 +193,13 @@ public interface JCLParserListener extends ParseTreeListener {
 	 */
 	void exitUnknownWord(JCLParser.UnknownWordContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link JCLParser#unknownCommentArea}.
+	 * Enter a parse tree produced by {@link JCLParser#commentArea}.
 	 * @param ctx the parse tree
 	 */
-	void enterUnknownCommentArea(JCLParser.UnknownCommentAreaContext ctx);
+	void enterCommentArea(JCLParser.CommentAreaContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link JCLParser#unknownCommentArea}.
+	 * Exit a parse tree produced by {@link JCLParser#commentArea}.
 	 * @param ctx the parse tree
 	 */
-	void exitUnknownCommentArea(JCLParser.UnknownCommentAreaContext ctx);
+	void exitCommentArea(JCLParser.CommentAreaContext ctx);
 }

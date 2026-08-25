@@ -101,6 +101,35 @@ class JclParserTest {
         assertThat(parsed).isInstanceOf(Jcl.CompilationUnit.class);
     }
 
+    /**
+     * A Jinja template of a job is still a job, and Bank-of-Z ships its whole installation that way.
+     * What is left after dropping the {@code .j2} decides, so a template of something else is not
+     * claimed.
+     */
+    @ParameterizedTest
+    @ValueSource(strings = {"deploy/ims_maclib.jcl.j2", "cntl/PROCLIB.prc.j2", "some.xml.dir/POST.jcl.j2"})
+    void acceptsATemplatedJob(String name) {
+        assertThat(parser.accept(Paths.get(name))).isTrue();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"deploy/zos_connect_app_config.xml.j2", "build/datasets.yaml.j2", "jmp/dfsjvmpr.props.j2"})
+    void rejectsATemplateOfSomethingElse(String name) {
+        assertThat(parser.accept(Paths.get(name))).isFalse();
+    }
+
+    /**
+     * Nothing is left of a templated PDS member's name once the {@code .j2} is gone, so its first
+     * card decides, the same as an untemplated one. Bank-of-Z creates every one of its tables from
+     * a member named this way.
+     */
+    @Test
+    void acceptsATemplatedMemberByItsFirstCard(@TempDir Path dir) throws IOException {
+        Path member = Files.write(dir.resolve("Db2-create.j2"),
+                "//DB2CREAT JOB 'DB2',NOTIFY=&SYSUID,CLASS=A\n//GRANT EXEC PGM=IKJEFT01\n".getBytes(StandardCharsets.UTF_8));
+        assertThat(parser.accept(member)).isTrue();
+    }
+
     private SourceFile parse(String name, String source) {
         Parser.Input input = new Parser.Input(Paths.get(name),
                 () -> new ByteArrayInputStream(source.getBytes(StandardCharsets.UTF_8)));

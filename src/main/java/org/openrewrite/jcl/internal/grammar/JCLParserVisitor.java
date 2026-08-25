@@ -50,12 +50,6 @@ public interface JCLParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitJclWord(JCLParser.JclWordContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link JCLParser#jclCommentArea}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitJclCommentArea(JCLParser.JclCommentAreaContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link JCLParser#jclTrailingComment}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -74,12 +68,6 @@ public interface JCLParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitJes2Word(JCLParser.Jes2WordContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link JCLParser#jes2CommentArea}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitJes2CommentArea(JCLParser.Jes2CommentAreaContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link JCLParser#jes3}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -91,12 +79,6 @@ public interface JCLParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitJes3Word(JCLParser.Jes3WordContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link JCLParser#jes3CommentArea}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitJes3CommentArea(JCLParser.Jes3CommentAreaContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link JCLParser#stream}.
 	 * @param ctx the parse tree
@@ -110,12 +92,6 @@ public interface JCLParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStreamWord(JCLParser.StreamWordContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link JCLParser#streamCommentArea}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStreamCommentArea(JCLParser.StreamCommentAreaContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link JCLParser#controlM}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -127,12 +103,6 @@ public interface JCLParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitControlMWord(JCLParser.ControlMWordContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link JCLParser#controlMCommentArea}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitControlMCommentArea(JCLParser.ControlMCommentAreaContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link JCLParser#comment}.
 	 * @param ctx the parse tree
@@ -146,12 +116,6 @@ public interface JCLParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCommentWord(JCLParser.CommentWordContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link JCLParser#commentCommentArea}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitCommentCommentArea(JCLParser.CommentCommentAreaContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link JCLParser#unknown}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -164,9 +128,9 @@ public interface JCLParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitUnknownWord(JCLParser.UnknownWordContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link JCLParser#unknownCommentArea}.
+	 * Visit a parse tree produced by {@link JCLParser#commentArea}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitUnknownCommentArea(JCLParser.UnknownCommentAreaContext ctx);
+	T visitCommentArea(JCLParser.CommentAreaContext ctx);
 }

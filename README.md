@@ -21,13 +21,14 @@
 
 ## What is this?
 
-This project implements a [Rewrite module](https://github.com/openrewrite/rewrite) that provides parsers, visitors, and recipes for COBOL and related mainframe technologies. It supports parsing and transforming COBOL source code, JCL (Job Control Language), BMS map sets, and Control-M job definitions.
+This project implements a [Rewrite module](https://github.com/openrewrite/rewrite) that provides parsers, visitors, and recipes for COBOL and related mainframe technologies. It supports parsing and transforming COBOL source code, JCL (Job Control Language), BMS map sets, DB2 DDL, and Control-M job definitions.
 
 ### Language Support
 
 - **COBOL** — Full parsing of COBOL-85 (IBM ANSI 85 and HP Tandem dialects), including preprocessor directives (COPY, REPLACE) and copybook resolution; programs by `.cbl`, `.cob` and `.cobol`, copybooks by `.cpy`, `.copy` and `.dcl`
-- **JCL** — Job Control Language parsing (`.jcl`, `.prc` and `.proc` files, and a `.txt` or extensionless PDS member whose first card is JCL)
+- **JCL** — Job Control Language parsing (`.jcl`, `.prc` and `.proc` files, a `.txt` or extensionless PDS member whose first card is JCL, and the `.j2` Jinja templates an installation ships its jobs as)
 - **BMS** — CICS Basic Mapping Support map sets (`.bms`): the `DFHMSD`/`DFHMDI`/`DFHMDF` macros, and the symbolic map names they generate, which is what joins a screen field to the COBOL data item a program reads it from
+- **DB2 DDL** — DB2 for z/OS DDL (`.ddl`, `.sql`, and the `SYSIN` streams of the jobs that create a schema): every statement the SQL reference documents is modelled, so a statement that cannot be read is a syntax error rather than a node that says nothing
 - **Control-M** — Control-M job scheduling definition parsing
 
 ### Recipes
@@ -94,7 +95,8 @@ such, under `WrongLanguageException`, rather than as a grammar failure. The corp
 themselves when the variables are unset, so a normal `./gradlew test` does not need them:
 
 ```bash
-COBOL_CORPUS=/path/to/corpus JCL_CORPUS=/path/to/corpus BMS_CORPUS=/path/to/corpus ./gradlew test
+COBOL_CORPUS=/path/to/corpus JCL_CORPUS=/path/to/corpus BMS_CORPUS=/path/to/corpus \
+  DB2_CORPUS=/path/to/corpus ./gradlew test
 ```
 
 The numbers above were taken at these commits. CBSA's `main` is a README; the application is on the
@@ -130,6 +132,13 @@ did parse prints back byte-identical to the input, which is the property recipes
 `BmsCorpusTest` asserts the same over the 49 map sets, and counts the macros it read against an
 independent count of the source. A map set that groups its continuation lines wrongly still prints
 back perfectly — it just says something else — so printing alone would not catch it.
+
+`Db2CorpusTest` does the same for the schema, over both places DDL is written: 97 files of DDL and
+the 23 `SYSIN` streams the corpus's jobs submit. It reads 22 tables, 192 columns, 31 indexes and
+9 foreign keys, and counts each `CREATE TABLE`, `CREATE INDEX` and `PRIMARY KEY` it read against an
+independent count of the source. It also names the members it holds out — a Postgres port of one
+schema, a file that sets its own statement terminator, and members whose banner comment is damaged —
+and asserts how many there are, so that set cannot grow without someone saying why.
 
 ## Contributing
 

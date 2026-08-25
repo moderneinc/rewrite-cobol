@@ -41,19 +41,15 @@ public class JCLParser extends Parser {
 		UNKNOWN_WS=32, UNKNOWN_STRINGLITERAL=33, UNKNOWN_TEXT=34;
 	public static final int
 		RULE_compilationUnit = 0, RULE_statement = 1, RULE_jcl = 2, RULE_jclWord = 3, 
-		RULE_jclCommentArea = 4, RULE_jclTrailingComment = 5, RULE_jes2 = 6, RULE_jes2Word = 7, 
-		RULE_jes2CommentArea = 8, RULE_jes3 = 9, RULE_jes3Word = 10, RULE_jes3CommentArea = 11, 
-		RULE_stream = 12, RULE_streamWord = 13, RULE_streamCommentArea = 14, RULE_controlM = 15, 
-		RULE_controlMWord = 16, RULE_controlMCommentArea = 17, RULE_comment = 18, 
-		RULE_commentWord = 19, RULE_commentCommentArea = 20, RULE_unknown = 21, 
-		RULE_unknownWord = 22, RULE_unknownCommentArea = 23;
+		RULE_jclTrailingComment = 4, RULE_jes2 = 5, RULE_jes2Word = 6, RULE_jes3 = 7, 
+		RULE_jes3Word = 8, RULE_stream = 9, RULE_streamWord = 10, RULE_controlM = 11, 
+		RULE_controlMWord = 12, RULE_comment = 13, RULE_commentWord = 14, RULE_unknown = 15, 
+		RULE_unknownWord = 16, RULE_commentArea = 17;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"compilationUnit", "statement", "jcl", "jclWord", "jclCommentArea", "jclTrailingComment", 
-			"jes2", "jes2Word", "jes2CommentArea", "jes3", "jes3Word", "jes3CommentArea", 
-			"stream", "streamWord", "streamCommentArea", "controlM", "controlMWord", 
-			"controlMCommentArea", "comment", "commentWord", "commentCommentArea", 
-			"unknown", "unknownWord", "unknownCommentArea"
+			"compilationUnit", "statement", "jcl", "jclWord", "jclTrailingComment", 
+			"jes2", "jes2Word", "jes3", "jes3Word", "stream", "streamWord", "controlM", 
+			"controlMWord", "comment", "commentWord", "unknown", "unknownWord", "commentArea"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
@@ -61,8 +57,8 @@ public class JCLParser extends Parser {
 	private static String[] makeLiteralNames() {
 		return new String[] {
 			null, "'\\uFEFF'", null, null, null, null, null, "'^^STREAM^^'", null, 
-			null, "'^^CM^^'", "'^^COMMENT^^'", "'^^UNKNOWN^^'", "'^^CA_START^^'", 
-			null, null, "'^^TC_START^^'", "'^^TC_STOP^^'"
+			null, "'^^CM^^'", "'^^COMMENT^^'", "'^^UNKNOWN^^'", null, null, null, 
+			"'^^TC_START^^'", "'^^TC_STOP^^'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
@@ -163,21 +159,21 @@ public class JCLParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(51);
+			setState(39);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 29526597632L) != 0)) {
 				{
 				{
-				setState(48);
+				setState(36);
 				statement();
 				}
 				}
-				setState(53);
+				setState(41);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(54);
+			setState(42);
 			match(EOF);
 			}
 		}
@@ -238,14 +234,14 @@ public class JCLParser extends Parser {
 		StatementContext _localctx = new StatementContext(_ctx, getState());
 		enterRule(_localctx, 2, RULE_statement);
 		try {
-			setState(63);
+			setState(51);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case JCL_STRINGLITERAL:
 			case JCL_TEXT:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(56);
+				setState(44);
 				jcl();
 				}
 				break;
@@ -253,7 +249,7 @@ public class JCLParser extends Parser {
 			case JES2_TEXT:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(57);
+				setState(45);
 				jes2();
 				}
 				break;
@@ -261,7 +257,7 @@ public class JCLParser extends Parser {
 			case JES3_TEXT:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(58);
+				setState(46);
 				jes3();
 				}
 				break;
@@ -269,7 +265,7 @@ public class JCLParser extends Parser {
 			case STREAM_TEXT:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(59);
+				setState(47);
 				stream();
 				}
 				break;
@@ -277,7 +273,7 @@ public class JCLParser extends Parser {
 			case CM_TEXT:
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(60);
+				setState(48);
 				controlM();
 				}
 				break;
@@ -285,7 +281,7 @@ public class JCLParser extends Parser {
 			case COMMENT_TEXT:
 				enterOuterAlt(_localctx, 6);
 				{
-				setState(61);
+				setState(49);
 				comment();
 				}
 				break;
@@ -294,7 +290,7 @@ public class JCLParser extends Parser {
 			case UNKNOWN_TEXT:
 				enterOuterAlt(_localctx, 7);
 				{
-				setState(62);
+				setState(50);
 				unknown();
 				}
 				break;
@@ -344,20 +340,20 @@ public class JCLParser extends Parser {
 		JclContext _localctx = new JclContext(_ctx, getState());
 		enterRule(_localctx, 4, RULE_jcl);
 		try {
-			setState(67);
+			setState(55);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(65);
+				setState(53);
 				jclWord();
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(66);
+				setState(54);
 				jclTrailingComment();
 				}
 				break;
@@ -378,8 +374,8 @@ public class JCLParser extends Parser {
 	public static class JclWordContext extends ParserRuleContext {
 		public TerminalNode JCL_TEXT() { return getToken(JCLParser.JCL_TEXT, 0); }
 		public TerminalNode JCL_STRINGLITERAL() { return getToken(JCLParser.JCL_STRINGLITERAL, 0); }
-		public JclCommentAreaContext jclCommentArea() {
-			return getRuleContext(JclCommentAreaContext.class,0);
+		public CommentAreaContext commentArea() {
+			return getRuleContext(CommentAreaContext.class,0);
 		}
 		public JclWordContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -407,7 +403,7 @@ public class JCLParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(69);
+			setState(57);
 			_la = _input.LA(1);
 			if ( !(_la==JCL_STRINGLITERAL || _la==JCL_TEXT) ) {
 			_errHandler.recoverInline(this);
@@ -417,71 +413,15 @@ public class JCLParser extends Parser {
 				_errHandler.reportMatch(this);
 				consume();
 			}
-			setState(71);
+			setState(59);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,3,_ctx) ) {
 			case 1:
 				{
-				setState(70);
-				jclCommentArea();
+				setState(58);
+				commentArea();
 				}
 				break;
-			}
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.reportError(this, re);
-			_errHandler.recover(this, re);
-		}
-		finally {
-			exitRule();
-		}
-		return _localctx;
-	}
-
-	@SuppressWarnings("CheckReturnValue")
-	public static class JclCommentAreaContext extends ParserRuleContext {
-		public TerminalNode CA_START() { return getToken(JCLParser.CA_START, 0); }
-		public TerminalNode JCL_TEXT() { return getToken(JCLParser.JCL_TEXT, 0); }
-		public TerminalNode JCL_STRINGLITERAL() { return getToken(JCLParser.JCL_STRINGLITERAL, 0); }
-		public JclCommentAreaContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_jclCommentArea; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).enterJclCommentArea(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).exitJclCommentArea(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitJclCommentArea(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-
-	public final JclCommentAreaContext jclCommentArea() throws RecognitionException {
-		JclCommentAreaContext _localctx = new JclCommentAreaContext(_ctx, getState());
-		enterRule(_localctx, 8, RULE_jclCommentArea);
-		int _la;
-		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(73);
-			match(CA_START);
-			setState(74);
-			_la = _input.LA(1);
-			if ( !(_la==JCL_STRINGLITERAL || _la==JCL_TEXT) ) {
-			_errHandler.recoverInline(this);
-			}
-			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-				_errHandler.reportMatch(this);
-				consume();
 			}
 			}
 		}
@@ -506,8 +446,8 @@ public class JCLParser extends Parser {
 		}
 		public TerminalNode JCL_TC_START() { return getToken(JCLParser.JCL_TC_START, 0); }
 		public TerminalNode JCL_TC_STOP() { return getToken(JCLParser.JCL_TC_STOP, 0); }
-		public JclCommentAreaContext jclCommentArea() {
-			return getRuleContext(JclCommentAreaContext.class,0);
+		public CommentAreaContext commentArea() {
+			return getRuleContext(CommentAreaContext.class,0);
 		}
 		public JclTrailingCommentContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -530,38 +470,38 @@ public class JCLParser extends Parser {
 
 	public final JclTrailingCommentContext jclTrailingComment() throws RecognitionException {
 		JclTrailingCommentContext _localctx = new JclTrailingCommentContext(_ctx, getState());
-		enterRule(_localctx, 10, RULE_jclTrailingComment);
+		enterRule(_localctx, 8, RULE_jclTrailingComment);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(76);
+			setState(61);
 			jclWord();
-			setState(77);
+			setState(62);
 			match(JCL_TC_START);
-			setState(81);
+			setState(66);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==JCL_STRINGLITERAL || _la==JCL_TEXT) {
 				{
 				{
-				setState(78);
+				setState(63);
 				jclWord();
 				}
 				}
-				setState(83);
+				setState(68);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(84);
+			setState(69);
 			match(JCL_TC_STOP);
-			setState(86);
+			setState(71);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,5,_ctx) ) {
 			case 1:
 				{
-				setState(85);
-				jclCommentArea();
+				setState(70);
+				commentArea();
 				}
 				break;
 			}
@@ -604,11 +544,11 @@ public class JCLParser extends Parser {
 
 	public final Jes2Context jes2() throws RecognitionException {
 		Jes2Context _localctx = new Jes2Context(_ctx, getState());
-		enterRule(_localctx, 12, RULE_jes2);
+		enterRule(_localctx, 10, RULE_jes2);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(88);
+			setState(73);
 			jes2Word();
 			}
 		}
@@ -627,8 +567,8 @@ public class JCLParser extends Parser {
 	public static class Jes2WordContext extends ParserRuleContext {
 		public TerminalNode JES2_TEXT() { return getToken(JCLParser.JES2_TEXT, 0); }
 		public TerminalNode JES2_STRINGLITERAL() { return getToken(JCLParser.JES2_STRINGLITERAL, 0); }
-		public Jes2CommentAreaContext jes2CommentArea() {
-			return getRuleContext(Jes2CommentAreaContext.class,0);
+		public CommentAreaContext commentArea() {
+			return getRuleContext(CommentAreaContext.class,0);
 		}
 		public Jes2WordContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -651,12 +591,12 @@ public class JCLParser extends Parser {
 
 	public final Jes2WordContext jes2Word() throws RecognitionException {
 		Jes2WordContext _localctx = new Jes2WordContext(_ctx, getState());
-		enterRule(_localctx, 14, RULE_jes2Word);
+		enterRule(_localctx, 12, RULE_jes2Word);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(90);
+			setState(75);
 			_la = _input.LA(1);
 			if ( !(_la==JES2_STRINGLITERAL || _la==JES2_TEXT) ) {
 			_errHandler.recoverInline(this);
@@ -666,71 +606,15 @@ public class JCLParser extends Parser {
 				_errHandler.reportMatch(this);
 				consume();
 			}
-			setState(92);
+			setState(77);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,6,_ctx) ) {
 			case 1:
 				{
-				setState(91);
-				jes2CommentArea();
+				setState(76);
+				commentArea();
 				}
 				break;
-			}
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.reportError(this, re);
-			_errHandler.recover(this, re);
-		}
-		finally {
-			exitRule();
-		}
-		return _localctx;
-	}
-
-	@SuppressWarnings("CheckReturnValue")
-	public static class Jes2CommentAreaContext extends ParserRuleContext {
-		public TerminalNode CA_START() { return getToken(JCLParser.CA_START, 0); }
-		public TerminalNode JES2_TEXT() { return getToken(JCLParser.JES2_TEXT, 0); }
-		public TerminalNode JES2_STRINGLITERAL() { return getToken(JCLParser.JES2_STRINGLITERAL, 0); }
-		public Jes2CommentAreaContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_jes2CommentArea; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).enterJes2CommentArea(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).exitJes2CommentArea(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitJes2CommentArea(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-
-	public final Jes2CommentAreaContext jes2CommentArea() throws RecognitionException {
-		Jes2CommentAreaContext _localctx = new Jes2CommentAreaContext(_ctx, getState());
-		enterRule(_localctx, 16, RULE_jes2CommentArea);
-		int _la;
-		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(94);
-			match(CA_START);
-			setState(95);
-			_la = _input.LA(1);
-			if ( !(_la==JES2_STRINGLITERAL || _la==JES2_TEXT) ) {
-			_errHandler.recoverInline(this);
-			}
-			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-				_errHandler.reportMatch(this);
-				consume();
 			}
 			}
 		}
@@ -771,11 +655,11 @@ public class JCLParser extends Parser {
 
 	public final Jes3Context jes3() throws RecognitionException {
 		Jes3Context _localctx = new Jes3Context(_ctx, getState());
-		enterRule(_localctx, 18, RULE_jes3);
+		enterRule(_localctx, 14, RULE_jes3);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(97);
+			setState(79);
 			jes3Word();
 			}
 		}
@@ -794,8 +678,8 @@ public class JCLParser extends Parser {
 	public static class Jes3WordContext extends ParserRuleContext {
 		public TerminalNode JES3_TEXT() { return getToken(JCLParser.JES3_TEXT, 0); }
 		public TerminalNode JES3_STRINGLITERAL() { return getToken(JCLParser.JES3_STRINGLITERAL, 0); }
-		public Jes3CommentAreaContext jes3CommentArea() {
-			return getRuleContext(Jes3CommentAreaContext.class,0);
+		public CommentAreaContext commentArea() {
+			return getRuleContext(CommentAreaContext.class,0);
 		}
 		public Jes3WordContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -818,12 +702,12 @@ public class JCLParser extends Parser {
 
 	public final Jes3WordContext jes3Word() throws RecognitionException {
 		Jes3WordContext _localctx = new Jes3WordContext(_ctx, getState());
-		enterRule(_localctx, 20, RULE_jes3Word);
+		enterRule(_localctx, 16, RULE_jes3Word);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(99);
+			setState(81);
 			_la = _input.LA(1);
 			if ( !(_la==JES3_STRINGLITERAL || _la==JES3_TEXT) ) {
 			_errHandler.recoverInline(this);
@@ -833,71 +717,15 @@ public class JCLParser extends Parser {
 				_errHandler.reportMatch(this);
 				consume();
 			}
-			setState(101);
+			setState(83);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,7,_ctx) ) {
 			case 1:
 				{
-				setState(100);
-				jes3CommentArea();
+				setState(82);
+				commentArea();
 				}
 				break;
-			}
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.reportError(this, re);
-			_errHandler.recover(this, re);
-		}
-		finally {
-			exitRule();
-		}
-		return _localctx;
-	}
-
-	@SuppressWarnings("CheckReturnValue")
-	public static class Jes3CommentAreaContext extends ParserRuleContext {
-		public TerminalNode CA_START() { return getToken(JCLParser.CA_START, 0); }
-		public TerminalNode JES3_TEXT() { return getToken(JCLParser.JES3_TEXT, 0); }
-		public TerminalNode JES3_STRINGLITERAL() { return getToken(JCLParser.JES3_STRINGLITERAL, 0); }
-		public Jes3CommentAreaContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_jes3CommentArea; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).enterJes3CommentArea(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).exitJes3CommentArea(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitJes3CommentArea(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-
-	public final Jes3CommentAreaContext jes3CommentArea() throws RecognitionException {
-		Jes3CommentAreaContext _localctx = new Jes3CommentAreaContext(_ctx, getState());
-		enterRule(_localctx, 22, RULE_jes3CommentArea);
-		int _la;
-		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(103);
-			match(CA_START);
-			setState(104);
-			_la = _input.LA(1);
-			if ( !(_la==JES3_STRINGLITERAL || _la==JES3_TEXT) ) {
-			_errHandler.recoverInline(this);
-			}
-			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-				_errHandler.reportMatch(this);
-				consume();
 			}
 			}
 		}
@@ -938,11 +766,11 @@ public class JCLParser extends Parser {
 
 	public final StreamContext stream() throws RecognitionException {
 		StreamContext _localctx = new StreamContext(_ctx, getState());
-		enterRule(_localctx, 24, RULE_stream);
+		enterRule(_localctx, 18, RULE_stream);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(106);
+			setState(85);
 			streamWord();
 			}
 		}
@@ -961,8 +789,8 @@ public class JCLParser extends Parser {
 	public static class StreamWordContext extends ParserRuleContext {
 		public TerminalNode STREAM_TEXT() { return getToken(JCLParser.STREAM_TEXT, 0); }
 		public TerminalNode STREAM_STRINGLITERAL() { return getToken(JCLParser.STREAM_STRINGLITERAL, 0); }
-		public StreamCommentAreaContext streamCommentArea() {
-			return getRuleContext(StreamCommentAreaContext.class,0);
+		public CommentAreaContext commentArea() {
+			return getRuleContext(CommentAreaContext.class,0);
 		}
 		public StreamWordContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -985,12 +813,12 @@ public class JCLParser extends Parser {
 
 	public final StreamWordContext streamWord() throws RecognitionException {
 		StreamWordContext _localctx = new StreamWordContext(_ctx, getState());
-		enterRule(_localctx, 26, RULE_streamWord);
+		enterRule(_localctx, 20, RULE_streamWord);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(108);
+			setState(87);
 			_la = _input.LA(1);
 			if ( !(_la==STREAM_STRINGLITERAL || _la==STREAM_TEXT) ) {
 			_errHandler.recoverInline(this);
@@ -1000,71 +828,15 @@ public class JCLParser extends Parser {
 				_errHandler.reportMatch(this);
 				consume();
 			}
-			setState(110);
+			setState(89);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,8,_ctx) ) {
 			case 1:
 				{
-				setState(109);
-				streamCommentArea();
+				setState(88);
+				commentArea();
 				}
 				break;
-			}
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.reportError(this, re);
-			_errHandler.recover(this, re);
-		}
-		finally {
-			exitRule();
-		}
-		return _localctx;
-	}
-
-	@SuppressWarnings("CheckReturnValue")
-	public static class StreamCommentAreaContext extends ParserRuleContext {
-		public TerminalNode CA_START() { return getToken(JCLParser.CA_START, 0); }
-		public TerminalNode STREAM_TEXT() { return getToken(JCLParser.STREAM_TEXT, 0); }
-		public TerminalNode STREAM_STRINGLITERAL() { return getToken(JCLParser.STREAM_STRINGLITERAL, 0); }
-		public StreamCommentAreaContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_streamCommentArea; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).enterStreamCommentArea(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).exitStreamCommentArea(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitStreamCommentArea(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-
-	public final StreamCommentAreaContext streamCommentArea() throws RecognitionException {
-		StreamCommentAreaContext _localctx = new StreamCommentAreaContext(_ctx, getState());
-		enterRule(_localctx, 28, RULE_streamCommentArea);
-		int _la;
-		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(112);
-			match(CA_START);
-			setState(113);
-			_la = _input.LA(1);
-			if ( !(_la==STREAM_STRINGLITERAL || _la==STREAM_TEXT) ) {
-			_errHandler.recoverInline(this);
-			}
-			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-				_errHandler.reportMatch(this);
-				consume();
 			}
 			}
 		}
@@ -1105,11 +877,11 @@ public class JCLParser extends Parser {
 
 	public final ControlMContext controlM() throws RecognitionException {
 		ControlMContext _localctx = new ControlMContext(_ctx, getState());
-		enterRule(_localctx, 30, RULE_controlM);
+		enterRule(_localctx, 22, RULE_controlM);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(115);
+			setState(91);
 			controlMWord();
 			}
 		}
@@ -1128,8 +900,8 @@ public class JCLParser extends Parser {
 	public static class ControlMWordContext extends ParserRuleContext {
 		public TerminalNode CM_TEXT() { return getToken(JCLParser.CM_TEXT, 0); }
 		public TerminalNode CM_STRINGLITERAL() { return getToken(JCLParser.CM_STRINGLITERAL, 0); }
-		public ControlMCommentAreaContext controlMCommentArea() {
-			return getRuleContext(ControlMCommentAreaContext.class,0);
+		public CommentAreaContext commentArea() {
+			return getRuleContext(CommentAreaContext.class,0);
 		}
 		public ControlMWordContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1152,12 +924,12 @@ public class JCLParser extends Parser {
 
 	public final ControlMWordContext controlMWord() throws RecognitionException {
 		ControlMWordContext _localctx = new ControlMWordContext(_ctx, getState());
-		enterRule(_localctx, 32, RULE_controlMWord);
+		enterRule(_localctx, 24, RULE_controlMWord);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(117);
+			setState(93);
 			_la = _input.LA(1);
 			if ( !(_la==CM_STRINGLITERAL || _la==CM_TEXT) ) {
 			_errHandler.recoverInline(this);
@@ -1167,71 +939,15 @@ public class JCLParser extends Parser {
 				_errHandler.reportMatch(this);
 				consume();
 			}
-			setState(119);
+			setState(95);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,9,_ctx) ) {
 			case 1:
 				{
-				setState(118);
-				controlMCommentArea();
+				setState(94);
+				commentArea();
 				}
 				break;
-			}
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.reportError(this, re);
-			_errHandler.recover(this, re);
-		}
-		finally {
-			exitRule();
-		}
-		return _localctx;
-	}
-
-	@SuppressWarnings("CheckReturnValue")
-	public static class ControlMCommentAreaContext extends ParserRuleContext {
-		public TerminalNode CA_START() { return getToken(JCLParser.CA_START, 0); }
-		public TerminalNode CM_TEXT() { return getToken(JCLParser.CM_TEXT, 0); }
-		public TerminalNode CM_STRINGLITERAL() { return getToken(JCLParser.CM_STRINGLITERAL, 0); }
-		public ControlMCommentAreaContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_controlMCommentArea; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).enterControlMCommentArea(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).exitControlMCommentArea(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitControlMCommentArea(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-
-	public final ControlMCommentAreaContext controlMCommentArea() throws RecognitionException {
-		ControlMCommentAreaContext _localctx = new ControlMCommentAreaContext(_ctx, getState());
-		enterRule(_localctx, 34, RULE_controlMCommentArea);
-		int _la;
-		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(121);
-			match(CA_START);
-			setState(122);
-			_la = _input.LA(1);
-			if ( !(_la==CM_STRINGLITERAL || _la==CM_TEXT) ) {
-			_errHandler.recoverInline(this);
-			}
-			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-				_errHandler.reportMatch(this);
-				consume();
 			}
 			}
 		}
@@ -1272,11 +988,11 @@ public class JCLParser extends Parser {
 
 	public final CommentContext comment() throws RecognitionException {
 		CommentContext _localctx = new CommentContext(_ctx, getState());
-		enterRule(_localctx, 36, RULE_comment);
+		enterRule(_localctx, 26, RULE_comment);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(124);
+			setState(97);
 			commentWord();
 			}
 		}
@@ -1295,8 +1011,8 @@ public class JCLParser extends Parser {
 	public static class CommentWordContext extends ParserRuleContext {
 		public TerminalNode COMMENT_TEXT() { return getToken(JCLParser.COMMENT_TEXT, 0); }
 		public TerminalNode COMMENT_STRINGLITERAL() { return getToken(JCLParser.COMMENT_STRINGLITERAL, 0); }
-		public CommentCommentAreaContext commentCommentArea() {
-			return getRuleContext(CommentCommentAreaContext.class,0);
+		public CommentAreaContext commentArea() {
+			return getRuleContext(CommentAreaContext.class,0);
 		}
 		public CommentWordContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1319,12 +1035,12 @@ public class JCLParser extends Parser {
 
 	public final CommentWordContext commentWord() throws RecognitionException {
 		CommentWordContext _localctx = new CommentWordContext(_ctx, getState());
-		enterRule(_localctx, 38, RULE_commentWord);
+		enterRule(_localctx, 28, RULE_commentWord);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(126);
+			setState(99);
 			_la = _input.LA(1);
 			if ( !(_la==COMMENT_STRINGLITERAL || _la==COMMENT_TEXT) ) {
 			_errHandler.recoverInline(this);
@@ -1334,71 +1050,15 @@ public class JCLParser extends Parser {
 				_errHandler.reportMatch(this);
 				consume();
 			}
-			setState(128);
+			setState(101);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,10,_ctx) ) {
 			case 1:
 				{
-				setState(127);
-				commentCommentArea();
+				setState(100);
+				commentArea();
 				}
 				break;
-			}
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.reportError(this, re);
-			_errHandler.recover(this, re);
-		}
-		finally {
-			exitRule();
-		}
-		return _localctx;
-	}
-
-	@SuppressWarnings("CheckReturnValue")
-	public static class CommentCommentAreaContext extends ParserRuleContext {
-		public TerminalNode CA_START() { return getToken(JCLParser.CA_START, 0); }
-		public TerminalNode COMMENT_TEXT() { return getToken(JCLParser.COMMENT_TEXT, 0); }
-		public TerminalNode COMMENT_STRINGLITERAL() { return getToken(JCLParser.COMMENT_STRINGLITERAL, 0); }
-		public CommentCommentAreaContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_commentCommentArea; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).enterCommentCommentArea(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).exitCommentCommentArea(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitCommentCommentArea(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-
-	public final CommentCommentAreaContext commentCommentArea() throws RecognitionException {
-		CommentCommentAreaContext _localctx = new CommentCommentAreaContext(_ctx, getState());
-		enterRule(_localctx, 40, RULE_commentCommentArea);
-		int _la;
-		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(130);
-			match(CA_START);
-			setState(131);
-			_la = _input.LA(1);
-			if ( !(_la==COMMENT_STRINGLITERAL || _la==COMMENT_TEXT) ) {
-			_errHandler.recoverInline(this);
-			}
-			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-				_errHandler.reportMatch(this);
-				consume();
 			}
 			}
 		}
@@ -1439,11 +1099,11 @@ public class JCLParser extends Parser {
 
 	public final UnknownContext unknown() throws RecognitionException {
 		UnknownContext _localctx = new UnknownContext(_ctx, getState());
-		enterRule(_localctx, 42, RULE_unknown);
+		enterRule(_localctx, 30, RULE_unknown);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(133);
+			setState(103);
 			unknownWord();
 			}
 		}
@@ -1462,8 +1122,8 @@ public class JCLParser extends Parser {
 	public static class UnknownWordContext extends ParserRuleContext {
 		public TerminalNode UNKNOWN_TEXT() { return getToken(JCLParser.UNKNOWN_TEXT, 0); }
 		public TerminalNode UNKNOWN_STRINGLITERAL() { return getToken(JCLParser.UNKNOWN_STRINGLITERAL, 0); }
-		public UnknownCommentAreaContext unknownCommentArea() {
-			return getRuleContext(UnknownCommentAreaContext.class,0);
+		public CommentAreaContext commentArea() {
+			return getRuleContext(CommentAreaContext.class,0);
 		}
 		public UnknownWordContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1486,17 +1146,17 @@ public class JCLParser extends Parser {
 
 	public final UnknownWordContext unknownWord() throws RecognitionException {
 		UnknownWordContext _localctx = new UnknownWordContext(_ctx, getState());
-		enterRule(_localctx, 44, RULE_unknownWord);
+		enterRule(_localctx, 32, RULE_unknownWord);
 		int _la;
 		try {
-			setState(140);
+			setState(110);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case UNKNOWN_STRINGLITERAL:
 			case UNKNOWN_TEXT:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(135);
+				setState(105);
 				_la = _input.LA(1);
 				if ( !(_la==UNKNOWN_STRINGLITERAL || _la==UNKNOWN_TEXT) ) {
 				_errHandler.recoverInline(this);
@@ -1506,13 +1166,13 @@ public class JCLParser extends Parser {
 					_errHandler.reportMatch(this);
 					consume();
 				}
-				setState(137);
+				setState(107);
 				_errHandler.sync(this);
 				switch ( getInterpreter().adaptivePredict(_input,11,_ctx) ) {
 				case 1:
 					{
-					setState(136);
-					unknownCommentArea();
+					setState(106);
+					commentArea();
 					}
 					break;
 				}
@@ -1521,8 +1181,8 @@ public class JCLParser extends Parser {
 			case CA_START:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(139);
-				unknownCommentArea();
+				setState(109);
+				commentArea();
 				}
 				break;
 			default:
@@ -1541,48 +1201,35 @@ public class JCLParser extends Parser {
 	}
 
 	@SuppressWarnings("CheckReturnValue")
-	public static class UnknownCommentAreaContext extends ParserRuleContext {
+	public static class CommentAreaContext extends ParserRuleContext {
 		public TerminalNode CA_START() { return getToken(JCLParser.CA_START, 0); }
-		public TerminalNode UNKNOWN_TEXT() { return getToken(JCLParser.UNKNOWN_TEXT, 0); }
-		public TerminalNode UNKNOWN_STRINGLITERAL() { return getToken(JCLParser.UNKNOWN_STRINGLITERAL, 0); }
-		public UnknownCommentAreaContext(ParserRuleContext parent, int invokingState) {
+		public CommentAreaContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_unknownCommentArea; }
+		@Override public int getRuleIndex() { return RULE_commentArea; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).enterUnknownCommentArea(this);
+			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).enterCommentArea(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).exitUnknownCommentArea(this);
+			if ( listener instanceof JCLParserListener ) ((JCLParserListener)listener).exitCommentArea(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitUnknownCommentArea(this);
+			if ( visitor instanceof JCLParserVisitor ) return ((JCLParserVisitor<? extends T>)visitor).visitCommentArea(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final UnknownCommentAreaContext unknownCommentArea() throws RecognitionException {
-		UnknownCommentAreaContext _localctx = new UnknownCommentAreaContext(_ctx, getState());
-		enterRule(_localctx, 46, RULE_unknownCommentArea);
-		int _la;
+	public final CommentAreaContext commentArea() throws RecognitionException {
+		CommentAreaContext _localctx = new CommentAreaContext(_ctx, getState());
+		enterRule(_localctx, 34, RULE_commentArea);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(142);
+			setState(112);
 			match(CA_START);
-			setState(143);
-			_la = _input.LA(1);
-			if ( !(_la==UNKNOWN_STRINGLITERAL || _la==UNKNOWN_TEXT) ) {
-			_errHandler.recoverInline(this);
-			}
-			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-				_errHandler.reportMatch(this);
-				consume();
-			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -1597,87 +1244,70 @@ public class JCLParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001\"\u0092\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
+		"\u0004\u0001\"s\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
 		"\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004\u0002"+
 		"\u0005\u0007\u0005\u0002\u0006\u0007\u0006\u0002\u0007\u0007\u0007\u0002"+
 		"\b\u0007\b\u0002\t\u0007\t\u0002\n\u0007\n\u0002\u000b\u0007\u000b\u0002"+
 		"\f\u0007\f\u0002\r\u0007\r\u0002\u000e\u0007\u000e\u0002\u000f\u0007\u000f"+
-		"\u0002\u0010\u0007\u0010\u0002\u0011\u0007\u0011\u0002\u0012\u0007\u0012"+
-		"\u0002\u0013\u0007\u0013\u0002\u0014\u0007\u0014\u0002\u0015\u0007\u0015"+
-		"\u0002\u0016\u0007\u0016\u0002\u0017\u0007\u0017\u0001\u0000\u0005\u0000"+
-		"2\b\u0000\n\u0000\f\u00005\t\u0000\u0001\u0000\u0001\u0000\u0001\u0001"+
+		"\u0002\u0010\u0007\u0010\u0002\u0011\u0007\u0011\u0001\u0000\u0005\u0000"+
+		"&\b\u0000\n\u0000\f\u0000)\t\u0000\u0001\u0000\u0001\u0000\u0001\u0001"+
 		"\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001"+
-		"\u0003\u0001@\b\u0001\u0001\u0002\u0001\u0002\u0003\u0002D\b\u0002\u0001"+
-		"\u0003\u0001\u0003\u0003\u0003H\b\u0003\u0001\u0004\u0001\u0004\u0001"+
-		"\u0004\u0001\u0005\u0001\u0005\u0001\u0005\u0005\u0005P\b\u0005\n\u0005"+
-		"\f\u0005S\t\u0005\u0001\u0005\u0001\u0005\u0003\u0005W\b\u0005\u0001\u0006"+
-		"\u0001\u0006\u0001\u0007\u0001\u0007\u0003\u0007]\b\u0007\u0001\b\u0001"+
-		"\b\u0001\b\u0001\t\u0001\t\u0001\n\u0001\n\u0003\nf\b\n\u0001\u000b\u0001"+
-		"\u000b\u0001\u000b\u0001\f\u0001\f\u0001\r\u0001\r\u0003\ro\b\r\u0001"+
-		"\u000e\u0001\u000e\u0001\u000e\u0001\u000f\u0001\u000f\u0001\u0010\u0001"+
-		"\u0010\u0003\u0010x\b\u0010\u0001\u0011\u0001\u0011\u0001\u0011\u0001"+
-		"\u0012\u0001\u0012\u0001\u0013\u0001\u0013\u0003\u0013\u0081\b\u0013\u0001"+
-		"\u0014\u0001\u0014\u0001\u0014\u0001\u0015\u0001\u0015\u0001\u0016\u0001"+
-		"\u0016\u0003\u0016\u008a\b\u0016\u0001\u0016\u0003\u0016\u008d\b\u0016"+
-		"\u0001\u0017\u0001\u0017\u0001\u0017\u0001\u0017\u0000\u0000\u0018\u0000"+
-		"\u0002\u0004\u0006\b\n\f\u000e\u0010\u0012\u0014\u0016\u0018\u001a\u001c"+
-		"\u001e \"$&(*,.\u0000\u0007\u0001\u0000\u0012\u0013\u0001\u0000\u0017"+
-		"\u0018\u0001\u0000\u0019\u001a\u0001\u0000\u0015\u0016\u0001\u0000\u001b"+
-		"\u001c\u0001\u0000\u001e\u001f\u0001\u0000!\"\u008b\u00003\u0001\u0000"+
-		"\u0000\u0000\u0002?\u0001\u0000\u0000\u0000\u0004C\u0001\u0000\u0000\u0000"+
-		"\u0006E\u0001\u0000\u0000\u0000\bI\u0001\u0000\u0000\u0000\nL\u0001\u0000"+
-		"\u0000\u0000\fX\u0001\u0000\u0000\u0000\u000eZ\u0001\u0000\u0000\u0000"+
-		"\u0010^\u0001\u0000\u0000\u0000\u0012a\u0001\u0000\u0000\u0000\u0014c"+
-		"\u0001\u0000\u0000\u0000\u0016g\u0001\u0000\u0000\u0000\u0018j\u0001\u0000"+
-		"\u0000\u0000\u001al\u0001\u0000\u0000\u0000\u001cp\u0001\u0000\u0000\u0000"+
-		"\u001es\u0001\u0000\u0000\u0000 u\u0001\u0000\u0000\u0000\"y\u0001\u0000"+
-		"\u0000\u0000$|\u0001\u0000\u0000\u0000&~\u0001\u0000\u0000\u0000(\u0082"+
-		"\u0001\u0000\u0000\u0000*\u0085\u0001\u0000\u0000\u0000,\u008c\u0001\u0000"+
-		"\u0000\u0000.\u008e\u0001\u0000\u0000\u000002\u0003\u0002\u0001\u0000"+
-		"10\u0001\u0000\u0000\u000025\u0001\u0000\u0000\u000031\u0001\u0000\u0000"+
-		"\u000034\u0001\u0000\u0000\u000046\u0001\u0000\u0000\u000053\u0001\u0000"+
-		"\u0000\u000067\u0005\u0000\u0000\u00017\u0001\u0001\u0000\u0000\u0000"+
-		"8@\u0003\u0004\u0002\u00009@\u0003\f\u0006\u0000:@\u0003\u0012\t\u0000"+
-		";@\u0003\u0018\f\u0000<@\u0003\u001e\u000f\u0000=@\u0003$\u0012\u0000"+
-		">@\u0003*\u0015\u0000?8\u0001\u0000\u0000\u0000?9\u0001\u0000\u0000\u0000"+
-		"?:\u0001\u0000\u0000\u0000?;\u0001\u0000\u0000\u0000?<\u0001\u0000\u0000"+
-		"\u0000?=\u0001\u0000\u0000\u0000?>\u0001\u0000\u0000\u0000@\u0003\u0001"+
-		"\u0000\u0000\u0000AD\u0003\u0006\u0003\u0000BD\u0003\n\u0005\u0000CA\u0001"+
-		"\u0000\u0000\u0000CB\u0001\u0000\u0000\u0000D\u0005\u0001\u0000\u0000"+
-		"\u0000EG\u0007\u0000\u0000\u0000FH\u0003\b\u0004\u0000GF\u0001\u0000\u0000"+
-		"\u0000GH\u0001\u0000\u0000\u0000H\u0007\u0001\u0000\u0000\u0000IJ\u0005"+
-		"\r\u0000\u0000JK\u0007\u0000\u0000\u0000K\t\u0001\u0000\u0000\u0000LM"+
-		"\u0003\u0006\u0003\u0000MQ\u0005\u0010\u0000\u0000NP\u0003\u0006\u0003"+
-		"\u0000ON\u0001\u0000\u0000\u0000PS\u0001\u0000\u0000\u0000QO\u0001\u0000"+
-		"\u0000\u0000QR\u0001\u0000\u0000\u0000RT\u0001\u0000\u0000\u0000SQ\u0001"+
-		"\u0000\u0000\u0000TV\u0005\u0011\u0000\u0000UW\u0003\b\u0004\u0000VU\u0001"+
-		"\u0000\u0000\u0000VW\u0001\u0000\u0000\u0000W\u000b\u0001\u0000\u0000"+
-		"\u0000XY\u0003\u000e\u0007\u0000Y\r\u0001\u0000\u0000\u0000Z\\\u0007\u0001"+
-		"\u0000\u0000[]\u0003\u0010\b\u0000\\[\u0001\u0000\u0000\u0000\\]\u0001"+
-		"\u0000\u0000\u0000]\u000f\u0001\u0000\u0000\u0000^_\u0005\r\u0000\u0000"+
-		"_`\u0007\u0001\u0000\u0000`\u0011\u0001\u0000\u0000\u0000ab\u0003\u0014"+
-		"\n\u0000b\u0013\u0001\u0000\u0000\u0000ce\u0007\u0002\u0000\u0000df\u0003"+
-		"\u0016\u000b\u0000ed\u0001\u0000\u0000\u0000ef\u0001\u0000\u0000\u0000"+
-		"f\u0015\u0001\u0000\u0000\u0000gh\u0005\r\u0000\u0000hi\u0007\u0002\u0000"+
-		"\u0000i\u0017\u0001\u0000\u0000\u0000jk\u0003\u001a\r\u0000k\u0019\u0001"+
-		"\u0000\u0000\u0000ln\u0007\u0003\u0000\u0000mo\u0003\u001c\u000e\u0000"+
-		"nm\u0001\u0000\u0000\u0000no\u0001\u0000\u0000\u0000o\u001b\u0001\u0000"+
-		"\u0000\u0000pq\u0005\r\u0000\u0000qr\u0007\u0003\u0000\u0000r\u001d\u0001"+
-		"\u0000\u0000\u0000st\u0003 \u0010\u0000t\u001f\u0001\u0000\u0000\u0000"+
-		"uw\u0007\u0004\u0000\u0000vx\u0003\"\u0011\u0000wv\u0001\u0000\u0000\u0000"+
-		"wx\u0001\u0000\u0000\u0000x!\u0001\u0000\u0000\u0000yz\u0005\r\u0000\u0000"+
-		"z{\u0007\u0004\u0000\u0000{#\u0001\u0000\u0000\u0000|}\u0003&\u0013\u0000"+
-		"}%\u0001\u0000\u0000\u0000~\u0080\u0007\u0005\u0000\u0000\u007f\u0081"+
-		"\u0003(\u0014\u0000\u0080\u007f\u0001\u0000\u0000\u0000\u0080\u0081\u0001"+
-		"\u0000\u0000\u0000\u0081\'\u0001\u0000\u0000\u0000\u0082\u0083\u0005\r"+
-		"\u0000\u0000\u0083\u0084\u0007\u0005\u0000\u0000\u0084)\u0001\u0000\u0000"+
-		"\u0000\u0085\u0086\u0003,\u0016\u0000\u0086+\u0001\u0000\u0000\u0000\u0087"+
-		"\u0089\u0007\u0006\u0000\u0000\u0088\u008a\u0003.\u0017\u0000\u0089\u0088"+
-		"\u0001\u0000\u0000\u0000\u0089\u008a\u0001\u0000\u0000\u0000\u008a\u008d"+
-		"\u0001\u0000\u0000\u0000\u008b\u008d\u0003.\u0017\u0000\u008c\u0087\u0001"+
-		"\u0000\u0000\u0000\u008c\u008b\u0001\u0000\u0000\u0000\u008d-\u0001\u0000"+
-		"\u0000\u0000\u008e\u008f\u0005\r\u0000\u0000\u008f\u0090\u0007\u0006\u0000"+
-		"\u0000\u0090/\u0001\u0000\u0000\u0000\r3?CGQV\\enw\u0080\u0089\u008c";
+		"\u0003\u00014\b\u0001\u0001\u0002\u0001\u0002\u0003\u00028\b\u0002\u0001"+
+		"\u0003\u0001\u0003\u0003\u0003<\b\u0003\u0001\u0004\u0001\u0004\u0001"+
+		"\u0004\u0005\u0004A\b\u0004\n\u0004\f\u0004D\t\u0004\u0001\u0004\u0001"+
+		"\u0004\u0003\u0004H\b\u0004\u0001\u0005\u0001\u0005\u0001\u0006\u0001"+
+		"\u0006\u0003\u0006N\b\u0006\u0001\u0007\u0001\u0007\u0001\b\u0001\b\u0003"+
+		"\bT\b\b\u0001\t\u0001\t\u0001\n\u0001\n\u0003\nZ\b\n\u0001\u000b\u0001"+
+		"\u000b\u0001\f\u0001\f\u0003\f`\b\f\u0001\r\u0001\r\u0001\u000e\u0001"+
+		"\u000e\u0003\u000ef\b\u000e\u0001\u000f\u0001\u000f\u0001\u0010\u0001"+
+		"\u0010\u0003\u0010l\b\u0010\u0001\u0010\u0003\u0010o\b\u0010\u0001\u0011"+
+		"\u0001\u0011\u0001\u0011\u0000\u0000\u0012\u0000\u0002\u0004\u0006\b\n"+
+		"\f\u000e\u0010\u0012\u0014\u0016\u0018\u001a\u001c\u001e \"\u0000\u0007"+
+		"\u0001\u0000\u0012\u0013\u0001\u0000\u0017\u0018\u0001\u0000\u0019\u001a"+
+		"\u0001\u0000\u0015\u0016\u0001\u0000\u001b\u001c\u0001\u0000\u001e\u001f"+
+		"\u0001\u0000!\"r\u0000\'\u0001\u0000\u0000\u0000\u00023\u0001\u0000\u0000"+
+		"\u0000\u00047\u0001\u0000\u0000\u0000\u00069\u0001\u0000\u0000\u0000\b"+
+		"=\u0001\u0000\u0000\u0000\nI\u0001\u0000\u0000\u0000\fK\u0001\u0000\u0000"+
+		"\u0000\u000eO\u0001\u0000\u0000\u0000\u0010Q\u0001\u0000\u0000\u0000\u0012"+
+		"U\u0001\u0000\u0000\u0000\u0014W\u0001\u0000\u0000\u0000\u0016[\u0001"+
+		"\u0000\u0000\u0000\u0018]\u0001\u0000\u0000\u0000\u001aa\u0001\u0000\u0000"+
+		"\u0000\u001cc\u0001\u0000\u0000\u0000\u001eg\u0001\u0000\u0000\u0000 "+
+		"n\u0001\u0000\u0000\u0000\"p\u0001\u0000\u0000\u0000$&\u0003\u0002\u0001"+
+		"\u0000%$\u0001\u0000\u0000\u0000&)\u0001\u0000\u0000\u0000\'%\u0001\u0000"+
+		"\u0000\u0000\'(\u0001\u0000\u0000\u0000(*\u0001\u0000\u0000\u0000)\'\u0001"+
+		"\u0000\u0000\u0000*+\u0005\u0000\u0000\u0001+\u0001\u0001\u0000\u0000"+
+		"\u0000,4\u0003\u0004\u0002\u0000-4\u0003\n\u0005\u0000.4\u0003\u000e\u0007"+
+		"\u0000/4\u0003\u0012\t\u000004\u0003\u0016\u000b\u000014\u0003\u001a\r"+
+		"\u000024\u0003\u001e\u000f\u00003,\u0001\u0000\u0000\u00003-\u0001\u0000"+
+		"\u0000\u00003.\u0001\u0000\u0000\u00003/\u0001\u0000\u0000\u000030\u0001"+
+		"\u0000\u0000\u000031\u0001\u0000\u0000\u000032\u0001\u0000\u0000\u0000"+
+		"4\u0003\u0001\u0000\u0000\u000058\u0003\u0006\u0003\u000068\u0003\b\u0004"+
+		"\u000075\u0001\u0000\u0000\u000076\u0001\u0000\u0000\u00008\u0005\u0001"+
+		"\u0000\u0000\u00009;\u0007\u0000\u0000\u0000:<\u0003\"\u0011\u0000;:\u0001"+
+		"\u0000\u0000\u0000;<\u0001\u0000\u0000\u0000<\u0007\u0001\u0000\u0000"+
+		"\u0000=>\u0003\u0006\u0003\u0000>B\u0005\u0010\u0000\u0000?A\u0003\u0006"+
+		"\u0003\u0000@?\u0001\u0000\u0000\u0000AD\u0001\u0000\u0000\u0000B@\u0001"+
+		"\u0000\u0000\u0000BC\u0001\u0000\u0000\u0000CE\u0001\u0000\u0000\u0000"+
+		"DB\u0001\u0000\u0000\u0000EG\u0005\u0011\u0000\u0000FH\u0003\"\u0011\u0000"+
+		"GF\u0001\u0000\u0000\u0000GH\u0001\u0000\u0000\u0000H\t\u0001\u0000\u0000"+
+		"\u0000IJ\u0003\f\u0006\u0000J\u000b\u0001\u0000\u0000\u0000KM\u0007\u0001"+
+		"\u0000\u0000LN\u0003\"\u0011\u0000ML\u0001\u0000\u0000\u0000MN\u0001\u0000"+
+		"\u0000\u0000N\r\u0001\u0000\u0000\u0000OP\u0003\u0010\b\u0000P\u000f\u0001"+
+		"\u0000\u0000\u0000QS\u0007\u0002\u0000\u0000RT\u0003\"\u0011\u0000SR\u0001"+
+		"\u0000\u0000\u0000ST\u0001\u0000\u0000\u0000T\u0011\u0001\u0000\u0000"+
+		"\u0000UV\u0003\u0014\n\u0000V\u0013\u0001\u0000\u0000\u0000WY\u0007\u0003"+
+		"\u0000\u0000XZ\u0003\"\u0011\u0000YX\u0001\u0000\u0000\u0000YZ\u0001\u0000"+
+		"\u0000\u0000Z\u0015\u0001\u0000\u0000\u0000[\\\u0003\u0018\f\u0000\\\u0017"+
+		"\u0001\u0000\u0000\u0000]_\u0007\u0004\u0000\u0000^`\u0003\"\u0011\u0000"+
+		"_^\u0001\u0000\u0000\u0000_`\u0001\u0000\u0000\u0000`\u0019\u0001\u0000"+
+		"\u0000\u0000ab\u0003\u001c\u000e\u0000b\u001b\u0001\u0000\u0000\u0000"+
+		"ce\u0007\u0005\u0000\u0000df\u0003\"\u0011\u0000ed\u0001\u0000\u0000\u0000"+
+		"ef\u0001\u0000\u0000\u0000f\u001d\u0001\u0000\u0000\u0000gh\u0003 \u0010"+
+		"\u0000h\u001f\u0001\u0000\u0000\u0000ik\u0007\u0006\u0000\u0000jl\u0003"+
+		"\"\u0011\u0000kj\u0001\u0000\u0000\u0000kl\u0001\u0000\u0000\u0000lo\u0001"+
+		"\u0000\u0000\u0000mo\u0003\"\u0011\u0000ni\u0001\u0000\u0000\u0000nm\u0001"+
+		"\u0000\u0000\u0000o!\u0001\u0000\u0000\u0000pq\u0005\r\u0000\u0000q#\u0001"+
+		"\u0000\u0000\u0000\r\'37;BGMSY_ekn";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

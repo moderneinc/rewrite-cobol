@@ -37,6 +37,5 @@ UNKNOWN_TEXT=34
 '^^CM^^'=10
 '^^COMMENT^^'=11
 '^^UNKNOWN^^'=12
-'^^CA_START^^'=13
 '^^TC_START^^'=16
 '^^TC_STOP^^'=17
