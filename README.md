@@ -21,7 +21,7 @@
 
 ## What is this?
 
-This project implements a [Rewrite module](https://github.com/openrewrite/rewrite) that provides parsers, visitors, and recipes for COBOL and related mainframe technologies. It supports parsing and transforming COBOL source code, JCL (Job Control Language), BMS map sets, DB2 DDL, DB2 bind cards, link-edit decks, DFSORT and IDCAMS control cards, and Control-M job definitions.
+This project implements a [Rewrite module](https://github.com/openrewrite/rewrite) that provides parsers, visitors, and recipes for COBOL and related mainframe technologies. It supports parsing and transforming COBOL source code, JCL (Job Control Language), BMS map sets, DB2 DDL, DB2 bind cards, link-edit decks, load module listings, DFSORT and IDCAMS control cards, and Control-M job definitions.
 
 ### Language Support
 
@@ -31,6 +31,7 @@ This project implements a [Rewrite module](https://github.com/openrewrite/rewrit
 - **DB2 DDL** — DB2 for z/OS DDL (`.ddl`, `.sql`, and the `SYSIN` streams of the jobs that create a schema): every statement the SQL reference documents is modelled, so a statement that cannot be read is a syntax error rather than a node that says nothing
 - **Bind cards** — DSN command decks (`.bnd`, and an extensionless CARDLIB member whose first subcommand binds): `BIND PLAN`, `BIND PACKAGE` and `REBIND` with their keyword operands, read from a member of their own or from the in-stream `SYSTSIN` of the job that runs them
 - **Link-edit decks** — Binder control statements (`.lnk`, `.lked`, and an extensionless LINKLIB member whose first statement links): `INCLUDE ddname(member)`, `ENTRY`, `ALIAS`, `NAME xxx(R)`, `ORDER`, `MODE`, `SETCODE` and `SETOPT`, with column 72 saying which card continues which. A deck is the only place a load module's composition is written down — a step names the module, and the module names its programs here
+- **Load module listings** — What AMBLIST and the binder printed about a load library (`.amblist`, `.binder`, `.listload`, and a control card member that asks for a report): the module and its entry point, aliases and size, the control sections it holds with their offsets and lengths, the alternate entry points within them, and the compiler each section came from. A deck says what a module was meant to hold; a listing says what it holds, including the language interface and the runtime nobody wrote a card for
 - **Sort cards** — DFSORT and ICETOOL control statements: `SORT`/`MERGE FIELDS`, `INCLUDE`/`OMIT COND`, `INREC`/`OUTREC`/`OUTFIL`, `SUM`, `OPTION`, with the control fields read as byte positions into the record, which is what joins a sort card to the copybook that describes it
 - **IDCAMS cards** — Access method services commands: `DEFINE CLUSTER`/`AIX`/`PATH`/`GDG` with their parameter groups, `REPRO`, `DELETE`, `LISTCAT`, `PRINT` and `ALTER`, which is where a VSAM file's key, record size and components are written down
 - **Control-M** — Job scheduling definitions, both dialects a shop has: the z/OS panel (`.ctms`) and the XML an export writes (`.controlm`). The JCL member each job runs, the `IN` and `OUT` conditions that order them, the SMART table they sit in and the calendars they run on, which is what turns a library of jobs into the order they actually run in
@@ -85,22 +86,24 @@ The last row is not a public application but a fixture: one fictional insurance 
 application, CLAIMS, written so that every `COPY`, `CALL`, `EXEC PROC`, `SEND MAP` and `SYSIN`
 member in it resolves to a member of the same repository, and every member of it a parser here reads
 parses. It also holds member kinds nothing here reads yet — IMS DBD, PSB, MFS and stage 1 decks,
-HLASM programs and macros, load module listings, CLISTs, REXX execs and run book members — and the
+HLASM programs and macros, CLISTs, REXX execs and run book members — and the
 walks skip those rather than counting them against a parser. The public applications are measured;
 the fixture is required. The tests know it by its directory name, `mainframe-fixtures`, and fail when
-a program, copybook, job, procedure, map set, bind deck, link-edit deck, control card or schedule of
-it does not parse, read or print back — or when the corpus root does not contain it, since a fixture
+a program, copybook, job, procedure, map set, bind deck, link-edit deck, module listing, control card
+or schedule of it does not parse, read or print back — or when the corpus root does not contain it, since a fixture
 the walk cannot see, a symbolic link say, would otherwise pass as an empty application.
 
 Clone them side by side into one directory and point the tests at it. The tests find files the way
 the parsers accept them, whatever the case of the extension: programs by `.cbl`, `.cob` and
 `.cobol`, copybooks by `.cpy`, `.copy` and `.dcl`, map sets by `.bms`, bind decks by `.bnd`, link-edit
-decks by `.lnk` and `.lked`, schedules by `.ctms` and `.controlm`, and jobs by `.jcl`, `.prc` and
+decks by `.lnk` and `.lked`, module listings by `.amblist`, `.binder` and `.listload`, schedules by
+`.ctms` and `.controlm`, and jobs by `.jcl`, `.prc` and
 `.proc` — or, since MainframeJCL, ADCD setup and Zowe's SZWESAMP keep their members as they came off
 the PDS, by a `.txt` or extensionless file whose first card is JCL, and by an extensionless file
 whose first subcommand binds. Control card members are typed by what they say rather than by what
-they are called: a `.ctl`, `.prm` or extensionless member is a sort deck, an IDCAMS deck or a
-link-edit deck if its first statement is one, and anything else stays plain. A member whose name
+they are called: a `.ctl`, `.prm` or extensionless member is a sort deck, an IDCAMS deck, a
+link-edit deck or an AMBLIST request deck if its first statement is one, and anything else stays
+plain. A member whose name
 promises a language its content is not — CBSA's `DFH$SIP1.jcl` is a CICS parameter member — is
 reported as such, under
 `WrongLanguageException`, rather than as a grammar failure. The corpus tests skip themselves when
@@ -112,8 +115,8 @@ COBOL_CORPUS=/path/to/corpus JCL_CORPUS=/path/to/corpus BMS_CORPUS=/path/to/corp
 CONTROLM_CORPUS=/path/to/corpus ./gradlew test --rerun
 ```
 
-Bind decks, link-edit decks and control cards ride on `JCL_CORPUS`, since a deck is reached through
-the step that runs it. `--rerun` matters: the corpus path is an environment variable, not a task input, so a
+Bind decks, link-edit decks, module listings and control cards ride on `JCL_CORPUS`, since a deck is
+reached through the step that runs it and a listing is what that step printed. `--rerun` matters: the corpus path is an environment variable, not a task input, so a
 run left up to date by an earlier `./gradlew test` is replayed without reading the corpus at all.
 
 The numbers above were taken at these commits. CBSA's `main` is a README; the application is on the
@@ -166,6 +169,14 @@ checks the fixture's `linklib` deck by deck against INTERLINKS section 12, which
 19 modules, the five that enter at a `DLITCBL` label, the one `ALIAS` and every statically included
 object are written down. GenevaERS keeps its decks as build templates, so the 14 with no template
 directive in them are read as the decks they are and the one with a directive is left alone.
+
+`ListLoadCorpusTest` does the same for load module listings, over the fixture's two AMBLIST reports,
+thirteen binder listings and two request decks, counting every module and every control section it
+read against a column scan of the source. It checks them against INTERLINKS section 14, which is
+where the 16 modules, the 16 program CSECTs, the three map sets, the one module entered at a
+`DLITCBL` label and the one alias are written down, and it requires each module's reported size to be
+what its sections add up to and what the binder printed for a module to agree with what AMBLIST found
+in the library afterwards.
 
 `ControlCardCorpusTest` does the same for sort and IDCAMS cards, over 16 members and the 153 decks
 the corpus writes in-stream, and requires that no member is claimed by both parsers. It also checks

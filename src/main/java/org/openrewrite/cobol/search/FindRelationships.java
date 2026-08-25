@@ -53,6 +53,9 @@ import org.openrewrite.linkedit.InStreamLinkEditDeck;
 import org.openrewrite.linkedit.LinkEditIsoVisitor;
 import org.openrewrite.linkedit.trait.LinkEditDeck;
 import org.openrewrite.linkedit.tree.LinkEdit;
+import org.openrewrite.listload.ListLoadIsoVisitor;
+import org.openrewrite.listload.trait.ModuleListing;
+import org.openrewrite.listload.tree.ListLoad;
 import org.openrewrite.marker.Range;
 import org.openrewrite.marker.SearchResult;
 
@@ -280,6 +283,14 @@ public class FindRelationships extends Recipe {
             }
         };
 
+        ListLoadIsoVisitor<ExecutionContext> listingVisitor = new ListLoadIsoVisitor<ExecutionContext>() {
+            @Override
+            public ListLoad.CompilationUnit visitCompilationUnit(ListLoad.CompilationUnit cu, ExecutionContext ctx) {
+                listingRelationships(cu, ctx);
+                return cu;
+            }
+        };
+
         BindIsoVisitor<ExecutionContext> bindCardVisitor = new BindIsoVisitor<ExecutionContext>() {
             @Override
             public Bind.CompilationUnit visitCompilationUnit(Bind.CompilationUnit cu, ExecutionContext ctx) {
@@ -426,6 +437,8 @@ public class FindRelationships extends Recipe {
                     t = cobolVisitor.visit(t, ctx);
                 } else if (tree instanceof LinkEdit) {
                     t = linkEditVisitor.visit(t, ctx);
+                } else if (tree instanceof ListLoad) {
+                    t = listingVisitor.visit(t, ctx);
                 } else if (tree instanceof Bind) {
                     t = bindCardVisitor.visit(t, ctx);
                 } else if (tree instanceof Idcams) {
@@ -527,6 +540,28 @@ public class FindRelationships extends Recipe {
             if (module != null) {
                 insertDeckRow(seen, module.getText(), LOAD_MODULE, CONTAINS, include.getMember(), COBOL,
                         sourcePath, line, ctx);
+            }
+        }
+    }
+
+    /**
+     * What a load module actually holds, which only a listing says. A link-edit deck says what a
+     * module was meant to be built from; the listing says what the binder put there — the runtime and
+     * the language interface the autocall pulled in as well as the objects the deck asked for — so
+     * reconciling the two finds a module built from something other than the source a shop keeps.
+     */
+    private void listingRelationships(ListLoad.CompilationUnit listing, ExecutionContext ctx) {
+        Set<String> seen = new HashSet<>();
+        String sourcePath = listing.getSourcePath().toString();
+        for (ModuleListing.Module module : new ModuleListing.Matcher().require(listing, null).getModules()) {
+            ModuleListing.Entry entry = module.getEntry();
+            if (entry != null) {
+                insertDeckRow(seen, module.getName(), LOAD_MODULE, ENTRY, entry.getName(), COBOL,
+                        sourcePath, entry.getLine(), ctx);
+            }
+            for (ModuleListing.Csect csect : module.getCsects()) {
+                insertDeckRow(seen, module.getName(), LOAD_MODULE, CONTAINS, csect.getName(), CSECT,
+                        sourcePath, csect.getLine(), ctx);
             }
         }
     }

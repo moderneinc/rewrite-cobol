@@ -218,7 +218,8 @@ class ControlCardCorpusTest {
                 .containsExactly("DEFCLM01", "DEFCLM02", "DEFGDG01", "REPCLM01", "REPCLM02", "REPCLM03");
         assertThat(names(Corpus.sortCards(ctlcard))).containsExactly("SRTCLM01", "SRTCLM02");
 
-        // The other eleven are IEBGENER, AMBLIST, DSN and parm cards, which stay plain parameters.
+        // Of the other eleven, the two AMBLIST decks are typed by the listload reader and the nine
+        // IEBGENER, DSN and parm cards stay plain parameters.
         try (Stream<Path> paths = Files.list(ctlcard)) {
             assertThat(paths.filter(Files::isRegularFile)).hasSize(19);
         }

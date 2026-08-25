@@ -36,6 +36,7 @@ import static org.openrewrite.controlm.Assertions.controlM;
 import static org.openrewrite.db2.bind.Assertions.bind;
 import static org.openrewrite.jcl.Assertions.jcl;
 import static org.openrewrite.linkedit.Assertions.linkEdit;
+import static org.openrewrite.listload.Assertions.listLoad;
 
 class FindRelationshipsTest extends CobolTest {
 
@@ -393,6 +394,46 @@ class FindRelationshipsTest extends CobolTest {
                 assertThat(lineAt(deck, r.getDependentLine())).contains("INCLUDE " + r.getActionMetadata()));
           }),
           linkEdit(deck, spec -> spec.path("CLMC020.lnk"))
+        );
+    }
+
+    /**
+     * A deck says what a module was meant to hold and a listing says what it holds: the language
+     * interface and the runtime the autocall pulled in are in the module and in no deck anybody wrote,
+     * so a module's parts are only complete once the listing has been read.
+     */
+    @Test
+    void aListingNamesTheSectionsAModuleHolds() {
+        String listing = String.join("\n",
+          "1                                          A M B L I S T                        PAGE     1",
+          "0                                          ** MODULE SUMMARY **",
+          "0",
+          "      MEMBER NAME:                  CLMC020",
+          "      MAIN ENTRY POINT:             00000000",
+          "      LIBRARY:                      DDNAME=CICSLOAD DSNAME=CLM.PROD.CICSLOAD",
+          "      MODULE SIZE (HEX):            00003658",
+          "0",
+          "0                                          ** CONTROL SECTION SUMMARY **",
+          "0",
+          "      CSECT NAME    ORIGIN    LENGTH    TYPE   AMODE   ENTRY NAME    LOCATION",
+          "      CLMC020       00000000  00002F10  SD     31",
+          "      DFHECI        00002F10  00000058  SD     31      DFHEI1        00002F18",
+          "      CLMU020       00002F68  000006E8  SD     31",
+          "");
+        rewriteRun(
+          spec -> spec.dataTable(Row.class, rows -> {
+              assertThat(rows).filteredOn(r -> r.getDependencyType() == CSECT)
+                .extracting(Row::getDependent, Row::getAction, Row::getDependency)
+                .containsExactly(
+                  tuple("CLMC020", CONTAINS, "CLMC020"),
+                  tuple("CLMC020", CONTAINS, "DFHECI"),
+                  tuple("CLMC020", CONTAINS, "CLMU020"));
+              assertThat(rows).filteredOn(r -> r.getAction() == ENTRY).singleElement().satisfies(r ->
+                assertThat(r.getDependency()).isEqualTo("CLMC020"));
+              assertThat(rows).allSatisfy(r ->
+                assertThat(lineAt(listing, r.getDependentLine())).contains(r.getDependency()));
+          }),
+          listLoad(listing, spec -> spec.path("CICSLOAD.amblist"))
         );
     }
 

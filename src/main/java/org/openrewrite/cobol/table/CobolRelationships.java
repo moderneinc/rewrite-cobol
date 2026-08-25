@@ -128,6 +128,12 @@ public class CobolRelationships extends DataTable<CobolRelationships.Row> {
          */
         LOAD_MODULE,
         /**
+         * A control section: what one compile or assembly produced and the binder placed in a load
+         * module. A program's own CSECT carries the program's name, and the rest are the stubs a
+         * language interface supplies and the runtime the autocall pulled in.
+         */
+        CSECT,
+        /**
          * The database request module a DB2 precompile leaves behind, which a package is bound from.
          */
         DBRM,

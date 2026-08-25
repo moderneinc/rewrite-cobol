@@ -23,6 +23,7 @@ import org.openrewrite.controlcard.sort.SortParser;
 import org.openrewrite.db2.bind.BindParser;
 import org.openrewrite.jcl.JclParser;
 import org.openrewrite.linkedit.LinkEditParser;
+import org.openrewrite.listload.ListLoadParser;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -95,6 +96,10 @@ public final class Corpus {
 
     public static List<Path> linkEditDecks(Path repository) throws IOException {
         return files(repository, LinkEditParser.builder().build());
+    }
+
+    public static List<Path> moduleListings(Path repository) throws IOException {
+        return files(repository, ListLoadParser.builder().build());
     }
 
     public static List<Path> sortCards(Path repository) throws IOException {
