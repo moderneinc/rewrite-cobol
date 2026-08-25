@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 the original author or authors.
+ * Copyright 2026 the original author or authors.
  * <p>
  * Licensed under the Moderne Source Available License (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import lombok.NoArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
 import org.openrewrite.db2.tree.Db2;
+import org.openrewrite.db2.tree.Db2Container;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,11 +33,11 @@ import static java.util.Collections.emptyList;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 final class Constraints {
 
-    static List<String> columnNames(Db2.@Nullable ColumnList columns) {
+    static List<String> columnNames(@Nullable Db2Container<Db2.Name> columns) {
         if (columns == null) {
             return emptyList();
         }
-        List<Db2.Name> names = columns.getColumnNames();
+        List<Db2.Name> names = columns.getElements();
         List<String> columnNames = new ArrayList<>(names.size());
         for (Db2.Name name : names) {
             columnNames.add(name.getSimpleName());
@@ -69,6 +70,35 @@ final class Constraints {
             }
             if (value instanceof Db2.AlterTable) {
                 return ((Db2.AlterTable) value).getName();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * The elements of a table body, or empty for a table defined by {@code LIKE} or a query.
+     */
+    static List<Db2> elementsOf(Db2.CreateTable table) {
+        return table.getContents() instanceof Db2.TableElements ?
+                ((Db2.TableElements) table.getContents()).getElements().getElements() : emptyList();
+    }
+
+    /**
+     * The value of an option introduced by {@code keyword}, as a name — the tablespace after
+     * {@code IN}, the storage group after {@code USING STOGROUP}.
+     */
+    static Db2.@Nullable Name namedBy(List<Db2> options, Db2.Keyword.Type keyword) {
+        for (Db2 option : options) {
+            if (!(option instanceof Db2.Option)) {
+                continue;
+            }
+            Db2.Option o = (Db2.Option) option;
+            if (Db2.has(o.getKeywords(), keyword)) {
+                for (Db2 value : o.getValues()) {
+                    if (value instanceof Db2.Name) {
+                        return (Db2.Name) value;
+                    }
+                }
             }
         }
         return null;

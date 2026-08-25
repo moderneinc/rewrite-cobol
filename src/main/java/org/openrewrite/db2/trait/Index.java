@@ -51,16 +51,16 @@ public class Index implements Trait<Db2.CreateIndex> {
     }
 
     public boolean isUnique() {
-        return getTree().isUnique();
+        return Db2.has(getTree().getKeywords(), Db2.Keyword.Type.Unique);
     }
 
     public List<Key> getKeys() {
-        List<Db2.IndexKey> indexKeys = getTree().getIndexKeys();
+        List<Db2.IndexKey> indexKeys = getTree().getKeys().getElements();
         List<Key> keys = new ArrayList<>(indexKeys.size());
         for (Db2.IndexKey key : indexKeys) {
-            Db2.Word direction = key.getDirection();
+            Db2.Keyword direction = key.getDirection();
             keys.add(new Key(key.getName().getSimpleName(),
-                    direction == null ? "ASC" : direction.getText().toUpperCase(Locale.ROOT)));
+                    direction == null ? "ASC" : direction.getType().getKeyword()));
         }
         return keys;
     }

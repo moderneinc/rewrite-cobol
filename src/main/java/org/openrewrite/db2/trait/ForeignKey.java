@@ -68,25 +68,30 @@ public class ForeignKey implements Trait<Db2.Constraint> {
      * this table's rows when a referenced row goes away. Null when the DDL leaves it to the default
      * of {@code NO ACTION}.
      */
+    /**
+     * {@code RESTRICT}, {@code CASCADE}, {@code SET NULL} or {@code NO ACTION} — what DB2 does to
+     * this table's rows when a referenced row goes away. Null when the DDL leaves it to the default
+     * of {@code NO ACTION}.
+     */
     public @Nullable String getDeleteRule() {
-        List<Db2.Word> options = getTree().getOptions();
-        for (int i = 0; i < options.size() - 2; i++) {
-            if ("ON".equalsIgnoreCase(options.get(i).getText()) &&
-                "DELETE".equalsIgnoreCase(options.get(i + 1).getText())) {
-                return rule(options, i + 2);
+        for (Db2 option : getTree().getOptions()) {
+            if (!(option instanceof Db2.Option)) {
+                continue;
             }
+            List<Db2.Keyword> keywords = ((Db2.Option) option).getKeywords();
+            if (!Db2.has(keywords, Db2.Keyword.Type.Delete)) {
+                continue;
+            }
+            StringBuilder rule = new StringBuilder();
+            for (int i = 2; i < keywords.size(); i++) {
+                if (rule.length() > 0) {
+                    rule.append(' ');
+                }
+                rule.append(keywords.get(i).getType().getKeyword());
+            }
+            return rule.length() == 0 ? null : rule.toString();
         }
         return null;
-    }
-
-    /**
-     * {@code SET NULL} is the only two word rule, so the word after the rule is only part of it when
-     * the rule is {@code SET} or {@code NO}.
-     */
-    private static String rule(List<Db2.Word> options, int at) {
-        String rule = options.get(at).getText().toUpperCase(Locale.ROOT);
-        boolean twoWords = ("SET".equals(rule) || "NO".equals(rule)) && at + 1 < options.size();
-        return twoWords ? rule + " " + options.get(at + 1).getText().toUpperCase(Locale.ROOT) : rule;
     }
 
     public static class Matcher extends SimpleTraitMatcher<ForeignKey> {
@@ -94,7 +99,8 @@ public class ForeignKey implements Trait<Db2.Constraint> {
         @Override
         protected @Nullable ForeignKey test(Cursor cursor) {
             Object value = cursor.getValue();
-            return value instanceof Db2.Constraint && ((Db2.Constraint) value).isKind("FOREIGN") ?
+            return value instanceof Db2.Constraint &&
+                   Db2.has(((Db2.Constraint) value).getKeywords(), Db2.Keyword.Type.Foreign) ?
                     new ForeignKey(cursor) : null;
         }
     }

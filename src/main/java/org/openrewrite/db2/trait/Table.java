@@ -61,12 +61,13 @@ public class Table implements Trait<Db2.CreateTable> {
      * The tablespace the table lives in, or null when the DDL leaves it to DB2.
      */
     public @Nullable String getTablespace() {
-        Db2.Name tablespace = getTree().getTablespace();
+        Db2.Name tablespace = Constraints.namedBy(getTree().getOptions(), Db2.Keyword.Type.In);
         return tablespace == null ? null : tablespace.getFullName();
     }
 
     public List<Column> getColumns() {
-        List<Db2.ColumnDefinition> definitions = getTree().getColumns();
+        List<Db2.ColumnDefinition> definitions =
+                Db2.elementsOf(Constraints.elementsOf(getTree()), Db2.ColumnDefinition.class);
         List<Column> columns = new ArrayList<>(definitions.size());
         for (Db2.ColumnDefinition definition : definitions) {
             columns.add(new Column(new Cursor(cursor, definition)));
@@ -87,8 +88,8 @@ public class Table implements Trait<Db2.CreateTable> {
      * The primary key's columns in key order, or empty for a table declaring none.
      */
     public List<String> getPrimaryKey() {
-        for (Db2.Constraint constraint : getTree().getConstraints()) {
-            if (constraint.isKind("PRIMARY")) {
+        for (Db2.Constraint constraint : constraints()) {
+            if (Db2.has(constraint.getKeywords(), Db2.Keyword.Type.Primary)) {
                 return Constraints.columnNames(constraint.getColumns());
             }
         }
@@ -102,12 +103,16 @@ public class Table implements Trait<Db2.CreateTable> {
      */
     public List<ForeignKey> getForeignKeys() {
         List<ForeignKey> foreignKeys = new ArrayList<>();
-        for (Db2.Constraint constraint : getTree().getConstraints()) {
-            if (constraint.isKind("FOREIGN")) {
+        for (Db2.Constraint constraint : constraints()) {
+            if (Db2.has(constraint.getKeywords(), Db2.Keyword.Type.Foreign)) {
                 foreignKeys.add(new ForeignKey(new Cursor(cursor, constraint)));
             }
         }
         return foreignKeys;
+    }
+
+    private List<Db2.Constraint> constraints() {
+        return Db2.elementsOf(Constraints.elementsOf(getTree()), Db2.Constraint.class);
     }
 
     public static class Matcher extends SimpleTraitMatcher<Table> {

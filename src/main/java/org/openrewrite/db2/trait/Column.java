@@ -64,7 +64,21 @@ public class Column implements Trait<Db2.ColumnDefinition> {
      * says {@code NOT NULL} — DB2 requires it and supplies it when it is left out.
      */
     public boolean isNullable() {
-        return !getTree().isNotNull() && !isPrimaryKey();
+        return !isNotNull() && !isPrimaryKey();
+    }
+
+    /**
+     * Whether the column says {@code NOT NULL} among its attributes.
+     */
+    private boolean isNotNull() {
+        for (Db2 attribute : getTree().getAttributes()) {
+            if (attribute instanceof Db2.Option &&
+                Db2.has(((Db2.Option) attribute).getKeywords(), Db2.Keyword.Type.Not) &&
+                Db2.has(((Db2.Option) attribute).getKeywords(), Db2.Keyword.Type.Null)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean isPrimaryKey() {
@@ -89,7 +103,8 @@ public class Column implements Trait<Db2.ColumnDefinition> {
         if (table == null) {
             return -1;
         }
-        List<Db2.ColumnDefinition> columns = table.getTree().getColumns();
+        List<Db2.ColumnDefinition> columns =
+                Db2.elementsOf(Constraints.elementsOf(table.getTree()), Db2.ColumnDefinition.class);
         for (int i = 0; i < columns.size(); i++) {
             if (columns.get(i) == getTree()) {
                 return i + 1;
@@ -104,7 +119,10 @@ public class Column implements Trait<Db2.ColumnDefinition> {
 
     private @Nullable Integer argument(int index) {
         int seen = 0;
-        for (Db2.Word argument : getTree().getType().getArguments()) {
+        if (getTree().getType().getArguments() == null) {
+            return null;
+        }
+        for (Db2.Word argument : getTree().getType().getArguments().getElements()) {
             String text = argument.getText();
             if (!text.isEmpty() && Character.isDigit(text.charAt(0))) {
                 if (seen++ == index) {
