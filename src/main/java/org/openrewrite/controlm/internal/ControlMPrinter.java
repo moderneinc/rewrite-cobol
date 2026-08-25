@@ -161,6 +161,43 @@ public class ControlMPrinter<P> extends ControlMVisitor<PrintOutputCapture<P>> {
     }
 
     @Override
+    public ControlM visitElement(ControlM.Element element, PrintOutputCapture<P> p) {
+        beforeSyntax(element, Space.Location.ELEMENT_PREFIX, p);
+        p.append("<").append(element.getName());
+        visit(element.getAttributes(), p);
+        visitSpace(element.getBeforeTagEnd(), Space.Location.ELEMENT_BEFORE_TAG_END, p);
+        if (element.getElements() == null) {
+            p.append("/>");
+        } else {
+            p.append(">");
+            visit(element.getElements(), p);
+            visitSpace(element.getBeforeEndTag(), Space.Location.ELEMENT_BEFORE_END_TAG, p);
+            p.append("</").append(element.getName()).append(">");
+        }
+        afterSyntax(element, p);
+        return element;
+    }
+
+    @Override
+    public ControlM visitAttribute(ControlM.Attribute attribute, PrintOutputCapture<P> p) {
+        beforeSyntax(attribute, Space.Location.ATTRIBUTE_PREFIX, p);
+        p.append(attribute.getName());
+        visitSpace(attribute.getBeforeEquals(), Space.Location.ATTRIBUTE_BEFORE_EQUALS, p);
+        p.append("=");
+        visit(attribute.getValue(), p);
+        afterSyntax(attribute, p);
+        return attribute;
+    }
+
+    @Override
+    public ControlM visitDirective(ControlM.Directive directive, PrintOutputCapture<P> p) {
+        beforeSyntax(directive, Space.Location.DIRECTIVE_PREFIX, p);
+        p.append(directive.getText());
+        afterSyntax(directive, p);
+        return directive;
+    }
+
+    @Override
     public ControlM visitWord(ControlM.Word word, PrintOutputCapture<P> p) {
         beforeSyntax(word, Space.Location.WORD_PREFIX, p);
         p.append(word.getText());

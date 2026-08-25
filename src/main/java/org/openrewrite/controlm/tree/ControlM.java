@@ -28,6 +28,7 @@ import java.lang.ref.WeakReference;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -409,6 +410,134 @@ public interface ControlM extends Tree {
         @Override
         public <P> ControlM acceptControlM(ControlMVisitor<P> v, P p) {
             return v.visitParameter(this, p);
+        }
+    }
+
+    /**
+     * One element of an {@code exportdeftable} or {@code exportdefcal} file: the table, a job, a
+     * condition, a calendar. The XML dialect writes as elements and attributes what the panel dialect
+     * writes as sections of lines, so the two meet in the traits rather than in the tree.
+     */
+    @Value
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+    @With
+    class Element implements ControlM, Section {
+
+        @EqualsAndHashCode.Include
+        UUID id;
+
+        Space prefix;
+        Markers markers;
+        String name;
+        List<Attribute> attributes;
+        Space beforeTagEnd;
+
+        /**
+         * Null for an element written closed, {@code <INCOND ... />}, which is not the same as one
+         * written with an empty body.
+         */
+        @Nullable
+        List<ControlM> elements;
+
+        Space beforeEndTag;
+
+        public boolean isName(String name) {
+            return this.name.equalsIgnoreCase(name);
+        }
+
+        public @Nullable Attribute getAttribute(String name) {
+            for (Attribute attribute : attributes) {
+                if (attribute.getName().equalsIgnoreCase(name)) {
+                    return attribute;
+                }
+            }
+            return null;
+        }
+
+        /**
+         * The value of an attribute, or null when the element does not write it. An attribute written
+         * empty answers the empty string, which a Control-M export uses to mean "not set".
+         */
+        public @Nullable String getAttributeText(String name) {
+            Attribute attribute = getAttribute(name);
+            return attribute == null ? null : attribute.getValueText();
+        }
+
+        public List<Element> getElements(String name) {
+            List<Element> matching = new ArrayList<>();
+            if (elements != null) {
+                for (ControlM element : elements) {
+                    if (element instanceof Element && ((Element) element).isName(name)) {
+                        matching.add((Element) element);
+                    }
+                }
+            }
+            return matching;
+        }
+
+        @Override
+        public <P> ControlM acceptControlM(ControlMVisitor<P> v, P p) {
+            return v.visitElement(this, p);
+        }
+    }
+
+    @Value
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+    @With
+    class Attribute implements ControlM {
+
+        @EqualsAndHashCode.Include
+        UUID id;
+
+        Space prefix;
+        Markers markers;
+        String name;
+        Space beforeEquals;
+
+        /**
+         * The value as written, quotes and entity references included, so that it prints back as it
+         * came. {@link #getValueText()} is what it says.
+         */
+        Word value;
+
+        public String getValueText() {
+            String text = value.getText();
+            if (text.length() > 1 && (text.charAt(0) == '"' || text.charAt(0) == '\'') &&
+                text.charAt(text.length() - 1) == text.charAt(0)) {
+                text = text.substring(1, text.length() - 1);
+            }
+            return text.indexOf('&') < 0 ? text : text
+                    .replace("&lt;", "<")
+                    .replace("&gt;", ">")
+                    .replace("&quot;", "\"")
+                    .replace("&apos;", "'")
+                    .replace("&amp;", "&");
+        }
+
+        @Override
+        public <P> ControlM acceptControlM(ControlMVisitor<P> v, P p) {
+            return v.visitAttribute(this, p);
+        }
+    }
+
+    /**
+     * Markup that defines nothing: the XML declaration an export opens with, a doctype, a comment.
+     */
+    @Value
+    @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+    @With
+    class Directive implements ControlM, Section {
+
+        @EqualsAndHashCode.Include
+        UUID id;
+
+        Space prefix;
+        Markers markers;
+        String text;
+
+        @Override
+        public <P> ControlM acceptControlM(ControlMVisitor<P> v, P p) {
+            return v.visitDirective(this, p);
         }
     }
 

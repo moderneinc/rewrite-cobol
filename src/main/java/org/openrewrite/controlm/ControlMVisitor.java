@@ -131,6 +131,30 @@ public class ControlMVisitor<P> extends TreeVisitor<ControlM, P> {
         return pa.withValue(visitAndCast(pa.getValue(), p));
     }
 
+    public ControlM visitElement(ControlM.Element element, P p) {
+        ControlM.Element e = element;
+        e = e.withPrefix(visitSpace(e.getPrefix(), Space.Location.ELEMENT_PREFIX, p));
+        e = e.withMarkers(visitMarkers(e.getMarkers(), p));
+        e = e.withAttributes(ListUtils.map(e.getAttributes(), a -> visitAndCast(a, p)));
+        e = e.withBeforeTagEnd(visitSpace(e.getBeforeTagEnd(), Space.Location.ELEMENT_BEFORE_TAG_END, p));
+        e = e.withElements(e.getElements() == null ? null : ListUtils.map(e.getElements(), it -> visitAndCast(it, p)));
+        return e.withBeforeEndTag(visitSpace(e.getBeforeEndTag(), Space.Location.ELEMENT_BEFORE_END_TAG, p));
+    }
+
+    public ControlM visitAttribute(ControlM.Attribute attribute, P p) {
+        ControlM.Attribute a = attribute;
+        a = a.withPrefix(visitSpace(a.getPrefix(), Space.Location.ATTRIBUTE_PREFIX, p));
+        a = a.withMarkers(visitMarkers(a.getMarkers(), p));
+        a = a.withBeforeEquals(visitSpace(a.getBeforeEquals(), Space.Location.ATTRIBUTE_BEFORE_EQUALS, p));
+        return a.withValue(visitAndCast(a.getValue(), p));
+    }
+
+    public ControlM visitDirective(ControlM.Directive directive, P p) {
+        ControlM.Directive d = directive;
+        d = d.withPrefix(visitSpace(d.getPrefix(), Space.Location.DIRECTIVE_PREFIX, p));
+        return d.withMarkers(visitMarkers(d.getMarkers(), p));
+    }
+
     public ControlM visitWord(ControlM.Word word, P p) {
         ControlM.Word w = word;
         w = w.withPrefix(visitSpace(w.getPrefix(), Space.Location.WORD_PREFIX, p));

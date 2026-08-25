@@ -88,4 +88,19 @@ public class ControlMIsoVisitor<P> extends ControlMVisitor<P> {
     public ControlM.Parameter visitParameter(ControlM.Parameter parameter, P p) {
         return (ControlM.Parameter) super.visitParameter(parameter, p);
     }
+
+    @Override
+    public ControlM.Element visitElement(ControlM.Element element, P p) {
+        return (ControlM.Element) super.visitElement(element, p);
+    }
+
+    @Override
+    public ControlM.Attribute visitAttribute(ControlM.Attribute attribute, P p) {
+        return (ControlM.Attribute) super.visitAttribute(attribute, p);
+    }
+
+    @Override
+    public ControlM.Directive visitDirective(ControlM.Directive directive, P p) {
+        return (ControlM.Directive) super.visitDirective(directive, p);
+    }
 }

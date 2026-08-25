@@ -25,6 +25,7 @@ import org.openrewrite.ExecutionContext;
 import org.openrewrite.Parser;
 import org.openrewrite.SourceFile;
 import org.openrewrite.controlm.internal.ControlMParserVisitor;
+import org.openrewrite.controlm.internal.ExportReader;
 import org.openrewrite.controlm.internal.grammar.ControlMLexer;
 import org.openrewrite.controlm.tree.ControlM;
 import org.openrewrite.internal.EncodingDetectingInputStream;
@@ -34,9 +35,18 @@ import org.openrewrite.tree.ParsingEventListener;
 import org.openrewrite.tree.ParsingExecutionContextView;
 
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 
 public class ControlMParser implements Parser {
+
+    /**
+     * {@code .ctms} is a job-definition panel as the z/OS screen browses it; {@code .controlm} is
+     * what {@code exportdeftable} and {@code exportdefcal} write.
+     */
+    public static final List<String> CONTROL_M_FILE_EXTENSIONS = Arrays.asList(".ctms", ".controlm");
+
     @Override
     public Stream<SourceFile> parseInputs(Iterable<Input> sourceFiles, @Nullable Path relativeTo, ExecutionContext ctx) {
         ParsingExecutionContextView pctx = ParsingExecutionContextView.view(ctx);
@@ -53,20 +63,31 @@ public class ControlMParser implements Parser {
                     try {
                         EncodingDetectingInputStream is = sourceFile.getSource(ctx);
                         String sourceStr = is.readFully();
-                        String processedStr = ControlMLineReader.readLines(sourceStr);
-                        org.openrewrite.controlm.internal.grammar.ControlMParser parser = new org.openrewrite.controlm.internal.grammar.ControlMParser(new CommonTokenStream(new ControlMLexer(
-                                CharStreams.fromString(processedStr))));
+                        ControlM.CompilationUnit cu;
+                        if (ExportReader.isExport(sourceStr)) {
+                            cu = new ExportReader(
+                                    path,
+                                    sourceFile.getFileAttributes(),
+                                    sourceStr,
+                                    is.getCharset(),
+                                    is.isCharsetBomMarked()
+                            ).read();
+                        } else {
+                            String processedStr = ControlMLineReader.readLines(sourceStr);
+                            org.openrewrite.controlm.internal.grammar.ControlMParser parser = new org.openrewrite.controlm.internal.grammar.ControlMParser(new CommonTokenStream(new ControlMLexer(
+                                    CharStreams.fromString(processedStr))));
 
-                        parser.removeErrorListeners();
-                        parser.addErrorListener(new ControlMParser.ForwardingErrorListener(sourceFile.getPath(), ctx));
+                            parser.removeErrorListeners();
+                            parser.addErrorListener(new ControlMParser.ForwardingErrorListener(sourceFile.getPath(), ctx));
 
-                        ControlM.CompilationUnit cu = new ControlMParserVisitor(
-                                path,
-                                sourceFile.getFileAttributes(),
-                                sourceStr,
-                                is.getCharset(),
-                                is.isCharsetBomMarked()
-                        ).visitCompilationUnit(parser.compilationUnit());
+                            cu = new ControlMParserVisitor(
+                                    path,
+                                    sourceFile.getFileAttributes(),
+                                    sourceStr,
+                                    is.getCharset(),
+                                    is.isCharsetBomMarked()
+                            ).visitCompilationUnit(parser.compilationUnit());
+                        }
 
                         sample.stop(MetricsHelper.successTags(timer).register(Metrics.globalRegistry));
                         parsingListener.parsed(sourceFile, cu);
@@ -80,8 +101,13 @@ public class ControlMParser implements Parser {
 
     @Override
     public boolean accept(Path path) {
-        // TODO: file extension for control-m schedules is TBD.
-        return path.toString().toLowerCase().endsWith(".ctms");
+        String name = path.toString().toLowerCase();
+        for (String extension : CONTROL_M_FILE_EXTENSIONS) {
+            if (name.endsWith(extension)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

@@ -136,6 +136,13 @@ dependencies {
     testImplementation("org.openrewrite:rewrite-xml")
 }
 
+// ExportScaleTest builds a two-million-line Control-M export in memory; nothing else here needs it.
+tasks.withType<Test>().configureEach {
+    if (System.getenv("CONTROLM_SCALE") != null) {
+        maxHeapSize = "10g"
+    }
+}
+
 configure<nl.javadude.gradle.plugins.license.LicenseExtension> {
     excludePatterns.add("**/*.CBL")
     excludePatterns.add("**/*.CPY")

@@ -18,6 +18,7 @@ package org.openrewrite.cobol;
 import org.openrewrite.Parser;
 import org.openrewrite.bms.BmsParser;
 import org.openrewrite.controlcard.idcams.IdcamsParser;
+import org.openrewrite.controlm.ControlMParser;
 import org.openrewrite.controlcard.sort.SortParser;
 import org.openrewrite.db2.bind.BindParser;
 import org.openrewrite.jcl.JclParser;
@@ -81,6 +82,10 @@ public final class Corpus {
 
     public static List<Path> jobs(Path repository) throws IOException {
         return files(repository, JclParser.builder().build());
+    }
+
+    public static List<Path> schedules(Path repository) throws IOException {
+        return files(repository, ControlMParser.builder().build());
     }
 
     public static List<Path> bindDecks(Path repository) throws IOException {
