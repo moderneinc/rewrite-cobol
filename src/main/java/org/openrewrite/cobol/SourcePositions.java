@@ -19,6 +19,7 @@ import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
 import org.openrewrite.PrintOutputCapture;
 import org.openrewrite.Tree;
+import org.openrewrite.cobol.internal.CobolPreprocessorPrinter;
 import org.openrewrite.cobol.internal.CobolPreprocessorSourcePrinter;
 import org.openrewrite.cobol.internal.CobolPrinter;
 import org.openrewrite.cobol.marker.ElidedExec;
@@ -37,6 +38,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
 
 /**
  * Where each node of a program sits in its source.
@@ -62,20 +64,23 @@ public class SourcePositions {
     private final String source;
     private final Map<UUID, int[]> spans;
     private final Map<Object, int[]> texts;
+    private final Map<UUID, int[]> preprocessed;
     private final int[] wordStarts;
     private final int[] wordEnds;
+    private final int[] preprocessedStarts;
+    private final int[] preprocessedEnds;
     private final int[] lineStarts;
 
-    private SourcePositions(String source, Map<UUID, int[]> spans, Map<Object, int[]> texts, List<int[]> words) {
+    private SourcePositions(String source, Map<UUID, int[]> spans, Map<Object, int[]> texts, List<int[]> words,
+                            Map<UUID, int[]> preprocessed, List<int[]> preprocessedWords) {
         this.source = source;
         this.spans = spans;
         this.texts = texts;
-        this.wordStarts = new int[words.size()];
-        this.wordEnds = new int[words.size()];
-        for (int i = 0; i < words.size(); i++) {
-            wordStarts[i] = words.get(i)[0];
-            wordEnds[i] = words.get(i)[1];
-        }
+        this.preprocessed = preprocessed;
+        this.wordStarts = boundsOf(words, 0);
+        this.wordEnds = boundsOf(words, 1);
+        this.preprocessedStarts = boundsOf(preprocessedWords, 0);
+        this.preprocessedEnds = boundsOf(preprocessedWords, 1);
         this.lineStarts = lineStartsOf(source);
     }
 
@@ -83,7 +88,20 @@ public class SourcePositions {
         Measure<Integer> measure = new Measure<>();
         PrintOutputCapture<Integer> out = new PrintOutputCapture<>(0);
         measure.visit(cu, out, new Cursor(null, Cursor.ROOT_VALUE));
-        return new SourcePositions(out.getOut(), measure.spans, measure.texts, measure.words);
+        return new SourcePositions(out.getOut(), measure.spans, measure.texts, measure.words,
+                measure.preprocessed, measure.preprocessedWords);
+    }
+
+    /**
+     * A copybook, or any other source the preprocessor grammar owns outright. Everything in it prints
+     * through the preprocessor, so ask for its nodes with {@link #get(CobolPreprocessor)}.
+     */
+    public static SourcePositions of(CobolPreprocessor sourceFile) {
+        MeasurePreprocessed<Integer> measure = new MeasurePreprocessed<>();
+        PrintOutputCapture<Integer> out = new PrintOutputCapture<>(0);
+        measure.visit(sourceFile, out, new Cursor(null, Cursor.ROOT_VALUE));
+        return new SourcePositions(out.getOut(), emptyMap(), measure.texts, emptyList(),
+                measure.preprocessed, measure.preprocessedWords);
     }
 
     /**
@@ -102,16 +120,17 @@ public class SourcePositions {
      * its own.
      */
     public @Nullable Range get(@Nullable UUID id) {
-        int[] span = id == null ? null : spans.get(id);
-        if (span == null) {
-            return null;
-        }
-        int first = firstWordFrom(span[0]);
-        int last = lastWordUntil(span[1]);
-        if (first > last) {
-            return null;
-        }
-        return rangeOf(wordStarts[first], wordEnds[last]);
+        return trim(id == null ? null : spans.get(id), wordStarts, wordEnds);
+    }
+
+    /**
+     * Where a preprocessor node was written: a {@code COPY} or {@code EXEC SQL INCLUDE} statement, or a
+     * word of an {@code EXEC} block. What preprocessing takes out of the text the grammar sees prints
+     * through its own printer, so it is measured apart from the words of the program. Null for a
+     * statement copied in from a copybook, which prints nothing where it was copied to.
+     */
+    public @Nullable Range get(@Nullable CobolPreprocessor node) {
+        return trim(node == null ? null : preprocessed.get(node.getId()), preprocessedStarts, preprocessedEnds);
     }
 
     /**
@@ -141,7 +160,7 @@ public class SourcePositions {
             return emptyList();
         }
         List<Range> pieces = new ArrayList<>();
-        for (int i = firstWordFrom(span[0]), last = lastWordUntil(span[1]); i <= last; i++) {
+        for (int i = firstWordFrom(wordStarts, span[0]), last = lastWordUntil(wordEnds, span[1]); i <= last; i++) {
             pieces.add(rangeOf(wordStarts[i], wordEnds[i]));
         }
         return pieces;
@@ -154,6 +173,15 @@ public class SourcePositions {
         return source.substring(range.getStart().getOffset(), range.getEnd().getOffset());
     }
 
+    private @Nullable Range trim(int @Nullable [] span, int[] starts, int[] ends) {
+        if (span == null) {
+            return null;
+        }
+        int first = firstWordFrom(starts, span[0]);
+        int last = lastWordUntil(ends, span[1]);
+        return first > last ? null : rangeOf(starts[first], ends[last]);
+    }
+
     private Range rangeOf(int start, int end) {
         return new Range(Tree.randomId(), positionAt(start), positionAt(end));
     }
@@ -164,14 +192,22 @@ public class SourcePositions {
         return new Range.Position(offset, line + 1, offset - lineStarts[line] + 1);
     }
 
-    private int firstWordFrom(int offset) {
-        int i = Arrays.binarySearch(wordStarts, offset);
+    private static int firstWordFrom(int[] starts, int offset) {
+        int i = Arrays.binarySearch(starts, offset);
         return i < 0 ? -i - 1 : i;
     }
 
-    private int lastWordUntil(int offset) {
-        int i = Arrays.binarySearch(wordEnds, offset);
+    private static int lastWordUntil(int[] ends, int offset) {
+        int i = Arrays.binarySearch(ends, offset);
         return i < 0 ? -i - 2 : i;
+    }
+
+    private static int[] boundsOf(List<int[]> words, int bound) {
+        int[] bounds = new int[words.size()];
+        for (int i = 0; i < bounds.length; i++) {
+            bounds[i] = words.get(i)[bound];
+        }
+        return bounds;
     }
 
     private static int[] lineStartsOf(String source) {
@@ -198,6 +234,8 @@ public class SourcePositions {
         private final Map<UUID, int[]> spans = new HashMap<>();
         private final Map<Object, int[]> texts = new IdentityHashMap<>();
         private final List<int[]> words = new ArrayList<>();
+        private final Map<UUID, int[]> preprocessed = new HashMap<>();
+        private final List<int[]> preprocessedWords = new ArrayList<>();
         private Cobol.@Nullable Word carrying;
 
         Measure() {
@@ -261,22 +299,29 @@ public class SourcePositions {
         @Override
         protected CobolPreprocessorVisitor<PrintOutputCapture<P>> getCobolPreprocessorVisitor() {
             return new CobolPreprocessorSourcePrinter<P>(true) {
-                // A block's word shares its id with the COBOL word it wraps, so the block's words are placed too.
                 @Override
                 public @Nullable CobolPreprocessor visit(@Nullable Tree tree, PrintOutputCapture<P> p) {
-                    if (!(tree instanceof CobolPreprocessor.Word) || !carryingAnElidedExec()) {
+                    if (!(tree instanceof CobolPreprocessor)) {
                         return super.visit(tree, p);
                     }
                     int before = p.out.length();
                     CobolPreprocessor printed = super.visit(tree, p);
-                    spans.put(((CobolPreprocessor.Word) tree).getId(), new int[]{before, p.out.length()});
+                    int[] span = {before, p.out.length()};
+                    preprocessed.put(((CobolPreprocessor) tree).getId(), span);
+                    // A block's word shares its id with the COBOL word it wraps, so the block's words are placed too.
+                    if (tree instanceof CobolPreprocessor.Word && carryingAnElidedExec()) {
+                        spans.put(((CobolPreprocessor) tree).getId(), span);
+                    }
                     return printed;
                 }
 
                 @Override
                 public void wordPrinted(CobolPreprocessor.Word word, int start, int end) {
-                    if (end > start && carryingAnElidedExec()) {
-                        words.add(new int[]{start, end});
+                    if (end > start) {
+                        preprocessedWords.add(new int[]{start, end});
+                        if (carryingAnElidedExec()) {
+                            words.add(new int[]{start, end});
+                        }
                     }
                 }
 
@@ -292,6 +337,51 @@ public class SourcePositions {
                     }
                 }
             };
+        }
+    }
+
+    /**
+     * Prints exactly what {@link CobolPreprocessor.Copybook#printer} prints, keeping the span each node
+     * covered and the span of every word that carried characters of its own.
+     */
+    private static class MeasurePreprocessed<P> extends CobolPreprocessorPrinter<P> {
+
+        private final Map<Object, int[]> texts = new IdentityHashMap<>();
+        private final Map<UUID, int[]> preprocessed = new HashMap<>();
+        private final List<int[]> preprocessedWords = new ArrayList<>();
+
+        MeasurePreprocessed() {
+            super(true, true);
+        }
+
+        @Override
+        public @Nullable CobolPreprocessor visit(@Nullable Tree tree, PrintOutputCapture<P> p) {
+            if (!(tree instanceof CobolPreprocessor)) {
+                return super.visit(tree, p);
+            }
+            int before = p.out.length();
+            CobolPreprocessor printed = super.visit(tree, p);
+            preprocessed.put(((CobolPreprocessor) tree).getId(), new int[]{before, p.out.length()});
+            return printed;
+        }
+
+        @Override
+        public void wordPrinted(CobolPreprocessor.Word word, int start, int end) {
+            if (end > start) {
+                preprocessedWords.add(new int[]{start, end});
+            }
+        }
+
+        @Override
+        public void contentPrinted(CobolLine line, int start, int end) {
+            texts.put(line, new int[]{start, end});
+        }
+
+        @Override
+        public void commentPrinted(CommentArea commentArea, int start, int end) {
+            if (end > start) {
+                texts.put(commentArea, new int[]{start, end});
+            }
         }
     }
 }

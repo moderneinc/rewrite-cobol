@@ -16,6 +16,7 @@
 package org.openrewrite.cobol.table;
 
 import lombok.Value;
+import org.jspecify.annotations.Nullable;
 import org.openrewrite.Column;
 import org.openrewrite.DataTable;
 import org.openrewrite.Recipe;
@@ -56,16 +57,44 @@ public class CobolRelationships extends DataTable<CobolRelationships.Row> {
         @Column(displayName = "Action metadata",
                 description = "Additional data about the action.")
         String actionMetadata;
+
+        @Column(displayName = "Dependent path",
+                description = "The source file the dependent's statement was written in, or null when the " +
+                              "dependent is a name that has no source here.")
+        @Nullable
+        String dependentPath;
+
+        @Column(displayName = "Dependent line",
+                description = "The one-based line the dependent's statement was written on, or null when it " +
+                              "has no source here.")
+        @Nullable
+        Integer dependentLine;
+
+        @Column(displayName = "Dependency path",
+                description = "The source file the dependency was written in, or null when the dependency is " +
+                              "a name that has no source here, such as a vendor copybook.")
+        @Nullable
+        String dependencyPath;
+
+        @Column(displayName = "Dependency line",
+                description = "The one-based line the dependency's statement was written on, or null when the " +
+                              "dependency is a whole file rather than a statement within one.")
+        @Nullable
+        Integer dependencyLine;
     }
 
     public enum ResourceType {
         COBOL,
         COPYBOOK,
         LINKEDIT,
+        /**
+         * A DB2 plan, named by the bind card that declares it.
+         */
         BINDPLAN,
+        /**
+         * A DB2 package, named by the bind card that declares it.
+         */
         BINDPACKAGE,
-        @Deprecated // This may be removed after the next ingest.
-        SQL_CURSOR,
         SQL_TABLE,
         CONTROL_M_SCHEDULE,
         JCL,
@@ -93,7 +122,55 @@ public class CobolRelationships extends DataTable<CobolRelationships.Row> {
         /**
          * The IMS message queue, reached through the I/O PCB.
          */
-        IMS_MESSAGE_QUEUE
+        IMS_MESSAGE_QUEUE,
+        /**
+         * A link-edited load module, which is what a JCL step actually runs.
+         */
+        LOAD_MODULE,
+        /**
+         * The database request module a DB2 precompile leaves behind, which a package is bound from.
+         */
+        DBRM,
+        /**
+         * A JCL procedure, cataloged or in-stream.
+         */
+        PROC,
+        /**
+         * A member a job pulls in with a JCL {@code INCLUDE} statement.
+         */
+        INCLUDE_MEMBER,
+        /**
+         * A control card member a step reads: DFSORT, IDCAMS, DSN, or plain SYSIN.
+         */
+        CONTROL_CARD,
+        /**
+         * A Control-M job group, which the schedules it contains name.
+         */
+        CONTROL_M_GROUP,
+        /**
+         * A Control-M calendar, which says on what days a schedule runs.
+         */
+        CONTROL_M_CALENDAR,
+        /**
+         * An IMS database, named by its DBD.
+         */
+        IMS_DATABASE,
+        /**
+         * A program specification block, which says what PCBs a program is given.
+         */
+        IMS_PSB,
+        /**
+         * An IMS transaction code, which names the program that processes it.
+         */
+        IMS_TRANSACTION,
+        /**
+         * A message format service map, the IMS answer to a BMS map.
+         */
+        MFS_MAP,
+        /**
+         * An assembler program or macro.
+         */
+        ASSEMBLER
     }
 
     public enum ResourceAction {
@@ -149,6 +226,46 @@ public class CobolRelationships extends DataTable<CobolRelationships.Row> {
          * A BMS map is sent to or received from a terminal.
          */
         SEND,
-        RECEIVE
+        RECEIVE,
+        /**
+         * A scheduler runs a job, in contrast to {@link #TRIGGERS}, which is one job making another eligible.
+         */
+        SCHEDULES,
+        /**
+         * A member creates a resource: an IDCAMS DEFINE of a VSAM file, a DBD of a database, a DDL of a table.
+         */
+        DEFINES,
+        /**
+         * A member is held in a second library, so that the two environments can be told apart.
+         */
+        COPIED_TO,
+        /**
+         * A bind card binds a DBRM into a package, or packages into a plan.
+         */
+        BINDS,
+        /**
+         * A compile turns a program into an object deck or a load module.
+         */
+        COMPILES_INTO,
+        /**
+         * A DB2 precompile turns a program into a DBRM.
+         */
+        PRECOMPILES_INTO,
+        /**
+         * A program is the entry point control arrives at when a load module is given control.
+         */
+        ENTRY,
+        /**
+         * A caller outside COBOL reaches a program by name, such as a Java call site or a dynamic call.
+         */
+        INVOKES,
+        /**
+         * A resource holds another: a load module its programs, a PSB its PCBs, a DBD its segments.
+         */
+        CONTAINS,
+        /**
+         * A name is mentioned somewhere that is not a call, an access, or a definition.
+         */
+        REFERENCES
     }
 }

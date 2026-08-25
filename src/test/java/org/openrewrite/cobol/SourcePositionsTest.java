@@ -17,6 +17,7 @@ package org.openrewrite.cobol;
 
 import org.junit.jupiter.api.Test;
 import org.openrewrite.cobol.tree.Cobol;
+import org.openrewrite.cobol.tree.CobolPreprocessor;
 import org.openrewrite.cobol.tree.Statement;
 import org.openrewrite.marker.Range;
 
@@ -25,6 +26,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openrewrite.cobol.Assertions.cobol;
+import static org.openrewrite.cobol.Assertions.copybook;
 
 /**
  * The program is written the way real mainframe source is: sequence numbers in columns 1 to 6 and an
@@ -144,6 +146,60 @@ class SourcePositionsTest extends CobolTest {
     }
 
     /**
+     * The COPY statement itself is written in the program even though what it brings in is not. It
+     * prints through the preprocessor rather than as a word of the program, so it is placed apart.
+     */
+    @Test
+    void placesACopyStatementWhereItWasWritten() {
+        rewriteRun(
+          cobol(
+            """
+              000100 IDENTIFICATION DIVISION.                                         00000010
+              000200 PROGRAM-ID. POSCOPY.                                             00000020
+              000300 DATA DIVISION.                                                   00000030
+              000400 WORKING-STORAGE SECTION.                                         00000040
+              000500 01  WS-IN            PIC X(30).                                  00000050
+              000600 01  WS-WORK          PIC X(30).                                  00000060
+              000700 PROCEDURE DIVISION.                                              00000070
+              000800 MAIN-PARA.                                                       00000080
+              000900     COPY COPYSTMT.                                               00000090
+              001000     GOBACK.                                                      00000100
+              """,
+            spec -> spec.afterRecipe(cu -> {
+                SourcePositions positions = SourcePositions.of(cu);
+                Range range = positions.get(copyStatementsIn(cu).get(0));
+                assertThat(range).isNotNull();
+                assertThat(positions.textOf(range)).isEqualTo("COPY COPYSTMT.");
+                assertThat(range.getStart().getLine()).isEqualTo(9);
+                assertThat(range.getStart().getColumn()).isEqualTo(12);
+            }))
+        );
+    }
+
+    /**
+     * A copybook parsed on its own is preprocessor source outright, so everything in it is placed
+     * the same way.
+     */
+    @Test
+    void placesTheStatementsOfACopybook() {
+        rewriteRun(
+          copybook(
+            """
+              000100* Nothing here is written by anything but this member.             00000010
+              000200 COPY COPYSTMT.                                                    00000020
+              """,
+            spec -> spec.afterRecipe(cpy -> {
+                SourcePositions positions = SourcePositions.of(cpy);
+                Range range = positions.get(copyStatementsIn(cpy).get(0));
+                assertThat(range).isNotNull();
+                assertThat(positions.textOf(range)).isEqualTo("COPY COPYSTMT.");
+                assertThat(range.getStart().getLine()).isEqualTo(2);
+                assertThat(range.getStart().getColumn()).isEqualTo(8);
+            }))
+        );
+    }
+
+    /**
      * A literal continued over a column-7 break is one word and two lines of source. The word's
      * range spans both; its pieces are what a highlight needs, one per line. The comment line and
      * the floating comment are not nodes, so they are found by identity.
@@ -184,6 +240,30 @@ class SourcePositionsTest extends CobolTest {
                 assertThat(comment.getStart().getLine()).isEqualTo(7);
             }))
         );
+    }
+
+    private static List<CobolPreprocessor.CopyStatement> copyStatementsIn(Cobol.CompilationUnit cu) {
+        List<CobolPreprocessor.CopyStatement> copies = new ArrayList<>();
+        for (Cobol.Word word : wordsIn(cu)) {
+            for (CobolPreprocessor preprocessorStatement : word.getPreprocessorStatements()) {
+                if (preprocessorStatement instanceof CobolPreprocessor.CopyStatement) {
+                    copies.add((CobolPreprocessor.CopyStatement) preprocessorStatement);
+                }
+            }
+        }
+        return copies;
+    }
+
+    private static List<CobolPreprocessor.CopyStatement> copyStatementsIn(CobolPreprocessor.Copybook copybook) {
+        List<CobolPreprocessor.CopyStatement> copies = new ArrayList<>();
+        new CobolPreprocessorIsoVisitor<Integer>() {
+            @Override
+            public CobolPreprocessor.CopyStatement visitCopyStatement(CobolPreprocessor.CopyStatement copyStatement, Integer p) {
+                copies.add(copyStatement);
+                return copyStatement;
+            }
+        }.visit(copybook, 0);
+        return copies;
     }
 
     private static List<Cobol.Word> wordsIn(Cobol.CompilationUnit cu) {

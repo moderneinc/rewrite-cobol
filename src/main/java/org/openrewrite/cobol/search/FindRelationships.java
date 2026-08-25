@@ -16,12 +16,16 @@
 package org.openrewrite.cobol.search;
 
 import lombok.Getter;
+import org.jspecify.annotations.Nullable;
+import org.openrewrite.Cursor;
 import org.openrewrite.ExecutionContext;
+import org.openrewrite.PrintOutputCapture;
 import org.openrewrite.Recipe;
 import org.openrewrite.Tree;
 import org.openrewrite.TreeVisitor;
 import org.openrewrite.cobol.CobolIsoVisitor;
 import org.openrewrite.cobol.CobolPreprocessorIsoVisitor;
+import org.openrewrite.cobol.SourcePositions;
 import org.openrewrite.cobol.marker.CopiedStatement;
 import org.openrewrite.cobol.marker.MissingCopybook;
 import org.openrewrite.cobol.table.CobolRelationships;
@@ -29,19 +33,26 @@ import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
 import org.openrewrite.cobol.tree.Name;
 import org.openrewrite.controlm.ControlMIsoVisitor;
+import org.openrewrite.controlm.internal.ControlMPrinter;
 import org.openrewrite.controlm.tree.ControlM;
 import org.openrewrite.internal.ListUtils;
 import org.openrewrite.internal.StringUtils;
+import org.openrewrite.marker.Range;
 import org.openrewrite.marker.SearchResult;
 import org.openrewrite.text.PlainText;
 import org.openrewrite.text.PlainTextVisitor;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
@@ -68,12 +79,15 @@ public class FindRelationships extends Recipe {
             final Set<String> seenCursorAccess = new HashSet<>();
             final Set<String> seenTableAccess = new HashSet<>();
             String sourceName = "UNKNOWN";
+            String sourcePath = "";
             boolean isSourceName = false;
+            @Nullable SourcePositions positions;
 
             @Override
             public CobolPreprocessor.CompilationUnit visitCompilationUnit(CobolPreprocessor.CompilationUnit compilationUnit, ExecutionContext ctx) {
-                sourceName = compilationUnit.getSourcePath().getFileName().toString();
-                sourceName = sourceName.contains(".") ? sourceName.substring(0, sourceName.indexOf(".")) : sourceName;
+                sourceName = memberName(compilationUnit.getSourcePath());
+                sourcePath = compilationUnit.getSourcePath().toString();
+                positions = SourcePositions.of(compilationUnit);
                 isSourceName = true;
                 return super.visitCompilationUnit(compilationUnit, ctx);
             }
@@ -81,8 +95,9 @@ public class FindRelationships extends Recipe {
             @Override
             public CobolPreprocessor.Copybook visitCopybook(CobolPreprocessor.Copybook copybook, ExecutionContext ctx) {
                 if (!isSourceName) {
-                    sourceName = copybook.getSourcePath().getFileName().toString();
-                    sourceName = sourceName.contains(".") ? sourceName.substring(0, sourceName.indexOf(".")) : sourceName;
+                    sourceName = memberName(copybook.getSourcePath());
+                    sourcePath = copybook.getSourcePath().toString();
+                    positions = SourcePositions.of(copybook);
                 }
                 return super.visitCopybook(copybook, ctx);
             }
@@ -99,7 +114,11 @@ public class FindRelationships extends Recipe {
                                     copybookName,
                                     COPYBOOK,
                                     false,
-                                    ""
+                                    "",
+                                    sourcePath,
+                                    lineOf(positions, execSqlIncludeStatement),
+                                    pathOf(execSqlIncludeStatement.getCopybook()),
+                                    null
                             )
                     );
                     return execSqlIncludeStatement.withCopySource(SearchResult.found(execSqlIncludeStatement.getCopySource()));
@@ -110,7 +129,8 @@ public class FindRelationships extends Recipe {
             @Override
             public CobolPreprocessor.CharDataSql visitCharDataSql(CobolPreprocessor.CharDataSql charDataSql, ExecutionContext ctx) {
                 CobolPreprocessor.CharDataSql sql = super.visitCharDataSql(charDataSql, ctx);
-                return getSqlRelationships(sql, sourceName, COPYBOOK, seenIncludes, seenCursorAccess, seenTableAccess, ctx);
+                return getSqlRelationships(sql, sourceName, COPYBOOK, sourcePath, positions,
+                        seenIncludes, seenCursorAccess, seenTableAccess, ctx);
             }
         };
 
@@ -121,6 +141,15 @@ public class FindRelationships extends Recipe {
             final Set<String> seenCursorAccess = new HashSet<>();
             final Set<String> seenTableAccess = new HashSet<>();
             String programName = "UNKNOWN";
+            String sourcePath = "";
+            @Nullable SourcePositions positions;
+
+            @Override
+            public Cobol.CompilationUnit visitCompilationUnit(Cobol.CompilationUnit compilationUnit, ExecutionContext ctx) {
+                sourcePath = compilationUnit.getSourcePath().toString();
+                positions = SourcePositions.of(compilationUnit);
+                return super.visitCompilationUnit(compilationUnit, ctx);
+            }
 
             @Override
             public Cobol.ProgramIdParagraph visitProgramIdParagraph(Cobol.ProgramIdParagraph programIdParagraph, ExecutionContext ctx) {
@@ -140,15 +169,22 @@ public class FindRelationships extends Recipe {
 						String copyName = copyStatement.getCopySource().getName().getCobolWord().getWord();
 						if (seenCopies.add(copyName)) {
 							Optional<CopiedStatement> cs = copyStatement.getMarkers().findFirst(CopiedStatement.class);
+							String fromCopybook = cs.map(CopiedStatement::getSourceCopybook).orElse("");
+							boolean copied = StringUtils.isNotEmpty(fromCopybook);
+							boolean missing = copyStatement.getMarkers().findFirst(MissingCopybook.class).isPresent();
 							cobolRelationships.insertRow(ctx,
 								new CobolRelationships.Row(
-									cs.isPresent() && StringUtils.isNotEmpty(cs.get().getSourceCopybook()) ? cs.get().getSourceCopybook() : programName,
-									cs.isPresent() && StringUtils.isNotEmpty(cs.get().getSourceCopybook()) ? COPYBOOK : COBOL,
+									copied ? fromCopybook : programName,
+									copied ? COPYBOOK : COBOL,
 									COPY,
 									copyStatement.getCopySource().getName().getCobolWord().getWord(),
 									COPYBOOK,
-									copyStatement.getMarkers().findFirst(MissingCopybook.class).isPresent(),
-									""
+									missing,
+									"",
+									copied ? null : sourcePath,
+									lineOf(positions, copyStatement),
+									missing ? null : pathOf(copyStatement.getCopybook()),
+									null
 								)
 							);
 						}
@@ -161,15 +197,22 @@ public class FindRelationships extends Recipe {
 							String copyName = includeStatement.getCopySource().getCobolWord().getWord();
 							if (seenCopies.add(copyName)) {
 								Optional<CopiedStatement> cs = includeStatement.getMarkers().findFirst(CopiedStatement.class);
+								String fromCopybook = cs.map(CopiedStatement::getSourceCopybook).orElse("");
+								boolean copied = StringUtils.isNotEmpty(fromCopybook);
+								boolean missing = includeStatement.getMarkers().findFirst(MissingCopybook.class).isPresent();
 								cobolRelationships.insertRow(ctx,
 									new CobolRelationships.Row(
-										cs.isPresent() && StringUtils.isNotEmpty(cs.get().getSourceCopybook()) ? cs.get().getSourceCopybook() : programName,
-										cs.isPresent() && StringUtils.isNotEmpty(cs.get().getSourceCopybook()) ? COPYBOOK : COBOL,
+										copied ? fromCopybook : programName,
+										copied ? COPYBOOK : COBOL,
 										INCLUDE,
 										includeStatement.getCopySource().getCobolWord().getWord(),
 										COPYBOOK,
-										includeStatement.getMarkers().findFirst(MissingCopybook.class).isPresent(),
-										""
+										missing,
+										"",
+										copied ? null : sourcePath,
+										lineOf(positions, includeStatement),
+										missing ? null : pathOf(includeStatement.getCopybook()),
+										null
 									)
 								);
 							}
@@ -181,7 +224,7 @@ public class FindRelationships extends Recipe {
 						if (execStatement.getCobol() instanceof CobolPreprocessor.CharDataSql &&
 							!((CobolPreprocessor.CharDataSql) execStatement.getCobol()).getCobols().isEmpty()) {
 							CobolPreprocessor.CharDataSql sql = (CobolPreprocessor.CharDataSql) execStatement.getCobol();
-							return execStatement.withCobol(getSqlRelationships(sql, programName, COBOL, seenIncludes, seenCursorAccess, seenTableAccess, ctx));
+							return execStatement.withCobol(getSqlRelationships(sql, programName, COBOL, sourcePath, positions, seenIncludes, seenCursorAccess, seenTableAccess, ctx));
 						}
 					}
 					return ps;
@@ -203,7 +246,11 @@ public class FindRelationships extends Recipe {
                                             word.getWord().replace("\"", ""),
                                             COBOL,
                                             false,
-                                            ""
+                                            "",
+                                            sourcePath,
+                                            lineOf(positions, call),
+                                            null,
+                                            null
                                     )
                             );
                         }
@@ -231,7 +278,11 @@ public class FindRelationships extends Recipe {
                                     programName,
                                     COBOL,
                                     false,
-                                    ""
+                                    "",
+                                    pt.getSourcePath().toString(),
+                                    lineOf(text, m.start()),
+                                    null,
+                                    null
                             )
                     );
                 }
@@ -275,7 +326,11 @@ public class FindRelationships extends Recipe {
                                         linkedit,
                                         LINKEDIT,
                                         false,
-                                        ""
+                                        "",
+                                        pt.getSourcePath().toString(),
+                                        lineOf(text, m.start()),
+                                        null,
+                                        null
                                 )
                         );
                     } else {
@@ -291,7 +346,11 @@ public class FindRelationships extends Recipe {
                                             member,
                                             COBOL,
                                             false,
-                                            ""
+                                            "",
+                                            pt.getSourcePath().toString(),
+                                            lineOf(text, memberMatcher.start("member")),
+                                            null,
+                                            null
                                     )
                             );
                         }
@@ -302,11 +361,16 @@ public class FindRelationships extends Recipe {
         };
 
         ControlMIsoVisitor<ExecutionContext> controlMVisitor = new ControlMIsoVisitor<ExecutionContext>() {
+            final Map<UUID, Integer> wordLines = new HashMap<>();
             String sourceName = "UNKNOWN";
+            String sourcePath = "";
+
             @Override
             public ControlM.CompilationUnit visitCompilationUnit(ControlM.CompilationUnit compilationUnit, ExecutionContext ctx) {
-                sourceName = compilationUnit.getSourcePath().getFileName().toString();
-                sourceName = sourceName.contains(".") ? sourceName.substring(0, sourceName.indexOf(".")) : sourceName;
+                sourceName = memberName(compilationUnit.getSourcePath());
+                sourcePath = compilationUnit.getSourcePath().toString();
+                wordLines.clear();
+                wordLines.putAll(wordLines(compilationUnit));
                 return super.visitCompilationUnit(compilationUnit, ctx);
             }
 
@@ -332,7 +396,11 @@ public class FindRelationships extends Recipe {
                                                 p.getValue().getText(),
                                                 JCL,
                                                 false,
-                                                ""
+                                                "",
+                                                sourcePath,
+                                                wordLines.get(p.getValue().getId()),
+                                                null,
+                                                null
                                         )
                                 );
                                 return p.withValue(SearchResult.found(p.getValue()));
@@ -371,7 +439,11 @@ public class FindRelationships extends Recipe {
                                                     sourceName,
                                                     CONTROL_M_SCHEDULE,
                                                     false,
-                                                    ""
+                                                    "",
+                                                    null,
+                                                    null,
+                                                    sourcePath,
+                                                    wordLines.get(nameParameter.getName().getId())
                                             )
                                     );
                                 }
@@ -409,6 +481,8 @@ public class FindRelationships extends Recipe {
             CobolPreprocessor.CharDataSql sql,
             String sourceName,
             CobolRelationships.ResourceType dependentType,
+            String sourcePath,
+            @Nullable SourcePositions positions,
             Set<String> seenIncludes,
             Set<String> cursorNames,
             Set<String> seenTableAccess,
@@ -421,7 +495,7 @@ public class FindRelationships extends Recipe {
                 return line.withWords(ListUtils.map(line.getWords(), (j, w) -> {
                     if (w instanceof CobolPreprocessor.Word) {
                         CobolPreprocessor.Word word = (CobolPreprocessor.Word) w;
-                        // TODO: include condition is for backwards compatibility and may be removed after new LSTs are generated.
+                                                // TODO: include condition is for backwards compatibility and may be removed after new LSTs are generated.
                         if ("include".equalsIgnoreCase(word.getCobolWord().getWord()) &&
                                 j == 0 && 2 <= line.getWords().size() && line.getWords().get(1) instanceof CobolPreprocessor.Word) {
                             String copybookName = ((CobolPreprocessor.Word) line.getWords().get(1)).getCobolWord().getWord();
@@ -434,7 +508,11 @@ public class FindRelationships extends Recipe {
                                                 copybookName,
                                                 COPYBOOK,
                                                 false,
-                                                ""
+                                                "",
+                                                sourcePath,
+                                                lineOf(positions, word),
+                                                null,
+                                                null
                                         )
                                 );
                                 return SearchResult.found(word);
@@ -451,7 +529,11 @@ public class FindRelationships extends Recipe {
                                                 tableName,
                                                 SQL_TABLE,
                                                 false,
-                                                "UPDATE"));
+                                                "UPDATE",
+                                                sourcePath,
+                                                lineOf(positions, word),
+                                                null,
+                                                null));
                                 return SearchResult.found(word);
                             }
                         } else if ("insert".equalsIgnoreCase(word.getCobolWord().getWord()) &&
@@ -466,7 +548,11 @@ public class FindRelationships extends Recipe {
                                                 tableName,
                                                 SQL_TABLE,
                                                 false,
-                                                "INSERT"
+                                                "INSERT",
+                                                sourcePath,
+                                                lineOf(positions, word),
+                                                null,
+                                                null
                                         )
                                 );
                                 return SearchResult.found(word);
@@ -490,7 +576,11 @@ public class FindRelationships extends Recipe {
                                                 tableName,
                                                 SQL_TABLE,
                                                 false,
-                                                metadata
+                                                metadata,
+                                                sourcePath,
+                                                lineOf(positions, word),
+                                                null,
+                                                null
                                         )
                                 );
                                 return SearchResult.found(word);
@@ -510,7 +600,11 @@ public class FindRelationships extends Recipe {
                                                     tableName,
                                                     SQL_TABLE,
                                                     false,
-                                                    "CREATE"
+                                                    "CREATE",
+                                                    sourcePath,
+                                                    lineOf(positions, word),
+                                                    null,
+                                                    null
                                             )
                                     );
                                 } else {
@@ -525,5 +619,72 @@ public class FindRelationships extends Recipe {
             }
             return c;
         }));
+    }
+
+    private static String memberName(Path sourcePath) {
+        String name = sourcePath.getFileName().toString();
+        return name.contains(".") ? name.substring(0, name.indexOf(".")) : name;
+    }
+
+    private static @Nullable String pathOf(CobolPreprocessor.@Nullable Copybook copybook) {
+        return copybook == null ? null : copybook.getSourcePath().toString();
+    }
+
+    private static @Nullable Integer lineOf(@Nullable SourcePositions positions, Cobol node) {
+        return positions == null ? null : lineOf(positions.get(node));
+    }
+
+    private static @Nullable Integer lineOf(@Nullable SourcePositions positions, CobolPreprocessor node) {
+        return positions == null ? null : lineOf(positions.get(node));
+    }
+
+    private static @Nullable Integer lineOf(@Nullable Range range) {
+        return range == null ? null : range.getStart().getLine();
+    }
+
+    private static int lineOf(String text, int offset) {
+        int line = 1;
+        for (int i = 0; i < offset; i++) {
+            if (text.charAt(i) == '\n') {
+                line++;
+            }
+        }
+        return line;
+    }
+
+    /**
+     * Which line each word of a Control-M export was written on. The export carries no positions of its
+     * own, so they are recovered the way anything else about how a tree reads is: by printing it.
+     */
+    private static Map<UUID, Integer> wordLines(ControlM.CompilationUnit cu) {
+        Map<UUID, Integer> offsets = new LinkedHashMap<>();
+        PrintOutputCapture<Integer> out = new PrintOutputCapture<>(0);
+        new ControlMPrinter<Integer>() {
+            @Override
+            public ControlM visitWord(ControlM.Word word, PrintOutputCapture<Integer> p) {
+                int before = p.out.length();
+                ControlM printed = super.visitWord(word, p);
+                // A column marker prints after the word, so find the word's own text rather than measuring back.
+                int at = p.out.indexOf(word.getText(), before);
+                if (at >= 0) {
+                    offsets.put(word.getId(), at);
+                }
+                return printed;
+            }
+        }.visit(cu, out, new Cursor(null, Cursor.ROOT_VALUE));
+
+        String source = out.getOut();
+        Map<UUID, Integer> lines = new HashMap<>();
+        int line = 1;
+        int at = 0;
+        for (Map.Entry<UUID, Integer> word : offsets.entrySet()) {
+            for (; at < word.getValue(); at++) {
+                if (source.charAt(at) == '\n') {
+                    line++;
+                }
+            }
+            lines.put(word.getKey(), line);
+        }
+        return lines;
     }
 }

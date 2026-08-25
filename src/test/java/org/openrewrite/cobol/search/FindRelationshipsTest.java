@@ -15,6 +15,7 @@
  */
 package org.openrewrite.cobol.search;
 
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.openrewrite.DocumentExample;
 import org.openrewrite.cobol.CobolTest;
@@ -38,50 +39,137 @@ class FindRelationshipsTest extends CobolTest {
         spec.recipe(new FindRelationships());
     }
 
+    private static String lineAt(String source, @Nullable Integer line) {
+        assertThat(line).isNotNull();
+        return source.split("\n", -1)[line - 1];
+    }
+
 	@DocumentExample @Test void IC201A() {
+        String linkEdit = """
+          *
+          INCLUDE OBJLIB(IC201A)    MODULE FOO
+          *INCLUDE OBJLIB(ABCD02)
+          """;
+        String bindPackage = """
+          BIND PACKAGE(&PROD0.EXT) OWNER(&SBS100S) -                        \s
+             QUALIFIER(&SBS100S.EXT) MEMBER(IC201A) -                      \s
+             SQLERROR(NOPACKAGE) VALIDATE(BIND) FLAG(I) ISOLATION(CS) -
+             RELEASE(COMMIT) EXPLAIN(YES) CURRENTDATA(YES) -          \s
+             ACTION(ADD)     -                                        \s
+             ENABLE(*)                                                \s
+          """;
+        String bindPlan = """
+          BIND PLAN(LINKEDIT1) OWNER(SBS100S) -            \s
+             QUALIFIER(SBS100S) -                         \s
+             PKLIST(PROD0.*)  -                           \s
+             VALIDATE(BIND)        -                      \s
+             FLAG(I) ISOLATION(CS) -                      \s
+             CACHESIZE(0) -                               \s
+             ACQUIRE(USE) -                               \s
+             RELEASE(COMMIT) EXPLAIN(YES) CURRENTDATA(YES) -
+             ACTION(REPLACE) RETAIN -                     \s
+             ENABLE(*)    \s
+          """;
         rewriteRun(
           spec -> spec.dataTable(Row.class, rows -> {
               assertThat(rows).extracting(Row::getDependent).contains("IC201A", "LINKEDIT1", "BINDCARDPACKAGE", "BINDCARDPLAN");
               assertThat(rows).extracting(Row::getDependency).contains("IC202A", "IC201A", "LINKEDIT1");
               assertThat(rows).extracting(Row::getDependencyType).contains(COBOL, COBOL, LINKEDIT);
               assertThat(rows).extracting(Row::getAction).contains(CALL, INCLUDE, PLAN, MEMBER);
+              assertThat(rows).filteredOn(r -> r.getDependentType() == LINKEDIT).singleElement().satisfies(r -> {
+                  assertThat(r.getDependentPath()).isEqualTo("linkeditcards/LINKEDIT1");
+                  assertThat(lineAt(linkEdit, r.getDependentLine())).isEqualTo("INCLUDE OBJLIB(IC201A)    MODULE FOO");
+              });
+              assertThat(rows).filteredOn(r -> r.getAction() == PLAN).singleElement().satisfies(r -> {
+                  assertThat(r.getDependentPath()).isEqualTo("bindcards/BINDCARDPLAN");
+                  assertThat(lineAt(bindPlan, r.getDependentLine())).contains("BIND PLAN(LINKEDIT1)");
+              });
+              assertThat(rows).filteredOn(r -> r.getAction() == MEMBER).singleElement().satisfies(r -> {
+                  assertThat(r.getDependentPath()).isEqualTo("bindcards/BINDCARDPACKAGE");
+                  assertThat(lineAt(bindPackage, r.getDependentLine())).contains("MEMBER(IC201A)");
+              });
           }),
           cobol(
             getNistResource("IC201A.CBL"),
             "",
             spec -> spec.after(s -> s).path("IC201A.CBL")
           ),
-          text(
-			"""
-              *
-              INCLUDE OBJLIB(IC201A)    MODULE FOO
-              *INCLUDE OBJLIB(ABCD02)
-              """,
-            spec -> spec.path("linkeditcards/LINKEDIT1")),
-          text(
-			"""
-            BIND PACKAGE(&PROD0.EXT) OWNER(&SBS100S) -                        \s
-               QUALIFIER(&SBS100S.EXT) MEMBER(IC201A) -                      \s
-               SQLERROR(NOPACKAGE) VALIDATE(BIND) FLAG(I) ISOLATION(CS) -
-               RELEASE(COMMIT) EXPLAIN(YES) CURRENTDATA(YES) -          \s
-               ACTION(ADD)     -                                        \s
-               ENABLE(*)                                                \s
-            """,
-            spec -> spec.path("bindcards/BINDCARDPACKAGE")),
-          text(
-			"""
-              BIND PLAN(LINKEDIT1) OWNER(SBS100S) -            \s
-                 QUALIFIER(SBS100S) -                         \s
-                 PKLIST(PROD0.*)  -                           \s
-                 VALIDATE(BIND)        -                      \s
-                 FLAG(I) ISOLATION(CS) -                      \s
-                 CACHESIZE(0) -                               \s
-                 ACQUIRE(USE) -                               \s
-                 RELEASE(COMMIT) EXPLAIN(YES) CURRENTDATA(YES) -
-                 ACTION(REPLACE) RETAIN -                     \s
-                 ENABLE(*)    \s
-              """,
-            spec -> spec.path("bindcards/BINDCARDPLAN"))
+          text(linkEdit, spec -> spec.path("linkeditcards/LINKEDIT1")),
+          text(bindPackage, spec -> spec.path("bindcards/BINDCARDPACKAGE")),
+          text(bindPlan, spec -> spec.path("bindcards/BINDCARDPLAN"))
+        );
+    }
+
+    @Test
+    void anchorsPointAtTheStatement() {
+        String program = """
+          000000 IDENTIFICATION DIVISION.
+                 PROGRAM-ID.
+                     ANCHORS.
+                 DATA DIVISION.
+                 WORKING-STORAGE SECTION.
+                 01 DCL_ANCHOR_TBL_NUM_1 PIC X(3).
+                 01 GRP-01.
+                     COPY ANCHOR_COPY.
+                 EXEC SQL INCLUDE ANCHOR_INCLUDE END-EXEC.
+                 EXEC SQL DECLARE ANCHOR_TBL TABLE
+                 ( NUM_1                  CHAR(3) NOT NULL
+                 ) END-EXEC.
+                 PROCEDURE DIVISION.
+                     EXEC SQL
+                         SELECT NUM_1
+                         INTO :DCL_ANCHOR_TBL_NUM_1
+                         FROM ANCHOR_TBL
+                     END-EXEC.
+                     EXEC SQL
+                         UPDATE ANCHOR_TBL
+                         SET NUM_1 = :DCL_ANCHOR_TBL_NUM_1
+                     END-EXEC.
+                     CALL "ANCHORED".
+          """;
+        String include = getNistResource("ANCHOR_INCLUDE.CPY");
+        rewriteRun(
+          spec -> spec.dataTable(Row.class, rows -> {
+              assertThat(rows).filteredOn(r -> r.getAction() == COPY).singleElement().satisfies(r -> {
+                  assertThat(r.getDependentPath()).isEqualTo("ANCHORS.CBL");
+                  assertThat(lineAt(program, r.getDependentLine())).contains("COPY ANCHOR_COPY");
+                  assertThat(r.getDependencyPath()).endsWith("ANCHOR_COPY.CPY");
+              });
+              assertThat(rows).filteredOn(r -> r.getAction() == INCLUDE && "ANCHORS".equals(r.getDependent()))
+                .singleElement().satisfies(r -> {
+                    assertThat(r.getDependentPath()).isEqualTo("ANCHORS.CBL");
+                    assertThat(lineAt(program, r.getDependentLine())).contains("EXEC SQL INCLUDE ANCHOR_INCLUDE");
+                    assertThat(r.getDependencyPath()).endsWith("ANCHOR_INCLUDE.CPY");
+                });
+              assertThat(rows).filteredOn(r -> r.getAction() == INCLUDE && "ANCHOR_INCLUDE".equals(r.getDependent()))
+                .satisfiesExactlyInAnyOrder(
+                  r -> {
+                      assertThat(r.getDependentPath()).isEqualTo("ANCHOR_INCLUDE.CPY");
+                      assertThat(lineAt(include, r.getDependentLine())).contains("EXEC SQL INCLUDE NESTED_INCLUDE");
+                      assertThat(r.getDependencyPath()).isNull();
+                  },
+                  // The same statement seen where it was copied to, which prints nothing there and so is not anchored.
+                  r -> {
+                      assertThat(r.getDependentPath()).isNull();
+                      assertThat(r.getDependentLine()).isNull();
+                  });
+              assertThat(rows).filteredOn(r -> r.getAction() == ACCESS && "CREATE".equals(r.getActionMetadata()))
+                .singleElement().satisfies(r ->
+                  assertThat(lineAt(program, r.getDependentLine())).contains("DECLARE ANCHOR_TBL TABLE"));
+              assertThat(rows).filteredOn(r -> r.getAction() == ACCESS && "READ".equals(r.getActionMetadata()))
+                .singleElement().satisfies(r ->
+                  assertThat(lineAt(program, r.getDependentLine())).contains("FROM ANCHOR_TBL"));
+              assertThat(rows).filteredOn(r -> r.getAction() == ACCESS && "UPDATE".equals(r.getActionMetadata()))
+                .singleElement().satisfies(r ->
+                  assertThat(lineAt(program, r.getDependentLine())).contains("UPDATE ANCHOR_TBL"));
+              assertThat(rows).filteredOn(r -> r.getAction() == CALL).singleElement().satisfies(r -> {
+                  assertThat(lineAt(program, r.getDependentLine())).contains("CALL \"ANCHORED\"");
+                  assertThat(r.getDependencyPath()).isNull();
+                  assertThat(r.getDependencyLine()).isNull();
+              });
+          }),
+          cobol(program, "", spec -> spec.after(s -> s).path("ANCHORS.CBL")),
+          copybook(include, spec -> spec.after(s -> s).path("ANCHOR_INCLUDE.CPY"))
         );
     }
 
@@ -375,6 +463,14 @@ class FindRelationshipsTest extends CobolTest {
 
     @Test
     void aCopyInACopy() {
+        String program = """
+          000000 IDENTIFICATION DIVISION.                                         *
+                 PROGRAM-ID. IC109A.                                              *
+                 DATA DIVISION.                                                   *
+                 LINKAGE SECTION.                                                 *
+                     01  GRP-01.                                                  *
+                         COPY INCEPTION.                                          *
+          """;
         rewriteRun(
           spec -> spec.dataTable(Row.class, rows -> {
               assertThat(rows).extracting(Row::getDependent).contains("IC109A", "INCEPTION", "INCEPTION_2");
@@ -382,18 +478,17 @@ class FindRelationshipsTest extends CobolTest {
               assertThat(rows).extracting(Row::getAction).contains(COPY);
               assertThat(rows).extracting(Row::getDependency).contains("INCEPTION", "INCEPTION_2", "INCEPTION_3");
               assertThat(rows).extracting(Row::getDependencyType).contains(COPYBOOK);
+              assertThat(rows).filteredOn(r -> r.getDependentType() == COBOL).singleElement().satisfies(r -> {
+                  assertThat(r.getDependentPath()).isEqualTo("COPY_IN_COPY.CBL");
+                  assertThat(lineAt(program, r.getDependentLine())).contains("COPY INCEPTION.");
+              });
+              // A copy statement inside a copybook prints nothing in the program, so it has no anchor there.
+              assertThat(rows).filteredOn(r -> r.getDependentType() == COPYBOOK).allSatisfy(r -> {
+                  assertThat(r.getDependentPath()).isNull();
+                  assertThat(r.getDependentLine()).isNull();
+              });
           }),
-          cobol(
-            """
-              000000 IDENTIFICATION DIVISION.                                         *
-                     PROGRAM-ID. IC109A.                                              *
-                     DATA DIVISION.                                                   *
-                     LINKAGE SECTION.                                                 *
-                         01  GRP-01.                                                  *
-                             COPY INCEPTION.                                          *
-              """,
-			"", spec -> spec.after(s -> s).path("COPY_IN_COPY.CBL")
-          )
+          cobol(program, "", spec -> spec.after(s -> s).path("COPY_IN_COPY.CBL"))
         );
     }
 
@@ -553,6 +648,77 @@ class FindRelationshipsTest extends CobolTest {
 
     @Test
     void controlMScheduleToJcl() {
+        String schedule = """
+          +---------------------------------- BROWSE -----------------------------------+
+          | MEMNAME JCL_JOB         MEMLIB LIB_NAME                                     |
+          | OWNER                  TASKTYPE         PREVENT-NCT2 DFLT                   |
+          | APPL                                    GROUP                               |
+          | DESC                                                                        |
+          |                                                                             |
+          | OVERLIB                                                   STAT CAL          |
+          | SCHENV                         SYSTEM ID                  NJE NODE          |
+          | SET VAR                                                                     |
+          | CTB STEP AT         NAME            TYPE                                    |
+          | DOCMEM                 DOCLIB                                               |
+          | =========================================================================== |
+          | SCHEDULE RBC                                                                |
+          | RELATIONSHIP (AND/OR) O                                                     |
+          | DAYS                                                          DCAL          |
+          |                                                                    AND/OR   |
+          |                                                                             |
+          | WDAYS   0                                                     WCAL          |
+          | MONTHS  1- Y 2- Y 3- Y 4- Y 5- Y 6- Y 7- Y 8- Y 9- Y 10- Y 11- Y 12- Y      |
+          | DATES                                                                       |
+          | CONFCAL          SHIFT       RETRO N MAXWAIT 70  D-CAT                      |
+          | MINIMUM          PDS                                                        |
+          | DEFINITION ACTIVE FROM          UNTIL                                       |
+          | =========================================================================== |
+          | IN  GROUP_JOBNAME1_OK  ODAT   GROUP_JOBNAME2_OK  ODAT                       |
+          |     GROUP_JOBNAME3_OK  ODAT - GROUP_JOBNAME4_OK  ODAT +                     |
+          | CONTROL                                                                     |
+          | RESOURCE INIT5                0001          UNICPAL              0001       |
+          |          STOPALL              0001          DB2S                 0001       |
+          |                                                                             |
+          | FROM TIME         +     DAYS    UNTIL TIME      +     DAYS                  |
+          | DUE OUT TIME      +     DAYS    PRIORITY NN  SAC    CONFIRM                 |
+          | TIME ZONE:                                                                  |
+          | =========================================================================== |
+          | OUT  GROUP_JOBNAME1_OK  ODAT  GROUP_JOBNAME2_OK  ODAT                       |
+          |      GROUP_JOBNAME3_OK  ODAT  GROUP_JOBNAME4_OK  ODAT                       |
+          | AUTO-ARCHIVE Y          SYSDB    Y      MAXDAYS      MAXRUNS                |
+          | SYSOUT OP   (C,D,F,N,R)                                              FROM   |
+          | MAXRERUN      RERUNMEM                                                      |
+          | CAPTURE BY   (W - WORD / C - CHAR)                                          |
+          | CYCLIC TYPE: C                                   INTERVAL         FROM      |
+          | INTERVAL SEQUENCE: +         +         +         +         +                |
+          | SPECIFIC TIMES:                                             TOLERANCE       |
+          |                       +           +           +           +           +     |
+          |                                                                             |
+          | STEP RANGE         FR (PGM.PROC)          .          TO          .          |
+          | ON PGMST ANYSTEP  PROCST          CODES <C0005                        A/O   |
+          |   DO OK                                                                     |
+          | ON PGMST ANYSTEP  PROCST          CODES NOTOK                         A/O   |
+          |   DO IFRERUN  FROM $EXERR   .          TO          .              CONFIRM N |
+          | ON PGMST ANYSTEP  PROCST          CODES OK                            A/O   |
+          |   DO SYSOUT   OPT  C PRM C                                            FRM   |
+          |   DO SYSOUT   OPT  R PRM                                              FRM   |
+          |   DO                                                                        |
+          | ON PGMST          PROCST          CODES                               A/O   |
+          |   DO                                                                        |
+          | ON SYSOUT                                          FROM     TO        A/O   |
+          |   DO                                                                        |
+          | ON VAR                                                                      |
+          |   DO                                                                        |
+          | SHOUT WHEN NOTOK    TIME       +     DAYS      TO U-MECO           URGN R   |
+          |   MS %%JOBNAME ENDED NOTOK!   SUPPORT => H_247  -- J69                      |
+          | SHOUT WHEN          TIME       +     DAYS      TO                  URGN     |
+          |   MS                                                                        |
+          | =========================================================================== |
+          | APPL TYPE                                  APPL VER                         |
+          | APPL FORM                                  CM   VER                         |
+          | INSTREAM JCL: N                                                             |
+          |                                                                             |
+          """;
         rewriteRun(
           spec -> spec.dataTable(Row.class, rows -> {
               assertThat(rows).extracting(Row::getDependent).containsOnly("CTM_SCHEDULE", "JOBNAME1", "JOBNAME2", "JOBNAME3", "JOBNAME4");
@@ -560,80 +726,18 @@ class FindRelationshipsTest extends CobolTest {
               assertThat(rows).extracting(Row::getAction).contains(TRIGGERS);
               assertThat(rows).extracting(Row::getDependency).contains("JCL_JOB", "CTM_SCHEDULE");
               assertThat(rows).extracting(Row::getDependencyType).contains(JCL, CONTROL_M_SCHEDULE);
+              assertThat(rows).filteredOn(r -> r.getDependencyType() == JCL).singleElement().satisfies(r -> {
+                  assertThat(r.getDependentPath()).isEqualTo("CTM_SCHEDULE.ctms");
+                  assertThat(lineAt(schedule, r.getDependentLine())).contains("MEMNAME JCL_JOB");
+                  assertThat(r.getDependencyPath()).isNull();
+              });
+              // A schedule waiting on another names it, so the anchor is on the dependency side.
+              assertThat(rows).filteredOn(r -> r.getDependencyType() == CONTROL_M_SCHEDULE).allSatisfy(r -> {
+                  assertThat(r.getDependentPath()).isNull();
+                  assertThat(r.getDependencyPath()).isEqualTo("CTM_SCHEDULE.ctms");
+                  assertThat(lineAt(schedule, r.getDependencyLine())).contains("GROUP_" + r.getDependent() + "_OK");
+              });
           }),
-          controlM(
-            """
-              +---------------------------------- BROWSE -----------------------------------+
-              | MEMNAME JCL_JOB         MEMLIB LIB_NAME                                     |
-              | OWNER                  TASKTYPE         PREVENT-NCT2 DFLT                   |
-              | APPL                                    GROUP                               |
-              | DESC                                                                        |
-              |                                                                             |
-              | OVERLIB                                                   STAT CAL          |
-              | SCHENV                         SYSTEM ID                  NJE NODE          |
-              | SET VAR                                                                     |
-              | CTB STEP AT         NAME            TYPE                                    |
-              | DOCMEM                 DOCLIB                                               |
-              | =========================================================================== |
-              | SCHEDULE RBC                                                                |
-              | RELATIONSHIP (AND/OR) O                                                     |
-              | DAYS                                                          DCAL          |
-              |                                                                    AND/OR   |
-              |                                                                             |
-              | WDAYS   0                                                     WCAL          |
-              | MONTHS  1- Y 2- Y 3- Y 4- Y 5- Y 6- Y 7- Y 8- Y 9- Y 10- Y 11- Y 12- Y      |
-              | DATES                                                                       |
-              | CONFCAL          SHIFT       RETRO N MAXWAIT 70  D-CAT                      |
-              | MINIMUM          PDS                                                        |
-              | DEFINITION ACTIVE FROM          UNTIL                                       |
-              | =========================================================================== |
-              | IN  GROUP_JOBNAME1_OK  ODAT   GROUP_JOBNAME2_OK  ODAT                       |
-              |     GROUP_JOBNAME3_OK  ODAT - GROUP_JOBNAME4_OK  ODAT +                     |
-              | CONTROL                                                                     |
-              | RESOURCE INIT5                0001          UNICPAL              0001       |
-              |          STOPALL              0001          DB2S                 0001       |
-              |                                                                             |
-              | FROM TIME         +     DAYS    UNTIL TIME      +     DAYS                  |
-              | DUE OUT TIME      +     DAYS    PRIORITY NN  SAC    CONFIRM                 |
-              | TIME ZONE:                                                                  |
-              | =========================================================================== |
-              | OUT  GROUP_JOBNAME1_OK  ODAT  GROUP_JOBNAME2_OK  ODAT                       |
-              |      GROUP_JOBNAME3_OK  ODAT  GROUP_JOBNAME4_OK  ODAT                       |
-              | AUTO-ARCHIVE Y          SYSDB    Y      MAXDAYS      MAXRUNS                |
-              | SYSOUT OP   (C,D,F,N,R)                                              FROM   |
-              | MAXRERUN      RERUNMEM                                                      |
-              | CAPTURE BY   (W - WORD / C - CHAR)                                          |
-              | CYCLIC TYPE: C                                   INTERVAL         FROM      |
-              | INTERVAL SEQUENCE: +         +         +         +         +                |
-              | SPECIFIC TIMES:                                             TOLERANCE       |
-              |                       +           +           +           +           +     |
-              |                                                                             |
-              | STEP RANGE         FR (PGM.PROC)          .          TO          .          |
-              | ON PGMST ANYSTEP  PROCST          CODES <C0005                        A/O   |
-              |   DO OK                                                                     |
-              | ON PGMST ANYSTEP  PROCST          CODES NOTOK                         A/O   |
-              |   DO IFRERUN  FROM $EXERR   .          TO          .              CONFIRM N |
-              | ON PGMST ANYSTEP  PROCST          CODES OK                            A/O   |
-              |   DO SYSOUT   OPT  C PRM C                                            FRM   |
-              |   DO SYSOUT   OPT  R PRM                                              FRM   |
-              |   DO                                                                        |
-              | ON PGMST          PROCST          CODES                               A/O   |
-              |   DO                                                                        |
-              | ON SYSOUT                                          FROM     TO        A/O   |
-              |   DO                                                                        |
-              | ON VAR                                                                      |
-              |   DO                                                                        |
-              | SHOUT WHEN NOTOK    TIME       +     DAYS      TO U-MECO           URGN R   |
-              |   MS %%JOBNAME ENDED NOTOK!   SUPPORT => H_247  -- J69                      |
-              | SHOUT WHEN          TIME       +     DAYS      TO                  URGN     |
-              |   MS                                                                        |
-              | =========================================================================== |
-              | APPL TYPE                                  APPL VER                         |
-              | APPL FORM                                  CM   VER                         |
-              | INSTREAM JCL: N                                                             |
-              |                                                                             |
-              """,
-			spec -> spec.after(s -> s).path("CTM_SCHEDULE.ctms")
-          ));
+          controlM(schedule, spec -> spec.after(s -> s).path("CTM_SCHEDULE.ctms")));
     }
 }
