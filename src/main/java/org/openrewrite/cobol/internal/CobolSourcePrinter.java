@@ -4541,8 +4541,21 @@ public class CobolSourcePrinter<P> extends CobolVisitor<PrintOutputCapture<P>> {
      * Where a word's characters landed in the output, for a printer measuring the source rather
      * than producing it. A word printing nothing of its own — copied in from a copybook, replaced
      * away, or the stand-in for an elided EXEC — is never reported, so it contributes no position.
+     * A word continued across lines is reported once per line.
      */
     public void wordPrinted(Cobol.Word word, int start, int end) {
+    }
+
+    /**
+     * Where the content area of a comment or blank line landed, for the same measuring printer.
+     */
+    public void contentPrinted(CobolLine line, int start, int end) {
+    }
+
+    /**
+     * Where the text of a comment area landed, for the same measuring printer.
+     */
+    public void commentPrinted(CommentArea commentArea, int start, int end) {
     }
 
     protected void beforeSyntax(Cobol c, Space.Location loc, PrintOutputCapture<P> p) {

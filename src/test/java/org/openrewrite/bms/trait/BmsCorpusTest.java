@@ -30,7 +30,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -49,15 +48,8 @@ class BmsCorpusTest {
     @Test
     void readsRealMapsets() throws IOException {
         Path corpus = Paths.get(System.getenv("BMS_CORPUS"));
-        List<Path> members = new ArrayList<>();
-        try (Stream<Path> walk = Files.walk(corpus)) {
-            walk.filter(Files::isRegularFile)
-                    .filter(Corpus::isSource)
-                    .filter(p -> p.toString().toLowerCase().endsWith(".bms"))
-                    .forEach(members::add);
-        }
-        assertThat(members).as("no .bms found under %s", corpus).isNotEmpty();
 
+        int members = 0;
         int mapsets = 0;
         int maps = 0;
         int fields = 0;
@@ -66,75 +58,102 @@ class BmsCorpusTest {
         int positioned = 0;
         int written = 0;
         List<String> failures = new ArrayList<>();
+        boolean fixtureFound = false;
 
-        for (Path member : members) {
-            String source = new String(Files.readAllBytes(member));
-            List<SourceFile> parsed = BmsParser.builder().build()
-                    .parse(new InMemoryExecutionContext(), source)
-                    .collect(Collectors.toList());
-            if (parsed.isEmpty() || !(parsed.get(0) instanceof Bms.CompilationUnit)) {
-                failures.add(member.getFileName() + ": did not parse");
+        System.out.println("map sets read, by application:");
+        for (Path repository : Corpus.repositories(corpus)) {
+            List<Path> files = Corpus.mapsets(repository);
+            if (files.isEmpty()) {
                 continue;
             }
-            Bms.CompilationUnit cu = (Bms.CompilationUnit) parsed.get(0);
-
-            if (!source.equals(cu.printAll())) {
-                failures.add(member.getFileName() + ": did not print back");
-                continue;
-            }
-
-            // The traits must find exactly the macros the source has. Counting them independently is
-            // the only thing that turns "it ran without complaining" into evidence that the file was
-            // read correctly.
-            for (String macro : new String[]{"DFHMSD", "DFHMDI", "DFHMDF"}) {
-                int inSource = countMacro(source, macro);
-                int read = countOperation(cu, macro);
-                if (inSource != read) {
-                    failures.add(member.getFileName() + ": " + read + " " + macro +
-                            " read, " + inSource + " written");
+            fixtureFound |= Corpus.isFixture(repository);
+            int read = 0;
+            for (Path member : files) {
+                members++;
+                String name = corpus.relativize(member).toString();
+                String source = new String(Files.readAllBytes(member));
+                List<SourceFile> parsed = BmsParser.builder().build()
+                        .parse(new InMemoryExecutionContext(), source)
+                        .collect(Collectors.toList());
+                if (parsed.isEmpty() || !(parsed.get(0) instanceof Bms.CompilationUnit)) {
+                    failures.add(name + ": did not parse");
+                    continue;
                 }
-                if ("DFHMDF".equals(macro)) {
-                    written += inSource;
-                }
-            }
+                Bms.CompilationUnit cu = (Bms.CompilationUnit) parsed.get(0);
 
-            // An operand read as an operation is what a mishandled continuation looks like, and it
-            // is silent: the statement still prints back, it just says something else.
-            for (Bms.MacroStatement statement : statementsIn(cu)) {
-                if (statement.getOperation().getText().contains("=")) {
-                    failures.add(member.getFileName() + ": read '" +
-                            statement.getOperation().getText() + "' as an operation");
+                if (!source.equals(cu.printAll())) {
+                    failures.add(name + ": did not print back");
+                    continue;
                 }
-            }
 
-            List<Mapset> read = new Mapset.Matcher().lower(cu).collect(Collectors.toList());
-            mapsets += read.size();
-            for (Mapset mapset : read) {
-                maps += mapset.getMaps().size();
-                for (MapDefinition map : mapset.getMaps()) {
-                    for (Field field : map.getFields()) {
-                        fields++;
-                        if (field.getName() != null) {
-                            named++;
-                        }
-                        if (field.isInput()) {
-                            inputs++;
-                        }
-                        if (field.getPosition() != null) {
-                            positioned++;
+                // The traits must find exactly the macros the source has. Counting them independently
+                // is the only thing that turns "it ran without complaining" into evidence that the
+                // file was read correctly.
+                boolean counted = true;
+                for (String macro : new String[]{"DFHMSD", "DFHMDI", "DFHMDF"}) {
+                    int inSource = countMacro(source, macro);
+                    int inTree = countOperation(cu, macro);
+                    if (inSource != inTree) {
+                        failures.add(name + ": " + inTree + " " + macro + " read, " + inSource + " written");
+                        counted = false;
+                    }
+                    if ("DFHMDF".equals(macro)) {
+                        written += inSource;
+                    }
+                }
+
+                // An operand read as an operation is what a mishandled continuation looks like, and
+                // it is silent: the statement still prints back, it just says something else.
+                for (Bms.MacroStatement statement : statementsIn(cu)) {
+                    if (statement.getOperation().getText().contains("=")) {
+                        failures.add(name + ": read '" +
+                                statement.getOperation().getText() + "' as an operation");
+                        counted = false;
+                    }
+                }
+                if (counted) {
+                    read++;
+                }
+
+                List<Mapset> mapsetsRead = new Mapset.Matcher().lower(cu).collect(Collectors.toList());
+                mapsets += mapsetsRead.size();
+                for (Mapset mapset : mapsetsRead) {
+                    maps += mapset.getMaps().size();
+                    for (MapDefinition map : mapset.getMaps()) {
+                        for (Field field : map.getFields()) {
+                            fields++;
+                            if (field.getName() != null) {
+                                named++;
+                            }
+                            if (field.isInput()) {
+                                inputs++;
+                            }
+                            if (field.getPosition() != null) {
+                                positioned++;
+                            }
                         }
                     }
                 }
             }
+            System.out.printf("  %-40s %3d of %3d%n", repository.getFileName(), read, files.size());
         }
+        assertThat(members).as("no .bms found under %s", corpus).isPositive();
 
         System.out.printf("BMS corpus: %d files, %d mapsets, %d maps, %d fields " +
                         "(%d named, %d input, %d positioned)%n",
-                members.size(), mapsets, maps, fields, named, inputs, positioned);
+                members, mapsets, maps, fields, named, inputs, positioned);
+        if (!failures.isEmpty()) {
+            System.out.println("failures:");
+            failures.forEach(f -> System.out.println("  " + f));
+        }
 
         assertThat(failures).isEmpty();
-        assertThat(mapsets).as("no mapsets read from %d files", members.size()).isPositive();
+        assertThat(mapsets).as("no mapsets read from %d files", members).isPositive();
         assertThat(maps).isPositive();
+
+        // Every map set is required to read, so the fixture only has to be there: one the walk could not
+        // see, a symbolic link say, would otherwise pass as an empty application.
+        assertThat(fixtureFound).as("mainframe-fixtures under %s", corpus).isTrue();
 
         // Every field is reachable from the map it belongs to. Containment is read from position
         // rather than from brackets, so a field the walk cannot reach is one no report would find.

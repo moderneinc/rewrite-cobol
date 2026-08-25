@@ -64,7 +64,9 @@ public class CommentLine implements CobolLine, Comment {
                 sequenceArea.printColumnArea(sourcePrinter, cursor, true, p);
             }
             indicatorArea.printColumnArea(sourcePrinter, cursor, true, p);
+            int start = p.out.length();
             p.append(contentArea);
+            sourcePrinter.contentPrinted(this, start, p.out.length());
             if (commentArea != null) {
                 commentArea.printColumnArea(sourcePrinter, cursor, true, p);
             }
@@ -86,7 +88,9 @@ public class CommentLine implements CobolLine, Comment {
                 sequenceArea.printColumnArea(sourcePrinter, cursor, true, p);
             }
             indicatorArea.printColumnArea(sourcePrinter, cursor, true, p);
+            int start = p.out.length();
             p.append(contentArea);
+            sourcePrinter.contentPrinted(this, start, p.out.length());
             if (commentArea != null) {
                 commentArea.printColumnArea(sourcePrinter, cursor, true, p);
             }

@@ -3288,7 +3288,8 @@ INTEGERLITERAL : (PLUSCHAR | MINUSCHAR)? [0-9]+;
 
 NUMERICLITERAL : (PLUSCHAR | MINUSCHAR)? [0-9]* ('.' | COMMACHAR) [0-9]+ ('E' (PLUSCHAR | MINUSCHAR)? [0-9]+)?;
 
-IDENTIFIER : COLONCHAR? [A-Z0-9]+ COLONCHAR? ([-_]+ [A-Z0-9]+)*;
+// A :TAG: placeholder is part of a word; the colon of a reference modifier is not.
+IDENTIFIER : ([A-Z0-9]+ | COLONCHAR [A-Z0-9]+ COLONCHAR) ([-_]+ ([A-Z0-9]+ | COLONCHAR [A-Z0-9]+ COLONCHAR))*;
 
 // whitespace, line breaks, comments, ...
 

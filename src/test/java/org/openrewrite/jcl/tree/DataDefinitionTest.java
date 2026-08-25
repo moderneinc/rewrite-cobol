@@ -20,6 +20,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.openrewrite.test.RewriteTest;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.openrewrite.jcl.tree.ParserAssertions.jcl;
 
 class DataDefinitionTest implements RewriteTest {
@@ -152,6 +153,73 @@ class DataDefinitionTest implements RewriteTest {
                  FIELDS=(ABC=XYZ)                                                     commentArea
               /*
               """
+          )
+        );
+    }
+
+    /**
+     * A data line is data in every column, so a line past column 72 keeps its text and prints back.
+     */
+    @Test
+    void dataPastColumn72() {
+        rewriteRun(
+          jcl(
+            """
+              //SYSTSIN  DD *
+              OMVS CMD='chmod -R 755 /usr/lpp/zowe/components/api-mediation/bin/scripts/internal/'
+              /*
+              """,
+            // A data line is one node per word.
+            spec -> spec.afterRecipe(cu -> assertThat(cu.getStatements()).extracting(s -> s.getClass().getSimpleName())
+              .containsExactly("JobControlStatement", "DataDefinitionStream", "DataDefinitionStream",
+                "DataDefinitionStream", "Delimiter"))
+          )
+        );
+    }
+
+    /**
+     * With DLM in force only the delimiter ends the data; a comment line beginning with a slash and
+     * a star inside RACF commands is data, not the end of it.
+     */
+    @Test
+    void dlmKeepsDelimiterLookalikesAsData() {
+        rewriteRun(
+          jcl(
+            """
+              //SYSTSIN  DD DATA,DLM=$$
+              /* Define the keyring */
+              RACDCERT ADDRING(ZOWERING) ID(ZWESVUSR)
+              $$
+              //NEXT     EXEC PGM=IEFBR14
+              """,
+            spec -> spec.afterRecipe(cu -> {
+                assertThat(cu.getStatements()).extracting(s -> s.getClass().getSimpleName())
+                  .containsSubsequence("JobControlStatement", "DataDefinitionStream", "Delimiter", "JobControlStatement")
+                  .doesNotContain("Jes2", "Unknown");
+                assertThat(cu.getStatements()).filteredOn(s -> s instanceof Jcl.DataDefinitionStream)
+                  .extracting(s -> ((Jcl.DataDefinitionStream) s).getWord().getText())
+                  .containsExactly("/*", "Define", "the", "keyring", "*/", "RACDCERT", "ADDRING(ZOWERING)", "ID(ZWESVUSR)");
+            })
+          )
+        );
+    }
+
+    /**
+     * A literal too long for one card carries on at column 16 of the next, and may carry on again.
+     */
+    @Test
+    void aLiteralOverThreeCards() {
+        rewriteRun(
+          jcl(
+            """
+              //INHFS    DD PATH='/usr/cicsts/work/cicsbbbb/CPFWLP/bbbbbbb/CPFWLP/wlp
+              //             /usr/servers/defaultServer/logs/messages_20.20.22_22.17.
+              //             18.0.log'
+              //OUTMVS   DD DISP=SHR,DSN=USER.MESSAGES.LOG
+              """,
+            spec -> spec.afterRecipe(cu -> assertThat(cu.getStatements()).satisfiesExactly(
+              in -> assertThat(((Jcl.JobControlStatement) in).getSimpleName()).isEqualTo("INHFS"),
+              out -> assertThat(((Jcl.JobControlStatement) out).getSimpleName()).isEqualTo("OUTMVS")))
           )
         );
     }

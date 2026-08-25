@@ -16,15 +16,24 @@
 package org.openrewrite.bms;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.openrewrite.InMemoryExecutionContext;
+import org.openrewrite.ParseExceptionResult;
+import org.openrewrite.Parser;
 import org.openrewrite.SourceFile;
 import org.openrewrite.bms.marker.SequenceArea;
 import org.openrewrite.bms.tree.Bms;
+import org.openrewrite.tree.ParseError;
 
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -114,6 +123,37 @@ class BmsParserTest {
         assertThat(cu.getStatements().get(0)).isInstanceOf(Bms.Comment.class);
         assertThat(((Bms.Comment) cu.getStatements().get(0)).getWord().getText())
           .isEqualTo("* Don't take this as the start of a string");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"COSGN00.bms", "COSGN00.BMS", "bms/COSGN00.Bms"})
+    void acceptsAMapSetByExtension(String name) {
+        assertThat(BmsParser.builder().build().accept(Paths.get(name))).isTrue();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"COSGN00.cbl", "COSGN00.cpy", "COSGN00.jcl", "COSGN00"})
+    void rejectsOtherExtensions(String name) {
+        assertThat(BmsParser.builder().build().accept(Paths.get(name))).isFalse();
+    }
+
+    /**
+     * The grammar reads any assembler-shaped text, so a file that defines no map is refused by name
+     * rather than read as an empty map set — and under its own type, so a parse-quality report can
+     * tell it from a grammar gap.
+     */
+    @Test
+    void aFileThatIsNotAMapSetIsSaidSo() {
+        Parser.Input input = new Parser.Input(Paths.get("COSGN00.bms"),
+          () -> new ByteArrayInputStream("         MACRO\n         MYMAC\n         MEND\n".getBytes(StandardCharsets.UTF_8)));
+        SourceFile parsed = BmsParser.builder().build()
+          .parseInputs(singletonList(input), null, new InMemoryExecutionContext()).findFirst().orElseThrow();
+
+        assertThat(parsed).isInstanceOf(ParseError.class);
+        ParseExceptionResult failure = parsed.getMarkers().findFirst(ParseExceptionResult.class).orElseThrow();
+        assertThat(failure.getParserType()).isEqualTo("BmsParser");
+        assertThat(failure.getExceptionType()).isEqualTo("WrongLanguageException");
+        assertThat(failure.getMessage()).contains("COSGN00.bms is not a BMS map set: it has no DFHMSD, DFHMDI or DFHMDF macro.");
     }
 
     private static List<String> sequenceAreasIn(Bms.CompilationUnit cu) {

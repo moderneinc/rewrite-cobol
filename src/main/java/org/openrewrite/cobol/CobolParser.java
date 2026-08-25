@@ -41,6 +41,7 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
@@ -49,8 +50,13 @@ import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
 public class CobolParser implements Parser {
-    public static final List<String> COPYBOOK_FILE_EXTENSIONS = Arrays.asList(".cpy", ".dcl");
-    public static final List<String> COBOL_FILE_EXTENSIONS = singletonList(".cbl");
+    /**
+     * Compared case-insensitively, so {@code .CBL} and {@code .COB} are read too.
+     */
+    public static final List<String> COBOL_FILE_EXTENSIONS = Arrays.asList(".cbl", ".cob", ".cobol");
+
+    private static final Pattern IDENTIFICATION_DIVISION =
+            Pattern.compile("\\bID(ENTIFICATION)?\\s+DIVISION\\b", Pattern.CASE_INSENSITIVE);
 
     private final CobolDialect cobolDialect;
     private final List<SourceFile> copybooks;
@@ -76,7 +82,8 @@ public class CobolParser implements Parser {
             SourceFile preprocessedCU = cobolPreprocessorParser.parseInputs(singletonList(input), relativeTo, ctx).collect(toList()).get(0);
             assert preprocessedCU != null;
             if (preprocessedCU instanceof ParseError) {
-                return preprocessedCU;
+                WrongLanguageException notCobol = notCobol(input, ctx, null);
+                return notCobol == null ? preprocessedCU : ParseError.build(this, input, relativeTo, ctx, notCobol);
             }
 
             // Print processed code to parse COBOL.
@@ -117,10 +124,36 @@ public class CobolParser implements Parser {
                 throw new CobolParsingTimeoutException(relativeTo == null ? input.getPath() :
                         relativeTo.relativize(input.getPath()));
             }
-        } catch (Throwable t) {
+        } catch (CobolParsingTimeoutException t) {
             ctx.getOnError().accept(t);
             return ParseError.build(this, input, relativeTo, ctx, t);
+        } catch (Throwable t) {
+            ctx.getOnError().accept(t);
+            WrongLanguageException notCobol = notCobol(input, ctx, t);
+            return ParseError.build(this, input, relativeTo, ctx, notCobol == null ? t : notCobol);
         }
+    }
+
+    /**
+     * Whether a file the grammar could not read is not a program at all. Only asked after a
+     * failure: a program the grammar reads has its division header wherever it is, and a control
+     * card kept as {@code .cbl} has none.
+     */
+    private static @Nullable WrongLanguageException notCobol(Input input, ExecutionContext ctx, @Nullable Throwable cause) {
+        if (input.isSynthetic()) {
+            return null;
+        }
+        String source;
+        try {
+            source = input.getSource(ctx).readFully();
+        } catch (RuntimeException e) {
+            return null;
+        }
+        if (IDENTIFICATION_DIVISION.matcher(source).find()) {
+            return null;
+        }
+        return new WrongLanguageException(input.getPath(),
+                input.getPath() + " is not a COBOL program: it has no IDENTIFICATION DIVISION.", cause);
     }
 
     @Override
@@ -128,11 +161,6 @@ public class CobolParser implements Parser {
         String s = path.toString().toLowerCase();
         for (String COBOL_FILE_EXTENSION : COBOL_FILE_EXTENSIONS) {
             if (s.endsWith(COBOL_FILE_EXTENSION)) {
-                return true;
-            }
-        }
-        for (String COPYBOOK_FILE_EXTENSION : COPYBOOK_FILE_EXTENSIONS) {
-            if (s.endsWith(COPYBOOK_FILE_EXTENSION)) {
                 return true;
             }
         }

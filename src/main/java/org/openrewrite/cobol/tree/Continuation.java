@@ -57,14 +57,16 @@ public class Continuation {
 
         sourcePrinter.visitSpace(word.getPrefix(), Space.Location.CONTINUATION_PREFIX, p);
 
-        // A continued word spans the column areas it is broken around, so its position covers them.
+        // Reported once per line, so each piece of the word has a position of its own.
         int start = p.out.length();
         char[] charArray = word.getCobolWord().getWord().toCharArray();
         for (int i = 0; i < charArray.length; i++) {
             if (i != 0 && continuations.containsKey(i)) {
+                sourcePrinter.wordPrinted(word, start, p.out.length());
                 for (ColumnArea columnArea : continuations.get(i)) {
                     columnArea.printColumnArea(sourcePrinter, cursor, printColumns, p);
                 }
+                start = p.out.length();
             }
             char c = charArray[i];
             p.append(c);
@@ -107,14 +109,16 @@ public class Continuation {
 
         sourcePrinter.visitSpace(word.getPrefix(), Space.Location.CONTINUATION_PREFIX, p);
 
-        // A continued word spans the column areas it is broken around, so its position covers them.
+        // Reported once per line, so each piece of the word has a position of its own.
         int start = p.out.length();
         char[] charArray = word.getWord().toCharArray();
         for (int i = 0; i < charArray.length; i++) {
             if (i != 0 && continuations.containsKey(i)) {
+                sourcePrinter.wordPrinted(word, start, p.out.length());
                 for (ColumnArea columnArea : continuations.get(i)) {
                     columnArea.printColumnArea(sourcePrinter, cursor, printColumns, p);
                 }
+                start = p.out.length();
             }
             char c = charArray[i];
             p.append(c);

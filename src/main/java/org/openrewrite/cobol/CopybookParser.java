@@ -50,7 +50,10 @@ import static org.openrewrite.Tree.randomId;
  */
 @RequiredArgsConstructor
 public class CopybookParser implements Parser {
-    public static final List<String> COPYBOOK_FILE_EXTENSIONS = Arrays.asList(".cpy", ".dcl");
+    /**
+     * Compared case-insensitively. {@code .dcl} is a DCLGEN copybook.
+     */
+    public static final List<String> COPYBOOK_FILE_EXTENSIONS = Arrays.asList(".cpy", ".copy", ".dcl");
 
     private final CobolDialect cobolDialect;
 

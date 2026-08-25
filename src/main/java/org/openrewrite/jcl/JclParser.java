@@ -25,6 +25,7 @@ import org.jspecify.annotations.Nullable;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Parser;
 import org.openrewrite.SourceFile;
+import org.openrewrite.cobol.WrongLanguageException;
 import org.openrewrite.internal.EncodingDetectingInputStream;
 import org.openrewrite.internal.MetricsHelper;
 import org.openrewrite.jcl.internal.JclParserVisitor;
@@ -37,8 +38,10 @@ import org.openrewrite.tree.ParsingExecutionContextView;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -49,6 +52,19 @@ import static java.util.Collections.emptyList;
 
 @AllArgsConstructor
 public class JclParser implements Parser {
+    /**
+     * Compared case-insensitively. A member kept without an extension, or as {@code .txt} the way
+     * a PDS is copied off as text, is accepted by its first card instead — see
+     * {@link JclLineReader#isJcl}.
+     */
+    public static final List<String> JCL_FILE_EXTENSIONS = Arrays.asList(".jcl", ".prc", ".proc");
+
+    /**
+     * Control card members — the {@code .ctl} and {@code .prm} files a job's SYSIN names by member.
+     * They are not sources of their own; they are supplied as {@link Builder#parmMembers} and
+     * grafted into the DD that names them.
+     */
+    public static final List<String> CONTROL_CARD_EXTENSIONS = Arrays.asList(".ctl", ".prm");
 
     /**
      * Paths to external PDS members (e.g. {@code .prm} files) referenced by SYSIN/SYSTSIN and
@@ -79,6 +95,12 @@ public class JclParser implements Parser {
                     try {
                         EncodingDetectingInputStream is = sourceFile.getSource(ctx);
                         String sourceStr = is.readFully();
+                        // The grammar reads anything, so a member that is not JCL has to be refused
+                        // before it, or it would be read as a job of unknown cards.
+                        if (!sourceFile.isSynthetic() && !JclLineReader.hasJcl(sourceStr)) {
+                            throw new WrongLanguageException(sourceFile.getPath(),
+                                    sourceFile.getPath() + " is not JCL: no card begins with //.", null);
+                        }
                         String postProcess = JclLineReader.readLines(sourceStr);
                         CommonTokenStream tokens = new CommonTokenStream(new JCLLexer(
                                 CharStreams.fromString(postProcess)));
@@ -135,12 +157,27 @@ public class JclParser implements Parser {
     public boolean accept(Path path) {
         String name = path.getFileName().toString().toLowerCase();
         // A Jinja template of a job is still a job, and Bank-of-Z ships its whole installation that
-        // way. What is left after dropping the .j2 decides; a PDS member has no extension at all.
+        // way. What is left after dropping the .j2 decides.
         if (name.endsWith(".j2")) {
             name = name.substring(0, name.length() - 3);
-            return !name.contains(".") || name.endsWith(".jcl") || name.endsWith(".prc");
         }
-        return name.endsWith(".jcl") || name.endsWith(".prc");
+        for (String extension : JCL_FILE_EXTENSIONS) {
+            if (name.endsWith(extension)) {
+                return true;
+            }
+        }
+        return (name.indexOf('.') < 0 || name.endsWith(".txt")) && Files.isRegularFile(path) &&
+               JclLineReader.isJcl(head(path));
+    }
+
+    private static String head(Path path) {
+        try (InputStream in = Files.newInputStream(path)) {
+            byte[] bytes = new byte[4096];
+            int read = in.read(bytes);
+            return read < 0 ? "" : new String(bytes, 0, read, StandardCharsets.ISO_8859_1);
+        } catch (IOException e) {
+            return "";
+        }
     }
 
     @Override

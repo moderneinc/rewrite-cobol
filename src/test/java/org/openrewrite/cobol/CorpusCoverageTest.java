@@ -25,13 +25,13 @@ import org.openrewrite.SourceFile;
 import org.openrewrite.Tree;
 import org.openrewrite.cobol.marker.CopiedWord;
 import org.openrewrite.cobol.marker.ElidedExec;
+import org.openrewrite.cobol.trait.CopybookReference;
 import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.Statement;
 import org.openrewrite.marker.Range;
 import org.openrewrite.tree.ParseError;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -40,7 +40,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -48,7 +47,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Parses a corpus of real COBOL and reports how much of it the parser can actually read.
  * <p>
  * The NIST suite is ANSI conformance code: no CICS, no IMS, no JCL. This is the first real online
- * and batch code the parser has seen, so its purpose is to find what is broken, not to pass.
+ * and batch code the parser has seen, so its purpose is to find what is broken, not to pass. The one
+ * application it must pass is the fixture, which is written so that all of it parses.
  * <p>
  * Run with { COBOL_CORPUS=/path/to/corpus}.
  */
@@ -59,17 +59,39 @@ class CorpusCoverageTest {
     void measure() throws IOException {
         Path root = Paths.get(System.getenv("COBOL_CORPUS"));
 
-        List<Parser.Input> copybookInputs = inputs(root, ".cpy");
-        List<SourceFile> copybooks = CopybookParser.builder().build()
-          .parseInputs(copybookInputs, root, new InMemoryExecutionContext())
-          .collect(Collectors.toList());
-        System.out.printf("copybooks: %d parsed, %d errors%n",
-          copybooks.size() - errors(copybooks).size(), errors(copybooks).size());
+        // Each application is parsed against its own copybook library, and reported on its own: a
+        // number for the corpus as a whole says nothing about which application the parser cannot read.
+        List<SourceFile> programs = new ArrayList<>();
+        int copybooksParsed = 0;
+        int copybookErrors = 0;
+        List<String> fixtureNotRead = new ArrayList<>();
+        boolean fixtureFound = false;
+        System.out.println("programs parsed, copybooks not found, by application:");
+        for (Path repository : Corpus.repositories(root)) {
+            List<Parser.Input> programInputs = Corpus.inputs(Corpus.programs(repository));
+            if (programInputs.isEmpty()) {
+                continue;
+            }
+            List<SourceFile> copybooks = CopybookParser.builder().build()
+              .parseInputs(Corpus.inputs(Corpus.copybooks(repository)), root, new InMemoryExecutionContext())
+              .collect(Collectors.toList());
+            copybooksParsed += copybooks.size() - errors(copybooks).size();
+            copybookErrors += errors(copybooks).size();
 
-        List<Parser.Input> programInputs = inputs(root, ".cbl");
-        List<SourceFile> programs = CobolParser.builder().copybooks(copybooks).build()
-          .parseInputs(programInputs, root, new InMemoryExecutionContext())
-          .collect(Collectors.toList());
+            List<SourceFile> parsed = CobolParser.builder().copybooks(copybooks).build()
+              .parseInputs(programInputs, root, new InMemoryExecutionContext())
+              .collect(Collectors.toList());
+            System.out.printf("  %-40s %3d of %3d parsed, %3d missing a copybook%n",
+              repository.getFileName(), parsed.size() - errors(parsed).size(), parsed.size(),
+              parsed.stream().filter(CorpusCoverageTest::missingACopybook).count());
+            programs.addAll(parsed);
+            if (Corpus.isFixture(repository)) {
+                fixtureFound = true;
+                fixtureNotRead.addAll(notRead(copybooks));
+                fixtureNotRead.addAll(notRead(parsed));
+            }
+        }
+        System.out.printf("copybooks: %d parsed, %d errors%n", copybooksParsed, copybookErrors);
 
         List<SourceFile> failed = errors(programs);
         System.out.printf("%nCOBOL: %d of %d parsed (%.0f%%), %d failed%n",
@@ -79,19 +101,17 @@ class CorpusCoverageTest {
         // Group by the syntax message so a single grammar gap does not look like fifty problems.
         Map<String, List<String>> byCause = new LinkedHashMap<>();
         for (SourceFile error : failed) {
-            String message = error.getMarkers().findFirst(ParseExceptionResult.class)
-              .map(ParseExceptionResult::getMessage)
-              .orElse("unknown");
-            byCause.computeIfAbsent(normalize(message), k -> new ArrayList<>())
-              .add(error.getSourcePath().getFileName().toString());
+            byCause.computeIfAbsent(normalize(cause(error)), k -> new ArrayList<>())
+              .add(error.getSourcePath().toString());
         }
 
         System.out.println("\nfailures grouped by cause:");
         byCause.entrySet().stream()
           .sorted((a, b) -> b.getValue().size() - a.getValue().size())
-          .forEach(e -> System.out.printf("  [%d] %s%n      e.g. %s%n",
-            e.getValue().size(), e.getKey(),
-            e.getValue().stream().limit(4).collect(Collectors.joining(", "))));
+          .forEach(e -> {
+              System.out.printf("  [%d] %s%n", e.getValue().size(), e.getKey());
+              e.getValue().forEach(file -> System.out.printf("      %s%n", file));
+          });
 
         // Parsing a program is only half of it: whatever preprocessing takes out of the text the grammar sees has to
         // come back on the way out, byte for byte.
@@ -111,6 +131,11 @@ class CorpusCoverageTest {
         // Coverage is reported rather than asserted, because what the parser cannot yet read is the point of the
         // measurement. Losing the text of a program it did read is a different thing, and is never acceptable.
         assertThat(notPrintedBack).isEmpty();
+
+        // The fixture is the exception: all of it parses by construction. A fixture the walk could not see, a
+        // symbolic link say, would otherwise pass as an empty application.
+        assertThat(fixtureFound).as("mainframe-fixtures under %s", root).isTrue();
+        assertThat(fixtureNotRead).isEmpty();
 
         // A position landing anywhere but on the word it names is worse than no position at all, so every word
         // the corpus prints is read back out of the source at the offset reported for it. Sequence numbers in
@@ -212,7 +237,7 @@ class CorpusCoverageTest {
         String firstLine = message.split("\n", 2)[0];
         return firstLine
           // The offending token is the point; the file, position and the expecting-set are noise.
-          .replaceAll("in \\S+ at line \\d+:\\d+", "at <position>")
+          .replaceAll("in .+? at line \\d+:\\d+", "at <position>")
           .replaceAll("expecting \\{[^}]*\\}", "expecting {…}")
           .replaceAll("expecting \\S+$", "expecting {…}")
           .trim();
@@ -222,20 +247,40 @@ class CorpusCoverageTest {
         return parsed.stream().filter(s -> s instanceof ParseError).collect(Collectors.toList());
     }
 
-    private static List<Parser.Input> inputs(Path root, String extension) throws IOException {
-        try (Stream<Path> paths = Files.walk(root)) {
-            return paths
-              .filter(Corpus::isSource)
-              .filter(p -> p.toString().toLowerCase().endsWith(extension))
-              .sorted()
-              .map(p -> new Parser.Input(p, () -> {
-                  try {
-                      return Files.newInputStream(p);
-                  } catch (IOException e) {
-                      throw new UncheckedIOException(e);
-                  }
-              }))
-              .collect(Collectors.toList());
+    private static String cause(SourceFile error) {
+        return error.getMarkers().findFirst(ParseExceptionResult.class)
+          .map(ParseExceptionResult::getMessage)
+          .orElse("unknown");
+    }
+
+    /**
+     * Each file that was not read, with what kept it from being: a syntax error, or a copybook not found.
+     */
+    private static List<String> notRead(List<SourceFile> parsed) {
+        List<String> notRead = new ArrayList<>();
+        for (SourceFile file : parsed) {
+            if (file instanceof ParseError) {
+                notRead.add(file.getSourcePath() + ": " + cause(file));
+            } else if (missingACopybook(file)) {
+                notRead.add(file.getSourcePath() + ": missing a copybook");
+            }
         }
+        return notRead;
+    }
+
+    // A program whose copybook was not found parses, and reads as though the fields it uses were
+    // never declared, so it is counted apart from the ones the parser could not read.
+    private static boolean missingACopybook(SourceFile program) {
+        if (!(program instanceof Cobol.CompilationUnit)) {
+            return false;
+        }
+        List<CopybookReference> unresolved = new ArrayList<>();
+        new CopybookReference.Matcher().<Integer>asVisitor((reference, p) -> {
+            if (!reference.isResolved()) {
+                unresolved.add(reference);
+            }
+            return reference.getTree();
+        }).visit(program, 0);
+        return !unresolved.isEmpty();
     }
 }

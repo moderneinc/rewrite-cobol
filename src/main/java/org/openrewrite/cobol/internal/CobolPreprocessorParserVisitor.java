@@ -35,6 +35,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.openrewrite.Tree.randomId;
 import static org.openrewrite.cobol.CobolStringUtils.DEBUGGING_INDICATORS;
+import static org.openrewrite.cobol.CobolStringUtils.compilerOptionsStart;
 import static org.openrewrite.cobol.CobolStringUtils.indexOfFloatingComment;
 import static org.openrewrite.cobol.CobolStringUtils.isSubstituteCharacter;
 import static org.openrewrite.cobol.internal.CobolGrammarToken.COMMENT_ENTRY;
@@ -99,6 +100,18 @@ public class CobolPreprocessorParserVisitor extends CobolPreprocessorBaseVisitor
 
                 if (isSubstituteCharacter(part)) {
                     pos += part.length();
+                    continue;
+                }
+
+                if (compilerOptionsStart(cleanedPart) >= 0) {
+                    // The statement is written where the sequence area would be, so the line has none.
+                    int contentEnd = Math.min(cleanedPart.length(), columns.getOtherArea());
+                    pos += contentEnd;
+                    if (cleanedPart.length() > contentEnd) {
+                        commentAreas.put(pos, cleanedPart.substring(contentEnd));
+                        pos += cleanedPart.length() - contentEnd;
+                    }
+                    pos += isCRLF ? 2 : 1;
                     continue;
                 }
 

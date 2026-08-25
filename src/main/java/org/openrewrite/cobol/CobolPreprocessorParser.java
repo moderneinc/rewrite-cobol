@@ -43,7 +43,6 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 import static org.openrewrite.cobol.CobolStringUtils.isDebuggingModeEnabled;
 
 /**
@@ -51,8 +50,6 @@ import static org.openrewrite.cobol.CobolStringUtils.isDebuggingModeEnabled;
  */
 @AllArgsConstructor
 public class CobolPreprocessorParser implements Parser {
-    private static final List<String> COBOL_FILE_EXTENSIONS = singletonList(".cbl");
-
     private final CobolDialect cobolDialect;
 	@Setter
 	private List<SourceFile> copybooks;
@@ -121,7 +118,7 @@ public class CobolPreprocessorParser implements Parser {
     @Override
     public boolean accept(Path path) {
         String s = path.toString().toLowerCase();
-        for (String COBOL_FILE_EXTENSION : COBOL_FILE_EXTENSIONS) {
+        for (String COBOL_FILE_EXTENSION : CobolParser.COBOL_FILE_EXTENSIONS) {
             if (s.endsWith(COBOL_FILE_EXTENSION)) {
                 return true;
             }

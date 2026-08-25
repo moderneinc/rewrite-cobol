@@ -19,9 +19,11 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
+import org.openrewrite.cobol.CobolPreprocessorIsoVisitor;
 import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,6 +48,21 @@ final class Execs {
             }
         }
         return null;
+    }
+
+    /**
+     * The words of the block body, flattened across continuation lines.
+     */
+    static List<Cobol.Word> wordsOf(CobolPreprocessor.ExecStatement exec) {
+        List<Cobol.Word> words = new ArrayList<>();
+        new CobolPreprocessorIsoVisitor<Integer>() {
+            @Override
+            public CobolPreprocessor.Word visitWord(CobolPreprocessor.Word word, Integer p) {
+                words.add(word.getCobolWord());
+                return word;
+            }
+        }.visit(exec.getCobol(), 0);
+        return words;
     }
 
     /**

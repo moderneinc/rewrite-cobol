@@ -22,6 +22,7 @@ import org.openrewrite.cobol.CobolPreprocessorVisitor;
 import org.openrewrite.cobol.marker.CopiedWord;
 import org.openrewrite.cobol.tree.CobolLine;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
+import org.openrewrite.cobol.tree.CommentArea;
 import org.openrewrite.cobol.tree.Replacement;
 import org.openrewrite.cobol.tree.Space;
 import org.openrewrite.internal.StringUtils;
@@ -383,6 +384,18 @@ public class CobolPreprocessorSourcePrinter<P> extends CobolPreprocessorVisitor<
      * than by the COBOL printer, so an {@code EXEC} block is only reachable through this.
      */
     public void wordPrinted(CobolPreprocessor.Word word, int start, int end) {
+    }
+
+    /**
+     * Where the content area of a comment or blank line landed, for the same measuring printer.
+     */
+    public void contentPrinted(CobolLine line, int start, int end) {
+    }
+
+    /**
+     * Where the text of a comment area landed, for the same measuring printer.
+     */
+    public void commentPrinted(CommentArea commentArea, int start, int end) {
     }
 
     private static final UnaryOperator<String> COBOL_MARKER_WRAPPER =

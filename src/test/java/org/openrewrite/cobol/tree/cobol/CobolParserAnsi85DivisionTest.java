@@ -169,6 +169,67 @@ class CobolParserAnsi85DivisionTest extends CobolTest {
         );
     }
 
+    /**
+     * IBM lets CBL and PROCESS start in any column from 1, and a line that does has no sequence
+     * area — {@code CBL} in columns 4 to 6 is the statement, not a sequence number.
+     */
+    @Test
+    void compilerOptionsAheadOfColumn8() {
+        rewriteRun(
+          cobol(
+            """
+                 CBL NUMPROC(MIG),FLAG(I,W),RENT
+              PROCESS ARITH(EXTEND),OPT,NOCICS
+                     ID DIVISION.
+                     PROGRAM-ID. EPSMPMT.
+                     PROCEDURE DIVISION.
+                         STOP RUN.
+              """
+          )
+        );
+    }
+
+    /**
+     * A paragraph header belongs in area A, and generated code begins it at column 9 rather than 8;
+     * the comment entry after it was being read as code. Only area A, though: a comment entry's text
+     * in area B may begin with {@code PROCEDURE} or {@code IDENTIFICATION}, as NIST SG104A's and
+     * OBNC1M's do, and is still the entry.
+     */
+    @Test
+    void commentEntryParagraphsAnywhereInAreaA() {
+        rewriteRun(
+          cobol(
+            """
+              000100 IDENTIFICATION DIVISION.
+              000200  PROGRAM-ID. 'EPSCSMRD'.
+              000300  AUTHOR. WD4Z.
+              000400  INSTALLATION. 9.0.0.V200809191411.
+              000500  DATE-WRITTEN. 1/19/09 2:11 PM.
+              000510  SECURITY.
+              000520     NONE.  THE INPUT
+              000530     PROCEDURE BUILDS THE FILE.
+              000540     IDENTIFICATION DIVISION IS WHAT THE REMARKS SAY.
+              000600 DATA DIVISION.
+              000700 WORKING-STORAGE SECTION.
+              000800 01 A PIC X.
+              000900 PROCEDURE DIVISION.
+              001000     GOBACK.
+              001100 END PROGRAM 'EPSCSMRD'.
+              001200 IDENTIFICATION DIVISION.
+              001300  PROGRAM-ID. 'EPSCSMRF'.
+              001400  AUTHOR. WD4Z.
+              001500  DATE-WRITTEN. 1/19/09 2:11 PM
+              001600 DATA DIVISION.
+              001700 WORKING-STORAGE SECTION.
+              001800 01 A PIC X.
+              001900 PROCEDURE DIVISION.
+              002000     GOBACK.
+              002100 END PROGRAM 'EPSCSMRF'.
+              """
+          )
+        );
+    }
+
     @Issue("https://github.com/openrewrite/rewrite-cobol/issues/33")
     @Test
     void specialRegister() {
@@ -1341,6 +1402,56 @@ class CobolParserAnsi85DivisionTest extends CobolTest {
               """
           )
         );
+    }
+
+    /**
+     * The colon of a reference modifier ends a word, so {@code (1:5)} is a modifier and not two
+     * subscripts; the {@code :TAG:} placeholder of a copybook written for {@code REPLACING} stays
+     * part of one.
+     */
+    @Test
+    void referenceModifierBesideAPlaceholder() {
+        AtomicInteger modifiers = new AtomicInteger();
+        rewriteRun(
+          spec -> spec.recipe(toRecipe(() -> new CobolIsoVisitor<>() {
+              @Override
+              public Cobol.ReferenceModifier visitReferenceModifier(Cobol.ReferenceModifier modifier, ExecutionContext ctx) {
+                  modifiers.incrementAndGet();
+                  return super.visitReferenceModifier(modifier, ctx);
+              }
+
+              @Override
+              public Cobol.TableCall visitTableCall(Cobol.TableCall tableCall, ExecutionContext ctx) {
+                  assertThat(tableCall.getSubscripts()).isEmpty();
+                  return super.visitTableCall(tableCall, ctx);
+              }
+
+              @Override
+              public Cobol.DataDescriptionEntry visitDataDescriptionEntry(Cobol.DataDescriptionEntry entry, ExecutionContext ctx) {
+                  assertThat(entry.getName()).isNotNull();
+                  assertThat(entry.getName().getWord()).isIn(":TAG:-REC", ":TAG:-KEY", "WS-BUF", "WS-LEN", "WS-OUT");
+                  return super.visitDataDescriptionEntry(entry, ctx);
+              }
+          })),
+          cobol(
+            """
+              000001 IDENTIFICATION DIVISION.
+              000002 PROGRAM-ID. REFMOD.
+              000003 DATA DIVISION.
+              000004 WORKING-STORAGE SECTION.
+              000005 01  :TAG:-REC.
+              000006     05  :TAG:-KEY   PIC X(5).
+              000007 01  WS-BUF   PIC X(20).
+              000008 01  WS-LEN   PIC 9.
+              000009 01  WS-OUT   PIC X(20).
+              000010 PROCEDURE DIVISION.
+              000011     MOVE WS-BUF(1:5) TO WS-OUT.
+              000012     MOVE WS-BUF(WS-LEN:5) TO WS-OUT(1:WS-LEN).
+              000013     STOP RUN.
+              """
+          )
+        );
+        assertThat(modifiers.get()).isEqualTo(3);
     }
 
     @Test

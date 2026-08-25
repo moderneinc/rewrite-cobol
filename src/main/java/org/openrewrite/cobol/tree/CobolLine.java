@@ -42,6 +42,8 @@ public interface CobolLine {
     IndicatorArea getIndicatorArea();
     <C extends CobolLine> C withIndicatorArea(IndicatorArea indicatorArea);
 
+    String getContentArea();
+
     @Nullable
     CommentArea getCommentArea();
     <C extends CobolLine> C withCommentArea(CommentArea commentArea);

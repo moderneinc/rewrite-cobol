@@ -28,6 +28,7 @@ import org.openrewrite.bms.internal.BmsParserVisitor;
 import org.openrewrite.bms.internal.grammar.BMSLexer;
 import org.openrewrite.bms.internal.grammar.BMSParser;
 import org.openrewrite.bms.tree.Bms;
+import org.openrewrite.cobol.WrongLanguageException;
 import org.openrewrite.internal.EncodingDetectingInputStream;
 import org.openrewrite.internal.MetricsHelper;
 import org.openrewrite.tree.ParseError;
@@ -35,9 +36,19 @@ import org.openrewrite.tree.ParsingEventListener;
 import org.openrewrite.tree.ParsingExecutionContextView;
 
 import java.nio.file.Path;
+import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import static java.util.Collections.singletonList;
+
 public class BmsParser implements Parser {
+    /**
+     * Compared case-insensitively.
+     */
+    public static final List<String> BMS_FILE_EXTENSIONS = singletonList(".bms");
+
+    private static final Pattern MAP_MACRO = Pattern.compile("\\bDFHM(SD|DI|DF)\\b");
 
     @Override
     public Stream<SourceFile> parseInputs(Iterable<Input> sourceFiles, @Nullable Path relativeTo, ExecutionContext ctx) {
@@ -54,6 +65,12 @@ public class BmsParser implements Parser {
                     try {
                         EncodingDetectingInputStream is = sourceFile.getSource(ctx);
                         String sourceStr = is.readFully();
+                        // The grammar reads any assembler-shaped text, so a member that is not a
+                        // map set has to be refused before it.
+                        if (!sourceFile.isSynthetic() && !MAP_MACRO.matcher(sourceStr).find()) {
+                            throw new WrongLanguageException(sourceFile.getPath(),
+                                    sourceFile.getPath() + " is not a BMS map set: it has no DFHMSD, DFHMDI or DFHMDF macro.", null);
+                        }
                         String postProcess = BmsLineReader.readLines(sourceStr);
                         CommonTokenStream tokens = new CommonTokenStream(new BMSLexer(
                                 CharStreams.fromString(postProcess)));
@@ -83,7 +100,13 @@ public class BmsParser implements Parser {
 
     @Override
     public boolean accept(Path path) {
-        return path.toString().toLowerCase().endsWith(".bms");
+        String s = path.toString().toLowerCase();
+        for (String extension : BMS_FILE_EXTENSIONS) {
+            if (s.endsWith(extension)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
