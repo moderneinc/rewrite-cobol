@@ -158,6 +158,16 @@ tasks.withType<Test>().configureEach {
     }
 }
 
+// The corpus is invisible to the build otherwise, so a green run gets replayed over a corpus that grew.
+tasks.test {
+    val corpora = listOf("COBOL_CORPUS", "JCL_CORPUS", "BMS_CORPUS", "CONTROLM_CORPUS", "DB2_CORPUS")
+    corpora.forEach { inputs.property(it, System.getenv(it)).optional(true) }
+    inputs.files(corpora.mapNotNull { System.getenv(it) }.distinct()
+        .map { fileTree(it) { exclude("**/.git/**", "**/.moderne/**") } })
+        .withPropertyName("corpus")
+        .withPathSensitivity(PathSensitivity.RELATIVE)
+}
+
 configure<nl.javadude.gradle.plugins.license.LicenseExtension> {
     excludePatterns.add("**/*.CBL")
     excludePatterns.add("**/*.CPY")
