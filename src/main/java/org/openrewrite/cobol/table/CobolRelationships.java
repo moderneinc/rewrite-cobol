@@ -176,7 +176,12 @@ public class CobolRelationships extends DataTable<CobolRelationships.Row> {
         /**
          * An assembler program or macro.
          */
-        ASSEMBLER
+        ASSEMBLER,
+        /**
+         * A Java class that reaches a COBOL program or a DB2 table: through a CICS gateway, a queue,
+         * a z/OS Connect API, or JDBC.
+         */
+        JAVA
     }
 
     public enum ResourceAction {
