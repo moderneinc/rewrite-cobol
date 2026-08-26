@@ -39,6 +39,8 @@ public class CobolPreprocessorPrinter<P> extends CobolPreprocessorSourcePrinter<
     public CobolPreprocessor visitCopybook(CobolPreprocessor.Copybook copybook, PrintOutputCapture<P> p) {
         beforeSyntax(copybook, Space.Location.COPY_BOOK_PREFIX, p);
         visit(copybook.getLst(), p);
+        // Comment lines after the last word hang off EOF, and a DCLGEN book ends with three of them.
+        visit(copybook.getEof(), p);
         afterSyntax(copybook, p);
         return copybook;
     }

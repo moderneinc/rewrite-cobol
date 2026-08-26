@@ -51,6 +51,38 @@ class CobolPreprocessorCopybookTest extends CobolTest {
         );
     }
 
+    /**
+     * A DCLGEN book closes with the three comment lines that say how many columns it declares, and
+     * they hang off EOF rather than off a word. The copybook printer used to stop at the last word.
+     */
+    @Test
+    void commentLinesAfterTheLastWord() {
+        rewriteRun(
+          copybook(
+            """
+              000100 01  DCLPOLICY.
+              000200     10 POLICY-NO            PIC X(12).
+              000300******************************************************************
+              000400* THE NUMBER OF COLUMNS DESCRIBED BY THIS DECLARATION IS 1       *
+              000500******************************************************************
+              """
+          )
+        );
+    }
+
+    @Test
+    void nothingButCommentLines() {
+        rewriteRun(
+          copybook(
+            """
+              000100******************************************************************
+              000200* RESERVED FOR A LATER RELEASE                                   *
+              000300******************************************************************
+              """
+          )
+        );
+    }
+
     @Issue("https://github.com/openrewrite/rewrite-cobol/issues/24")
     @Test
     void emptyIndicatorArea() {
