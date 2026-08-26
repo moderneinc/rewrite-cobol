@@ -29,6 +29,7 @@ import org.openrewrite.cobol.SourcePositions;
 import org.openrewrite.cobol.marker.CopiedStatement;
 import org.openrewrite.cobol.marker.MissingCopybook;
 import org.openrewrite.cobol.table.CobolRelationships;
+import org.openrewrite.cobol.trait.DliCall;
 import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
 import org.openrewrite.cobol.tree.Name;
@@ -51,6 +52,8 @@ import org.openrewrite.ims.ImsIsoVisitor;
 import org.openrewrite.ims.trait.Application;
 import org.openrewrite.ims.trait.Database;
 import org.openrewrite.ims.trait.DatabaseAccess;
+import org.openrewrite.ims.trait.FormatSet;
+import org.openrewrite.ims.trait.Message;
 import org.openrewrite.ims.trait.Pcb;
 import org.openrewrite.ims.trait.Psb;
 import org.openrewrite.ims.trait.Segment;
@@ -160,6 +163,7 @@ public class FindRelationships extends Recipe {
         CobolIsoVisitor<ExecutionContext> cobolVisitor = new CobolIsoVisitor<ExecutionContext>() {
             final Set<String> seenCopies = new HashSet<>();
             final Set<String> seenCalls = new HashSet<>();
+            final Set<String> seenMods = new HashSet<>();
             final Set<String> seenIncludes = new HashSet<>();
             final Set<String> seenCursorAccess = new HashSet<>();
             final Set<String> seenTableAccess = new HashSet<>();
@@ -254,8 +258,35 @@ public class FindRelationships extends Recipe {
 				}));
             }
 
+            /**
+             * The MOD an {@code ISRT} against a message PCB names, which is the whole of what a
+             * program says about a screen under IMS. The MID it is answered on is not written here at
+             * all — the call that reads the reply names nothing — so it is left to the format set's
+             * own {@code NXT=} row.
+             */
             @Override
             public Cobol.Call visitCall(Cobol.Call call, ExecutionContext ctx) {
+                DliCall dli = new DliCall.Matcher().get(getCursor()).orElse(null);
+                if (dli != null && dli.getMod() != null) {
+                    if (seenMods.add(dli.getMod())) {
+                        cobolRelationships.insertRow(ctx,
+                                new CobolRelationships.Row(
+                                        programName,
+                                        COBOL,
+                                        SEND,
+                                        dli.getMod(),
+                                        MFS_MAP,
+                                        false,
+                                        "",
+                                        sourcePath,
+                                        lineOf(positions, call),
+                                        null,
+                                        null
+                                )
+                        );
+                    }
+                    return (Cobol.Call) dli.marked(null);
+                }
                 if (call.getIdentifier() instanceof Cobol.Word) {
                     Cobol.Word word = (Cobol.Word) call.getIdentifier();
                     if (word.getWord().startsWith("\"")) {
@@ -301,6 +332,7 @@ public class FindRelationships extends Recipe {
                 databaseRelationships(cu, ctx);
                 psbRelationships(cu, ctx);
                 systemDefinitionRelationships(cu, ctx);
+                formatSetRelationships(cu, ctx);
                 return cu;
             }
         };
@@ -690,6 +722,38 @@ public class FindRelationships extends Recipe {
             insertDeckRow(seen, memberName, ASSEMBLER, REFERENCES, database.getName(), IMS_DATABASE,
                     sourcePath, database.getLine(),
                     database.getAccess() == null ? "" : database.getAccess(), ctx);
+        }
+    }
+
+    /**
+     * What a format set ties together: the messages laid out on it, and the message each one is
+     * answered by.
+     * <p>
+     * A program names a MOD and nothing else, so these rows are what carry a screen from the name in
+     * working storage to the fields it draws. The {@code NXT=} chain is the other half: it is the only
+     * place the MID a reply arrives on is written, since the call that reads the reply names no format
+     * at all.
+     */
+    private void formatSetRelationships(Ims.CompilationUnit member, ExecutionContext ctx) {
+        Set<String> seen = new HashSet<>();
+        String memberName = memberName(member.getSourcePath());
+        String sourcePath = member.getSourcePath().toString();
+        for (FormatSet format : new FormatSet.Matcher().lower(member).collect(Collectors.toList())) {
+            insertDeckRow(seen, memberName, ASSEMBLER, DEFINES, format.getName(), MFS_FORMAT, sourcePath,
+                    format.getLine(), ctx);
+        }
+        for (Message message : new Message.Matcher().lower(member).collect(Collectors.toList())) {
+            String type = message.getType() == null ? "" : message.getType();
+            insertDeckRow(seen, memberName, ASSEMBLER, DEFINES, message.getName(), MFS_MAP, sourcePath,
+                    message.getLine(), type, ctx);
+            if (message.getFormatName() != null) {
+                insertDeckRow(seen, message.getName(), MFS_MAP, REFERENCES, message.getFormatName(),
+                        MFS_FORMAT, sourcePath, message.getLine(), "SOR", ctx);
+            }
+            if (message.getNextName() != null) {
+                insertDeckRow(seen, message.getName(), MFS_MAP, REFERENCES, message.getNextName(),
+                        MFS_MAP, sourcePath, message.getLine(), "NXT", ctx);
+            }
         }
     }
 

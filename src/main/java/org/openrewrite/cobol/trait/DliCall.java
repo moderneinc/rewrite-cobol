@@ -97,6 +97,25 @@ public class DliCall implements Trait<Cobol> {
     List<String> ssas;
 
     /**
+     * The MFS message output descriptor this call formats its reply with, or null for a call that
+     * names none.
+     * <p>
+     * A program chooses the screen by passing the MOD's name as the fourth argument of an
+     * {@code ISRT} against a message PCB, and the name is a literal in working storage — so it is
+     * resolved through {@link LiteralAssignment} the way the function code is. Nothing names a MID:
+     * which format the operator's reply arrives on is the {@code NXT=} of the MOD, and IMS applies it.
+     */
+    @Nullable
+    String mod;
+
+    /**
+     * The data name of the MOD argument as written, whether or not {@link #mod} could be resolved
+     * from it.
+     */
+    @Nullable
+    String modOperand;
+
+    /**
      * Segment names resolved from the SSAs or, for {@code EXEC DLI}, from the {@code SEGMENT}
      * option. Empty when the call is unqualified or the segment name is not statically known.
      */
@@ -259,11 +278,18 @@ public class DliCall implements Trait<Cobol> {
         String function = resolveFunction(functionOperand, cursor);
         String pcb = arguments.size() > 1 ? arguments.get(1) : null;
         String ioArea = arguments.size() > 2 ? arguments.get(2) : null;
-        List<String> ssas = arguments.size() > 3 ?
+        List<String> trailing = arguments.size() > 3 ?
                 new ArrayList<>(arguments.subList(3, arguments.size())) : emptyList();
 
+        // Against a message PCB the fourth argument is the MOD, not an SSA. Read as one it resolves to
+        // a plausible segment name — CLMI1O — and the CRUD matrix gains a segment no database has.
+        ProgramEntry entry = ProgramEntry.of(cursor);
+        String modOperand = "ISRT".equals(function) && !trailing.isEmpty() &&
+                            entry != null && entry.isMessagePcb(pcb) ? trailing.get(0) : null;
+        List<String> ssas = modOperand == null ? trailing : trailing.subList(1, trailing.size());
+
         return new DliCall(cursor, iface.toUpperCase(Locale.ROOT), function, functionOperand, pcb, ioArea,
-                ssas, segmentsFromSsas(ssas, cursor));
+                ssas, resolveMod(modOperand, cursor), modOperand, segmentsFromSsas(ssas, cursor));
     }
 
     /**
@@ -294,7 +320,9 @@ public class DliCall implements Trait<Cobol> {
                 ioArea = operand;
             }
         }
-        return new DliCall(cursor, "EXEC DLI", function, function, pcb, ioArea, emptyList(), segments);
+        // Command level DL/I has no message call, so it never names a MOD.
+        return new DliCall(cursor, "EXEC DLI", function, function, pcb, ioArea, emptyList(), null, null,
+                segments);
     }
 
     private static @Nullable String operandAfter(List<String> tokens, int i) {
@@ -342,6 +370,21 @@ public class DliCall implements Trait<Cobol> {
     }
 
     /**
+     * The MOD a call names. Programs keep the names in a working storage group and pass one of its
+     * items, so the literal is resolved from the assignments that reach it.
+     */
+    private static @Nullable String resolveMod(@Nullable String operand, Cursor cursor) {
+        if (operand == null) {
+            return null;
+        }
+        String literal = Literals.valueOf(operand);
+        if (literal == null) {
+            literal = LiteralAssignment.resolve(cursor, operand);
+        }
+        return literal == null || literal.trim().isEmpty() ? null : literal.trim().toUpperCase(Locale.ROOT);
+    }
+
+    /**
      * Segment names carried by the SSAs. An SSA holds the segment name in its first eight bytes, so
      * the name is recoverable when the SSA is built from a literal, and otherwise from the
      * {@code <segment>-SSA} naming convention that IMS shops follow.
@@ -372,6 +415,7 @@ public class DliCall implements Trait<Cobol> {
     @Override
     public String toString() {
         return iface + " " + (function == null ? functionOperand : function) +
-               (pcb == null ? "" : " via " + pcb) + (segments.isEmpty() ? "" : " " + segments);
+               (pcb == null ? "" : " via " + pcb) + (segments.isEmpty() ? "" : " " + segments) +
+               (mod == null ? "" : " " + mod);
     }
 }

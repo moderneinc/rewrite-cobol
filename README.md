@@ -85,8 +85,8 @@ adds the 110 jobs, among them DB2 DDL and BIND in JCL, where Bank of Z has one.
 The last row is not a public application but a fixture: one fictional insurance claims
 application, CLAIMS, written so that every `COPY`, `CALL`, `EXEC PROC`, `SEND MAP` and `SYSIN`
 member in it resolves to a member of the same repository, and every member of it a parser here reads
-parses. It also holds member kinds nothing here reads yet — MFS format sets,
-HLASM programs and macros, SAS programs, CLISTs, REXX execs and run book members — and the
+parses. It also holds member kinds nothing here reads yet — HLASM programs and macros, SAS programs,
+CLISTs, REXX execs and run book members — and the
 walks skip those rather than counting them against a parser. The public applications are measured;
 the fixture is required. The tests know it by its directory name, `mainframe-fixtures`, and fail when
 a program, copybook, job, procedure, map set, bind deck, link-edit deck, module listing, DDL member,
@@ -94,14 +94,14 @@ IMS gen member, control card or schedule of it does not parse, read or print bac
 the walk cannot see, a symbolic link say, would otherwise pass as an empty application.
 `FixtureCoverageTest` puts every one of its members past every reader at once, so that a member is
 claimed by one reader and no more and the kinds nothing reads are claimed by none: a reader that
-quietly takes an MFS format set or a SAS program reports something plausible about a file it cannot
+quietly takes an HLASM program or a SAS program reports something plausible about a file it cannot
 read.
 
 Clone them side by side into one directory and point the tests at it. The tests find files the way
 the parsers accept them, whatever the case of the extension: programs by `.cbl`, `.cob` and
 `.cobol`, copybooks by `.cpy`, `.copy` and `.dcl`, map sets by `.bms`, bind decks by `.bnd`, link-edit
 decks by `.lnk` and `.lked`, module listings by `.amblist`, `.binder` and `.listload`, schedules by
-`.ctms` and `.controlm`, IMS gen members by `.dbd`, `.psb` and `.gen`, and jobs by `.jcl`, `.prc` and
+`.ctms` and `.controlm`, IMS gen members by `.dbd`, `.psb`, `.gen` and `.mfs`, and jobs by `.jcl`, `.prc` and
 `.proc` — or, since MainframeJCL, ADCD setup and Zowe's SZWESAMP keep their members as they came off
 the PDS, by a `.txt` or extensionless file whose first card is JCL, and by an extensionless file
 whose first subcommand binds. Control card members are typed by what they say rather than by what
@@ -122,14 +122,16 @@ COBOL_CORPUS=/path/to/corpus JCL_CORPUS=/path/to/corpus BMS_CORPUS=/path/to/corp
 CONTROLM_CORPUS=/path/to/corpus ./gradlew test --rerun
 ```
 
-`IMS_CORPUS` reads 38 gen members — Bank of Z's 17, CardDemo's 8 and the fixture's 13 — for 19
-databases of 20 segments and 72 fields with 9 names belonging to another database, and 18 PSBs of 43
-PCBs and 49 sensitive segments. The fixture's are the measurement and the rest are report-only:
-`ImsCorpusTest` holds it to `INTERLINKS.md` sections 19.1 to 19.4 — six DBDs of eight segments and
+`IMS_CORPUS` reads 45 gen members — Bank of Z's 17, CardDemo's 8, DBB Samples' 1 and the fixture's 19
+— for 19 databases of 20 segments and 72 fields with 9 names belonging to another database, 18 PSBs
+of 43 PCBs and 49 sensitive segments, and 7 format sets of 8 device pages and 199 device fields
+carrying 13 messages of 143 fields. The fixture's are the measurement and the rest are report-only:
+`ImsCorpusTest` holds it to `INTERLINKS.md` sections 19.1 to 19.5 — six DBDs of eight segments and
 thirty fields with seven references over five of them, six PSBs of ten PCBs, fourteen sensitive
 segments and the seven `SENFLD`s that build a fifty byte I/O area out of a sixty five byte segment,
-and a stage 1 deck of six `APPLCTN`, two `TRANSACT` and five `DATABASE` — and counts every `SEGM`,
-`FIELD`, `LCHILD`, `PCB`, `SENSEG` and `SENFLD` of every member against an independent count of the
+a stage 1 deck of six `APPLCTN`, two `TRANSACT` and five `DATABASE`, and six format sets of seven
+device pages carrying four MIDs and seven MODs — and counts every `SEGM`, `FIELD`, `LCHILD`,
+`PCB`, `SENSEG`, `SENFLD`, `DFLD` and `MFLD` of every member against an independent count of the
 source, since a misgrouped continuation prints back byte for byte and says something else.
 
 Which PCB a program's nth mask is depends on what runs under the PSB, and section 6.1's six cases are
@@ -137,6 +139,16 @@ tests of their own: a message driven program and a BMP are handed an I/O PCB no 
 codes, so every database after it is one mask along, while a DL/I batch program under a PSB without
 `CMPAT=YES` gets the database PCBs alone. `Psb.getPcbAtMask` is that rule, `Psb.getPcb` is the PCB an
 AIB call names by `PCBNAME=`, and `Psb.getDatabasePcb` is the one an `EXEC DLI PCB(n)` numbers.
+
+A format set is where MFS and COBOL meet. An `MFLD` names a `DFLD`, so a field of the message has a
+place on the screen and a length, and the message is the layout of the area the program declares it
+with — matched by order and length and never by name, after the four byte `LL`/`ZZ` prefix IMS
+supplies and no `MFLD` describes. `Message.getLength` is what a copybook can be checked against and
+`MessageField.getOffset` says where each field lands: section 19.5's totals of 31, 154, 312, 288,
+392, 344 and 281 bytes are tests. The other direction is one line of COBOL — a program names a MOD by
+passing it as the fourth argument of an `ISRT` against a message PCB, which `DliCall.getMod` resolves
+from working storage. Nothing names a MID: the `NXT=` of the MOD says which format the reply arrives
+on, and IMS applies it.
 
 Bind decks, link-edit decks, module listings and control cards ride on `JCL_CORPUS`, since a deck is
 reached through the step that runs it and a listing is what that step printed. `--rerun` matters: the corpus path is an environment variable, not a task input, so a

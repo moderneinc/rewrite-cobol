@@ -57,7 +57,8 @@ public class ImsParser implements Parser {
     /**
      * Compared case-insensitively.
      */
-    public static final List<String> IMS_FILE_EXTENSIONS = unmodifiableList(asList(".dbd", ".psb", ".gen"));
+    public static final List<String> IMS_FILE_EXTENSIONS =
+            unmodifiableList(asList(".dbd", ".psb", ".gen", ".mfs"));
 
     /**
      * The operations that open a gen member. An IMS gen library is often kept as {@code .asm} —
@@ -66,7 +67,7 @@ public class ImsParser implements Parser {
      * HLASM reader declines what {@link #isGenSource} claims.
      */
     private static final Set<String> GEN_OPERATIONS = new HashSet<>(asList(
-            "DBD", "PCB", "PSBGEN", "APPLCTN", "TRANSACT", "DATABASE"));
+            "DBD", "PCB", "PSBGEN", "APPLCTN", "TRANSACT", "DATABASE", "FMT", "MSG"));
 
     @Override
     public Stream<SourceFile> parseInputs(Iterable<Input> sourceFiles, @Nullable Path relativeTo, ExecutionContext ctx) {

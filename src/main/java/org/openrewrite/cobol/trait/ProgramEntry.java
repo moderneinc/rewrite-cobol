@@ -98,6 +98,23 @@ public class ProgramEntry implements Trait<Cobol> {
                !upper.contains("DB-PCB") && !upper.contains("DBPCB");
     }
 
+    /**
+     * Whether {@code pcbName} names a message destination rather than a database: the I/O PCB the
+     * reply goes back on, or an alternate PCB, which sends to some other logical terminal — a branch
+     * printer, say. Both are TP PCBs, and what an {@code ISRT} against one names in its fourth
+     * argument is a MOD and not a segment search argument.
+     * <p>
+     * Only the PSB says which a mask really is, so an alternate PCB is recognised the way the I/O PCB
+     * is, by the naming conventions the field has settled on.
+     */
+    public boolean isMessagePcb(@Nullable String pcbName) {
+        if (isIoPcb(pcbName)) {
+            return true;
+        }
+        String upper = pcbName == null ? "" : pcbName.toUpperCase(Locale.ROOT);
+        return upper.contains("ALT-PCB") || upper.contains("ALTPCB");
+    }
+
     private static void add(List<String> names, Cobol tree) {
         String pcb = Names.upperOf(tree);
         if (pcb != null) {

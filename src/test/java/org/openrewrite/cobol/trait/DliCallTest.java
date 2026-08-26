@@ -22,7 +22,10 @@ import org.openrewrite.test.RewriteTest;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.openrewrite.cobol.Assertions.cobol;
 import static org.openrewrite.test.RewriteTest.toRecipe;
 
@@ -218,6 +221,46 @@ class DliCallTest implements RewriteTest {
         assertThat(gu.getPcb()).isEqualTo("1");
         assertThat(gu.getSegments()).containsExactly("ACCOUNT");
         assertThat(gu.getAccess()).isEqualTo(DliCall.Access.READ);
+    }
+
+    /**
+     * A program's whole say about a screen under IMS: the MOD's name, passed as the fourth argument
+     * of an {@code ISRT} against a message PCB and kept in working storage. Read as a segment search
+     * argument it resolves to a plausible segment name no database has, which is the defect this
+     * exists to prevent.
+     */
+    @Test
+    void resolvesTheModAnIsrtNames() {
+        List<DliCall> calls = parse(
+          """
+            000000 IDENTIFICATION DIVISION.                                        \s
+            000000 PROGRAM-ID. CLMI030.                                            \s
+            000000 DATA DIVISION.                                                  \s
+            000000 WORKING-STORAGE SECTION.                                        \s
+            000000 01 WS-MOD-NAMES.                                                \s
+            000000     05 MOD-INQ PIC X(08) VALUE 'CLMI1O  '.                      \s
+            000000     05 MOD-ACK PIC X(08) VALUE 'CLMI6O  '.                      \s
+            000000 77 ISRT-FUNC PIC X(4) VALUE 'ISRT'.                             \s
+            000000 PROCEDURE DIVISION.                                             \s
+            000000     ENTRY 'DLITCBL' USING IO-PCB ALT-PCB DB-PCB.                \s
+            000000     CALL 'CBLTDLI' USING ISRT-FUNC IO-PCB OUT-MSG MOD-INQ.      \s
+            000000     CALL 'CBLTDLI' USING ISRT-FUNC ALT-PCB ACK-MSG MOD-ACK.     \s
+            000000     CALL 'CBLTDLI' USING ISRT-FUNC DB-PCB IO-AREA CLAIM-SSA.    \s
+            000000     CALL 'CBLTDLI' USING ISRT-FUNC IO-PCB SPA-AREA.             \s
+            000000     GOBACK.                                                     \s
+            """
+        );
+
+        assertThat(calls).hasSize(4);
+        assertThat(calls).extracting(DliCall::getMod, DliCall::getModOperand, DliCall::getSsas,
+            DliCall::getSegments)
+          .containsExactly(
+            tuple("CLMI1O", "MOD-INQ", emptyList(), emptyList()),
+            // An alternate PCB sends to another terminal and names a MOD the same way.
+            tuple("CLMI6O", "MOD-ACK", emptyList(), emptyList()),
+            tuple(null, null, singletonList("CLAIM-SSA"), singletonList("CLAIM")),
+            // The SPA goes back with no format at all.
+            tuple(null, null, emptyList(), emptyList()));
     }
 
     @Test

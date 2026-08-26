@@ -1109,4 +1109,94 @@ class FindRelationshipsTest extends CobolTest {
           }),
           ims(stage1, spec -> spec.path("ims/stage1/CLMGEN01.gen")));
     }
+
+    /**
+     * What a format set ties together: the messages laid out on it, and the message each is answered
+     * by. The {@code NXT=} chain is the only place the MID a reply arrives on is written down, since
+     * the call that reads the reply names no format at all.
+     */
+    @Test
+    void formatSet() {
+        String mfs = """
+          *  CLAIM INQUIRY, THE FIRST SCREEN OF CONVERSATION CLMINQ
+          CLMF01   FMT
+                   DEV   TYPE=(3270,2),FEAT=IGNORE,SYSMSG=CLMSYS
+                   DIV   TYPE=INOUT
+          CLMDP1   DPAGE CURSOR=((3,12)),FILL=PT
+          CLMNO    DFLD  POS=(3,12),LTH=10,ATTR=(NUM,HI)
+                   FMTEND
+          CLMI1I   MSG   TYPE=INPUT,SOR=(CLMF01,IGNORE),NXT=CLMI1O
+                   SEG
+                   MFLD  CLMNO,LTH=10
+                   MSGEND
+          CLMI1O   MSG   TYPE=OUTPUT,SOR=(CLMF01,IGNORE),NXT=CLMI1I
+                   SEG
+                   MFLD  CLMNO,LTH=10
+                   MSGEND
+          """;
+        rewriteRun(
+          spec -> spec.dataTable(Row.class, rows -> {
+              assertThat(rows).extracting(Row::getDependent, Row::getDependentType, Row::getAction,
+                  Row::getDependency, Row::getDependencyType, Row::getActionMetadata)
+                .containsExactly(
+                  tuple("CLMF01", ASSEMBLER, DEFINES, "CLMF01", MFS_FORMAT, ""),
+                  tuple("CLMF01", ASSEMBLER, DEFINES, "CLMI1I", MFS_MAP, "INPUT"),
+                  tuple("CLMI1I", MFS_MAP, REFERENCES, "CLMF01", MFS_FORMAT, "SOR"),
+                  tuple("CLMI1I", MFS_MAP, REFERENCES, "CLMI1O", MFS_MAP, "NXT"),
+                  tuple("CLMF01", ASSEMBLER, DEFINES, "CLMI1O", MFS_MAP, "OUTPUT"),
+                  tuple("CLMI1O", MFS_MAP, REFERENCES, "CLMF01", MFS_FORMAT, "SOR"),
+                  tuple("CLMI1O", MFS_MAP, REFERENCES, "CLMI1I", MFS_MAP, "NXT"));
+              assertThat(rows).extracting(r -> lineAt(mfs, r.getDependentLine()).trim())
+                .containsExactly(
+                  "CLMF01   FMT",
+                  "CLMI1I   MSG   TYPE=INPUT,SOR=(CLMF01,IGNORE),NXT=CLMI1O",
+                  "CLMI1I   MSG   TYPE=INPUT,SOR=(CLMF01,IGNORE),NXT=CLMI1O",
+                  "CLMI1I   MSG   TYPE=INPUT,SOR=(CLMF01,IGNORE),NXT=CLMI1O",
+                  "CLMI1O   MSG   TYPE=OUTPUT,SOR=(CLMF01,IGNORE),NXT=CLMI1I",
+                  "CLMI1O   MSG   TYPE=OUTPUT,SOR=(CLMF01,IGNORE),NXT=CLMI1I",
+                  "CLMI1O   MSG   TYPE=OUTPUT,SOR=(CLMF01,IGNORE),NXT=CLMI1I");
+          }),
+          ims(mfs, spec -> spec.path("ims/mfs/CLMF01.mfs")));
+    }
+
+    /**
+     * The MOD a program names, which is the whole of what its COBOL says about a screen under IMS:
+     * the fourth argument of an {@code ISRT} against a message PCB, resolved from working storage.
+     * Nothing here names the MID the reply arrives on — the {@code GU} that reads it takes three
+     * arguments — so that edge is the format set's {@code NXT=} and not this program's.
+     */
+    @Test
+    void messageOutputDescriptor() {
+        String program = """
+          000000 IDENTIFICATION DIVISION.
+                 PROGRAM-ID.
+                     CLMI030.
+                 DATA DIVISION.
+                 WORKING-STORAGE SECTION.
+                 01 WS-MOD-NAMES.
+                     05 MOD-INQ PIC X(08) VALUE 'CLMI1O  '.
+                     05 MOD-ACK PIC X(08) VALUE 'CLMI6O  '.
+                 01 DLI-GU   PIC X(04) VALUE 'GU  '.
+                 01 DLI-ISRT PIC X(04) VALUE 'ISRT'.
+                 PROCEDURE DIVISION.
+                     ENTRY 'DLITCBL' USING IO-PCB ALT-PCB DB-PCB.
+                     CALL 'CBLTDLI' USING DLI-GU IO-PCB IN-MSG.
+                     CALL 'CBLTDLI' USING DLI-ISRT IO-PCB OUT-MSG MOD-INQ.
+                     CALL 'CBLTDLI' USING DLI-ISRT ALT-PCB ACK-MSG MOD-ACK.
+                     GOBACK.
+          """;
+        rewriteRun(
+          spec -> spec.dataTable(Row.class, rows -> {
+              assertThat(rows).extracting(Row::getDependent, Row::getDependentType, Row::getAction,
+                  Row::getDependency, Row::getDependencyType)
+                .containsExactly(
+                  tuple("CLMI030", COBOL, SEND, "CLMI1O", MFS_MAP),
+                  tuple("CLMI030", COBOL, SEND, "CLMI6O", MFS_MAP));
+              assertThat(rows).extracting(r -> lineAt(program, r.getDependentLine()).trim())
+                .containsExactly(
+                  "CALL 'CBLTDLI' USING DLI-ISRT IO-PCB OUT-MSG MOD-INQ.",
+                  "CALL 'CBLTDLI' USING DLI-ISRT ALT-PCB ACK-MSG MOD-ACK.");
+          }),
+          cobol(program, "", spec -> spec.after(s -> s).path("CLMI030.CBL")));
+    }
 }

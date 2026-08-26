@@ -19,6 +19,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.ims.tree.Ims;
+import org.openrewrite.ims.tree.Operand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,9 +76,14 @@ final class Operands {
         List<String> members = new ArrayList<>();
         int depth = 0;
         int start = 0;
+        boolean quoted = false;
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
-            if (c == '(') {
+            if (c == '\'') {
+                quoted = !quoted;
+            } else if (quoted) {
+                continue;
+            } else if (c == '(') {
                 depth++;
             } else if (c == ')') {
                 depth--;
@@ -88,6 +94,37 @@ final class Operands {
         }
         add(members, text.substring(start));
         return members;
+    }
+
+    /**
+     * A quoted literal's text, blanks and all, or the value unchanged when it is not quoted. The
+     * padding is what a length is counted from, so this does not trim.
+     */
+    static @Nullable String unquote(@Nullable String value) {
+        if (value == null) {
+            return null;
+        }
+        String text = value.trim();
+        return isQuoted(text) ? text.substring(1, text.length() - 1) : text;
+    }
+
+    static boolean isQuoted(@Nullable String value) {
+        String text = value == null ? "" : value.trim();
+        return text.length() >= 2 && text.charAt(0) == '\'' && text.charAt(text.length() - 1) == '\'';
+    }
+
+    /**
+     * The first operand written without a keyword, or null where the macro writes none. MFS puts the
+     * one thing a {@code DFLD} or an {@code MFLD} is about there: the label of a device field, or the
+     * literal to be written on the screen.
+     */
+    static @Nullable String positionalOf(Ims.MacroStatement statement) {
+        for (Operand operand : statement.getParameters()) {
+            if (operand instanceof Ims.PositionalOperand) {
+                return ((Ims.PositionalOperand) operand).getValueText();
+            }
+        }
+        return null;
     }
 
     /**

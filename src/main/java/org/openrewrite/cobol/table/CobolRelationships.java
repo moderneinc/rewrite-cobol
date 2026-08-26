@@ -170,9 +170,17 @@ public class CobolRelationships extends DataTable<CobolRelationships.Row> {
          */
         IMS_TRANSACTION,
         /**
-         * A message format service map, the IMS answer to a BMS map.
+         * A message format service map: one {@code MSG}, being a MOD a program sends or a MID a
+         * terminal's reply arrives on. This is the name a program passes, so it is the IMS answer to
+         * a BMS map.
          */
         MFS_MAP,
+        /**
+         * A message format service device format: the {@code FMT} a message names on its
+         * {@code SOR=}, holding the fields at their places on the screen. It is the IMS answer to a
+         * BMS map set, and no program names one.
+         */
+        MFS_FORMAT,
         /**
          * An assembler program or macro.
          */

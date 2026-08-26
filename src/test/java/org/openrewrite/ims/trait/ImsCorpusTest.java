@@ -15,6 +15,7 @@
  */
 package org.openrewrite.ims.trait;
 
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.openrewrite.InMemoryExecutionContext;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -45,7 +47,7 @@ import static org.openrewrite.ims.trait.Psb.ProgramKind.MESSAGE_DRIVEN;
  * Two assertions matter. Printing back byte for byte says the columns survived, and counting the
  * macros against an independent count of the source says they were grouped into the right statements
  * — a misgrouped continuation prints back perfectly and says something else. The fixture is measured
- * against {@code docs/INTERLINKS.md} sections 19.1 to 19.4, which were written before any of this
+ * against {@code docs/INTERLINKS.md} sections 19.1 to 19.5, which were written before any of this
  * read a gen member.
  */
 @EnabledIfEnvironmentVariable(named = "IMS_CORPUS", matches = ".+")
@@ -69,6 +71,13 @@ class ImsCorpusTest {
         int sensitiveSegments = 0;
         int writtenPcbs = 0;
         int writtenSensitiveSegments = 0;
+        int formatSets = 0;
+        int devicePages = 0;
+        int deviceFields = 0;
+        int messages = 0;
+        int messageFields = 0;
+        int writtenDeviceFields = 0;
+        int writtenMessageFields = 0;
         List<String> failures = new ArrayList<>();
         boolean fixtureFound = false;
 
@@ -103,7 +112,8 @@ class ImsCorpusTest {
                 // is the only thing that turns "it ran without complaining" into evidence that the
                 // file was read correctly.
                 boolean counted = true;
-                for (String macro : new String[]{"SEGM", "FIELD", "LCHILD", "PCB", "SENSEG", "SENFLD"}) {
+                for (String macro : new String[]{"SEGM", "FIELD", "LCHILD", "PCB", "SENSEG", "SENFLD",
+                        "DFLD", "MFLD"}) {
                     int inSource = countMacro(source, macro);
                     int inTree = countOperation(cu, macro);
                     if (inSource != inTree) {
@@ -116,6 +126,8 @@ class ImsCorpusTest {
                 writtenLogicalChildren += countMacro(source, "LCHILD");
                 writtenPcbs += countMacro(source, "PCB");
                 writtenSensitiveSegments += countMacro(source, "SENSEG");
+                writtenDeviceFields += countMacro(source, "DFLD");
+                writtenMessageFields += countMacro(source, "MFLD");
 
                 // An operand read as an operation is what a mishandled continuation looks like, and
                 // it is silent: the statement still prints back, it just says something else.
@@ -159,15 +171,27 @@ class ImsCorpusTest {
                         }
                     }
                 }
+
+                for (FormatSet format : new FormatSet.Matcher().lower(cu).collect(Collectors.toList())) {
+                    formatSets++;
+                    devicePages += format.getDevicePages().size();
+                    deviceFields += format.getDeviceFields().size();
+                }
+                for (Message message : new Message.Matcher().lower(cu).collect(Collectors.toList())) {
+                    messages++;
+                    messageFields += message.getFields().size();
+                }
             }
             System.out.printf("  %-40s %3d of %3d%n", repository.getFileName(), read, files.size());
         }
         assertThat(members).as("no gen member found under %s", corpus).isPositive();
 
         System.out.printf("IMS corpus: %d members, %d databases, %d segments, %d fields, " +
-                        "%d references to another database, %d PSBs, %d PCBs, %d sensitive segments%n",
+                        "%d references to another database, %d PSBs, %d PCBs, %d sensitive segments, " +
+                        "%d format sets, %d device pages, %d device fields, %d messages, " +
+                        "%d message fields%n",
                 members, databases, segments, fields, references, programSpecifications, pcbs,
-                sensitiveSegments);
+                sensitiveSegments, formatSets, devicePages, deviceFields, messages, messageFields);
         if (!failures.isEmpty()) {
             System.out.println("failures:");
             failures.forEach(f -> System.out.println("  " + f));
@@ -185,6 +209,10 @@ class ImsCorpusTest {
         assertThat(pcbs).as("PCBs reachable through their PSB").isEqualTo(writtenPcbs);
         assertThat(sensitiveSegments).as("sensitive segments reachable through their PCB")
                 .isEqualTo(writtenSensitiveSegments);
+        assertThat(deviceFields).as("device fields reachable through their format set")
+                .isEqualTo(writtenDeviceFields);
+        assertThat(messageFields).as("message fields reachable through their message")
+                .isEqualTo(writtenMessageFields);
 
         // Every map set is required to read, so the fixture only has to be there: one the walk could
         // not see, a symbolic link say, would otherwise pass as an empty application.
@@ -367,6 +395,111 @@ class ImsCorpusTest {
                         tuple("CLMDBD02", "RD", 38),
                         tuple("CLMDBX02", "RD", 39),
                         tuple("CLMDBD03", "RD", 40));
+    }
+
+    /**
+     * INTERLINKS 19.5, the format sets: six of them, and what each screen is made of. The join is the
+     * measurement — an {@code MFLD} names a {@code DFLD}, and the lengths add up to the copybook the
+     * program declares the message with.
+     */
+    @Test
+    void readsTheFixtureFormatSetsAsItsOwnDocumentationDescribesIt() throws IOException {
+        List<FormatSet> formats = new ArrayList<>();
+        List<Message> messages = new ArrayList<>();
+        for (SourceFile member : fixture("mfs")) {
+            new FormatSet.Matcher().lower(member).forEach(formats::add);
+            new Message.Matcher().lower(member).forEach(messages::add);
+        }
+
+        // Six format sets, on four model 2 displays, one model 1 and one printer.
+        assertThat(formats).extracting(FormatSet::getName,
+                        format -> format.getDevices().get(0).getType(),
+                        format -> format.getDevices().get(0).getModel(),
+                        format -> format.getDevices().get(0).isPrinter(),
+                        format -> format.getDivisions().get(0).getType())
+                .containsExactly(
+                        tuple("CLMF01", "3270", 2, false, "INOUT"),
+                        tuple("CLMF02", "3270", 2, false, "INOUT"),
+                        tuple("CLMF03", "3270", 2, false, "INOUT"),
+                        tuple("CLMF04", "3270", 2, false, "INOUT"),
+                        tuple("CLMF05", "3270", 1, false, "OUTPUT"),
+                        tuple("CLMF06", "3270P", null, true, "OUTPUT"));
+
+        // Seven device pages, and only CLMF02 writes two of them.
+        assertThat(formats.stream().flatMap(format -> format.getDevicePages().stream()))
+                .extracting(DevicePage::getName)
+                .containsExactly("CLMDP1", "CLMDP2A", "CLMDP2B", "CLMDP3", "CLMDP4", "CLMDP5", "CLMDP6");
+
+        // The PF keys, which are the only place the words the program tests are written down.
+        assertThat(formats.stream().flatMap(format -> format.getDevices().stream())
+                .filter(device -> device.getFunctionKeyField() != null))
+                .extracting(Device::getFunctionKeyField,
+                        device -> device.getFunctionKeys().stream()
+                                .map(Device.FunctionKey::getLiteral).collect(Collectors.toList()))
+                .containsExactly(
+                        tuple("CLMPFK", asList("PAGE", "EXIT", "BACK", "FWD")),
+                        tuple("CLMPFK2", asList("PAGE", "EXIT", "BACK", "FWD")),
+                        tuple("CLMPFK4", asList("EXIT", "FWD")),
+                        tuple("CLMPFK5", asList("EXIT", "FWD")));
+        assertThat(formats.get(0).getDevices().get(0).getFunctionKeys())
+                .extracting(Device.FunctionKey::getNumber).containsExactly(1, 3, 7, 8);
+
+        // Four MIDs and seven MODs, each on its format set, and the NXT= chain that always returns to
+        // the first screen. CLMI6O goes to a printer and is not answered.
+        assertThat(messages).extracting(Message::getName, Message::getType, Message::getFormatName,
+                        Message::getNextName, message -> message.getFields().size(), Message::getLength)
+                .containsExactly(
+                        tuple("CLMI1I", "INPUT", "CLMF01", "CLMI1O", 4, 31),
+                        tuple("CLMI1O", "OUTPUT", "CLMF01", "CLMI1I", 9, 154),
+                        tuple("CLMI2I", "INPUT", "CLMF02", "CLMI2O", 4, 31),
+                        tuple("CLMI2O", "OUTPUT", "CLMF02", "CLMI2I", 19, 312),
+                        tuple("CLMI2P", "OUTPUT", "CLMF02", "CLMI2I", 19, 312),
+                        tuple("CLMI3I", "INPUT", "CLMF03", "CLMI3O", 4, 31),
+                        tuple("CLMI3O", "OUTPUT", "CLMF03", "CLMI3I", 26, 288),
+                        tuple("CLMI4I", "INPUT", "CLMF04", "CLMI4O", 4, 31),
+                        tuple("CLMI4O", "OUTPUT", "CLMF04", "CLMI4I", 25, 392),
+                        tuple("CLMI5O", "OUTPUT", "CLMF05", "CLMI1I", 6, 344),
+                        tuple("CLMI6O", "OUTPUT", "CLMF06", null, 9, 281));
+
+        // Section 19.5's field by field claim about CLMI1I: four MFLDs of 8, 10, 1 and 8, laid over
+        // cpy/CLMMSGI after the four byte prefix IMS supplies and no MFLD describes.
+        assertThat(messages.get(0).getFields())
+                .extracting(MessageField::getDeviceFieldName, MessageField::getLength,
+                        MessageField::getOffset,
+                        field -> field.getDeviceField() == null ? null :
+                                field.getDeviceField().getPosition())
+                .containsExactly(
+                        tuple("CLMTRAN", 8, 4, new Position(2, 2)),
+                        tuple("CLMNO", 10, 12, new Position(3, 12)),
+                        tuple("CLMACT", 1, 22, new Position(3, 38)),
+                        tuple("CLMPFK", 8, 23, new Position(23, 60)));
+
+        // CLMF02's two MODs carry the same labels and differ only by the DPAGE their LPAGE names, so
+        // the join has to go through the logical page rather than take the first field of that name.
+        assertThat(messages.get(3).getLogicalPages()).singleElement()
+                .extracting(LogicalPage::getDevicePageName).isEqualTo("CLMDP2A");
+        assertThat(messages.get(4).getLogicalPages()).singleElement()
+                .extracting(LogicalPage::getDevicePageName).isEqualTo("CLMDP2B");
+        assertThat(deviceFieldPosition(messages.get(3), "DTLSEQ1")).isEqualTo(new Position(7, 2));
+        assertThat(deviceFieldPosition(messages.get(4), "DTLSEQ1")).isEqualTo(new Position(6, 2));
+
+        // Every field of every message reaches the device field it names, so nothing is left unplaced.
+        assertThat(messages.stream().flatMap(message -> message.getFields().stream())
+                .filter(field -> field.getDeviceField() == null)).isEmpty();
+    }
+
+    /**
+     * Where the device field a message's {@code MFLD} names sits, which for {@code CLMF02} depends on
+     * the message.
+     */
+    private static @Nullable Position deviceFieldPosition(Message message, String name) {
+        for (MessageField field : message.getFields()) {
+            if (name.equals(field.getDeviceFieldName())) {
+                DeviceField deviceField = field.getDeviceField();
+                return deviceField == null ? null : deviceField.getPosition();
+            }
+        }
+        return null;
     }
 
     /**

@@ -96,6 +96,93 @@ final class Definitions {
     }
 
     /**
+     * The statements after {@code cursor}'s, up to the {@code FMTEND} closing its format set.
+     */
+    static List<Statement> withinFormatSet(Cursor cursor) {
+        return following(cursor, Definitions::endsFormatSet);
+    }
+
+    /**
+     * The statements after {@code cursor}'s, up to the next device page or the end of the format set.
+     */
+    static List<Statement> withinDevicePage(Cursor cursor) {
+        return following(cursor, statement -> endsFormatSet(statement) ||
+                                              isOperation(statement, "DPAGE") ||
+                                              isOperation(statement, "DEV") ||
+                                              isOperation(statement, "DIV"));
+    }
+
+    /**
+     * The statements after {@code cursor}'s, up to the {@code MSGEND} closing its message.
+     */
+    static List<Statement> withinMessage(Cursor cursor) {
+        return following(cursor, Definitions::endsMessage);
+    }
+
+    /**
+     * The statements after {@code cursor}'s, up to the next logical page or the end of the message.
+     */
+    static List<Statement> withinLogicalPage(Cursor cursor) {
+        return following(cursor, statement -> endsMessage(statement) || isOperation(statement, "LPAGE"));
+    }
+
+    /**
+     * The statements after {@code cursor}'s, up to the next segment, the next logical page or the end
+     * of the message.
+     */
+    static List<Statement> withinMessageSegment(Cursor cursor) {
+        return following(cursor, statement -> endsMessage(statement) || isOperation(statement, "LPAGE") ||
+                                              isOperation(statement, "SEG"));
+    }
+
+    /**
+     * The format set a device, division, device page or device field belongs to.
+     */
+    static @Nullable FormatSet formatSetOf(Cursor cursor) {
+        return preceding(cursor, "FMT", Definitions::endsFormatSet, FormatSet::new);
+    }
+
+    /**
+     * The device page a device field belongs to, or null for one written before any.
+     */
+    static @Nullable DevicePage devicePageOf(Cursor cursor) {
+        return preceding(cursor, "DPAGE", Definitions::endsFormatSet, DevicePage::new);
+    }
+
+    /**
+     * The message a logical page, segment or message field belongs to.
+     */
+    static @Nullable Message messageOf(Cursor cursor) {
+        return preceding(cursor, "MSG", Definitions::endsMessage, Message::new);
+    }
+
+    /**
+     * The logical page a segment or message field belongs to, or null for a message that writes none.
+     */
+    static @Nullable LogicalPage logicalPageOf(Cursor cursor) {
+        return preceding(cursor, "LPAGE", Definitions::endsMessage, LogicalPage::new);
+    }
+
+    /**
+     * The segment a message field belongs to.
+     */
+    static @Nullable MessageSegment messageSegmentOf(Cursor cursor) {
+        return preceding(cursor, "SEG", Definitions::endsMessage, MessageSegment::new);
+    }
+
+    /**
+     * Every format set of the member, which is how a message reaches the one its {@code SOR=} names.
+     * A format set written in another member is not resolved here — that join is the library's.
+     */
+    static List<FormatSet> formatSetsIn(Cursor cursor) {
+        List<FormatSet> found = new ArrayList<>();
+        for (Statement statement : statementsOf(cursor)) {
+            new FormatSet.Matcher().get(new Cursor(cursor.getParentOrThrow(), statement)).ifPresent(found::add);
+        }
+        return found;
+    }
+
+    /**
      * The segment a field, logical child or index field belongs to, or null for one written before
      * any segment.
      */
@@ -248,6 +335,21 @@ final class Definitions {
     private static boolean endsApplication(Statement statement) {
         return isOperation(statement, "APPLCTN") || isOperation(statement, "DATABASE") ||
                isOperation(statement, "END");
+    }
+
+    /**
+     * {@code FMTEND} closes the device format. The messages of the same member are written either
+     * side of it — the fixture writes them after, the IMS sample before — so a {@code MSG} bounds it
+     * too.
+     */
+    private static boolean endsFormatSet(Statement statement) {
+        return isOperation(statement, "FMTEND") || isOperation(statement, "FMT") ||
+               isOperation(statement, "MSG") || isOperation(statement, "END");
+    }
+
+    private static boolean endsMessage(Statement statement) {
+        return isOperation(statement, "MSGEND") || isOperation(statement, "MSG") ||
+               isOperation(statement, "FMT") || isOperation(statement, "END");
     }
 
     /**
