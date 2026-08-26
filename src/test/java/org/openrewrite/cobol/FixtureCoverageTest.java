@@ -21,6 +21,7 @@ import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.openrewrite.InMemoryExecutionContext;
 import org.openrewrite.Parser;
 import org.openrewrite.SourceFile;
+import org.openrewrite.assembler.AssemblerParser;
 import org.openrewrite.bms.BmsParser;
 import org.openrewrite.controlcard.idcams.IdcamsParser;
 import org.openrewrite.controlcard.sort.SortParser;
@@ -83,6 +84,7 @@ class FixtureCoverageTest {
         readers.put("load module listing", ListLoadParser.builder().build());
         readers.put("DB2 DDL", Db2Parser.builder().build());
         readers.put("IMS gen", ImsParser.builder().build());
+        readers.put("assembler", AssemblerParser.builder().build());
 
         List<String> claimedTwice = new ArrayList<>();
         List<String> failures = new ArrayList<>();
@@ -124,9 +126,6 @@ class FixtureCoverageTest {
         assertThat(unread).containsExactly(
           // The repository's own licence, which is not a member of any library.
           entry("(none)", 1),
-          // HLASM programs. The IMS reader looks at an .asm too, since a DBD or a PSB is often kept
-          // as one, and declines these because the first macro they invoke gens nothing.
-          entry(".asm", 3),
           entry(".clist", 8),
           // The IEBGENER, DSN, RUNSTATS and parm cards of claims/ctlcard, beside the sort, IDCAMS and
           // AMBLIST decks that do have readers: a member opening with nothing recognisable stays plain.
@@ -134,7 +133,6 @@ class FixtureCoverageTest {
           entry(".docfich", 7),
           entry(".docjob", 10),
           entry(".docpgm", 14),
-          entry(".mac", 5),
           entry(".md", 2),
           entry(".rexx", 3),
           entry(".sas", 4));

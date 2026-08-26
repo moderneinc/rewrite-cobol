@@ -20,9 +20,18 @@ import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.PrintOutputCapture;
-import org.openrewrite.Recipe;
+import org.openrewrite.ScanningRecipe;
 import org.openrewrite.Tree;
 import org.openrewrite.TreeVisitor;
+import org.openrewrite.assembler.AssemblerIsoVisitor;
+import org.openrewrite.assembler.AssemblerParser;
+import org.openrewrite.assembler.trait.Call;
+import org.openrewrite.assembler.trait.ControlSection;
+import org.openrewrite.assembler.trait.Copy;
+import org.openrewrite.assembler.trait.EntryPoint;
+import org.openrewrite.assembler.trait.MacroCall;
+import org.openrewrite.assembler.trait.MacroDefinition;
+import org.openrewrite.assembler.tree.Assembler;
 import org.openrewrite.cobol.CobolIsoVisitor;
 import org.openrewrite.cobol.CobolPreprocessorIsoVisitor;
 import org.openrewrite.cobol.SourcePositions;
@@ -30,6 +39,7 @@ import org.openrewrite.cobol.marker.CopiedStatement;
 import org.openrewrite.cobol.marker.MissingCopybook;
 import org.openrewrite.cobol.table.CobolRelationships;
 import org.openrewrite.cobol.trait.DliCall;
+import org.openrewrite.cobol.trait.Literals;
 import org.openrewrite.cobol.tree.Cobol;
 import org.openrewrite.cobol.tree.CobolPreprocessor;
 import org.openrewrite.cobol.tree.Name;
@@ -76,6 +86,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -88,7 +99,7 @@ import java.util.stream.Collectors;
 import static org.openrewrite.cobol.table.CobolRelationships.ResourceAction.*;
 import static org.openrewrite.cobol.table.CobolRelationships.ResourceType.*;
 
-public class FindRelationships extends Recipe {
+public class FindRelationships extends ScanningRecipe<FindRelationships.Assemblers> {
     transient CobolRelationships cobolRelationships = new CobolRelationships(this);
 
 	@Getter
@@ -97,8 +108,64 @@ public class FindRelationships extends Recipe {
 	@Getter
 	final String description = "Build a list of relationships for diagramming and exploration.";
 
+    /**
+     * The names the assembler members of the estate offer, gathered before any edge is written.
+     * <p>
+     * A {@code CALL} says a name and nothing else, so which language is on the other end of it can
+     * only be answered by looking at every member first: {@code CALL 'CLMU030'} in COBOL reaches an
+     * assembler subroutine, and there is nothing in the COBOL that says so. A macro invocation is the
+     * same problem, answered by the prototypes the macro library writes.
+     */
+    public static class Assemblers {
+        final Set<String> entryPoints = new HashSet<>();
+        final Set<String> macroLibrary = new HashSet<>();
+
+        boolean isEntryPoint(String name) {
+            return entryPoints.contains(name.toUpperCase(Locale.ROOT));
+        }
+
+        boolean isMacro(String name) {
+            return macroLibrary.contains(name.toUpperCase(Locale.ROOT));
+        }
+
+        CobolRelationships.ResourceType typeOf(String name) {
+            return isEntryPoint(name) ? ASSEMBLER : COBOL;
+        }
+    }
+
     @Override
-    public TreeVisitor<?, ExecutionContext> getVisitor() {
+    public Assemblers getInitialValue(ExecutionContext ctx) {
+        return new Assemblers();
+    }
+
+    @Override
+    public TreeVisitor<?, ExecutionContext> getScanner(Assemblers acc) {
+        return new TreeVisitor<Tree, ExecutionContext>() {
+            @Override
+            public Tree preVisit(Tree tree, ExecutionContext ctx) {
+                stopAfterPreVisit();
+                if (tree instanceof Assembler.CompilationUnit) {
+                    Assembler.CompilationUnit cu = (Assembler.CompilationUnit) tree;
+                    if (!AssemblerParser.isMacroLibraryMember(cu.getSourcePath())) {
+                        // A program offers its own name even where it writes neither a CSECT nor an
+                        // END operand, since that is the name the binder gives the object deck.
+                        acc.entryPoints.add(memberName(cu.getSourcePath()).toUpperCase(Locale.ROOT));
+                    }
+                    new EntryPoint.Matcher().lower(cu).forEach(entry -> {
+                        for (String name : entry.getNames()) {
+                            acc.entryPoints.add(name.toUpperCase(Locale.ROOT));
+                        }
+                    });
+                    new MacroDefinition.Matcher().lower(cu).forEach(macro ->
+                            acc.macroLibrary.add(macro.getName().toUpperCase(Locale.ROOT)));
+                }
+                return tree;
+            }
+        };
+    }
+
+    @Override
+    public TreeVisitor<?, ExecutionContext> getVisitor(Assemblers acc) {
 
         CobolPreprocessorIsoVisitor<ExecutionContext> preprocessorVisitor = new CobolPreprocessorIsoVisitor<ExecutionContext>() {
             final Set<String> seenIncludes = new HashSet<>();
@@ -267,7 +334,13 @@ public class FindRelationships extends Recipe {
             @Override
             public Cobol.Call visitCall(Cobol.Call call, ExecutionContext ctx) {
                 DliCall dli = new DliCall.Matcher().get(getCursor()).orElse(null);
-                if (dli != null && dli.getMod() != null) {
+                if (dli != null) {
+                    // The language interface is not a program of the estate; what the call reached is
+                    // the database, and that edge is the PSB's to draw. The one thing the COBOL says
+                    // for itself is the screen it sends.
+                    if (dli.getMod() == null) {
+                        return super.visitCall(call, ctx);
+                    }
                     if (seenMods.add(dli.getMod())) {
                         cobolRelationships.insertRow(ctx,
                                 new CobolRelationships.Row(
@@ -289,16 +362,20 @@ public class FindRelationships extends Recipe {
                 }
                 if (call.getIdentifier() instanceof Cobol.Word) {
                     Cobol.Word word = (Cobol.Word) call.getIdentifier();
-                    if (word.getWord().startsWith("\"")) {
-                        String callName = word.getWord().replace("\"", "");
+                    // Either quote character. A shop writes CALL 'CLMU030' as readily as CALL "CLMU030",
+                    // and a program calling a name that is not a literal decides it at run time.
+                    String callName = Literals.valueOf(word.getWord());
+                    if (callName != null) {
                         if (seenCalls.add(callName)) {
                             cobolRelationships.insertRow(ctx,
                                     new CobolRelationships.Row(
                                             programName,
                                             COBOL,
                                             CALL,
-                                            word.getWord().replace("\"", ""),
-                                            COBOL,
+                                            callName,
+                                            // The callee is only COBOL because nothing else claimed
+                                            // the name: an assembler subroutine is called the same way.
+                                            acc.typeOf(callName),
                                             false,
                                             "",
                                             sourcePath,
@@ -312,6 +389,14 @@ public class FindRelationships extends Recipe {
                     }
                 }
                 return super.visitCall(call, ctx);
+            }
+        };
+
+        AssemblerIsoVisitor<ExecutionContext> assemblerVisitor = new AssemblerIsoVisitor<ExecutionContext>() {
+            @Override
+            public Assembler.CompilationUnit visitCompilationUnit(Assembler.CompilationUnit cu, ExecutionContext ctx) {
+                assemblerRelationships(cu, acc, ctx);
+                return cu;
             }
         };
 
@@ -489,6 +574,8 @@ public class FindRelationships extends Recipe {
                 Tree t = tree;
                 if (tree instanceof Cobol) {
                     t = cobolVisitor.visit(t, ctx);
+                } else if (tree instanceof Assembler) {
+                    t = assemblerVisitor.visit(t, ctx);
                 } else if (tree instanceof LinkEdit) {
                     t = linkEditVisitor.visit(t, ctx);
                 } else if (tree instanceof ListLoad) {
@@ -509,6 +596,69 @@ public class FindRelationships extends Recipe {
                 return t;
             }
         };
+    }
+
+    /**
+     * What an assembler member reaches, which is written the way the assembler writes everything: a
+     * name and no word saying what kind of name it is.
+     * <p>
+     * The macro library is what tells a shop macro from IBM's. {@code CALL}, {@code DCB}, {@code OPEN}
+     * and the rest come out of {@code SYS1.MACLIB} and are nowhere in the repository, so an invocation
+     * is an edge only when a member of the estate defines the name — otherwise every {@code OPEN} in
+     * the corpus is a dependency on something nobody keeps.
+     */
+    private void assemblerRelationships(Assembler.CompilationUnit member, Assemblers acc, ExecutionContext ctx) {
+        Set<String> seen = new HashSet<>();
+        String memberName = memberName(member.getSourcePath());
+        String sourcePath = member.getSourcePath().toString();
+
+        for (ControlSection section : new ControlSection.Matcher().lower(member).collect(Collectors.toList())) {
+            if (!section.isDummy() && !section.getName().isEmpty()) {
+                insertDeckRow(seen, memberName, ASSEMBLER, DEFINES, section.getName(), CSECT,
+                        sourcePath, section.getLine(), ctx);
+            }
+        }
+        for (EntryPoint entry : new EntryPoint.Matcher().lower(member).collect(Collectors.toList())) {
+            if (entry.getKind() == EntryPoint.Kind.SECTION) {
+                continue;
+            }
+            for (String name : entry.getNames()) {
+                insertDeckRow(seen, memberName, ASSEMBLER, ENTRY, name, CSECT, sourcePath,
+                        entry.getLine(), ctx);
+            }
+        }
+        for (Copy copy : new Copy.Matcher().lower(member).collect(Collectors.toList())) {
+            insertDeckRow(seen, memberName, ASSEMBLER, COPY, copy.getMember(), ASSEMBLER, sourcePath,
+                    copy.getLine(), ctx);
+        }
+        for (MacroCall macro : new MacroCall.Matcher().lower(member).collect(Collectors.toList())) {
+            if (acc.isMacro(macro.getName())) {
+                insertDeckRow(seen, memberName, ASSEMBLER, INCLUDE, macro.getName(), ASSEMBLER,
+                        sourcePath, macro.getLine(), ctx);
+            }
+        }
+        for (Call call : new Call.Matcher().lower(member).collect(Collectors.toList())) {
+            // A DL/I interface is not a program of the estate; what the call reached is the database.
+            if (!call.isDli()) {
+                insertDeckRow(seen, memberName, ASSEMBLER, CALL, call.getTarget(),
+                        acc.typeOf(call.getTarget()), sourcePath, call.getLine(),
+                        call.getKind().name(), ctx);
+            }
+        }
+        // Qualified because COBOL has a DliCall of its own, which this one deliberately mirrors.
+        new org.openrewrite.assembler.trait.DliCall.Matcher().lower(member).forEach(dli -> {
+            String function = dli.getFunction() == null ? dli.getFunctionOperand() : dli.getFunction();
+            if (dli.getPcb() != null) {
+                // An assembler program addresses the mask by register rather than naming it, so the
+                // dependency is the operand as written; which PCB that register holds is the PSB's answer.
+                insertDeckRow(seen, memberName, ASSEMBLER, ACCESS, dli.getPcb(), IMS_PCB, sourcePath,
+                        dli.getLine(), function, ctx);
+            }
+            for (String segment : dli.getSegments()) {
+                insertDeckRow(seen, memberName, ASSEMBLER, ACCESS, segment, IMS_SEGMENT, sourcePath,
+                        dli.getLine(), function, ctx);
+            }
+        });
     }
 
     /**

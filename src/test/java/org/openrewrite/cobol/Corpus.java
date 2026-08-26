@@ -16,6 +16,7 @@
 package org.openrewrite.cobol;
 
 import org.openrewrite.Parser;
+import org.openrewrite.assembler.AssemblerParser;
 import org.openrewrite.bms.BmsParser;
 import org.openrewrite.controlcard.idcams.IdcamsParser;
 import org.openrewrite.controlm.ControlMParser;
@@ -89,6 +90,14 @@ public final class Corpus {
      */
     public static List<Path> imsDefinitions(Path repository) throws IOException {
         return files(repository, ImsParser.builder().build());
+    }
+
+    /**
+     * HLASM programs and macro library members together, which are one language: an {@code .asm} the
+     * IMS reader claims is a gen deck and is not among them.
+     */
+    public static List<Path> assemblerMembers(Path repository) throws IOException {
+        return files(repository, AssemblerParser.builder().build());
     }
 
     public static List<Path> jobs(Path repository) throws IOException {

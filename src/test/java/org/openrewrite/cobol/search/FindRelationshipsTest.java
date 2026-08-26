@@ -26,6 +26,7 @@ import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.openrewrite.assembler.Assertions.assembler;
 import static org.openrewrite.cobol.Assertions.cobol;
 import static org.openrewrite.cobol.Assertions.copybook;
 import static org.openrewrite.cobol.table.CobolRelationships.ResourceAction.*;
@@ -1198,5 +1199,120 @@ class FindRelationshipsTest extends CobolTest {
                   "CALL 'CBLTDLI' USING DLI-ISRT ALT-PCB ACK-MSG MOD-ACK.");
           }),
           cobol(program, "", spec -> spec.after(s -> s).path("CLMI030.CBL")));
+    }
+
+    /**
+     * INTERLINKS 20.2, 20.3 and 20.5. An assembler member says a name and never what kind of name it
+     * is: {@code COPY CLMREGS} and {@code CLMSAVE} both reach {@code CLM.PROD.MACLIB}, and only the
+     * library says which of the macros the shop wrote — {@code CALL} and {@code DCB} come out of
+     * {@code SYS1.MACLIB}, which is nowhere in the repository.
+     */
+    @Test
+    void anAssemblerMemberReachesItsMacroLibraryAndItsSubroutine() {
+        String program = """
+          *  CLMU040 - CLAIM MASTER RECORD EDIT.
+                   COPY  CLMREGS
+                   COPY  CLMRECD
+          CLMU040  CLMSAVE 12,SAVE=U40SAVE,ID=CLMU040
+                   L     R2,0(,R1)           ADDRESS OF THE CLAIM RECORD
+                   OPEN  (A10CRD,(INPUT))
+                   CALL  CLMU030,MF=(E,U40PLST)
+          U40NUM   CLMRTRN 4
+                   END   CLMU040
+          """;
+        rewriteRun(
+          spec -> spec.dataTable(Row.class, rows -> {
+              assertThat(rows).filteredOn(r -> r.getDependentType() == ASSEMBLER)
+                .extracting(Row::getDependent, Row::getAction, Row::getDependency, Row::getDependencyType)
+                .containsExactly(
+                  tuple("CLMU040", ENTRY, "CLMU040", CSECT),
+                  tuple("CLMU040", COPY, "CLMREGS", ASSEMBLER),
+                  tuple("CLMU040", COPY, "CLMRECD", ASSEMBLER),
+                  tuple("CLMU040", INCLUDE, "CLMSAVE", ASSEMBLER),
+                  tuple("CLMU040", INCLUDE, "CLMRTRN", ASSEMBLER),
+                  // CLMU030 is an assembler subroutine because CLMU030.asm offers the name.
+                  tuple("CLMU040", CALL, "CLMU030", ASSEMBLER),
+                  tuple("CLMU030", ENTRY, "CLMU030", CSECT));
+              // OPEN is IBM's, so it is no dependency on anything this estate keeps.
+              assertThat(rows).extracting(Row::getDependency).doesNotContain("OPEN");
+              assertThat(rows).filteredOn(r -> "CLMU040".equals(r.getDependent())).allSatisfy(r ->
+                assertThat(lineAt(program, r.getDependentLine())).contains(r.getDependency()));
+          }),
+          assembler(program, spec -> spec.path("CLMU040.asm")),
+          assembler("""
+            *  CLMU030 - CLAIM NUMBER EDIT.
+                     END   CLMU030
+            """, spec -> spec.path("CLMU030.asm")),
+          assembler("""
+                     MACRO
+            &NAME    CLMSAVE &BASE,&SAVE=,&ID=
+                     MEND
+            """, spec -> spec.path("CLMSAVE.mac")),
+          assembler("""
+                     MACRO
+            &NAME    CLMRTRN &RC,&REG=
+                     MEND
+            """, spec -> spec.path("CLMRTRN.mac")),
+          assembler("""
+            R1       EQU   1
+            """, spec -> spec.path("CLMREGS.mac")),
+          assembler("""
+            CLMRECD  DSECT
+            CLMRCLM  DS    CL10
+            """, spec -> spec.path("CLMRECD.mac")));
+    }
+
+    /**
+     * Which language is on the other end of a {@code CALL} is not written in the COBOL. It can only be
+     * answered by reading every member first, which is why the callee's type is decided from the names
+     * the assembler members of the estate offer.
+     */
+    @Test
+    void aCobolProgramCallingAssembler() {
+        rewriteRun(
+          spec -> spec.dataTable(Row.class, rows ->
+            assertThat(rows).filteredOn(r -> r.getAction() == CALL)
+              .extracting(Row::getDependent, Row::getDependency, Row::getDependencyType)
+              .containsExactly(
+                tuple("CLMI050", "CLMU030", ASSEMBLER),
+                tuple("CLMI050", "CLMB020", COBOL))),
+          cobol("""
+            000000 IDENTIFICATION DIVISION.
+                   PROGRAM-ID.
+                       CLMI050.
+                   PROCEDURE DIVISION.
+                       CALL 'CLMU030' USING CD-CLAIM-NO.
+                       CALL 'CLMB020' USING CD-CLAIM-NO.
+                       GOBACK.
+            """, "", spec -> spec.after(s -> s).path("CLMI050.CBL")),
+          assembler("""
+            *  CLMU030 - CLAIM NUMBER EDIT.
+                     END   CLMU030
+            """, spec -> spec.path("CLMU030.asm")));
+    }
+
+    /**
+     * INTERLINKS 20.5. What an assembler DL/I call reaches is written nowhere on the call: the
+     * function comes from the constant the first argument names and the segment from the SSA's.
+     */
+    @Test
+    void anAssemblerDliCall() {
+        rewriteRun(
+          spec -> spec.dataTable(Row.class, rows ->
+            assertThat(rows).filteredOn(r -> r.getAction() == ACCESS)
+              .extracting(Row::getDependent, Row::getDependency, Row::getDependencyType,
+                Row::getActionMetadata)
+              .containsExactly(
+                tuple("CLMA010", "(R11)", IMS_PCB, "GHN"),
+                tuple("CLMA010", "CLMROOT", IMS_SEGMENT, "GHN"),
+                tuple("CLMA010", "(R11)", IMS_PCB, "DLET"))),
+          assembler("""
+            A10LOOP  CALL  ASMTDLI,(A10GHN,(R11),A10ROOT,A10SSA),VL
+                     CALL  ASMTDLI,(A10DLET,(R11),A10ROOT),VL
+            A10GHN   DC    CL4'GHN '
+            A10DLET  DC    CL4'DLET'
+            A10SSA   DC    CL9'CLMROOT'
+                     END   CLMA010
+            """, spec -> spec.path("CLMA010.asm")));
     }
 }
