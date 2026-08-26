@@ -47,6 +47,10 @@ import org.openrewrite.db2.bind.trait.BindCommand;
 import org.openrewrite.db2.bind.tree.Bind;
 import org.openrewrite.internal.ListUtils;
 import org.openrewrite.internal.StringUtils;
+import org.openrewrite.ims.ImsIsoVisitor;
+import org.openrewrite.ims.trait.Database;
+import org.openrewrite.ims.trait.Segment;
+import org.openrewrite.ims.tree.Ims;
 import org.openrewrite.jcl.JclIsoVisitor;
 import org.openrewrite.jcl.tree.Jcl;
 import org.openrewrite.linkedit.InStreamLinkEditDeck;
@@ -283,6 +287,14 @@ public class FindRelationships extends Recipe {
             }
         };
 
+        ImsIsoVisitor<ExecutionContext> databaseVisitor = new ImsIsoVisitor<ExecutionContext>() {
+            @Override
+            public Ims.CompilationUnit visitCompilationUnit(Ims.CompilationUnit cu, ExecutionContext ctx) {
+                databaseRelationships(cu, ctx);
+                return cu;
+            }
+        };
+
         ListLoadIsoVisitor<ExecutionContext> listingVisitor = new ListLoadIsoVisitor<ExecutionContext>() {
             @Override
             public ListLoad.CompilationUnit visitCompilationUnit(ListLoad.CompilationUnit cu, ExecutionContext ctx) {
@@ -439,6 +451,8 @@ public class FindRelationships extends Recipe {
                     t = linkEditVisitor.visit(t, ctx);
                 } else if (tree instanceof ListLoad) {
                     t = listingVisitor.visit(t, ctx);
+                } else if (tree instanceof Ims) {
+                    t = databaseVisitor.visit(t, ctx);
                 } else if (tree instanceof Bind) {
                     t = bindCardVisitor.visit(t, ctx);
                 } else if (tree instanceof Idcams) {
@@ -562,6 +576,36 @@ public class FindRelationships extends Recipe {
             for (ModuleListing.Csect csect : module.getCsects()) {
                 insertDeckRow(seen, module.getName(), LOAD_MODULE, CONTAINS, csect.getName(), CSECT,
                         sourcePath, csect.getLine(), ctx);
+            }
+        }
+    }
+
+    /**
+     * What a DBD defines and what it reaches, which nothing else in an estate writes down: a PSB says
+     * which databases a program may use and a DL/I call says which segment it asked for, but only the
+     * DBD says what the segments are and which other database this one is tied to.
+     * <p>
+     * The member is typed as assembler because that is what a gen library holds — a deck of macro
+     * invocations the gen job assembles. An {@code XDFLD} yields nothing here: its {@code SRCH=} names
+     * a field of this same database, so it is not an edge between databases.
+     */
+    private void databaseRelationships(Ims.CompilationUnit member, ExecutionContext ctx) {
+        Set<String> seen = new HashSet<>();
+        String memberName = memberName(member.getSourcePath());
+        String sourcePath = member.getSourcePath().toString();
+        for (Database database : new Database.Matcher().lower(member).collect(Collectors.toList())) {
+            String name = database.getName();
+            insertDeckRow(seen, memberName, ASSEMBLER, DEFINES, name, IMS_DATABASE, sourcePath,
+                    database.getLine(), ctx);
+            for (Segment segment : database.getSegments()) {
+                insertDeckRow(seen, name, IMS_DATABASE, CONTAINS, segment.getName(), IMS_SEGMENT,
+                        sourcePath, segment.getLine(), ctx);
+            }
+            for (Database.Reference reference : database.getReferences()) {
+                if (reference.getKind() != Database.Reference.Kind.INDEX_SOURCE) {
+                    insertDeckRow(seen, name, IMS_DATABASE, REFERENCES, reference.getDatabase(),
+                            IMS_DATABASE, sourcePath, reference.getLine(), reference.getMember(), ctx);
+                }
             }
         }
     }

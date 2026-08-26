@@ -34,6 +34,7 @@ import static org.openrewrite.controlcard.idcams.Assertions.idcamsCard;
 import static org.openrewrite.controlcard.sort.Assertions.sortCard;
 import static org.openrewrite.controlm.Assertions.controlM;
 import static org.openrewrite.db2.bind.Assertions.bind;
+import static org.openrewrite.ims.Assertions.ims;
 import static org.openrewrite.jcl.Assertions.jcl;
 import static org.openrewrite.linkedit.Assertions.linkEdit;
 import static org.openrewrite.listload.Assertions.listLoad;
@@ -976,5 +977,50 @@ class FindRelationshipsTest extends CobolTest {
               });
           }),
           controlM(schedule, spec -> spec.after(s -> s).path("CTM_SCHEDULE.ctms")));
+    }
+
+    /**
+     * What a DBD writes down, which nothing else in an estate does: the database it gens, the
+     * segments in it, and the other databases it is tied to. The {@code XDFLD} names a field of this
+     * same database, so it is no edge between databases and yields nothing here.
+     */
+    @Test
+    void databaseDefinition() {
+        String dbd = """
+          *  THE CLAIM DATABASE
+                DBD   NAME=CLMDBD01,ACCESS=(HDAM,VSAM)
+                DATASET DD1=CLMDB01,DEVICE=3390
+                SEGM  NAME=CLMROOT,PARENT=0,BYTES=65
+                FIELD NAME=(CLMKEY,SEQ,U),BYTES=10,START=1,TYPE=C
+                FIELD NAME=CLMADJR,BYTES=8,START=50,TYPE=C
+                LCHILD NAME=(CLMXSEG,CLMDBX01),POINTER=INDX
+                XDFLD NAME=CLMXADJ,SRCH=CLMADJR
+                SEGM  NAME=CLMPLNK,PARENT=((CLMROOT),(POLROOT,PHYSICAL,CLMDBD02))
+                DBDGEN
+                FINISH
+                END
+          """;
+        rewriteRun(
+          spec -> spec.dataTable(Row.class, rows -> {
+              assertThat(rows).extracting(Row::getDependent, Row::getDependentType, Row::getAction,
+                  Row::getDependency, Row::getDependencyType, Row::getActionMetadata)
+                .containsExactly(
+                  tuple("CLMDBD01", ASSEMBLER, DEFINES, "CLMDBD01", IMS_DATABASE, ""),
+                  tuple("CLMDBD01", IMS_DATABASE, CONTAINS, "CLMROOT", IMS_SEGMENT, ""),
+                  tuple("CLMDBD01", IMS_DATABASE, CONTAINS, "CLMPLNK", IMS_SEGMENT, ""),
+                  tuple("CLMDBD01", IMS_DATABASE, REFERENCES, "CLMDBX01", IMS_DATABASE, "CLMXSEG"),
+                  tuple("CLMDBD01", IMS_DATABASE, REFERENCES, "CLMDBD02", IMS_DATABASE, "POLROOT"));
+              // Every row is anchored at the macro that said it.
+              assertThat(rows).allSatisfy(r ->
+                assertThat(r.getDependentPath()).isEqualTo("ims/dbd/CLMDBD01.dbd"));
+              assertThat(rows).extracting(r -> lineAt(dbd, r.getDependentLine()).trim())
+                .containsExactly(
+                  "DBD   NAME=CLMDBD01,ACCESS=(HDAM,VSAM)",
+                  "SEGM  NAME=CLMROOT,PARENT=0,BYTES=65",
+                  "SEGM  NAME=CLMPLNK,PARENT=((CLMROOT),(POLROOT,PHYSICAL,CLMDBD02))",
+                  "LCHILD NAME=(CLMXSEG,CLMDBX01),POINTER=INDX",
+                  "SEGM  NAME=CLMPLNK,PARENT=((CLMROOT),(POLROOT,PHYSICAL,CLMDBD02))");
+          }),
+          ims(dbd, spec -> spec.path("ims/dbd/CLMDBD01.dbd")));
     }
 }

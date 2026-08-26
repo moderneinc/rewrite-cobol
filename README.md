@@ -85,12 +85,12 @@ adds the 110 jobs, among them DB2 DDL and BIND in JCL, where Bank of Z has one.
 The last row is not a public application but a fixture: one fictional insurance claims
 application, CLAIMS, written so that every `COPY`, `CALL`, `EXEC PROC`, `SEND MAP` and `SYSIN`
 member in it resolves to a member of the same repository, and every member of it a parser here reads
-parses. It also holds member kinds nothing here reads yet — IMS DBD, PSB, MFS and stage 1 decks,
+parses. It also holds member kinds nothing here reads yet — IMS PSB, MFS and stage 1 decks,
 HLASM programs and macros, SAS programs, CLISTs, REXX execs and run book members — and the
 walks skip those rather than counting them against a parser. The public applications are measured;
 the fixture is required. The tests know it by its directory name, `mainframe-fixtures`, and fail when
 a program, copybook, job, procedure, map set, bind deck, link-edit deck, module listing, DDL member,
-control card or schedule of it does not parse, read or print back — or when the corpus root does not contain it, since a fixture
+IMS database, control card or schedule of it does not parse, read or print back — or when the corpus root does not contain it, since a fixture
 the walk cannot see, a symbolic link say, would otherwise pass as an empty application.
 `FixtureCoverageTest` puts every one of its members past every reader at once, so that a member is
 claimed by one reader and no more and the kinds nothing reads are claimed by none: a reader that
@@ -101,13 +101,15 @@ Clone them side by side into one directory and point the tests at it. The tests 
 the parsers accept them, whatever the case of the extension: programs by `.cbl`, `.cob` and
 `.cobol`, copybooks by `.cpy`, `.copy` and `.dcl`, map sets by `.bms`, bind decks by `.bnd`, link-edit
 decks by `.lnk` and `.lked`, module listings by `.amblist`, `.binder` and `.listload`, schedules by
-`.ctms` and `.controlm`, and jobs by `.jcl`, `.prc` and
+`.ctms` and `.controlm`, IMS DBDs by `.dbd`, and jobs by `.jcl`, `.prc` and
 `.proc` — or, since MainframeJCL, ADCD setup and Zowe's SZWESAMP keep their members as they came off
 the PDS, by a `.txt` or extensionless file whose first card is JCL, and by an extensionless file
 whose first subcommand binds. Control card members are typed by what they say rather than by what
 they are called: a `.ctl`, `.prm` or extensionless member is a sort deck, an IDCAMS deck, a
 link-edit deck or an AMBLIST request deck if its first statement is one, and anything else stays
-plain. A member whose name
+plain. An IMS gen library is often kept as `.asm` — Bank of Z writes its DBDs as
+`src/base/ims/DBD/*.asm` — so an `.asm` is a DBD when the first macro it invokes is `DBD`, and the
+HLASM programs beside it are left alone. A member whose name
 promises a language its content is not — CBSA's `DFH$SIP1.jcl` is a CICS parameter member — is
 reported as such, under
 `WrongLanguageException`, rather than as a grammar failure. The corpus tests skip themselves when
@@ -115,9 +117,16 @@ the variables are unset, so a normal `./gradlew test` does not need them:
 
 ```bash
 COBOL_CORPUS=/path/to/corpus JCL_CORPUS=/path/to/corpus BMS_CORPUS=/path/to/corpus \
-  DB2_CORPUS=/path/to/corpus ./gradlew test
+  DB2_CORPUS=/path/to/corpus IMS_CORPUS=/path/to/corpus ./gradlew test
 CONTROLM_CORPUS=/path/to/corpus ./gradlew test --rerun
 ```
+
+`IMS_CORPUS` reads 19 DBDs — Bank of Z's 9, CardDemo's 4 and the fixture's 6 — for 19 databases, 20
+segments, 72 fields and 9 names belonging to another database. The fixture's six are the measurement
+and the rest are report-only: `ImsCorpusTest` holds it to `INTERLINKS.md` sections 19.1 and 19.2, six
+DBDs of eight segments and thirty fields with seven references over five of them, and counts every
+`SEGM`, `FIELD` and `LCHILD` of every member against an independent count of the source, since a
+misgrouped continuation prints back byte for byte and says something else.
 
 Bind decks, link-edit decks, module listings and control cards ride on `JCL_CORPUS`, since a deck is
 reached through the step that runs it and a listing is what that step printed. `--rerun` matters: the corpus path is an environment variable, not a task input, so a

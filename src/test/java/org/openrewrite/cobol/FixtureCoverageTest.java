@@ -27,6 +27,7 @@ import org.openrewrite.controlcard.sort.SortParser;
 import org.openrewrite.controlm.ControlMParser;
 import org.openrewrite.db2.Db2Parser;
 import org.openrewrite.db2.bind.BindParser;
+import org.openrewrite.ims.ImsParser;
 import org.openrewrite.jcl.JclParser;
 import org.openrewrite.linkedit.LinkEditParser;
 import org.openrewrite.listload.ListLoadParser;
@@ -54,9 +55,9 @@ import static org.assertj.core.api.Assertions.entry;
  * The fixture is written so that all of it reads, so a member a reader takes must parse and print
  * back byte for byte. The other half matters as much. A mainframe library holds members of every kind
  * side by side and nothing in a member's name says which it is, so a member must be claimed by one
- * reader and no more, and the shapes there is no reader for — IMS definitions, stage 1, HLASM, SAS,
- * CLISTs, REXX execs, the documentation members — must be claimed by none. A reader that quietly
- * takes one of those reports something plausible about a file it cannot read.
+ * reader and no more, and the shapes there is no reader for — IMS PSBs, format sets and stage 1,
+ * HLASM, SAS, CLISTs, REXX execs, the documentation members — must be claimed by none. A reader that
+ * quietly takes one of those reports something plausible about a file it cannot read.
  * <p>
  * Gated on {@code JCL_CORPUS}, the variable the readers reached through a job already use, since the
  * fixture is one repository of that estate.
@@ -81,6 +82,7 @@ class FixtureCoverageTest {
         readers.put("link-edit", LinkEditParser.builder().build());
         readers.put("load module listing", ListLoadParser.builder().build());
         readers.put("DB2 DDL", Db2Parser.builder().build());
+        readers.put("IMS DBD", ImsParser.builder().build());
 
         List<String> claimedTwice = new ArrayList<>();
         List<String> failures = new ArrayList<>();
@@ -122,12 +124,13 @@ class FixtureCoverageTest {
         assertThat(unread).containsExactly(
           // The repository's own licence, which is not a member of any library.
           entry("(none)", 1),
+          // HLASM programs. The IMS reader looks at an .asm too, since a DBD is often kept as one,
+          // and declines these because the first macro they invoke gens nothing.
           entry(".asm", 3),
           entry(".clist", 8),
           // The IEBGENER, DSN, RUNSTATS and parm cards of claims/ctlcard, beside the sort, IDCAMS and
           // AMBLIST decks that do have readers: a member opening with nothing recognisable stays plain.
           entry(".ctl", 9),
-          entry(".dbd", 6),
           entry(".docfich", 7),
           entry(".docjob", 10),
           entry(".docpgm", 14),

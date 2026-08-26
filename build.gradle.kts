@@ -49,6 +49,19 @@ tasks.register<JavaExec>("generateAntlrSourcesBms") {
     finalizedBy("licenseFormat")
 }
 
+tasks.register<JavaExec>("generateAntlrSourcesIms") {
+    mainClass.set("org.antlr.v4.Tool")
+    args = listOf(
+            "-o", "src/main/java/org/openrewrite/ims/internal/grammar",
+            "-package", "org.openrewrite.ims.internal.grammar",
+            "-visitor"
+    ) + fileTree("src/main/antlr-ims").matching { include("**/*.g4") }.map { it.path }
+
+    classpath = configurations["antlr"]
+
+    finalizedBy("licenseFormat")
+}
+
 tasks.register<JavaExec>("generateAntlrSourcesDb2") {
     mainClass.set("org.antlr.v4.Tool")
     args = listOf(
@@ -160,7 +173,8 @@ tasks.withType<Test>().configureEach {
 
 // The corpus is invisible to the build otherwise, so a green run gets replayed over a corpus that grew.
 tasks.test {
-    val corpora = listOf("COBOL_CORPUS", "JCL_CORPUS", "BMS_CORPUS", "CONTROLM_CORPUS", "DB2_CORPUS")
+    val corpora = listOf("COBOL_CORPUS", "JCL_CORPUS", "BMS_CORPUS", "CONTROLM_CORPUS", "DB2_CORPUS",
+        "IMS_CORPUS")
     corpora.forEach { inputs.property(it, System.getenv(it)).optional(true) }
     inputs.files(corpora.mapNotNull { System.getenv(it) }.distinct()
         .map { fileTree(it) { exclude("**/.git/**", "**/.moderne/**") } })
