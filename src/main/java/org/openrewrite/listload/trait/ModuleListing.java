@@ -115,7 +115,7 @@ public class ModuleListing implements Trait<ListLoad.CompilationUnit> {
     private List<Module> readSummaries(Map<String, Map<String, Translator>> translators) {
         List<Module> modules = new ArrayList<>();
         List<ListLoad.Line> lines = getTree().getLines();
-        Building building = null;
+        Summary summary = null;
         boolean sections = false;
         String key = "";
 
@@ -127,8 +127,8 @@ public class ModuleListing implements Trait<ListLoad.CompilationUnit> {
                 continue;
             }
             if (squeezed.contains("MODULESUMMARY")) {
-                add(modules, building, translators);
-                building = new Building(i + 1);
+                add(modules, summary, translators);
+                summary = new Summary(i + 1);
                 sections = false;
                 key = "";
                 continue;
@@ -138,55 +138,55 @@ public class ModuleListing implements Trait<ListLoad.CompilationUnit> {
                 continue;
             }
             if (squeezed.contains("IDENTIFICATIONRECORDDATA")) {
-                add(modules, building, translators);
-                building = null;
+                add(modules, summary, translators);
+                summary = null;
                 continue;
             }
-            if (building == null) {
+            if (summary == null) {
                 continue;
             }
             if (sections) {
-                readControlSection(building, text, i + 1);
+                readControlSection(summary, text, i + 1);
             } else {
                 int colon = text.indexOf(':');
                 if (colon >= 0) {
                     key = ListLoadLineReader.squeeze(text.substring(0, colon));
-                    readSummaryLine(building, key, text.substring(colon + 1).trim(), i + 1);
+                    readSummaryLine(summary, key, text.substring(colon + 1).trim(), i + 1);
                 } else if (!text.trim().isEmpty()) {
-                    readSummaryLine(building, key, text.trim(), i + 1);
+                    readSummaryLine(summary, key, text.trim(), i + 1);
                 }
             }
         }
-        add(modules, building, translators);
+        add(modules, summary, translators);
         return modules;
     }
 
-    private static void readSummaryLine(Building building, String key, String value, int line) {
+    private static void readSummaryLine(Summary summary, String key, String value, int line) {
         switch (key) {
             case "MEMBERNAME":
-                building.name = firstWord(value);
+                summary.name = firstWord(value);
                 break;
             case "MAINENTRYPOINT":
-                building.entryOffset = normalizeHex(firstWord(value));
+                summary.entryOffset = normalizeHex(firstWord(value));
                 break;
             case "LIBRARY":
                 for (String operand : value.split("\\s+")) {
                     String[] keyValue = operand.split("=", 2);
                     if (keyValue.length == 2 && "DDNAME".equalsIgnoreCase(keyValue[0])) {
-                        building.library = keyValue[1];
+                        summary.library = keyValue[1];
                     } else if (keyValue.length == 2 && "DSNAME".equalsIgnoreCase(keyValue[0])) {
-                        building.dataSetName = keyValue[1];
+                        summary.dataSetName = keyValue[1];
                     }
                 }
                 break;
             case "ALIAS(ES)":
                 String alias = firstWord(value);
                 if (!alias.isEmpty() && !"NONE".equalsIgnoreCase(alias)) {
-                    building.aliases.add(new Name(alias, line));
+                    summary.aliases.add(new Name(alias, line));
                 }
                 break;
             case "MODULESIZE(HEX)":
-                building.size = normalizeHex(firstWord(value));
+                summary.size = normalizeHex(firstWord(value));
                 break;
             default:
                 break;
@@ -198,19 +198,19 @@ public class ModuleListing implements Trait<ListLoad.CompilationUnit> {
      * point into the CSECT above it. A row is recognised by its two hexadecimal columns rather than by
      * where they fall, so the heading and the blank lines fall out on their own.
      */
-    private static void readControlSection(Building building, String text, int line) {
+    private static void readControlSection(Summary summary, String text, int line) {
         String[] words = text.trim().split("\\s+");
         if (words.length >= 3 && isHex(words[1]) && isHex(words[2])) {
-            building.csects.add(new Csect(words[0], normalizeHex(words[1]), normalizeHex(words[2]),
+            summary.csects.add(new Csect(words[0], normalizeHex(words[1]), normalizeHex(words[2]),
                     words.length > 3 ? words[3] : null, null, null, new ArrayList<>(), null, line));
             // The entry name and its location are the last two columns, where there are any: a name
             // is not hexadecimal and the AMODE before it is, which is what tells them apart.
             if (words.length >= 7 && isHex(words[words.length - 1]) && !isHex(words[words.length - 2])) {
-                lastCsect(building).getEntries().add(
+                lastCsect(summary).getEntries().add(
                         new Entry(words[words.length - 2], normalizeHex(words[words.length - 1]), line));
             }
-        } else if (words.length == 2 && isHex(words[1]) && !building.csects.isEmpty()) {
-            lastCsect(building).getEntries().add(new Entry(words[0], normalizeHex(words[1]), line));
+        } else if (words.length == 2 && isHex(words[1]) && !summary.csects.isEmpty()) {
+            lastCsect(summary).getEntries().add(new Entry(words[0], normalizeHex(words[1]), line));
         }
     }
 
@@ -374,19 +374,19 @@ public class ModuleListing implements Trait<ListLoad.CompilationUnit> {
         return null;
     }
 
-    private static void add(List<Module> modules, @Nullable Building building,
+    private static void add(List<Module> modules, @Nullable Summary summary,
                             Map<String, Map<String, Translator>> translators) {
-        if (building == null || building.name == null || building.name.isEmpty()) {
+        if (summary == null || summary.name == null || summary.name.isEmpty()) {
             return;
         }
-        Map<String, Translator> byCsect = translators.getOrDefault(building.name, new HashMap<>());
-        List<Csect> csects = new ArrayList<>(building.csects.size());
-        for (Csect csect : building.csects) {
+        Map<String, Translator> byCsect = translators.getOrDefault(summary.name, new HashMap<>());
+        List<Csect> csects = new ArrayList<>(summary.csects.size());
+        for (Csect csect : summary.csects) {
             csects.add(csect.withTranslator(byCsect.get(csect.getName())));
         }
-        modules.add(new Module(building.name, building.library, building.dataSetName,
-                entryAt(csects, building.entryOffset), building.aliases, building.size, csects,
-                building.line));
+        modules.add(new Module(summary.name, summary.library, summary.dataSetName,
+                entryAt(csects, summary.entryOffset), summary.aliases, summary.size, csects,
+                summary.line));
     }
 
     /**
@@ -413,8 +413,8 @@ public class ModuleListing implements Trait<ListLoad.CompilationUnit> {
         return null;
     }
 
-    private static Csect lastCsect(Building building) {
-        return building.csects.get(building.csects.size() - 1);
+    private static Csect lastCsect(Summary summary) {
+        return summary.csects.get(summary.csects.size() - 1);
     }
 
     private static String firstWord(String value) {
@@ -648,10 +648,10 @@ public class ModuleListing implements Trait<ListLoad.CompilationUnit> {
     }
 
     /**
-     * A module being read out of a summary, before the control section summary under it has said what
-     * its entry point is called.
+     * A module as its summary is read, before the control section summary under it has said what its
+     * entry point is called.
      */
-    private static class Building {
+    private static class Summary {
         final int line;
         final List<Name> aliases = new ArrayList<>();
         final List<Csect> csects = new ArrayList<>();
@@ -671,7 +671,7 @@ public class ModuleListing implements Trait<ListLoad.CompilationUnit> {
         @Nullable
         String size;
 
-        Building(int line) {
+        Summary(int line) {
             this.line = line;
         }
     }
