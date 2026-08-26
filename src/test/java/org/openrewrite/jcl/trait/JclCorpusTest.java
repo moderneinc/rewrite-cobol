@@ -210,17 +210,17 @@ class JclCorpusTest {
                     .count();
         }
 
-        assertThat(jobs).isEqualTo(24);
-        assertThat(written).isEqualTo(84);
-        assertThat(callsAProcedure).isEqualTo(67);
-        assertThat(namesAProgram).isEqualTo(17);
+        assertThat(jobs).isEqualTo(25);
+        assertThat(written).isEqualTo(91);
+        assertThat(callsAProcedure).isEqualTo(73);
+        assertThat(namesAProgram).isEqualTo(18);
         // DBDGEN, PSBGEN, ACBGEN, MFSUTL and IMSCOBOL are IMS's own and are not in the repository.
         assertThat(callsAProcedureOutsideTheFixture).isEqualTo(20);
-        assertThat(reachedThroughAProcedure).isEqualTo(81);
-        // Every job includes the one job card member, and the 17 steps that name a program plus the
-        // 81 reached through a procedure are the 98 steps INTERLINKS says the 24 jobs run.
-        assertThat(jobCards).isEqualTo(24);
-        assertThat(namesAProgram + reachedThroughAProcedure).isEqualTo(98);
+        assertThat(reachedThroughAProcedure).isEqualTo(89);
+        // Every job includes the one job card member, and the 18 steps that name a program plus the
+        // 89 reached through a procedure are the 107 steps INTERLINKS says the 25 jobs run.
+        assertThat(jobCards).isEqualTo(25);
+        assertThat(namesAProgram + reachedThroughAProcedure).isEqualTo(107);
     }
 
     /**

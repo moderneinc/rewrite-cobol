@@ -163,7 +163,8 @@ class Db2CorpusTest {
      * by object — 2 tables, 18 columns, 2 primary keys, 1 foreign key and 5 indexes, the fifth of
      * them created in-stream by {@code CLMJ004} rather than by a member of the library. Section 16's
      * four catalog query decks are read here too: they select from {@code SYSIBM} and define
-     * nothing, so what follows is the whole of what CLAIMS creates.
+     * nothing, so what follows is the whole of what CLAIMS creates. {@code ddl/CLMVIEW} is the fifth
+     * member, and its view must not arrive here as a third table.
      */
     @Test
     void readsTheFixtureSchemaObjectByObject() throws IOException {
@@ -172,7 +173,7 @@ class Db2CorpusTest {
 
         List<Path> members = members(claims.resolve("ddl"), ".ddl");
         List<Path> decks = members(claims.resolve("cardlib"), ".sql");
-        assertThat(members).hasSize(4);
+        assertThat(members).hasSize(5);
         assertThat(decks).hasSize(4);
         members.addAll(decks);
 

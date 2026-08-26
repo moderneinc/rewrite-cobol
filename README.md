@@ -64,13 +64,13 @@ its own:
 | GenevaERS Workbench | [genevaers/Workbench](https://github.com/genevaers/Workbench) | — | 20 of 20 | — | — | — | — |
 | GenevaERS Performance Engine | [genevaers/Performance-Engine](https://github.com/genevaers/Performance-Engine) | — | 1 of 1 | — | — | — | — |
 | ADCD setup | [davidegirardi/adcdsetup](https://github.com/davidegirardi/adcdsetup) | — | 11 of 11 | — | — | — | — |
-| Zowe install packaging | [zowe/zowe-install-packaging](https://github.com/zowe/zowe-install-packaging) | — | 48 of 51 | — | — | — | — |
+| Zowe install packaging | [zowe/zowe-install-packaging](https://github.com/zowe/zowe-install-packaging) | — | 50 of 53 | — | — | — | — |
 | MainframeJCL | [billrain/MainframeJCL](https://github.com/billrain/MainframeJCL) | — | 83 of 108 | — | — | — | — |
-| zorow | [openmainframeproject/zorow](https://github.com/openmainframeproject/zorow) | — | 47 of 56 | — | — | — | — |
-| CLAIMS fixture | [moderneinc/mainframe-fixtures](https://github.com/moderneinc/mainframe-fixtures) | 19 of 19 | 40 of 40 | 5 | 4 | 4 | 6 |
+| zorow | [openmainframeproject/zorow](https://github.com/openmainframeproject/zorow) | — | 50 of 56 | — | — | — | — |
+| CLAIMS fixture | [moderneinc/mainframe-fixtures](https://github.com/moderneinc/mainframe-fixtures) | 19 of 19 | 42 of 42 | 5 | 4 | 4 | 6 |
 
 Programs and Jobs say how many files of each kind the parser read, and out of how many: 216 of 229
-COBOL programs and 505 of 545 JCL members, plus all 49 BMS map sets in the seven applications that
+COBOL programs and 512 of 549 JCL members, plus all 50 BMS map sets in the seven applications that
 have them. The technology columns say how many programs use each. A program counts as read when it
 parsed and printed back byte for byte; a job when it also had exactly the EXEC cards the traits
 found and nothing in it was left unplaced. The gaps are the measurement: `CorpusCoverageTest` groups
@@ -86,12 +86,16 @@ The last row is not a public application but a fixture: one fictional insurance 
 application, CLAIMS, written so that every `COPY`, `CALL`, `EXEC PROC`, `SEND MAP` and `SYSIN`
 member in it resolves to a member of the same repository, and every member of it a parser here reads
 parses. It also holds member kinds nothing here reads yet — IMS DBD, PSB, MFS and stage 1 decks,
-HLASM programs and macros, CLISTs, REXX execs and run book members — and the
+HLASM programs and macros, SAS programs, CLISTs, REXX execs and run book members — and the
 walks skip those rather than counting them against a parser. The public applications are measured;
 the fixture is required. The tests know it by its directory name, `mainframe-fixtures`, and fail when
-a program, copybook, job, procedure, map set, bind deck, link-edit deck, module listing, control card
-or schedule of it does not parse, read or print back — or when the corpus root does not contain it, since a fixture
+a program, copybook, job, procedure, map set, bind deck, link-edit deck, module listing, DDL member,
+control card or schedule of it does not parse, read or print back — or when the corpus root does not contain it, since a fixture
 the walk cannot see, a symbolic link say, would otherwise pass as an empty application.
+`FixtureCoverageTest` puts every one of its members past every reader at once, so that a member is
+claimed by one reader and no more and the kinds nothing reads are claimed by none: a reader that
+quietly takes an MFS format set or a SAS program reports something plausible about a file it cannot
+read.
 
 Clone them side by side into one directory and point the tests at it. The tests find files the way
 the parsers accept them, whatever the case of the extension: programs by `.cbl`, `.cob` and
@@ -142,18 +146,18 @@ not text the parser can read.
 | Zowe install packaging | `v3.x/staging` 20977c3 | EPL-2.0 |
 | MainframeJCL | `main` 598744a | MIT |
 | zorow | `master` 9f1fdf0 | Apache-2.0 |
-| CLAIMS fixture | `main` c23c837 | Apache-2.0 |
+| CLAIMS fixture | `main` 1deff74 | Apache-2.0 |
 
 `CorpusCoverageTest` reports how much of each application parses rather than requiring all of it to:
 what the parser cannot yet read is the point of the measurement. It asserts that every program it
 did parse prints back byte-identical to the input, which is the property recipes depend on, and
 `JclCorpusTest` asserts the same of every job.
 
-`BmsCorpusTest` asserts the same over the 49 map sets, and counts the macros it read against an
+`BmsCorpusTest` asserts the same over the 50 map sets, and counts the macros it read against an
 independent count of the source. A map set that groups its continuation lines wrongly still prints
 back perfectly — it just says something else — so printing alone would not catch it.
 
-`Db2CorpusTest` does the same for the schema, over both places DDL is written: 48 files of DDL and
+`Db2CorpusTest` does the same for the schema, over both places DDL is written: 49 files of DDL and
 the 23 `SYSIN` streams the corpus's jobs submit. It reads 22 tables, 192 columns, 31 indexes and
 9 foreign keys, and counts each `CREATE TABLE`, `CREATE INDEX` and `PRIMARY KEY` it read against an
 independent count of the source. The fixture is required to read where the rest is reported: its
@@ -188,9 +192,9 @@ the fixture's `ctlcard` library member by member against INTERLINKS section 8.3,
 six IDCAMS members, the two sort members and the eleven that are neither are written down.
 
 `SourcePositionsCorpusTest` reads every JCL position back out of the source, since a position landing
-anywhere but on the word it names is worse than no position at all. Over the 545 members it reads
-199,046 words back and compares each to the text at the offset reported for it, and requires every one
-of the 100,000 statements to be placed: 78,621 in the member they were written in, and the 21,379 a
+anywhere but on the word it names is worse than no position at all. Over the 547 members it reads
+200,565 words back and compares each to the text at the offset reported for it, and requires every one
+of the 100,877 statements to be placed: 78,903 in the member they were written in, and the 21,974 a
 procedure or INCLUDE member wrote against the `EXEC` or `INCLUDE` card that brought them in.
 
 ## Contributing
