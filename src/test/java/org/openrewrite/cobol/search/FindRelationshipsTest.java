@@ -1023,4 +1023,90 @@ class FindRelationshipsTest extends CobolTest {
           }),
           ims(dbd, spec -> spec.path("ims/dbd/CLMDBD01.dbd")));
     }
+
+    /**
+     * What a PSB lets a program reach. Most PCBs are named by nothing but where they come, so an
+     * unnamed one is the PSB and its position — which is what a program counting masks works from
+     * anyway — and the position rides along as the action metadata.
+     */
+    @Test
+    void programSpecificationBlock() {
+        String psb = """
+          *  CONVERSATIONAL CLAIM INQUIRY
+                PCB   TYPE=TP,NAME=CLMLTRM,MODIFY=YES
+                PCB   TYPE=DB,DBDNAME=CLMDBD01,PROCSEQ=CLMDBX01,PROCOPT=G
+                SENSEG NAME=CLMROOT,PARENT=0,PROCOPT=G
+                SENFLD NAME=CLMKEY,START=1
+                PCB   TYPE=DB,DBDNAME=CLMDBD03,PROCOPT=G,PCBNAME=CLMPCB1
+                SENSEG NAME=TYPROOT,PARENT=0,PROCOPT=G
+                PSBGEN LANG=COBOL,PSBNAME=CLMPSB02,IOASIZE=600
+                END
+          """;
+        rewriteRun(
+          spec -> spec.dataTable(Row.class, rows -> {
+              assertThat(rows).extracting(Row::getDependent, Row::getDependentType, Row::getAction,
+                  Row::getDependency, Row::getDependencyType, Row::getActionMetadata)
+                .containsExactly(
+                  tuple("CLMPSB02", ASSEMBLER, DEFINES, "CLMPSB02", IMS_PSB, ""),
+                  tuple("CLMPSB02", IMS_PSB, CONTAINS, "CLMPSB02(1)", IMS_PCB, "1"),
+                  tuple("CLMPSB02", IMS_PSB, CONTAINS, "CLMPSB02(2)", IMS_PCB, "2"),
+                  tuple("CLMPSB02(2)", IMS_PCB, ACCESS, "CLMDBD01", IMS_DATABASE, "G"),
+                  tuple("CLMPSB02(2)", IMS_PCB, ACCESS, "CLMDBX01", IMS_DATABASE, "PROCSEQ"),
+                  tuple("CLMPSB02(2)", IMS_PCB, ACCESS, "CLMROOT", IMS_SEGMENT, "G"),
+                  tuple("CLMPSB02", IMS_PSB, CONTAINS, "CLMPCB1", IMS_PCB, "3"),
+                  tuple("CLMPCB1", IMS_PCB, ACCESS, "CLMDBD03", IMS_DATABASE, "G"),
+                  tuple("CLMPCB1", IMS_PCB, ACCESS, "TYPROOT", IMS_SEGMENT, "G"));
+              assertThat(rows).extracting(r -> lineAt(psb, r.getDependentLine()).trim())
+                .containsExactly(
+                  "PSBGEN LANG=COBOL,PSBNAME=CLMPSB02,IOASIZE=600",
+                  "PCB   TYPE=TP,NAME=CLMLTRM,MODIFY=YES",
+                  "PCB   TYPE=DB,DBDNAME=CLMDBD01,PROCSEQ=CLMDBX01,PROCOPT=G",
+                  "PCB   TYPE=DB,DBDNAME=CLMDBD01,PROCSEQ=CLMDBX01,PROCOPT=G",
+                  "PCB   TYPE=DB,DBDNAME=CLMDBD01,PROCSEQ=CLMDBX01,PROCOPT=G",
+                  "SENSEG NAME=CLMROOT,PARENT=0,PROCOPT=G",
+                  "PCB   TYPE=DB,DBDNAME=CLMDBD03,PROCOPT=G,PCBNAME=CLMPCB1",
+                  "PCB   TYPE=DB,DBDNAME=CLMDBD03,PROCOPT=G,PCBNAME=CLMPCB1",
+                  "SENSEG NAME=TYPROOT,PARENT=0,PROCOPT=G");
+          }),
+          ims(psb, spec -> spec.path("ims/psb/CLMPSB02.psb")));
+    }
+
+    /**
+     * The stage 1 deck, which is the only place a transaction code is tied to a PSB. What it does not
+     * say is the program: a message driven application is loaded by the name its PSB has, and which
+     * program was link-edited under that name is for the link-edit deck to say.
+     */
+    @Test
+    void systemDefinition() {
+        String stage1 = """
+          *  THE CLAIMS CONTRIBUTION TO THE IMS SYSTEM DEFINITION
+                APPLCTN PSB=CLMPSB02,PGMTYPE=(TP,,2)
+                TRANSACT CODE=CLMINQ,SPA=(150,)
+                TRANSACT CODE=CLMDTL,SPA=(150,)
+                APPLCTN PSB=CLMPSB01,PGMTYPE=BATCH
+                DATABASE DBD=CLMDBD01,ACCESS=UP
+                DATABASE DBD=CLMDBX01,ACCESS=UP
+          """;
+        rewriteRun(
+          spec -> spec.dataTable(Row.class, rows -> {
+              assertThat(rows).extracting(Row::getDependent, Row::getDependentType, Row::getAction,
+                  Row::getDependency, Row::getDependencyType, Row::getActionMetadata)
+                .containsExactly(
+                  tuple("CLMGEN01", ASSEMBLER, REFERENCES, "CLMPSB02", IMS_PSB, "TP"),
+                  tuple("CLMINQ", IMS_TRANSACTION, SCHEDULES, "CLMPSB02", IMS_PSB, ""),
+                  tuple("CLMDTL", IMS_TRANSACTION, SCHEDULES, "CLMPSB02", IMS_PSB, ""),
+                  tuple("CLMGEN01", ASSEMBLER, REFERENCES, "CLMPSB01", IMS_PSB, "BATCH"),
+                  tuple("CLMGEN01", ASSEMBLER, REFERENCES, "CLMDBD01", IMS_DATABASE, "UP"),
+                  tuple("CLMGEN01", ASSEMBLER, REFERENCES, "CLMDBX01", IMS_DATABASE, "UP"));
+              assertThat(rows).extracting(r -> lineAt(stage1, r.getDependentLine()).trim())
+                .containsExactly(
+                  "APPLCTN PSB=CLMPSB02,PGMTYPE=(TP,,2)",
+                  "TRANSACT CODE=CLMINQ,SPA=(150,)",
+                  "TRANSACT CODE=CLMDTL,SPA=(150,)",
+                  "APPLCTN PSB=CLMPSB01,PGMTYPE=BATCH",
+                  "DATABASE DBD=CLMDBD01,ACCESS=UP",
+                  "DATABASE DBD=CLMDBX01,ACCESS=UP");
+          }),
+          ims(stage1, spec -> spec.path("ims/stage1/CLMGEN01.gen")));
+    }
 }

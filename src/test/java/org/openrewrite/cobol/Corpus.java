@@ -83,7 +83,11 @@ public final class Corpus {
         return files(repository, BmsParser.builder().build());
     }
 
-    public static List<Path> databases(Path repository) throws IOException {
+    /**
+     * DBDs, PSBs and stage 1 decks together: one reader takes all four gen libraries, since a member
+     * kept as {@code .asm} is typed by what it gens rather than by where it lives.
+     */
+    public static List<Path> imsDefinitions(Path repository) throws IOException {
         return files(repository, ImsParser.builder().build());
     }
 

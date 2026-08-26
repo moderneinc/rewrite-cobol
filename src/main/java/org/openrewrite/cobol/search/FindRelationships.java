@@ -48,8 +48,14 @@ import org.openrewrite.db2.bind.tree.Bind;
 import org.openrewrite.internal.ListUtils;
 import org.openrewrite.internal.StringUtils;
 import org.openrewrite.ims.ImsIsoVisitor;
+import org.openrewrite.ims.trait.Application;
 import org.openrewrite.ims.trait.Database;
+import org.openrewrite.ims.trait.DatabaseAccess;
+import org.openrewrite.ims.trait.Pcb;
+import org.openrewrite.ims.trait.Psb;
 import org.openrewrite.ims.trait.Segment;
+import org.openrewrite.ims.trait.SensitiveSegment;
+import org.openrewrite.ims.trait.Transaction;
 import org.openrewrite.ims.tree.Ims;
 import org.openrewrite.jcl.JclIsoVisitor;
 import org.openrewrite.jcl.tree.Jcl;
@@ -287,10 +293,14 @@ public class FindRelationships extends Recipe {
             }
         };
 
-        ImsIsoVisitor<ExecutionContext> databaseVisitor = new ImsIsoVisitor<ExecutionContext>() {
+        ImsIsoVisitor<ExecutionContext> genVisitor = new ImsIsoVisitor<ExecutionContext>() {
             @Override
             public Ims.CompilationUnit visitCompilationUnit(Ims.CompilationUnit cu, ExecutionContext ctx) {
+                // One reader takes all four gen libraries, so which of these a member has anything to
+                // say to is what it gens.
                 databaseRelationships(cu, ctx);
+                psbRelationships(cu, ctx);
+                systemDefinitionRelationships(cu, ctx);
                 return cu;
             }
         };
@@ -452,7 +462,7 @@ public class FindRelationships extends Recipe {
                 } else if (tree instanceof ListLoad) {
                     t = listingVisitor.visit(t, ctx);
                 } else if (tree instanceof Ims) {
-                    t = databaseVisitor.visit(t, ctx);
+                    t = genVisitor.visit(t, ctx);
                 } else if (tree instanceof Bind) {
                     t = bindCardVisitor.visit(t, ctx);
                 } else if (tree instanceof Idcams) {
@@ -608,6 +618,87 @@ public class FindRelationships extends Recipe {
                 }
             }
         }
+    }
+
+    /**
+     * What a PSB lets a program reach: the PCBs in the order the program is handed them, the database
+     * each opens, and the segments of it the program may see.
+     * <p>
+     * A DL/I call names a position and nothing else, so these rows are what turn that position into a
+     * database. The {@code PROCOPT} rides along as the action metadata, since it is what says whether
+     * the reach is a read or a write.
+     */
+    private void psbRelationships(Ims.CompilationUnit member, ExecutionContext ctx) {
+        Set<String> seen = new HashSet<>();
+        String memberName = memberName(member.getSourcePath());
+        String sourcePath = member.getSourcePath().toString();
+        for (Psb psb : new Psb.Matcher().lower(member).collect(Collectors.toList())) {
+            String psbName = psb.getName();
+            insertDeckRow(seen, memberName, ASSEMBLER, DEFINES, psbName, IMS_PSB, sourcePath,
+                    psb.getLine(), ctx);
+            for (Pcb pcb : psb.getPcbs()) {
+                String pcbName = pcbName(psbName, pcb);
+                insertDeckRow(seen, psbName, IMS_PSB, CONTAINS, pcbName, IMS_PCB, sourcePath,
+                        pcb.getLine(), String.valueOf(pcb.getPosition()), ctx);
+                String procopt = pcb.getProcessingOptions() == null ? "" : pcb.getProcessingOptions();
+                if (pcb.getDatabaseName() != null) {
+                    insertDeckRow(seen, pcbName, IMS_PCB, ACCESS, pcb.getDatabaseName(), IMS_DATABASE,
+                            sourcePath, pcb.getLine(), procopt, ctx);
+                }
+                // A PROCSEQ is a second database the PCB opens: the index the roots are walked in.
+                if (pcb.getProcessingSequence() != null) {
+                    insertDeckRow(seen, pcbName, IMS_PCB, ACCESS, pcb.getProcessingSequence(),
+                            IMS_DATABASE, sourcePath, pcb.getLine(), "PROCSEQ", ctx);
+                }
+                for (SensitiveSegment segment : pcb.getSensitiveSegments()) {
+                    insertDeckRow(seen, pcbName, IMS_PCB, ACCESS, segment.getName(), IMS_SEGMENT,
+                            sourcePath, segment.getLine(),
+                            segment.getProcessingOptions() == null ? procopt :
+                                    segment.getProcessingOptions(), ctx);
+                }
+            }
+        }
+    }
+
+    /**
+     * What the stage 1 deck ties together: the transaction a terminal types, the PSB that answers it,
+     * and the databases the control region is told about.
+     * <p>
+     * This is the only place a transaction code is written down, so the online side of an IMS estate
+     * is unreachable without it. What it does not say is the program — a message driven application is
+     * loaded by the name its PSB has, and which program was link-edited under that name is for the
+     * link-edit deck to say.
+     */
+    private void systemDefinitionRelationships(Ims.CompilationUnit member, ExecutionContext ctx) {
+        Set<String> seen = new HashSet<>();
+        String memberName = memberName(member.getSourcePath());
+        String sourcePath = member.getSourcePath().toString();
+        for (Application application : new Application.Matcher().lower(member).collect(Collectors.toList())) {
+            String psb = application.getPsbName();
+            if (psb == null) {
+                continue;
+            }
+            insertDeckRow(seen, memberName, ASSEMBLER, REFERENCES, psb, IMS_PSB, sourcePath,
+                    application.getLine(),
+                    application.getProgramType() == null ? "" : application.getProgramType(), ctx);
+            for (Transaction transaction : application.getTransactions()) {
+                insertDeckRow(seen, transaction.getCode(), IMS_TRANSACTION, SCHEDULES, psb, IMS_PSB,
+                        sourcePath, transaction.getLine(), ctx);
+            }
+        }
+        for (DatabaseAccess database : new DatabaseAccess.Matcher().lower(member).collect(Collectors.toList())) {
+            insertDeckRow(seen, memberName, ASSEMBLER, REFERENCES, database.getName(), IMS_DATABASE,
+                    sourcePath, database.getLine(),
+                    database.getAccess() == null ? "" : database.getAccess(), ctx);
+        }
+    }
+
+    /**
+     * What to call a PCB. Most are named by nothing but where they come, so an unnamed one is the
+     * PSB and its position — which is what a program counting masks has to work from anyway.
+     */
+    private static String pcbName(String psbName, Pcb pcb) {
+        return pcb.getName() == null ? psbName + '(' + pcb.getPosition() + ')' : pcb.getName();
     }
 
     /**

@@ -26,6 +26,7 @@ import org.openrewrite.ims.tree.Space;
 import org.openrewrite.ims.tree.Statement;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -39,6 +40,10 @@ import static java.util.Collections.emptyList;
  * {@code LCHILD} or {@code XDFLD} belongs to the {@code SEGM} above it and that to the {@code DBD}
  * above that. Nothing but position says so, so the tree stays flat and the relationships are read
  * from the cursor.
+ * <p>
+ * A PSB is written the other way up. Its {@code PCB}s come first, each with the {@code SENSEG}s and
+ * {@code SENFLD}s that belong to it, and the {@code PSBGEN} that names them all closes the member —
+ * so a PSB is read backwards from its {@code PSBGEN}.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 final class Definitions {
@@ -58,15 +63,78 @@ final class Definitions {
     }
 
     /**
+     * The statements before {@code cursor}'s, back to where its PSB begins, in source order.
+     */
+    static List<Statement> withinPsb(Cursor cursor) {
+        List<Statement> within = new ArrayList<>(preceding(cursor, Definitions::endsPsb));
+        Collections.reverse(within);
+        return within;
+    }
+
+    /**
+     * The statements after {@code cursor}'s, up to the next PCB or the end of the PSB.
+     */
+    static List<Statement> withinPcb(Cursor cursor) {
+        return following(cursor, statement -> endsPsb(statement) || isOperation(statement, "PCB"));
+    }
+
+    /**
+     * The statements after {@code cursor}'s, up to the next sensitive segment, the next PCB or the
+     * end of the PSB.
+     */
+    static List<Statement> withinSensitiveSegment(Cursor cursor) {
+        return following(cursor, statement -> endsPsb(statement) || isOperation(statement, "PCB") ||
+                                              isOperation(statement, "SENSEG"));
+    }
+
+    /**
+     * The statements after {@code cursor}'s, up to the next application or database of the stage 1
+     * deck.
+     */
+    static List<Statement> withinApplication(Cursor cursor) {
+        return following(cursor, Definitions::endsApplication);
+    }
+
+    /**
      * The segment a field, logical child or index field belongs to, or null for one written before
      * any segment.
      */
     static @Nullable Segment segmentOf(Cursor cursor) {
-        return preceding(cursor, "SEGM", Segment::new);
+        return preceding(cursor, "SEGM", Definitions::endsDatabase, Segment::new);
     }
 
     static @Nullable Database databaseOf(Cursor cursor) {
-        return preceding(cursor, "DBD", Database::new);
+        return preceding(cursor, "DBD", statement -> isOperation(statement, "END"), Database::new);
+    }
+
+    /**
+     * The PCB a sensitive segment belongs to, or null for one written before any PCB.
+     */
+    static @Nullable Pcb pcbOf(Cursor cursor) {
+        return preceding(cursor, "PCB", Definitions::endsPsb, Pcb::new);
+    }
+
+    /**
+     * The sensitive segment a sensitive field belongs to, or null for one written before any.
+     */
+    static @Nullable SensitiveSegment sensitiveSegmentOf(Cursor cursor) {
+        return preceding(cursor, "SENSEG",
+                statement -> endsPsb(statement) || isOperation(statement, "PCB"), SensitiveSegment::new);
+    }
+
+    /**
+     * The {@code PSBGEN} closing the PSB {@code cursor}'s statement belongs to, which is the only
+     * place the PSB's name is written.
+     */
+    static @Nullable Psb psbOf(Cursor cursor) {
+        return following(cursor, "PSBGEN", statement -> isOperation(statement, "END"), Psb::new);
+    }
+
+    /**
+     * The application a transaction belongs to, or null for one written before any.
+     */
+    static @Nullable Application applicationOf(Cursor cursor) {
+        return preceding(cursor, "APPLCTN", Definitions::endsApplication, Application::new);
     }
 
     /**
@@ -77,18 +145,35 @@ final class Definitions {
         return CardLines.of(cursor, Ims.CompilationUnit.class, words()).getOrDefault(word.getId(), 1);
     }
 
-    private static <T> @Nullable T preceding(Cursor cursor, String operation, Function<Cursor, T> as) {
-        Ims.CompilationUnit cu = cursor.firstEnclosing(Ims.CompilationUnit.class);
-        if (cu == null) {
-            return null;
-        }
-        List<Statement> statements = cu.getStatements();
+    /**
+     * The nearest statement before {@code cursor}'s invoking {@code operation}. The statement that
+     * opens the containing definition is itself the one being looked for, so a match is tested before
+     * {@code stop} is.
+     */
+    private static <T> @Nullable T preceding(Cursor cursor, String operation, Predicate<Statement> stop,
+                                             Function<Cursor, T> as) {
+        List<Statement> statements = statementsOf(cursor);
         for (int i = indexOf(statements, cursor.getValue()) - 1; i >= 0; i--) {
             Statement statement = statements.get(i);
             if (isOperation(statement, operation)) {
                 return as.apply(new Cursor(cursor.getParentOrThrow(), statement));
             }
-            if (isOperation(statement, "END")) {
+            if (stop.test(statement)) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    private static <T> @Nullable T following(Cursor cursor, String operation, Predicate<Statement> stop,
+                                             Function<Cursor, T> as) {
+        List<Statement> statements = statementsOf(cursor);
+        for (int i = indexOf(statements, cursor.getValue()) + 1; i > 0 && i < statements.size(); i++) {
+            Statement statement = statements.get(i);
+            if (isOperation(statement, operation)) {
+                return as.apply(new Cursor(cursor.getParentOrThrow(), statement));
+            }
+            if (stop.test(statement)) {
                 return null;
             }
         }
@@ -96,20 +181,32 @@ final class Definitions {
     }
 
     private static List<Statement> following(Cursor cursor, Predicate<Statement> stop) {
-        Ims.CompilationUnit cu = cursor.firstEnclosing(Ims.CompilationUnit.class);
-        if (cu == null) {
-            return emptyList();
-        }
-        List<Statement> statements = cu.getStatements();
-        int from = indexOf(statements, cursor.getValue());
-        if (from < 0) {
-            return emptyList();
-        }
+        List<Statement> statements = statementsOf(cursor);
         List<Statement> within = new ArrayList<>();
-        for (int i = from + 1; i < statements.size() && !stop.test(statements.get(i)); i++) {
+        for (int i = indexOf(statements, cursor.getValue()) + 1;
+             i > 0 && i < statements.size() && !stop.test(statements.get(i)); i++) {
             within.add(statements.get(i));
         }
         return within;
+    }
+
+    /**
+     * The statements before {@code cursor}'s, nearest first, which is the order a walk back through
+     * them wants.
+     */
+    private static List<Statement> preceding(Cursor cursor, Predicate<Statement> stop) {
+        List<Statement> statements = statementsOf(cursor);
+        List<Statement> within = new ArrayList<>();
+        for (int i = indexOf(statements, cursor.getValue()) - 1;
+             i >= 0 && !stop.test(statements.get(i)); i--) {
+            within.add(statements.get(i));
+        }
+        return within;
+    }
+
+    private static List<Statement> statementsOf(Cursor cursor) {
+        Ims.CompilationUnit cu = cursor.firstEnclosing(Ims.CompilationUnit.class);
+        return cu == null ? emptyList() : cu.getStatements();
     }
 
     private static int indexOf(List<Statement> statements, Object statement) {
@@ -132,6 +229,24 @@ final class Definitions {
      */
     private static boolean endsDatabase(Statement statement) {
         return isOperation(statement, "DBD") || isOperation(statement, "DBDGEN") ||
+               isOperation(statement, "END");
+    }
+
+    /**
+     * {@code PSBGEN} closes the PSB the member gens, whichever way it is walked: forwards it is the
+     * last statement of the PSB, backwards it is the last statement of the one before.
+     */
+    private static boolean endsPsb(Statement statement) {
+        return isOperation(statement, "PSBGEN") || isOperation(statement, "END");
+    }
+
+    /**
+     * A stage 1 application runs to the next one. A {@code DATABASE} ends it too, because the
+     * databases are written after the applications and a {@code TRANSACT} among them would belong to
+     * neither.
+     */
+    private static boolean endsApplication(Statement statement) {
+        return isOperation(statement, "APPLCTN") || isOperation(statement, "DATABASE") ||
                isOperation(statement, "END");
     }
 

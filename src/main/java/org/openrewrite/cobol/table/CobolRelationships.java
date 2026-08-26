@@ -239,7 +239,8 @@ public class CobolRelationships extends DataTable<CobolRelationships.Row> {
         SEND,
         RECEIVE,
         /**
-         * A scheduler runs a job, in contrast to {@link #TRIGGERS}, which is one job making another eligible.
+         * A scheduler runs a job, in contrast to {@link #TRIGGERS}, which is one job making another
+         * eligible. An IMS transaction schedules the PSB that answers it the same way.
          */
         SCHEDULES,
         /**

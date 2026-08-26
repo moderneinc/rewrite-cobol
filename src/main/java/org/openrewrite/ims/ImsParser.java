@@ -42,7 +42,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static java.util.Collections.singletonList;
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 
 /**
  * Reads the IMS gen libraries, which are one shape.
@@ -56,14 +57,16 @@ public class ImsParser implements Parser {
     /**
      * Compared case-insensitively.
      */
-    public static final List<String> IMS_FILE_EXTENSIONS = singletonList(".dbd");
+    public static final List<String> IMS_FILE_EXTENSIONS = unmodifiableList(asList(".dbd", ".psb", ".gen"));
 
     /**
      * The operations that open a gen member. An IMS gen library is often kept as {@code .asm} —
-     * Bank of Z writes its DBDs as {@code src/base/ims/DBD/*.asm} — so an assembler-named member is
-     * typed by what it gens, and the HLASM reader declines what {@link #isGenSource} claims.
+     * Bank of Z writes its DBDs as {@code src/base/ims/DBD/*.asm} and its PSBs as
+     * {@code src/base/ims/PSB/*.asm} — so an assembler-named member is typed by what it gens, and the
+     * HLASM reader declines what {@link #isGenSource} claims.
      */
-    private static final Set<String> GEN_OPERATIONS = new HashSet<>(singletonList("DBD"));
+    private static final Set<String> GEN_OPERATIONS = new HashSet<>(asList(
+            "DBD", "PCB", "PSBGEN", "APPLCTN", "TRANSACT", "DATABASE"));
 
     @Override
     public Stream<SourceFile> parseInputs(Iterable<Input> sourceFiles, @Nullable Path relativeTo, ExecutionContext ctx) {
@@ -85,7 +88,7 @@ public class ImsParser implements Parser {
                         if (!sourceFile.isSynthetic() &&
                             !GEN_OPERATIONS.contains(ImsLineReader.firstOperation(sourceStr))) {
                             throw new WrongLanguageException(sourceFile.getPath(),
-                                    sourceFile.getPath() + " is not an IMS gen member: it opens with no DBD macro.", null);
+                                    sourceFile.getPath() + " is not an IMS gen member: it opens with no gen macro.", null);
                         }
                         String postProcess = ImsLineReader.readLines(sourceStr);
                         CommonTokenStream tokens = new CommonTokenStream(new IMSLexer(
@@ -121,7 +124,7 @@ public class ImsParser implements Parser {
 
     /**
      * Whether this reader claims the member, which any reader of assembler source has to ask before
-     * taking a file: a DBD kept as {@code .asm} is gen source and not a program.
+     * taking a file: a DBD or a PSB kept as {@code .asm} is gen source and not a program.
      */
     public static boolean isGenSource(Path path) {
         String name = path.getFileName().toString().toLowerCase();

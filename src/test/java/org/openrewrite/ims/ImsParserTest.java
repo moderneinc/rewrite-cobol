@@ -179,7 +179,7 @@ class ImsParserTest {
           .findFirst(ParseExceptionResult.class).orElseThrow(AssertionError::new);
         assertThat(failure.getExceptionType()).isEqualTo("WrongLanguageException");
         assertThat(failure.getMessage())
-          .contains("CLMU030.dbd is not an IMS gen member: it opens with no DBD macro.");
+          .contains("CLMU030.dbd is not an IMS gen member: it opens with no gen macro.");
     }
 
     /**
@@ -187,7 +187,7 @@ class ImsParserTest {
      * says which reader takes it. The assembler reader of a later item asks the same question.
      */
     @Test
-    void anAssemblerMemberIsClaimedOnlyWhenItGensADatabase(@TempDir Path dir) throws IOException {
+    void anAssemblerMemberIsClaimedOnlyWhenItGens(@TempDir Path dir) throws IOException {
         Path database = write(dir, "CUSTOMER.asm",
           "***********************\n" +
           "* Friendly Bank - CUSTOMER DBD\n" +
@@ -199,8 +199,40 @@ class ImsParserTest {
           "         COPY  CLMREGS\n");
 
         assertThat(ImsParser.builder().build().accept(database)).isTrue();
-        assertThat(ImsParser.builder().build().accept(programSpecification)).isFalse();
+        assertThat(ImsParser.builder().build().accept(programSpecification)).isTrue();
         assertThat(ImsParser.builder().build().accept(program)).isFalse();
+    }
+
+    /**
+     * A PSB is written the other way up from a DBD: the PCBs first, each with what belongs to it, and
+     * the {@code PSBGEN} that names them all last.
+     */
+    @Test
+    void aPsbWithAContinuedPcb() {
+        String source =
+          "         PCB   TYPE=DB,DBDNAME=CLMDBD01,PROCSEQ=CLMDBX01,PROCOPT=G," + blanks(4) + "X\n" +
+          "               KEYLEN=14\n" +
+          "         SENSEG NAME=CLMROOT,PARENT=0,PROCOPT=G\n" +
+          "         PSBGEN LANG=COBOL,PSBNAME=CLMPSB03,IOASIZE=200\n" +
+          "         END\n";
+
+        Ims.CompilationUnit cu = parse("CLMPSB03.psb", source);
+        assertThat(cu.printAll()).isEqualTo(source);
+        assertThat(cu.getStatements()).hasSize(4);
+        assertThat(((Ims.MacroStatement) cu.getStatements().get(0)).getParameter("KEYLEN")).isNotNull();
+    }
+
+    @Test
+    void aStage1Deck() {
+        String source =
+          "         APPLCTN PSB=CLMPSB02,PGMTYPE=(TP,,2),SCHDTYP=PARALLEL\n" +
+          "         TRANSACT CODE=CLMINQ,MODE=SNGL,SPA=(150,),EDIT=(,ULC)," + blanks(8) + "X\n" +
+          "               MSGTYPE=(SNGLSEG,RESPONSE,1)\n" +
+          "         DATABASE DBD=CLMDBD01,ACCESS=UP\n";
+
+        Ims.CompilationUnit cu = parse("CLMGEN01.gen", source);
+        assertThat(cu.printAll()).isEqualTo(source);
+        assertThat(cu.getStatements()).hasSize(3);
     }
 
     private static Path write(Path dir, String name, String source) throws IOException {
@@ -223,8 +255,12 @@ class ImsParserTest {
     }
 
     private static Ims.CompilationUnit parse(String source) {
+        return parse("CLMDBD01.dbd", source);
+    }
+
+    private static Ims.CompilationUnit parse(String name, String source) {
         List<SourceFile> parsed = ImsParser.builder().build()
-          .parseInputs(singletonList(input("CLMDBD01.dbd", source)), null, new InMemoryExecutionContext())
+          .parseInputs(singletonList(input(name, source)), null, new InMemoryExecutionContext())
           .collect(Collectors.toList());
         assertThat(parsed).hasSize(1);
         assertThat(parsed.get(0)).isInstanceOf(Ims.CompilationUnit.class);
