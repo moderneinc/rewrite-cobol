@@ -18,7 +18,10 @@ package org.openrewrite.linkedit.trait;
 import lombok.Value;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
+import org.openrewrite.controlcard.CardLines;
+import org.openrewrite.linkedit.LinkEditIsoVisitor;
 import org.openrewrite.linkedit.tree.LinkEdit;
+import org.openrewrite.linkedit.tree.Space;
 import org.openrewrite.linkedit.tree.Statement;
 import org.openrewrite.trait.SimpleTraitMatcher;
 import org.openrewrite.trait.Trait;
@@ -132,7 +135,28 @@ public class LinkEditDeck implements Trait<LinkEdit.CompilationUnit> {
     }
 
     private int lineOf(LinkEdit.Operand operand) {
-        return Lines.of(cursor).getOrDefault(operand.getKeyword().getId(), 1);
+        return CardLines.of(cursor, LinkEdit.CompilationUnit.class, words())
+                .getOrDefault(operand.getKeyword().getId(), 1);
+    }
+
+    /**
+     * Where the words of a deck are, for {@link CardLines} to count the cards between them.
+     */
+    private static LinkEditIsoVisitor<CardLines> words() {
+        return new LinkEditIsoVisitor<CardLines>() {
+            @Override
+            public Space visitSpace(Space space, Space.Location location, CardLines lines) {
+                lines.space(space.getWhitespace());
+                return space;
+            }
+
+            @Override
+            public LinkEdit.Word visitWord(LinkEdit.Word word, CardLines lines) {
+                LinkEdit.Word w = super.visitWord(word, lines);
+                lines.word(w.getId());
+                return w;
+            }
+        };
     }
 
     /**

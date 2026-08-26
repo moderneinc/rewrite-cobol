@@ -18,7 +18,10 @@ package org.openrewrite.db2.bind.trait;
 import lombok.Value;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
+import org.openrewrite.controlcard.CardLines;
+import org.openrewrite.db2.bind.BindIsoVisitor;
 import org.openrewrite.db2.bind.tree.Bind;
+import org.openrewrite.db2.bind.tree.Space;
 import org.openrewrite.trait.SimpleTraitMatcher;
 import org.openrewrite.trait.Trait;
 
@@ -189,7 +192,28 @@ public class BindCommand implements Trait<Bind.Command> {
      * The one-based line of the deck the command was written on.
      */
     public int getLine() {
-        return Lines.of(cursor).getOrDefault(getTree().getVerb().getId(), 1);
+        return CardLines.of(cursor, Bind.CompilationUnit.class, words())
+                .getOrDefault(getTree().getVerb().getId(), 1);
+    }
+
+    /**
+     * Where the words of a deck are, for {@link CardLines} to count the cards between them.
+     */
+    private static BindIsoVisitor<CardLines> words() {
+        return new BindIsoVisitor<CardLines>() {
+            @Override
+            public Space visitSpace(Space space, Space.Location location, CardLines lines) {
+                lines.space(space.getWhitespace());
+                return space;
+            }
+
+            @Override
+            public Bind.Word visitWord(Bind.Word word, CardLines lines) {
+                Bind.Word w = super.visitWord(word, lines);
+                lines.word(w.getId());
+                return w;
+            }
+        };
     }
 
     private static String lastPart(String name) {

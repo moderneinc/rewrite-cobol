@@ -18,7 +18,10 @@ package org.openrewrite.controlcard.sort.trait;
 import lombok.Value;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
+import org.openrewrite.controlcard.CardLines;
+import org.openrewrite.controlcard.sort.SortIsoVisitor;
 import org.openrewrite.controlcard.sort.tree.Sort;
+import org.openrewrite.controlcard.sort.tree.Space;
 import org.openrewrite.trait.SimpleTraitMatcher;
 import org.openrewrite.trait.Trait;
 
@@ -117,7 +120,28 @@ public class SortStatement implements Trait<Sort.ControlStatement> {
      * The one-based line of the deck the statement was written on.
      */
     public int getLine() {
-        return Lines.of(cursor).getOrDefault(getTree().getOperator().getId(), 1);
+        return CardLines.of(cursor, Sort.CompilationUnit.class, words())
+                .getOrDefault(getTree().getOperator().getId(), 1);
+    }
+
+    /**
+     * Where the words of a deck are, for {@link CardLines} to count the cards between them.
+     */
+    private static SortIsoVisitor<CardLines> words() {
+        return new SortIsoVisitor<CardLines>() {
+            @Override
+            public Space visitSpace(Space space, Space.Location location, CardLines lines) {
+                lines.space(space.getWhitespace());
+                return space;
+            }
+
+            @Override
+            public Sort.Word visitWord(Sort.Word word, CardLines lines) {
+                Sort.Word w = super.visitWord(word, lines);
+                lines.word(w.getId());
+                return w;
+            }
+        };
     }
 
     /**

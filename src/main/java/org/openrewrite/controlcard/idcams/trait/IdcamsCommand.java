@@ -18,7 +18,10 @@ package org.openrewrite.controlcard.idcams.trait;
 import lombok.Value;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
+import org.openrewrite.controlcard.CardLines;
+import org.openrewrite.controlcard.idcams.IdcamsIsoVisitor;
 import org.openrewrite.controlcard.idcams.tree.Idcams;
+import org.openrewrite.controlcard.idcams.tree.Space;
 import org.openrewrite.trait.SimpleTraitMatcher;
 import org.openrewrite.trait.Trait;
 
@@ -252,7 +255,28 @@ public class IdcamsCommand implements Trait<Idcams.Command> {
      * The one-based line of the deck the command was written on.
      */
     public int getLine() {
-        return Lines.of(cursor).getOrDefault(getTree().getVerb().getId(), 1);
+        return CardLines.of(cursor, Idcams.CompilationUnit.class, words())
+                .getOrDefault(getTree().getVerb().getId(), 1);
+    }
+
+    /**
+     * Where the words of a deck are, for {@link CardLines} to count the cards between them.
+     */
+    private static IdcamsIsoVisitor<CardLines> words() {
+        return new IdcamsIsoVisitor<CardLines>() {
+            @Override
+            public Space visitSpace(Space space, Space.Location location, CardLines lines) {
+                lines.space(space.getWhitespace());
+                return space;
+            }
+
+            @Override
+            public Idcams.Word visitWord(Idcams.Word word, CardLines lines) {
+                Idcams.Word w = super.visitWord(word, lines);
+                lines.word(w.getId());
+                return w;
+            }
+        };
     }
 
     private Idcams.@Nullable Parameter objectGroup() {
