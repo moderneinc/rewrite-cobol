@@ -17,6 +17,7 @@ package org.openrewrite.controlcard.idcams;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.openrewrite.cobol.LineEndings;
 import org.openrewrite.controlcard.idcams.trait.IdcamsCommand;
 
 import java.util.Arrays;
@@ -124,7 +125,7 @@ public class IdcamsLineReader {
                 continued = continuesOnNextLine(line);
             }
             p.append(line);
-            cursor = appendEndOfLine(p, source, cursor + line.length());
+            cursor = LineEndings.append(p, source, cursor + line.length());
         }
         return p.toString();
     }
@@ -148,19 +149,6 @@ public class IdcamsLineReader {
             open = text.indexOf("/*", close + 2);
         }
         return text.toString();
-    }
-
-    private static int appendEndOfLine(StringBuilder p, String source, int cursor) {
-        String endOfLine = source.substring(cursor);
-        if (endOfLine.startsWith("\r\n")) {
-            p.append("\r\n");
-            return cursor + 2;
-        }
-        if (endOfLine.startsWith("\n")) {
-            p.append("\n");
-            return cursor + 1;
-        }
-        return cursor;
     }
 
     /**

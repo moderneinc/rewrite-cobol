@@ -17,6 +17,7 @@ package org.openrewrite.db2.bind;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.openrewrite.cobol.LineEndings;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -87,22 +88,9 @@ public class BindLineReader {
                 continued = continuesOnNextLine(line);
             }
             p.append(line);
-            cursor = appendEndOfLine(p, source, cursor + line.length());
+            cursor = LineEndings.append(p, source, cursor + line.length());
         }
         return p.toString();
-    }
-
-    private static int appendEndOfLine(StringBuilder p, String source, int cursor) {
-        String endOfLine = source.substring(cursor);
-        if (endOfLine.startsWith("\r\n")) {
-            p.append("\r\n");
-            return cursor + 2;
-        }
-        if (endOfLine.startsWith("\n")) {
-            p.append("\n");
-            return cursor + 1;
-        }
-        return cursor;
     }
 
     private static boolean continuesOnNextLine(String line) {

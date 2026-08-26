@@ -17,6 +17,7 @@ package org.openrewrite.bms;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.openrewrite.cobol.LineEndings;
 
 import java.util.Scanner;
 
@@ -81,23 +82,10 @@ public class BmsLineReader {
                 p.append(sequenceArea);
             }
 
-            cursor = appendEndOfLine(p, source,
+            cursor = LineEndings.append(p, source,
                     cursor + line.length() + (sequenceArea == null ? 0 : sequenceArea.length()));
         }
         return p.toString();
-    }
-
-    private static int appendEndOfLine(StringBuilder p, String source, int cursor) {
-        String endOfLine = source.substring(cursor);
-        if (endOfLine.startsWith("\r\n")) {
-            p.append("\r\n");
-            return cursor + 2;
-        }
-        if (endOfLine.startsWith("\n")) {
-            p.append("\n");
-            return cursor + 1;
-        }
-        return cursor;
     }
 
     private static boolean isComment(String line) {

@@ -21,6 +21,8 @@ import lombok.RequiredArgsConstructor;
 
 import org.jspecify.annotations.Nullable;
 
+import org.openrewrite.cobol.LineEndings;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -108,7 +110,7 @@ public class JclLineReader {
                 (streamIsData || !line.startsWith("//"))) {
                 p.append("^^STREAM^^");
                 p.append(line);
-                cursor = appendEndOfLine(p, source, cursor + line.length());
+                cursor = LineEndings.append(p, source, cursor + line.length());
                 continue;
             }
 
@@ -145,7 +147,7 @@ public class JclLineReader {
                 p.append(line);
                 streamDelimiter = null;
                 jclLineContext = null;
-                cursor = appendEndOfLine(p, source, cursor + line.length() +
+                cursor = LineEndings.append(p, source, cursor + line.length() +
                         (commentArea == null ? 0 : commentArea.length()));
                 continue;
             }
@@ -246,24 +248,11 @@ public class JclLineReader {
                 p.append(commentArea);
             }
 
-            cursor = appendEndOfLine(p, source,
+            cursor = LineEndings.append(p, source,
                     cursor + line.length() + (trailingComment == null ? 0 : trailingComment.length()) +
                             (commentArea == null ? 0 : commentArea.length()));
         }
         return p.toString();
-    }
-
-    private static int appendEndOfLine(StringBuilder p, String source, int cursor) {
-        String endOfLine = source.substring(cursor);
-        if (endOfLine.startsWith("\r\n")) {
-            p.append("\r\n");
-            return cursor + 2;
-        }
-        if (endOfLine.startsWith("\n")) {
-            p.append("\n");
-            return cursor + 1;
-        }
-        return cursor;
     }
 
     /**
