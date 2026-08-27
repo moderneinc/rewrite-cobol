@@ -21,7 +21,7 @@
 
 ## What is this?
 
-This project implements a [Rewrite module](https://github.com/openrewrite/rewrite) that provides parsers, visitors, and recipes for COBOL and related mainframe technologies. It supports parsing and transforming COBOL source code, JCL (Job Control Language), BMS map sets, DB2 DDL, DB2 bind cards, link-edit decks, load module listings, DFSORT and IDCAMS control cards, Control-M job definitions, IMS gen source, HLASM assembler and SAS, and it types the CLISTs, REXX execs and run book members an estate keeps beside them.
+This project implements a [Rewrite module](https://github.com/openrewrite/rewrite) that provides parsers, visitors, and recipes for COBOL and related mainframe technologies. It supports parsing and transforming COBOL source code, JCL (Job Control Language), BMS map sets, DB2 DDL, DB2 bind cards, link-edit decks, load module listings, DFSORT and IDCAMS control cards, Control-M job definitions, IMS gen source, HLASM assembler and SAS, and it types the CLISTs, REXX execs, run book members, C and PL/I an estate keeps beside them.
 
 ### Language Support
 
@@ -304,7 +304,7 @@ not text the parser can read.
 | Zowe install packaging | `v3.x/staging` 20977c3 | EPL-2.0 |
 | MainframeJCL | `main` 598744a | MIT |
 | zorow | `master` 9f1fdf0 | Apache-2.0 |
-| CLAIMS fixture | `main` f19dc71 | Apache-2.0 |
+| CLAIMS fixture | `main` 15cb43b | Apache-2.0 |
 
 `CorpusCoverageTest` reports how much of each application parses rather than requiring all of it to:
 what the parser cannot yet read is the point of the measurement. It asserts that every program it
@@ -332,9 +332,9 @@ the source. It runs under `JCL_CORPUS`: a bind deck is reached through the jobs 
 `LinkEditCorpusTest` does the same for link-edit decks, over 74 members and the ten decks the corpus
 writes in-stream, counting every control statement it read against a card scan of the source. It also
 checks the fixture's `linklib` deck by deck against INTERLINKS section 12, which is where the
-19 modules, the five that enter at a `DLITCBL` label, the one `ALIAS` and every statically included
-object are written down. GenevaERS keeps its decks as build templates, so the 14 with no template
-directive in them are read as the decks they are and the one with a directive is left alone.
+19 modules, the five that enter at a `DLITCBL` label, the two `ALIAS` cards and every statically
+included object are written down. GenevaERS keeps its decks as build templates, so the 14 with no
+template directive in them are read as the decks they are and the one with a directive is left alone.
 
 `ListLoadCorpusTest` does the same for load module listings, over the fixture's two AMBLIST reports,
 thirteen binder listings and two request decks, counting every module and every control section it

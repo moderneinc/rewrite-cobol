@@ -178,7 +178,7 @@ class LinkEditCorpusTest {
     }
 
     /**
-     * The fixture's own oracle: INTERLINKS section 12 writes down all 59 statements of
+     * The fixture's own oracle: INTERLINKS section 12 writes down all 60 statements of
      * {@code claims/linklib}, which module each deck builds and which object each one is built from.
      */
     @Test
@@ -208,8 +208,10 @@ class LinkEditCorpusTest {
         assertThat(decks).filteredOn(deck -> !"DLITCBL".equals(deck.getEntry().getText()))
           .allSatisfy(deck -> assertThat(deck.getEntry().getText()).isEqualTo(deck.getModule().getText()));
 
+        // Two second directory entries: the name the message region loads CLMI030 by, and the name
+        // policy administration still calls CLMU020 by.
         assertThat(decks).flatExtracting(LinkEditDeck::getAliases).extracting(LinkEditDeck.Name::getText)
-          .containsExactly("CLMRESV");
+          .containsExactly("CLMPSB02", "CLMRESV");
 
         // Every object library include and the CALL it matches: what is included is bound in, what is
         // not is called dynamically and is a load module of its own.
