@@ -82,29 +82,32 @@ the COBOL failures by cause and `JclCorpusTest` names each member it could not r
 
 The other member kinds are not spread the way COBOL and JCL are — most applications hold none of
 them at all — so they are counted in a table of their own, read of found. CBSA, the COBOL
-Programming Course, Cash Account, GenevaERS Workbench and MainframeJCL have none of the four and are
+Programming Course, Cash Account, GenevaERS Workbench and MainframeJCL have none of the five and are
 left out of it:
 
-| Application | IMS gen | Assembler | SAS | Scripts and run books |
-|---|---:|---:|---:|---:|
-| CardDemo | 8 of 8 | 4 of 4 | — | — |
-| GenApp | — | — | — | 2 of 2 |
-| Bank of Z | 17 of 17 | — | — | — |
-| zAppBuild | — | 1 of 1 | — | — |
-| DBB Samples | 1 of 1 | — | — | — |
-| Z Open Editor sample | — | 3 of 3 | — | 4 of 4 |
-| base64 | — | 2 of 2 | — | — |
-| GenevaERS Performance Engine | — | 116 of 116 | — | — |
-| ADCD setup | — | — | — | 2 of 2 |
-| Zowe install packaging | — | — | — | 22 of 22 |
-| zorow | — | — | — | 45 of 45 |
-| CLAIMS fixture | 19 of 19 | 8 of 8 | 4 of 4 | 42 of 42 |
+| Application | IMS gen | Assembler | SAS | Scripts and run books | C and PL/I |
+|---|---:|---:|---:|---:|---:|
+| CardDemo | 8 of 8 | 4 of 4 | — | — | — |
+| GenApp | — | — | — | 2 of 2 | — |
+| Bank of Z | 17 of 17 | — | — | — | 2 of 2 |
+| zAppBuild | — | 1 of 1 | — | — | — |
+| DBB Samples | 1 of 1 | — | — | — | 1 of 1 |
+| Z Open Editor sample | — | 3 of 3 | — | 4 of 4 | 4 of 4 |
+| base64 | — | 2 of 2 | — | — | 2 of 2 |
+| GenevaERS Performance Engine | — | 116 of 116 | — | — | — |
+| ADCD setup | — | — | — | 2 of 2 | — |
+| Zowe install packaging | — | — | — | 22 of 22 | — |
+| zorow | — | — | — | 45 of 45 | — |
+| CLAIMS fixture | 19 of 19 | 8 of 8 | 4 of 4 | 42 of 42 | — |
 
-That is 45 IMS gen members, 134 assembler members, 4 SAS members and 117 scripts and run book
-members, every one of them read and printed back byte for byte. Two of the four are thin outside the
-fixture: no public application here has any SAS at all, and 25 of the 26 public IMS gen members
-belong to the two applications that run IMS. The assembler goes the other way — 116 of the 134 are
-one build engine's. Bank of Z's seventeen count in the IMS column and not the assembler one because
+That is 45 IMS gen members, 134 assembler members, 4 SAS members, 117 scripts and run book members
+and 9 C and PL/I members, every one of them read and printed back byte for byte — which for the last
+column is the whole of what is read, since there is no grammar for either language and a member of
+one is held as the lines it was written as. Two of the five are thin outside the fixture: no public
+application here has any SAS at all, and 25 of the 26 public IMS gen members belong to the two
+applications that run IMS. The assembler goes the other way — 116 of the 134 are one build engine's,
+and the C and PL/I are the one column the fixture has none of, since the claims application is a
+COBOL shop. Bank of Z's seventeen count in the IMS column and not the assembler one because
 that is what they are: `src/base/ims/DBD/*.asm` and `src/base/ims/PSB/*.asm` are a gen library kept
 as assembler, which is the ordinary way to keep one.
 

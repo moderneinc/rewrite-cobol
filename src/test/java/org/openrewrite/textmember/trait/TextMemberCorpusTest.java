@@ -21,8 +21,10 @@ import org.openrewrite.InMemoryExecutionContext;
 import org.openrewrite.Parser;
 import org.openrewrite.SourceFile;
 import org.openrewrite.cobol.Corpus;
+import org.openrewrite.textmember.CParser;
 import org.openrewrite.textmember.ClistParser;
 import org.openrewrite.textmember.DocumentParser;
+import org.openrewrite.textmember.PliParser;
 import org.openrewrite.textmember.RexxParser;
 import org.openrewrite.textmember.tree.TextMember;
 
@@ -33,7 +35,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -43,7 +44,8 @@ import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Reads the scripts and the run books of the estate and reports what the traits found. Gated on
+ * Reads the members no grammar here reads — the scripts, the run books, the C and the PL/I — and
+ * reports what the traits found in the two kinds that have traits at all. Gated on
  * {@code JCL_CORPUS} pointing at a checkout, because the corpus is not redistributed with this
  * repository, and on that variable because these members are one repository of a JCL estate.
  * <p>
@@ -104,6 +106,52 @@ class TextMemberCorpusTest {
 
         assertThat(failures).isEmpty();
         assertThat(fixtureFound).as("mainframe-fixtures under %s", corpus).isTrue();
+    }
+
+    /**
+     * C and PL/I are typed and nothing more — no grammar, no trait — so the whole of what there is to
+     * measure is that a member comes back as the bytes it was written as, under the kind its extension
+     * gives it. Report-only, and the fixture has neither: this is the public applications alone.
+     */
+    @Test
+    void readsTheCAndPliOfTheEstate() throws IOException {
+        Path corpus = Paths.get(System.getenv("JCL_CORPUS"));
+
+        int members = 0;
+        List<String> failures = new ArrayList<>();
+
+        System.out.println("C and PL/I members read, by application:");
+        for (Path repository : Corpus.repositories(corpus)) {
+            Map<TextMember.Kind, List<Path>> libraries = new LinkedHashMap<>();
+            libraries.put(TextMember.Kind.C, Corpus.cSources(repository));
+            libraries.put(TextMember.Kind.PLI, Corpus.pliSources(repository));
+            int found = 0;
+            int read = 0;
+            for (Map.Entry<TextMember.Kind, List<Path>> library : libraries.entrySet()) {
+                for (Path member : library.getValue()) {
+                    members++;
+                    found++;
+                    String name = corpus.relativize(member).toString();
+                    TextMember.CompilationUnit cu = parse(corpus, member);
+                    if (cu.getKind() != library.getKey()) {
+                        failures.add(name + ": read as " + cu.getKind());
+                    } else if (!new String(Files.readAllBytes(member)).equals(cu.printAll())) {
+                        failures.add(name + ": did not print back");
+                    } else {
+                        read++;
+                    }
+                }
+            }
+            if (found > 0) {
+                System.out.printf("  %-40s %3d of %3d%n", repository.getFileName(), read, found);
+            }
+        }
+
+        System.out.printf("C and PL/I corpus: %d members%n", members);
+        failures.forEach(failure -> System.out.println("  " + failure));
+
+        assertThat(failures).isEmpty();
+        assertThat(members).as("no C or PL/I member found under %s", corpus).isPositive();
     }
 
     /**
@@ -384,15 +432,18 @@ class TextMemberCorpusTest {
         return (TextMember.CompilationUnit) parsed.get(0);
     }
 
+    /**
+     * The REXX reader comes last, since it is the one that takes a member by its first line rather than
+     * by its extension.
+     */
     private static Parser readerFor(Path member) {
-        String name = member.getFileName().toString().toLowerCase(Locale.ROOT);
-        for (String extension : asList(".clist", ".clst")) {
-            if (name.endsWith(extension)) {
-                return ClistParser.builder().build();
+        for (Parser reader : asList(ClistParser.builder().build(), DocumentParser.builder().build(),
+          CParser.builder().build(), PliParser.builder().build(), RexxParser.builder().build())) {
+            if (reader.accept(member)) {
+                return reader;
             }
         }
-        return DocumentParser.builder().build().accept(member) ?
-          DocumentParser.builder().build() : RexxParser.builder().build();
+        throw new IllegalArgumentException("No reader takes " + member);
     }
 
     private static Path fixture() {

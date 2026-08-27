@@ -27,8 +27,10 @@ import org.openrewrite.jcl.JclParser;
 import org.openrewrite.linkedit.LinkEditParser;
 import org.openrewrite.listload.ListLoadParser;
 import org.openrewrite.sas.SasParser;
+import org.openrewrite.textmember.CParser;
 import org.openrewrite.textmember.ClistParser;
 import org.openrewrite.textmember.DocumentParser;
+import org.openrewrite.textmember.PliParser;
 import org.openrewrite.textmember.RexxParser;
 
 import java.io.IOException;
@@ -127,6 +129,14 @@ public final class Corpus {
 
     public static List<Path> runBooks(Path repository) throws IOException {
         return files(repository, DocumentParser.builder().build());
+    }
+
+    public static List<Path> cSources(Path repository) throws IOException {
+        return files(repository, CParser.builder().build());
+    }
+
+    public static List<Path> pliSources(Path repository) throws IOException {
+        return files(repository, PliParser.builder().build());
     }
 
     public static List<Path> jobs(Path repository) throws IOException {
