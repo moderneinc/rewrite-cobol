@@ -17,6 +17,7 @@ package org.openrewrite.sas.trait;
 
 import org.junit.jupiter.api.Test;
 import org.openrewrite.DocumentExample;
+import org.openrewrite.estate.Members;
 import org.openrewrite.test.RewriteTest;
 import org.openrewrite.text.PlainText;
 
@@ -68,6 +69,17 @@ class InstreamSasTest implements RewriteTest {
             })
           )
         );
+    }
+
+    /**
+     * The rule the matcher asks for, which anything else holding a stream of text and no path to
+     * type it from asks for by the same name: half a program is not one.
+     */
+    @Test
+    void aStreamIsSasOnlyWhereItOpensAStepAndEndsOne() {
+        assertThat(Members.isSasProgram("PROC PRINT DATA=CLMSAS.CLMDAY;\nRUN;\n")).isTrue();
+        assertThat(Members.isSasProgram("PROC PRINT DATA=CLMSAS.CLMDAY;\n")).isFalse();
+        assertThat(Members.isSasProgram("  SORT FIELDS=(53,4,CH,A)\n")).isFalse();
     }
 
     /**

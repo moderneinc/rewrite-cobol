@@ -124,21 +124,4 @@ class StatementsTest {
           .satisfies(statement -> assertThat(statement.getKeyword()).isEqualTo("%MEND"));
     }
 
-    /**
-     * A job's {@code SYSIN} carries sort cards, IDCAMS commands and TSO input under the same DD name,
-     * so a stream is SAS only if it says so — a step opener and the statement that ends a step.
-     */
-    @Test
-    void tellsASasProgramFromWhateverElseAStreamCarries() {
-        assertThat(Statements.isSasProgram(
-          """
-            PROC PRINT DATA=CLMSAS.CLMDAY;
-            RUN;
-            """)).isTrue();
-        assertThat(Statements.isSasProgram(
-          """
-              SORT FIELDS=(53,4,CH,A)
-              INCLUDE COND=(57,1,CH,NE,C'D')
-            """)).isFalse();
-    }
 }

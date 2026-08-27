@@ -97,6 +97,14 @@ public final class Members {
     private static final Pattern BINDER_MESSAGE = Pattern.compile("IEW\\d{4}[A-Z]");
 
     /**
+     * What opens a SAS step and what ends one.
+     */
+    private static final Pattern OPENS_STEP = Pattern.compile(
+            "(?im)^\\s*(DATA|PROC|%INCLUDE|%LET|%MACRO|LIBNAME|FILENAME|OPTIONS|TITLE\\d?)\\b");
+
+    private static final Pattern ENDS_STEP = Pattern.compile("(?im)^\\s*(RUN|QUIT)\\s*;");
+
+    /**
      * How far into a file a listing has to say what it is. Both reports open with a heading and a
      * request deck with its function, so nothing is gained by reading a 1.5 million line listing to
      * the end to type it.
@@ -218,6 +226,19 @@ public final class Members {
     public static boolean isRexxExec(String text) {
         String first = firstCard(text);
         return first.startsWith("/*") && first.toUpperCase(Locale.ROOT).contains("REXX");
+    }
+
+    /**
+     * Whether a stream of text is a SAS program: something that opens a step and something that ends
+     * one. Both are asked for because a job's {@code SYSIN} carries sort cards, IDCAMS commands and
+     * TSO input under the same DD name.
+     * <p>
+     * This is not a rule {@link #kindOf(PlainText)} may use — a job that writes a program on its
+     * stream is a job, not a SAS member — so it is asked for by name: by the trait that reads a
+     * {@code SYSIN}, and by whatever else has a stream of text and no path to type it from.
+     */
+    public static boolean isSasProgram(String text) {
+        return OPENS_STEP.matcher(text).find() && ENDS_STEP.matcher(text).find();
     }
 
     /**

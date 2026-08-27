@@ -24,7 +24,6 @@ import org.openrewrite.text.PlainText;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.regex.Pattern;
 
 import static java.util.Collections.emptyList;
 
@@ -49,11 +48,6 @@ import static java.util.Collections.emptyList;
  * the statements stay flat and the step is read from the ones before.
  */
 final class Statements {
-
-    private static final Pattern OPENS_STEP = Pattern.compile(
-            "(?im)^\\s*(DATA|PROC|%INCLUDE|%LET|%MACRO|LIBNAME|FILENAME|OPTIONS|TITLE\\d?)\\b");
-
-    private static final Pattern ENDS_STEP = Pattern.compile("(?im)^\\s*(RUN|QUIT)\\s*;");
 
     private final String text;
 
@@ -83,15 +77,6 @@ final class Statements {
      */
     static List<Statement> in(String text) {
         return new Statements(text).statements;
-    }
-
-    /**
-     * Whether a stream of text is a SAS program: something that opens a step and something that ends
-     * one. Both are asked for because a job's {@code SYSIN} carries sort cards, IDCAMS commands and
-     * TSO input under the same DD name.
-     */
-    static boolean isSasProgram(String text) {
-        return OPENS_STEP.matcher(text).find() && ENDS_STEP.matcher(text).find();
     }
 
     /**

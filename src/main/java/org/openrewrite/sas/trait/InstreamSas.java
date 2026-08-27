@@ -18,6 +18,7 @@ package org.openrewrite.sas.trait;
 import lombok.Value;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
+import org.openrewrite.estate.Members;
 import org.openrewrite.jcl.SourcePositions;
 import org.openrewrite.jcl.trait.DataDefinition;
 import org.openrewrite.jcl.tree.Jcl;
@@ -141,7 +142,7 @@ public class InstreamSas implements Trait<Jcl.JobControlStatement> {
                 return null;
             }
             InstreamSas sas = new InstreamSas(cursor);
-            return Statements.isSasProgram(sas.getText()) ? sas : null;
+            return Members.isSasProgram(sas.getText()) ? sas : null;
         }
     }
 
