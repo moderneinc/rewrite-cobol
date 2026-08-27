@@ -17,6 +17,7 @@ package org.openrewrite.listload;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.openrewrite.cobol.LineEndings;
 import org.openrewrite.listload.tree.ListLoad;
 import org.openrewrite.marker.Markers;
 
@@ -131,26 +132,15 @@ public final class ListLoadLineReader {
     public static List<ListLoad.Line> readLines(String source) {
         boolean report = isReport(source);
         List<ListLoad.Line> lines = new ArrayList<>();
-
-        int cursor = 0;
-        while (cursor < source.length()) {
-            int newline = source.indexOf('\n', cursor);
-            String text = newline < 0 ? source.substring(cursor) : source.substring(cursor, newline);
-            cursor = newline < 0 ? source.length() : newline + 1;
-
-            String lineEnding = newline < 0 ? "" : "\n";
-            if (text.endsWith("\r")) {
-                text = text.substring(0, text.length() - 1);
-                lineEnding = "\r" + lineEnding;
-            }
-
+        LineEndings.split(source, (text, lineEnding) -> {
             String carriageControl = "";
-            if (report && !text.isEmpty() && CARRIAGE_CONTROL.indexOf(text.charAt(0)) >= 0) {
-                carriageControl = text.substring(0, 1);
-                text = text.substring(1);
+            String body = text;
+            if (report && !body.isEmpty() && CARRIAGE_CONTROL.indexOf(body.charAt(0)) >= 0) {
+                carriageControl = body.substring(0, 1);
+                body = body.substring(1);
             }
-            lines.add(new ListLoad.Line(randomId(), Markers.EMPTY, carriageControl, text, lineEnding));
-        }
+            lines.add(new ListLoad.Line(randomId(), Markers.EMPTY, carriageControl, body, lineEnding));
+        });
         return lines;
     }
 
