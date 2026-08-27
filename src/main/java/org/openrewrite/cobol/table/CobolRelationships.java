@@ -186,6 +186,12 @@ public class CobolRelationships extends DataTable<CobolRelationships.Row> {
          */
         ASSEMBLER,
         /**
+         * A SAS program, named by its member. A SAS program has no name of its own the way a COBOL
+         * program has a {@code PROGRAM-ID}, so a program a job writes in-stream has none at all and
+         * is named by the job.
+         */
+        SAS,
+        /**
          * A Java class that reaches a COBOL program or a DB2 table: through a CICS gateway, a queue,
          * a z/OS Connect API, or JDBC.
          */

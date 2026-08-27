@@ -85,16 +85,16 @@ adds the 110 jobs, among them DB2 DDL and BIND in JCL, where Bank of Z has one.
 The last row is not a public application but a fixture: one fictional insurance claims
 application, CLAIMS, written so that every `COPY`, `CALL`, `EXEC PROC`, `SEND MAP` and `SYSIN`
 member in it resolves to a member of the same repository, and every member of it a parser here reads
-parses. It also holds member kinds nothing here reads yet — SAS programs, CLISTs, REXX execs and run
+parses. It also holds member kinds nothing here reads yet — CLISTs, REXX execs and run
 book members — and the
 walks skip those rather than counting them against a parser. The public applications are measured;
 the fixture is required. The tests know it by its directory name, `mainframe-fixtures`, and fail when
 a program, copybook, job, procedure, map set, bind deck, link-edit deck, module listing, DDL member,
-IMS gen member, assembler member, control card or schedule of it does not parse, read or print back — or when the corpus root does not contain it, since a fixture
+IMS gen member, assembler member, SAS member, control card or schedule of it does not parse, read or print back — or when the corpus root does not contain it, since a fixture
 the walk cannot see, a symbolic link say, would otherwise pass as an empty application.
 `FixtureCoverageTest` puts every one of its members past every reader at once, so that a member is
 claimed by one reader and no more and the kinds nothing reads are claimed by none: a reader that
-quietly takes a SAS program or a CLIST reports something plausible about a file it cannot
+quietly takes a CLIST or a run book member reports something plausible about a file it cannot
 read.
 
 Clone them side by side into one directory and point the tests at it. The tests find files the way
@@ -102,7 +102,7 @@ the parsers accept them, whatever the case of the extension: programs by `.cbl`,
 `.cobol`, copybooks by `.cpy`, `.copy` and `.dcl`, map sets by `.bms`, bind decks by `.bnd`, link-edit
 decks by `.lnk` and `.lked`, module listings by `.amblist`, `.binder` and `.listload`, schedules by
 `.ctms` and `.controlm`, IMS gen members by `.dbd`, `.psb`, `.gen` and `.mfs`, assembler programs and
-macro library members by `.asm` and `.mac`, and jobs by `.jcl`, `.prc` and
+macro library members by `.asm` and `.mac`, SAS members by `.sas`, and jobs by `.jcl`, `.prc` and
 `.proc` — or, since MainframeJCL, ADCD setup and Zowe's SZWESAMP keep their members as they came off
 the PDS, by a `.txt` or extensionless file whose first card is JCL, and by an extensionless file
 whose first subcommand binds. Control card members are typed by what they say rather than by what
@@ -119,7 +119,8 @@ the variables are unset, so a normal `./gradlew test` does not need them:
 
 ```bash
 COBOL_CORPUS=/path/to/corpus JCL_CORPUS=/path/to/corpus BMS_CORPUS=/path/to/corpus \
-  DB2_CORPUS=/path/to/corpus IMS_CORPUS=/path/to/corpus ASM_CORPUS=/path/to/corpus ./gradlew test
+  DB2_CORPUS=/path/to/corpus IMS_CORPUS=/path/to/corpus ASM_CORPUS=/path/to/corpus \
+  SAS_CORPUS=/path/to/corpus ./gradlew test
 CONTROLM_CORPUS=/path/to/corpus ./gradlew test --rerun
 ```
 
@@ -187,6 +188,31 @@ reason: a COBOL `CALL 'CLMU030'` reaches an assembler subroutine, and nothing in
 An operation that is neither an assembler directive nor a machine instruction is an invocation, so a
 mnemonic missing from the table reports one invocation too many; reading the corpus rows rather than
 the totals is what found the ones that were.
+
+`SAS_CORPUS` reads 4 SAS members, all of them the fixture's: no public application in the corpus has
+any SAS at all. There is no grammar because there is almost no syntax to have one for — a statement
+runs to the first semicolon outside a quoted string or a comment, SAS has no reserved words, and
+everything that is not a boundary stays a word, which is the depth a text search and a name reference
+need. What does move a boundary is read: a `/* */` comment anywhere a blank may go, a statement
+beginning `*` that runs to its own semicolon, and a quoted string, where a semicolon means nothing.
+`SasCorpusTest` holds it to `INTERLINKS.md` sections 21.1 to 21.5 — four `%INCLUDE` statements over
+one member, four `LIBNAME`s over the one libref `CLMSAS`, two `INFILE`s whose DD names are the ones
+the COBOL programs `SELECT` for the same two data sets, five invocations of the one macro the shop
+wrote, the eleven and seven columns of the two `INPUT` layouts against the copybooks they were
+written from, and the one DB2 name the subsystem reads — and counts the statements of every member
+against the semicolons its source writes, since a boundary read in the wrong place prints back byte
+for byte and says something else.
+
+A SAS program has no name of its own the way a COBOL program has a `PROGRAM-ID`: the member name is
+the only name it has. `jcl/CLMSTAT` runs three members of the SAS library and carries a fourth
+program in-stream, and that fourth has no name at all, so `InstreamSas` reads it out of the job's
+`SYSIN` and hangs its edges on the job — the same shape as the DDL most of an estate's tables are
+actually created by. What the SAS reaches by DD name is left on the traits rather than resolved:
+`SASSRC` is not a path, `CLMSAS` with no data set after it is whatever the step allocated, and a DD
+name closes only against the job that ran the program. An `INPUT` layout is the other join, and it is
+by position and never by name — a SAS variable holds eight characters and `AUD-OLD-RESERVE` is
+fifteen — so `InputLayout.Field` gives the column each variable starts in and how many bytes its
+informat reads.
 
 Bind decks, link-edit decks, module listings and control cards ride on `JCL_CORPUS`, since a deck is
 reached through the step that runs it and a listing is what that step printed. `--rerun` matters: the corpus path is an environment variable, not a task input, so a

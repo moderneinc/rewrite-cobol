@@ -39,6 +39,7 @@ import static org.openrewrite.ims.Assertions.ims;
 import static org.openrewrite.jcl.Assertions.jcl;
 import static org.openrewrite.linkedit.Assertions.linkEdit;
 import static org.openrewrite.listload.Assertions.listLoad;
+import static org.openrewrite.sas.Assertions.sas;
 
 class FindRelationshipsTest extends CobolTest {
 
@@ -1260,6 +1261,74 @@ class FindRelationshipsTest extends CobolTest {
             CLMRECD  DSECT
             CLMRCLM  DS    CL10
             """, spec -> spec.path("CLMRECD.mac")));
+    }
+
+    /**
+     * INTERLINKS 21.2 and 21.5. A SAS report reaches its macro library by member name and DB2 through
+     * a passthrough connection. What it reaches by DD name — {@code SASSRC}, {@code CLMSAS} — is left
+     * on the traits: a DD name closes only against the job that ran the program.
+     */
+    @Test
+    void aSasMemberIncludesItsMacroLibraryAndReadsADb2View() {
+        String program = """
+          %INCLUDE SASSRC(CLMSMAC);
+
+          LIBNAME CLMSAS;
+
+          PROC SQL;
+             CONNECT TO DB2 (SSID=&DB2SSN);
+             CREATE TABLE CLMSAS.POLACT AS
+                SELECT * FROM CONNECTION TO DB2
+                  (SELECT POLICY_NO AS POLICYNO
+                     FROM CLM.POLICY_ACTIVE);
+             DISCONNECT FROM DB2;
+          QUIT;
+          """;
+        rewriteRun(
+          spec -> spec.dataTable(Row.class, rows -> {
+              assertThat(rows).filteredOn(r -> r.getDependentType() == SAS)
+                .extracting(Row::getDependent, Row::getAction, Row::getDependency, Row::getDependencyType)
+                .containsExactly(
+                  tuple("CLMSPOL", INCLUDE, "CLMSMAC", SAS),
+                  tuple("CLMSPOL", ACCESS, "CLM.POLICY_ACTIVE", SQL_TABLE));
+              // CLMSAS.POLACT is a data set of a SAS library, which no DB2 catalog has heard of.
+              assertThat(rows).extracting(Row::getDependency).doesNotContain("CLMSAS.POLACT");
+              assertThat(rows).filteredOn(r -> r.getDependentType() == SAS).allSatisfy(r ->
+                assertThat(lineAt(program, r.getDependentLine())).contains(r.getDependency()));
+          }),
+          sas(program, spec -> spec.path("sas/CLMSPOL.sas")));
+    }
+
+    /**
+     * INTERLINKS 8.7 and 21.1. A job may carry a SAS program instead of naming one, and that program
+     * has no member name at all — so the job is what the edge hangs on, and the line is the job's own.
+     */
+    @Test
+    void aSasProgramWrittenInAJob() {
+        String job = """
+          //CLMSTAT  JOB (CLM,PROD),'CLAIM STATISTICS'
+          //TOP20    EXEC CLMSAS
+          //SAS.SASLIST  DD SYSOUT=(A,,CLMR)
+          //SAS.SYSIN    DD *
+          %INCLUDE SASSRC(CLMSMAC);
+
+          PROC PRINT DATA=CLMSAS.CLMDAY;
+          RUN;
+          /*
+          """;
+        rewriteRun(
+          spec -> spec.dataTable(Row.class, rows ->
+            assertThat(rows).filteredOn(r -> r.getDependencyType() == SAS).singleElement()
+              .satisfies(r -> {
+                  assertThat(r.getDependent()).isEqualTo("CLMSTAT");
+                  assertThat(r.getDependentType()).isEqualTo(JCL);
+                  assertThat(r.getAction()).isEqualTo(INCLUDE);
+                  assertThat(r.getDependency()).isEqualTo("CLMSMAC");
+                  // The anchor is the job's own line, not the program's.
+                  assertThat(r.getDependentPath()).isEqualTo("jcl/CLMSTAT.jcl");
+                  assertThat(lineAt(job, r.getDependentLine())).isEqualTo("%INCLUDE SASSRC(CLMSMAC);");
+              })),
+          jcl(job, spec -> spec.path("jcl/CLMSTAT.jcl")));
     }
 
     /**

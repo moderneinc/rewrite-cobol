@@ -81,6 +81,11 @@ import org.openrewrite.listload.trait.ModuleListing;
 import org.openrewrite.listload.tree.ListLoad;
 import org.openrewrite.marker.Range;
 import org.openrewrite.marker.SearchResult;
+import org.openrewrite.sas.SasIsoVisitor;
+import org.openrewrite.sas.trait.Include;
+import org.openrewrite.sas.trait.InstreamSas;
+import org.openrewrite.sas.trait.SqlQuery;
+import org.openrewrite.sas.tree.Sas;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -400,6 +405,15 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
             }
         };
 
+        SasIsoVisitor<ExecutionContext> sasVisitor = new SasIsoVisitor<ExecutionContext>() {
+            @Override
+            public Sas.CompilationUnit visitCompilationUnit(Sas.CompilationUnit cu, ExecutionContext ctx) {
+                sasRelationships(cu, memberName(cu.getSourcePath()), SAS,
+                        cu.getSourcePath().toString(), 0, ctx);
+                return cu;
+            }
+        };
+
         LinkEditIsoVisitor<ExecutionContext> linkEditVisitor = new LinkEditIsoVisitor<ExecutionContext>() {
             @Override
             public LinkEdit.CompilationUnit visitCompilationUnit(LinkEdit.CompilationUnit cu, ExecutionContext ctx) {
@@ -466,6 +480,9 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
                                 cards.getLine() - 1, ctx);
                     }
                 }
+                new InstreamSas.Matcher().lower(cu).forEach(stream ->
+                        sasRelationships(stream.parse(), memberName(cu.getSourcePath()), JCL,
+                                cu.getSourcePath().toString(), stream.getLine() - 1, ctx));
                 return cu;
             }
         };
@@ -576,6 +593,8 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
                     t = cobolVisitor.visit(t, ctx);
                 } else if (tree instanceof Assembler) {
                     t = assemblerVisitor.visit(t, ctx);
+                } else if (tree instanceof Sas) {
+                    t = sasVisitor.visit(t, ctx);
                 } else if (tree instanceof LinkEdit) {
                     t = linkEditVisitor.visit(t, ctx);
                 } else if (tree instanceof ListLoad) {
@@ -659,6 +678,43 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
                         dli.getLine(), function, ctx);
             }
         });
+    }
+
+    /**
+     * What a SAS program reaches: the members it includes and the tables it reads.
+     * <p>
+     * What it reaches by DD name — the library a {@code LIBNAME} allocates, the file an
+     * {@code INFILE} reads, the library the {@code %INCLUDE} names — is left on the traits. A DD name
+     * closes only against the job that ran the program, which is a join across two languages and
+     * belongs to a recipe that has both.
+     *
+     * @param memberType what the program is, which differs by where it was written: a member of the
+     *                   SAS library is SAS, a program written on a {@code SYSIN} stream is the job,
+     *                   since it has no member name of its own.
+     * @param lineOffset how many lines of the source come before the program's first statement,
+     *                   which is nothing for a member of its own and the SYSIN's position for an
+     *                   in-stream one.
+     */
+    private void sasRelationships(Sas.CompilationUnit program, String memberName,
+                                  CobolRelationships.ResourceType memberType, String sourcePath,
+                                  int lineOffset, ExecutionContext ctx) {
+        Set<String> seen = new HashSet<>();
+        for (Include include : new Include.Matcher().lower(program).collect(Collectors.toList())) {
+            if (include.getMember() != null) {
+                insertDeckRow(seen, memberName, memberType, INCLUDE, include.getMember(), SAS,
+                        sourcePath, lineOffset + include.getLine(), ctx);
+            }
+        }
+        for (SqlQuery query : new SqlQuery.Matcher().lower(program).collect(Collectors.toList())) {
+            for (SqlQuery.Table table : query.getTables()) {
+                // A name read out of a SAS library is a data set of that library and not a table any
+                // DB2 catalog has heard of; only what came through the connection is.
+                if (table.isPassthrough()) {
+                    insertDeckRow(seen, memberName, memberType, ACCESS, table.getName(), SQL_TABLE,
+                            sourcePath, lineOffset + table.getLine(), table.getDbms(), ctx);
+                }
+            }
+        }
     }
 
     /**

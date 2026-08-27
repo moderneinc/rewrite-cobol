@@ -26,6 +26,7 @@ import org.openrewrite.ims.ImsParser;
 import org.openrewrite.jcl.JclParser;
 import org.openrewrite.linkedit.LinkEditParser;
 import org.openrewrite.listload.ListLoadParser;
+import org.openrewrite.sas.SasParser;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -98,6 +99,14 @@ public final class Corpus {
      */
     public static List<Path> assemblerMembers(Path repository) throws IOException {
         return files(repository, AssemblerParser.builder().build());
+    }
+
+    /**
+     * SAS members. The member name is the only name a SAS program has, so a program a job writes
+     * in-stream is not among them and is reached through the job.
+     */
+    public static List<Path> sasPrograms(Path repository) throws IOException {
+        return files(repository, SasParser.builder().build());
     }
 
     public static List<Path> jobs(Path repository) throws IOException {

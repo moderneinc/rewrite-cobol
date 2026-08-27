@@ -32,6 +32,7 @@ import org.openrewrite.ims.ImsParser;
 import org.openrewrite.jcl.JclParser;
 import org.openrewrite.linkedit.LinkEditParser;
 import org.openrewrite.listload.ListLoadParser;
+import org.openrewrite.sas.SasParser;
 import org.openrewrite.tree.ParseError;
 
 import java.io.IOException;
@@ -56,9 +57,9 @@ import static org.assertj.core.api.Assertions.entry;
  * The fixture is written so that all of it reads, so a member a reader takes must parse and print
  * back byte for byte. The other half matters as much. A mainframe library holds members of every kind
  * side by side and nothing in a member's name says which it is, so a member must be claimed by one
- * reader and no more, and the shapes there is no reader for — HLASM, SAS, CLISTs, REXX execs, the
- * documentation members — must be claimed by none. A reader that quietly takes one of those reports
- * something plausible about a file it cannot read.
+ * reader and no more, and the shapes there is no reader for — CLISTs, REXX execs, the documentation
+ * members — must be claimed by none. A reader that quietly takes one of those reports something
+ * plausible about a file it cannot read.
  * <p>
  * Gated on {@code JCL_CORPUS}, the variable the readers reached through a job already use, since the
  * fixture is one repository of that estate.
@@ -85,6 +86,7 @@ class FixtureCoverageTest {
         readers.put("DB2 DDL", Db2Parser.builder().build());
         readers.put("IMS gen", ImsParser.builder().build());
         readers.put("assembler", AssemblerParser.builder().build());
+        readers.put("SAS", SasParser.builder().build());
 
         List<String> claimedTwice = new ArrayList<>();
         List<String> failures = new ArrayList<>();
@@ -134,8 +136,7 @@ class FixtureCoverageTest {
           entry(".docjob", 10),
           entry(".docpgm", 14),
           entry(".md", 2),
-          entry(".rexx", 3),
-          entry(".sas", 4));
+          entry(".rexx", 3));
     }
 
     private static List<Path> members(Path fixture) throws IOException {
