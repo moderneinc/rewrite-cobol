@@ -217,6 +217,10 @@ public class Script implements Trait<TextMember.CompilationUnit> {
              * {@code ALLOC}, {@code ALTLIB} or {@code LMINIT}: a data set the session will read.
              */
             ALLOCATE,
+            /**
+             * {@code EDIT}, {@code VIEW} or {@code BROWSE}: a data set the script opens for somebody
+             * to read or change.
+             */
             EDIT,
             /**
              * {@code ISPEXEC SELECT}, which runs a program or a command under the dialog manager.

@@ -37,7 +37,7 @@ import static org.openrewrite.Tree.randomId;
  * next line, and columns 73-80 are an identification field the assembler never reads. None of that is
  * decidable by a lexer — whether a line is a continuation depends on a character of the line
  * <em>above</em> it — and a statement parser over the lines is both simpler and faster: it builds the
- * whole tree for the 1.2 MB {@code GVBMR95.asm} in about 20 ms, where an ANTLR lexer alone over the
+ * whole tree for the 1.2 MB {@code GVBMR95.asm} in about 25 ms, where an ANTLR lexer alone over the
  * same text takes three times that before a parser has run.
  * <p>
  * The reader stops at the statement. It does not evaluate an expression, resolve a symbol or expand a

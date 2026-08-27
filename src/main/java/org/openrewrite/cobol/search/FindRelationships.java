@@ -335,12 +335,6 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
 				}));
             }
 
-            /**
-             * The MOD an {@code ISRT} against a message PCB names, which is the whole of what a
-             * program says about a screen under IMS. The MID it is answered on is not written here at
-             * all — the call that reads the reply names nothing — so it is left to the format set's
-             * own {@code NXT=} row.
-             */
             @Override
             public Cobol.Call visitCall(Cobol.Call call, ExecutionContext ctx) {
                 DliCall dli = new DliCall.Matcher().get(getCursor()).orElse(null);
