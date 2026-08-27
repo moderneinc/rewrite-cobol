@@ -33,6 +33,9 @@ import org.openrewrite.jcl.JclParser;
 import org.openrewrite.linkedit.LinkEditParser;
 import org.openrewrite.listload.ListLoadParser;
 import org.openrewrite.sas.SasParser;
+import org.openrewrite.textmember.ClistParser;
+import org.openrewrite.textmember.DocumentParser;
+import org.openrewrite.textmember.RexxParser;
 import org.openrewrite.tree.ParseError;
 
 import java.io.IOException;
@@ -57,9 +60,9 @@ import static org.assertj.core.api.Assertions.entry;
  * The fixture is written so that all of it reads, so a member a reader takes must parse and print
  * back byte for byte. The other half matters as much. A mainframe library holds members of every kind
  * side by side and nothing in a member's name says which it is, so a member must be claimed by one
- * reader and no more, and the shapes there is no reader for — CLISTs, REXX execs, the documentation
- * members — must be claimed by none. A reader that quietly takes one of those reports something
- * plausible about a file it cannot read.
+ * reader and no more, and the shapes there is no reader for — the plain control cards — must be
+ * claimed by none. A reader that quietly takes one of those reports something plausible about a file
+ * it cannot read.
  * <p>
  * Gated on {@code JCL_CORPUS}, the variable the readers reached through a job already use, since the
  * fixture is one repository of that estate.
@@ -87,6 +90,9 @@ class FixtureCoverageTest {
         readers.put("IMS gen", ImsParser.builder().build());
         readers.put("assembler", AssemblerParser.builder().build());
         readers.put("SAS", SasParser.builder().build());
+        readers.put("CLIST", ClistParser.builder().build());
+        readers.put("REXX", RexxParser.builder().build());
+        readers.put("run book", DocumentParser.builder().build());
 
         List<String> claimedTwice = new ArrayList<>();
         List<String> failures = new ArrayList<>();
@@ -128,15 +134,10 @@ class FixtureCoverageTest {
         assertThat(unread).containsExactly(
           // The repository's own licence, which is not a member of any library.
           entry("(none)", 1),
-          entry(".clist", 8),
           // The IEBGENER, DSN, RUNSTATS and parm cards of claims/ctlcard, beside the sort, IDCAMS and
           // AMBLIST decks that do have readers: a member opening with nothing recognisable stays plain.
           entry(".ctl", 9),
-          entry(".docfich", 7),
-          entry(".docjob", 10),
-          entry(".docpgm", 14),
-          entry(".md", 2),
-          entry(".rexx", 3));
+          entry(".md", 2));
     }
 
     private static List<Path> members(Path fixture) throws IOException {

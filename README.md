@@ -35,6 +35,7 @@ This project implements a [Rewrite module](https://github.com/openrewrite/rewrit
 - **Sort cards** — DFSORT and ICETOOL control statements: `SORT`/`MERGE FIELDS`, `INCLUDE`/`OMIT COND`, `INREC`/`OUTREC`/`OUTFIL`, `SUM`, `OPTION`, with the control fields read as byte positions into the record, which is what joins a sort card to the copybook that describes it
 - **IDCAMS cards** — Access method services commands: `DEFINE CLUSTER`/`AIX`/`PATH`/`GDG` with their parameter groups, `REPRO`, `DELETE`, `LISTCAT`, `PRINT` and `ALTER`, which is where a VSAM file's key, record size and components are written down
 - **Control-M** — Job scheduling definitions, both dialects a shop has: the z/OS panel (`.ctms`) and the XML an export writes (`.controlm`). The JCL member each job runs, the `IN` and `OUT` conditions that order them, the SMART table they sit in and the calendars they run on, which is what turns a library of jobs into the order they actually run in
+- **CLISTs, REXX execs and run book members** — Typed and held as the lines they were written as, since a member no parser claims reaches a repository as a text file and a text file is not searchable as the technology it is. A CLIST (`.clist`, `.clst`) and an exec (`.rexx`, `.rex`, `.rx`, and an extensionless member whose first line is the `/* REXX */` comment TSO reads) are read for the jobs they submit, the programs they run and the scripts they call, which is the only place in an estate that says how a job is started by hand; a run book member (`.docjob`, `.docpgm`, `.docfich`, `.docappl`, `.docoper`) for the component it documents and the components it names. C (`.c`, `.h`) and PL/I (`.pli`, `.pl1`) are typed and nothing more is read from them
 
 ### Recipes
 
@@ -85,27 +86,29 @@ adds the 110 jobs, among them DB2 DDL and BIND in JCL, where Bank of Z has one.
 The last row is not a public application but a fixture: one fictional insurance claims
 application, CLAIMS, written so that every `COPY`, `CALL`, `EXEC PROC`, `SEND MAP` and `SYSIN`
 member in it resolves to a member of the same repository, and every member of it a parser here reads
-parses. It also holds member kinds nothing here reads yet — CLISTs, REXX execs and run
-book members — and the
-walks skip those rather than counting them against a parser. The public applications are measured;
+parses. The only member kind nothing here reads is the plain control card — the IEBGENER, DSN,
+RUNSTATS and parm cards of `claims/ctlcard` — and the walks skip those rather than counting them
+against a parser. The public applications are measured;
 the fixture is required. The tests know it by its directory name, `mainframe-fixtures`, and fail when
 a program, copybook, job, procedure, map set, bind deck, link-edit deck, module listing, DDL member,
-IMS gen member, assembler member, SAS member, control card or schedule of it does not parse, read or print back — or when the corpus root does not contain it, since a fixture
+IMS gen member, assembler member, SAS member, CLIST, REXX exec, run book member, control card or schedule of it does not parse, read or print back — or when the corpus root does not contain it, since a fixture
 the walk cannot see, a symbolic link say, would otherwise pass as an empty application.
 `FixtureCoverageTest` puts every one of its members past every reader at once, so that a member is
 claimed by one reader and no more and the kinds nothing reads are claimed by none: a reader that
-quietly takes a CLIST or a run book member reports something plausible about a file it cannot
-read.
+quietly takes a parm card reports something plausible about a file it cannot read.
 
 Clone them side by side into one directory and point the tests at it. The tests find files the way
 the parsers accept them, whatever the case of the extension: programs by `.cbl`, `.cob` and
 `.cobol`, copybooks by `.cpy`, `.copy` and `.dcl`, map sets by `.bms`, bind decks by `.bnd`, link-edit
 decks by `.lnk` and `.lked`, module listings by `.amblist`, `.binder` and `.listload`, schedules by
 `.ctms` and `.controlm`, IMS gen members by `.dbd`, `.psb`, `.gen` and `.mfs`, assembler programs and
-macro library members by `.asm` and `.mac`, SAS members by `.sas`, and jobs by `.jcl`, `.prc` and
+macro library members by `.asm` and `.mac`, SAS members by `.sas`, CLISTs by `.clist` and `.clst`,
+REXX execs by `.rexx`, `.rex` and `.rx`, run book members by `.docjob`, `.docpgm`, `.docfich`,
+`.docappl` and `.docoper`, C by `.c` and `.h`, PL/I by `.pli` and `.pl1`, and jobs by `.jcl`, `.prc` and
 `.proc` — or, since MainframeJCL, ADCD setup and Zowe's SZWESAMP keep their members as they came off
-the PDS, by a `.txt` or extensionless file whose first card is JCL, and by an extensionless file
-whose first subcommand binds. Control card members are typed by what they say rather than by what
+the PDS, by a `.txt` or extensionless file whose first card is JCL, by an extensionless file
+whose first subcommand binds, and by an extensionless file whose first line is the `/* REXX */`
+comment TSO itself reads. Control card members are typed by what they say rather than by what
 they are called: a `.ctl`, `.prm` or extensionless member is a sort deck, an IDCAMS deck, a
 link-edit deck or an AMBLIST request deck if its first statement is one, and anything else stays
 plain. An IMS gen library is often kept as `.asm` — Bank of Z writes its DBDs as

@@ -86,6 +86,11 @@ import org.openrewrite.sas.trait.Include;
 import org.openrewrite.sas.trait.InstreamSas;
 import org.openrewrite.sas.trait.SqlQuery;
 import org.openrewrite.sas.tree.Sas;
+import org.openrewrite.textmember.TextMemberIsoVisitor;
+import org.openrewrite.textmember.trait.Mention;
+import org.openrewrite.textmember.trait.RunBook;
+import org.openrewrite.textmember.trait.Script;
+import org.openrewrite.textmember.tree.TextMember;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -487,6 +492,15 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
             }
         };
 
+        TextMemberIsoVisitor<ExecutionContext> textMemberVisitor = new TextMemberIsoVisitor<ExecutionContext>() {
+            @Override
+            public TextMember.CompilationUnit visitCompilationUnit(TextMember.CompilationUnit cu, ExecutionContext ctx) {
+                new Script.Matcher().lower(cu).forEach(script -> scriptRelationships(script, cu, acc, ctx));
+                new RunBook.Matcher().lower(cu).forEach(book -> runBookRelationships(book, cu, ctx));
+                return cu;
+            }
+        };
+
         ControlMIsoVisitor<ExecutionContext> controlMVisitor = new ControlMIsoVisitor<ExecutionContext>() {
             final Map<UUID, Integer> wordLines = new HashMap<>();
             String sourceName = "UNKNOWN";
@@ -611,6 +625,8 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
                     t = preprocessorVisitor.visit(t, ctx);
                 } else if (tree instanceof ControlM) {
                     t = controlMVisitor.visit(t, ctx);
+                } else if (tree instanceof TextMember) {
+                    t = textMemberVisitor.visit(t, ctx);
                 }
                 return t;
             }
@@ -803,6 +819,90 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
                 insertDeckRow(seen, module.getText(), LOAD_MODULE, CONTAINS, include.getMember(), COBOL,
                         sourcePath, line, ctx);
             }
+        }
+    }
+
+    /**
+     * What a CLIST or a REXX exec reaches: the jobs it submits, the programs it runs and the other
+     * scripts it calls.
+     * <p>
+     * Only a name the script writes down is an edge. A name it computed is left out — {@code CLMCOMP}
+     * picks a compile job into {@code &JOB} and hands it to {@code CLMSUB}, which submits it, so the job
+     * a script really submits is a fact about two members and a parameter — and so are the data sets it
+     * allocates, which close against the DD names of the program it runs and belong to a recipe that
+     * has both.
+     */
+    private void scriptRelationships(Script script, TextMember.CompilationUnit member, Assemblers acc,
+                                     ExecutionContext ctx) {
+        Set<String> seen = new HashSet<>();
+        String memberName = memberName(member.getSourcePath());
+        String sourcePath = member.getSourcePath().toString();
+        CobolRelationships.ResourceType scriptType =
+                member.getKind() == TextMember.Kind.REXX ? REXX : CLIST;
+
+        for (Script.Reference reference : script.getReferences()) {
+            if (reference.isSymbolic()) {
+                continue;
+            }
+            switch (reference.getKind()) {
+                case SUBMIT:
+                    insertDeckRow(seen, memberName, scriptType, SUBMITS, reference.getName(), JCL,
+                            sourcePath, reference.getLine(), reference.getKind().name(), ctx);
+                    break;
+                case EXEC:
+                    // Which library the name is found in is the session's answer and not the
+                    // statement's, so a script reaches one of its own kind: SYSPROC first for a CLIST,
+                    // SYSEXEC for an exec.
+                    insertDeckRow(seen, memberName, scriptType, CALL, reference.getName(), scriptType,
+                            sourcePath, reference.getLine(), reference.getKind().name(), ctx);
+                    break;
+                case CALL:
+                case RUN:
+                    insertDeckRow(seen, memberName, scriptType, CALL, reference.getName(),
+                            acc.typeOf(reference.getName()), sourcePath, reference.getLine(),
+                            reference.getKind().name(), ctx);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    /**
+     * What a run book documents, which is the one edge its text draws by itself: a {@code DOCJOB} is
+     * about a job, a {@code DOCPGM} about a program, a {@code DOCFICH} about the data set on its
+     * {@code FILE} line.
+     * <p>
+     * The other names a run book mentions are not rows here. They are names and not references — a run
+     * book names a component in a sentence, and whether a name is a component at all is answered by
+     * looking it up among the members a repository holds, which is a join and not something one member
+     * says.
+     */
+    private void runBookRelationships(RunBook book, TextMember.CompilationUnit member, ExecutionContext ctx) {
+        Mention subject = book.getSubject();
+        CobolRelationships.ResourceType documented = documented(book.getShape());
+        if (subject == null || documented == null) {
+            return;
+        }
+        insertDeckRow(new HashSet<>(), book.getName(), DOCUMENT, REFERENCES, subject.getText(),
+                documented, member.getSourcePath().toString(), subject.getLine(),
+                book.getShape().name(), ctx);
+    }
+
+    /**
+     * What a run book of each shape is about. An application and an operating procedure are neither,
+     * so those two draw no edge until there is something for them to be an edge to.
+     */
+    private static CobolRelationships.@Nullable ResourceType documented(RunBook.Shape shape) {
+        switch (shape) {
+            case DOCJOB:
+                return JCL;
+            case DOCPGM:
+                return COBOL;
+            case DOCFICH:
+                return DATA_SET;
+            default:
+                return null;
         }
     }
 

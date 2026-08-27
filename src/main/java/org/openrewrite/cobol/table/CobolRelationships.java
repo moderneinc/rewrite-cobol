@@ -195,7 +195,29 @@ public class CobolRelationships extends DataTable<CobolRelationships.Row> {
          * A Java class that reaches a COBOL program or a DB2 table: through a CICS gateway, a queue,
          * a z/OS Connect API, or JDBC.
          */
-        JAVA
+        JAVA,
+        /**
+         * A REXX exec, run from {@code SYSEXEC} or {@code SYSPROC}.
+         */
+        REXX,
+        /**
+         * A CLIST, run from {@code SYSPROC}.
+         */
+        CLIST,
+        /**
+         * A run book member. Which of the five shapes it is — {@code DOCJOB}, {@code DOCPGM},
+         * {@code DOCFICH}, {@code DOCAPPL}, {@code DOCOPER} — is carried in the action metadata, since
+         * what tells them apart is what each documents and not what each is.
+         */
+        DOCUMENT,
+        /**
+         * A C source, which on z/OS is the USS side of an application.
+         */
+        C,
+        /**
+         * A PL/I source. Nothing reads one, so it is here to be named and not to be walked.
+         */
+        PLI
     }
 
     public enum ResourceAction {
@@ -292,6 +314,12 @@ public class CobolRelationships extends DataTable<CobolRelationships.Row> {
         /**
          * A name is mentioned somewhere that is not a call, an access, or a definition.
          */
-        REFERENCES
+        REFERENCES,
+        /**
+         * A script puts a job on the internal reader, which is a person running it by hand rather than
+         * {@link #TRIGGERS}, one job making another eligible, or {@link #SCHEDULES}, a scheduler
+         * ordering it.
+         */
+        SUBMITS
     }
 }

@@ -40,6 +40,9 @@ import static org.openrewrite.jcl.Assertions.jcl;
 import static org.openrewrite.linkedit.Assertions.linkEdit;
 import static org.openrewrite.listload.Assertions.listLoad;
 import static org.openrewrite.sas.Assertions.sas;
+import static org.openrewrite.textmember.Assertions.clist;
+import static org.openrewrite.textmember.Assertions.document;
+import static org.openrewrite.textmember.Assertions.rexx;
 
 class FindRelationshipsTest extends CobolTest {
 
@@ -1383,5 +1386,81 @@ class FindRelationshipsTest extends CobolTest {
             A10SSA   DC    CL9'CLMROOT'
                      END   CLMA010
             """, spec -> spec.path("CLMA010.asm")));
+    }
+
+    /**
+     * INTERLINKS 17.1. What a CLIST reaches, which is how a job is started by hand: the setup it calls,
+     * the job it submits and the program it runs in the foreground. The name a script computed draws no
+     * edge — {@code &JOB} is whatever the person at the terminal typed.
+     */
+    @Test
+    void aClistSubmitsJobsAndCallsPrograms() {
+        rewriteRun(
+          spec -> spec.dataTable(Row.class, rows ->
+            assertThat(rows).extracting(Row::getDependent, Row::getDependentType, Row::getAction,
+                Row::getDependency, Row::getDependencyType, Row::getActionMetadata)
+              .containsExactly(
+                tuple("CLMFXTR", CLIST, CALL, "CLMSETUP", CLIST, "EXEC"),
+                tuple("CLMFXTR", CLIST, SUBMITS, "CLMJ010", JCL, "SUBMIT"),
+                tuple("CLMFXTR", CLIST, CALL, "CLMB010", COBOL, "CALL"))),
+          clist("""
+            PROC 0 ENV(PROD)
+            %CLMSETUP ENV(&ENV)
+            SUBMIT 'CLM.PROD.JCL(CLMJ010)'
+            SUBMIT '&CLMHLQ..JCL(&JOB)'
+            CALL 'CLM.PROD.LOADLIB(CLMB010)'
+            """, spec -> spec.path("CLMFXTR.clist")));
+    }
+
+    /**
+     * INTERLINKS 17.2. An exec reaches the same members a CLIST does, and is one itself: which library
+     * a {@code %name} is found in is the session's answer, so an exec calling one reaches {@code SYSEXEC}.
+     */
+    @Test
+    void aRexxExecSubmitsAJob() {
+        rewriteRun(
+          spec -> spec.dataTable(Row.class, rows ->
+            assertThat(rows).extracting(Row::getDependent, Row::getDependentType, Row::getAction,
+                Row::getDependency, Row::getDependencyType)
+              .containsExactly(
+                tuple("CLMRERUN", REXX, SUBMITS, "CLMJ030", JCL),
+                tuple("CLMRERUN", REXX, CALL, "CLMPICK", REXX))),
+          rexx("""
+            /* REXX */
+            HLQ = 'CLM.PROD'
+            "SUBMIT '"HLQ".JCL(CLMJ030)'"
+            "SUBMIT '"HLQ".JCL("JOB")'"
+            %CLMPICK
+            """, spec -> spec.path("CLMRERUN.rexx")));
+    }
+
+    /**
+     * INTERLINKS 18.1. What a run book documents is the one edge its text draws by itself. The other
+     * names it mentions are names and not references: whether one is a component at all is answered by
+     * looking it up among the members a repository holds.
+     */
+    @Test
+    void aRunBookDocumentsAComponent() {
+        rewriteRun(
+          spec -> spec.dataTable(Row.class, rows ->
+            assertThat(rows).extracting(Row::getDependent, Row::getDependentType, Row::getAction,
+                Row::getDependency, Row::getDependencyType, Row::getActionMetadata,
+                Row::getDependentLine)
+              .containsExactly(
+                tuple("CLMJ010", DOCUMENT, REFERENCES, "CLMJ010", JCL, "DOCJOB", 3),
+                tuple("CLMEXTR", DOCUMENT, REFERENCES, "CLM.PROD.EXTRACT", DATA_SET, "DOCFICH", 3))),
+          document("""
+            DOCJOB   CLMJ010                                CASCADE MUTUAL - CLAIMS
+            ========================================================================
+            JOB          CLMJ010                    LIBRARY  CLM.PROD.JCL
+            STEPS
+              EXTRACT    PROC CLMBATCH  PGM CLMB010
+            """, spec -> spec.path("CLMJ010.docjob")),
+          document("""
+            DOCFICH  CLMEXTR                                CASCADE MUTUAL - CLAIMS
+            ========================================================================
+            FILE         CLM.PROD.EXTRACT           APPLICATION  CLAIMS
+            LAYOUT       COPYBOOK CLMEXTR
+            """, spec -> spec.path("CLMEXTR.docfich")));
     }
 }
