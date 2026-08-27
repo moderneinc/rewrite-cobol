@@ -142,8 +142,8 @@ macro library members by `.asm` and `.mac`, SAS members by `.sas`, CLISTs by `.c
 REXX execs by `.rexx`, `.rex` and `.rx`, run book members by `.docjob`, `.docpgm`, `.docfich`,
 `.docappl` and `.docoper`, C by `.c` and `.h`, PL/I by `.pli` and `.pl1`, and jobs by `.jcl`, `.prc` and
 `.proc`. Module listings, SAS members, scripts, run book members, C and PL/I have no grammar here: a
-build keeps them as plain text — the CLI takes these same extensions as its path masks — and which
-technology a member is comes from its path, which is what the traits reading it are matched by.
+build keeps them as plain text — the CLI reads them with `Members.parser()`, as the tests here do — and
+which technology a member is comes from its path, which is what the traits reading it are matched by.
 Since MainframeJCL, ADCD setup and Zowe's SZWESAMP keep their members as they came off the PDS, a
 `.txt` or extensionless file whose first card is JCL is a job, an extensionless file whose first
 subcommand binds is a bind deck, and an extensionless file whose first line is the `/* REXX */`

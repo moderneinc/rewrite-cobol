@@ -15,11 +15,9 @@
  */
 package org.openrewrite.cobol;
 
-import org.jspecify.annotations.Nullable;
 import org.openrewrite.Parser;
 import org.openrewrite.assembler.AssemblerParser;
 import org.openrewrite.bms.BmsParser;
-import org.openrewrite.controlcard.ControlCards;
 import org.openrewrite.controlcard.idcams.IdcamsParser;
 import org.openrewrite.controlm.ControlMParser;
 import org.openrewrite.controlcard.sort.SortParser;
@@ -28,21 +26,18 @@ import org.openrewrite.estate.Members;
 import org.openrewrite.ims.ImsParser;
 import org.openrewrite.jcl.JclParser;
 import org.openrewrite.linkedit.LinkEditParser;
-import org.openrewrite.text.PlainTextParser;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -56,12 +51,6 @@ import static java.util.stream.Collectors.toList;
  * would read and nothing else.
  */
 public final class Corpus {
-
-    /**
-     * The extensions a shop's control card library uses, where an AMBLIST request deck sits beside
-     * the sort cards, the IDCAMS cards and the parm cards it is not.
-     */
-    private static final List<String> CONTROL_CARD_FILE_EXTENSIONS = Arrays.asList(".ctl", ".prm");
 
     private Corpus() {
     }
@@ -180,44 +169,17 @@ public final class Corpus {
             return paths
               .filter(Files::isRegularFile)
               .filter(p -> isSource(repository.relativize(p)))
-              .filter(p -> wanted.contains(kindOf(p)))
+              .filter(p -> wanted.contains(Members.kindOfFile(p)))
               .sorted()
               .collect(toList());
         }
     }
 
     /**
-     * How a build reads the members an estate keeps as text.
-     * <p>
-     * The Moderne CLI builds this reader's masks from {@link Members#masks()}. Here it is asked
-     * about a file on disk instead, so it answers from the path and — for the two kinds a path does
-     * not name — from what the member opens with. The masks cannot answer that: a reader built with
-     * {@code plainTextMasks} takes any text file whose absolute path no mask matches, which over a
-     * walk of a repository is every member of it.
+     * The members an estate keeps as text, read the way a build reads them.
      */
     public static Parser plainTextReader() {
-        return new PlainTextParser() {
-            @Override
-            public boolean accept(Path path) {
-                return kindOf(path) != null;
-            }
-        };
-    }
-
-    /**
-     * What a member kept as text is: its path, or for an exec kept without an extension and an
-     * AMBLIST request deck in a control card library, what its first cards say.
-     */
-    private static Members.@Nullable Kind kindOf(Path member) {
-        Members.Kind kind = Members.kindOf(member);
-        if (kind != null) {
-            return kind;
-        }
-        if (ControlCards.accept(member, emptyList(), Members::isRexxExec)) {
-            return Members.Kind.REXX;
-        }
-        return ControlCards.accept(member, CONTROL_CARD_FILE_EXTENSIONS, Members::isModuleListing) ?
-          Members.Kind.LISTING : null;
+        return Members.parser();
     }
 
     public static List<Parser.Input> inputs(List<Path> paths) {

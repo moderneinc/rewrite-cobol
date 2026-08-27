@@ -19,7 +19,9 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.cobol.LineEndings;
+import org.openrewrite.controlcard.ControlCards;
 import org.openrewrite.text.PlainText;
+import org.openrewrite.text.PlainTextParser;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -30,6 +32,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.unmodifiableList;
 
@@ -69,6 +72,9 @@ public final class Members {
     public static final List<String> PLI_FILE_EXTENSIONS = unmodifiableList(asList(".pli", ".pl1"));
 
     public static final List<String> SAS_FILE_EXTENSIONS = unmodifiableList(singletonList(".sas"));
+
+    // A control card library, where an AMBLIST request deck sits beside the sort and IDCAMS cards.
+    private static final List<String> CONTROL_CARD_FILE_EXTENSIONS = asList(".ctl", ".prm");
 
     public static final List<String> LISTING_FILE_EXTENSIONS = unmodifiableList(
             asList(".amblist", ".binder", ".listload"));
@@ -173,16 +179,33 @@ public final class Members {
     }
 
     /**
-     * The path globs an ingestion keeps these members as text by, one per extension.
+     * The reader a build keeps these members as text with. It answers from the path and, for the
+     * two kinds a path does not name, from what the member opens with — a path mask cannot, since a
+     * {@link PlainTextParser} built with masks takes every text file no mask matches.
      */
-    public static List<String> masks() {
-        List<String> masks = new ArrayList<>();
-        for (Kind kind : Kind.values()) {
-            for (String extension : kind.extensions) {
-                masks.add("**/*" + extension);
+    public static PlainTextParser parser() {
+        return new PlainTextParser() {
+            @Override
+            public boolean accept(Path path) {
+                return kindOfFile(path) != null;
             }
+        };
+    }
+
+    /**
+     * What a member on disk is: what its name says, or for an exec kept without an extension and an
+     * AMBLIST request deck in a control card library, what its first cards say.
+     */
+    public static @Nullable Kind kindOfFile(Path file) {
+        Kind kind = kindOf(file);
+        if (kind != null) {
+            return kind;
         }
-        return masks;
+        if (ControlCards.accept(file, emptyList(), Members::isRexxExec)) {
+            return Kind.REXX;
+        }
+        return ControlCards.accept(file, CONTROL_CARD_FILE_EXTENSIONS, Members::isModuleListing) ?
+                Kind.LISTING : null;
     }
 
     /**
