@@ -18,6 +18,8 @@ package org.openrewrite.cobol;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.util.function.BiConsumer;
+
 /**
  * The line endings of a source a line reader is splitting into cards.
  * <p>
@@ -41,5 +43,26 @@ public final class LineEndings {
             return cursor + 1;
         }
         return cursor;
+    }
+
+    /**
+     * Hands each line of {@code source} to {@code line} as the text it was written as and whatever
+     * ended it, which is empty on a last line the file does not end. For a reader that keeps a line as
+     * a node of its own rather than handing text on to a grammar.
+     */
+    public static void split(String source, BiConsumer<String, String> line) {
+        int cursor = 0;
+        while (cursor < source.length()) {
+            int newline = source.indexOf('\n', cursor);
+            String text = newline < 0 ? source.substring(cursor) : source.substring(cursor, newline);
+            cursor = newline < 0 ? source.length() : newline + 1;
+
+            String ending = newline < 0 ? "" : "\n";
+            if (text.endsWith("\r")) {
+                text = text.substring(0, text.length() - 1);
+                ending = "\r" + ending;
+            }
+            line.accept(text, ending);
+        }
     }
 }

@@ -17,6 +17,7 @@ package org.openrewrite.textmember;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.openrewrite.cobol.LineEndings;
 import org.openrewrite.marker.Markers;
 import org.openrewrite.textmember.tree.TextMember;
 
@@ -70,19 +71,8 @@ public final class TextMemberLineReader {
 
     public static List<TextMember.Line> readLines(String source) {
         List<TextMember.Line> lines = new ArrayList<>();
-        int cursor = 0;
-        while (cursor < source.length()) {
-            int newline = source.indexOf('\n', cursor);
-            String text = newline < 0 ? source.substring(cursor) : source.substring(cursor, newline);
-            cursor = newline < 0 ? source.length() : newline + 1;
-
-            String lineEnding = newline < 0 ? "" : "\n";
-            if (text.endsWith("\r")) {
-                text = text.substring(0, text.length() - 1);
-                lineEnding = "\r" + lineEnding;
-            }
-            lines.add(new TextMember.Line(randomId(), Markers.EMPTY, text, lineEnding));
-        }
+        LineEndings.split(source, (text, lineEnding) ->
+                lines.add(new TextMember.Line(randomId(), Markers.EMPTY, text, lineEnding)));
         return lines;
     }
 
