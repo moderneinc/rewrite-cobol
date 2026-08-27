@@ -45,7 +45,10 @@ public class SasPrinter<P> extends SasVisitor<PrintOutputCapture<P>> {
         for (Sas part : statement.getParts()) {
             visit(part, p);
         }
-        visit(statement.getEnd(), p);
+        if (statement.getEnd() != null) {
+            visitSpace(statement.getEnd(), Space.Location.STATEMENT_END, p);
+            p.append(';');
+        }
         afterSyntax(statement, p);
         return statement;
     }

@@ -20,16 +20,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import lombok.With;
 import org.jspecify.annotations.Nullable;
-import org.openrewrite.Checksum;
-import org.openrewrite.Cursor;
-import org.openrewrite.FileAttributes;
-import org.openrewrite.PrintOutputCapture;
-import org.openrewrite.SourceFile;
-import org.openrewrite.Tree;
-import org.openrewrite.TreeVisitor;
+import org.openrewrite.*;
+import org.openrewrite.marker.Markers;
 import org.openrewrite.sas.SasVisitor;
 import org.openrewrite.sas.internal.SasPrinter;
-import org.openrewrite.marker.Markers;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -142,10 +136,12 @@ public interface Sas extends Tree {
         List<Sas> parts;
 
         /**
-         * The semicolon, or null for a statement the member ends without terminating.
+         * The space in front of the terminating semicolon, or null for a statement the member ends
+         * without terminating. The semicolon itself is the printer's to write: it is the only
+         * character a statement can end with, so a node for it would carry nothing.
          */
         @Nullable
-        Word end;
+        Space end;
 
         @Override
         public <P> Sas acceptSas(SasVisitor<P> v, P p) {

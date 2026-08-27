@@ -134,6 +134,7 @@ public class Space {
         COMPILATION_UNIT_EOF,
         COMMENT_PREFIX,
         STATEMENT_PREFIX,
+        STATEMENT_END,
         WORD_PREFIX
     }
 }

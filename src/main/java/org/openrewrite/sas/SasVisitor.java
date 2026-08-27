@@ -36,7 +36,7 @@ public class SasVisitor<P> extends TreeVisitor<Sas, P> {
         s = s.withMarkers(visitMarkers(s.getMarkers(), p));
         s = s.withParts(ListUtils.map(s.getParts(), part -> visitAndCast(part, p)));
         if (s.getEnd() != null) {
-            s = s.withEnd(visitAndCast(s.getEnd(), p));
+            s = s.withEnd(visitSpace(s.getEnd(), Space.Location.STATEMENT_END, p));
         }
         return s;
     }

@@ -158,9 +158,9 @@ public final class SasLineReader {
             prefix = space(at);
             parts = new ArrayList<>(0);
         }
-        Sas.Word end = null;
+        Space end = null;
         if (at >= 0) {
-            end = new Sas.Word(randomId(), space(at), Markers.EMPTY, ";");
+            end = space(at);
             cursor = at + 1;
         }
         statements.add(new Sas.Statement(randomId(), prefix, Markers.EMPTY, parts, end));
