@@ -17,8 +17,8 @@ package org.openrewrite.sas.trait;
 
 import org.junit.jupiter.api.Test;
 import org.openrewrite.DocumentExample;
-import org.openrewrite.sas.tree.Sas;
 import org.openrewrite.test.RewriteTest;
+import org.openrewrite.text.PlainText;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,16 +51,19 @@ class InstreamSasTest implements RewriteTest {
               RUN;
               /*
               """,
-            spec -> spec.afterRecipe(cu -> {
+            spec -> spec.path("jcl/CLMSTAT.jcl").afterRecipe(cu -> {
                 List<InstreamSas> streams = new InstreamSas.Matcher().lower(cu).collect(Collectors.toList());
                 assertThat(streams).extracting(InstreamSas::getName, InstreamSas::getLine)
                   .containsExactly(tuple("SYSIN", 4));
 
-                Sas.CompilationUnit program = streams.get(0).parse();
+                PlainText program = streams.get(0).parse();
                 // The text starts at the first card, so the program's own lines are the job's.
                 assertThat(streams.get(0).getText()).isEqualTo(program.printAll());
-                assertThat(new Include.Matcher().lower(program).collect(Collectors.toList()))
-                  .extracting(Include::getMember, Include::getLine)
+                // The program has no member name of its own, so it is given the job's under .sas —
+                // which is what says it is SAS to every trait that reads it.
+                assertThat(program.getSourcePath()).hasToString("jcl/CLMSTAT.sas");
+                assertThat(new Include.Matcher().require(program, null).getReferences())
+                  .extracting(Include.Reference::getMember, Include.Reference::getLine)
                   .containsExactly(tuple("CLMSMAC", 1));
             })
           )

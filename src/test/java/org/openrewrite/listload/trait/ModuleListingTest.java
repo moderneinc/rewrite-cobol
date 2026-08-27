@@ -16,11 +16,12 @@
 package org.openrewrite.listload.trait;
 
 import org.junit.jupiter.api.Test;
+import org.openrewrite.estate.Members;
 import org.openrewrite.test.RewriteTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.openrewrite.listload.Assertions.listLoad;
+import static org.openrewrite.test.SourceSpecs.text;
 
 class ModuleListingTest implements RewriteTest {
 
@@ -92,7 +93,7 @@ class ModuleListingTest implements RewriteTest {
     @Test
     void whatAModuleSummarySaysAboutTheModule() {
         rewriteRun(
-          listLoad(AMBLIST, spec -> spec.afterRecipe(cu -> {
+          text(AMBLIST, spec -> spec.afterRecipe(cu -> {
               ModuleListing.Module module = new ModuleListing.Matcher().require(cu, null).getModules().get(0);
               assertThat(module.getName()).isEqualTo("CLMI010");
               assertThat(module.getLibrary()).isEqualTo("LOADLIB");
@@ -113,7 +114,7 @@ class ModuleListingTest implements RewriteTest {
     @Test
     void theEntryPointIsAnOffsetUntilTheSectionsResolveIt() {
         rewriteRun(
-          listLoad(AMBLIST, spec -> spec.afterRecipe(cu -> {
+          text(AMBLIST, spec -> spec.afterRecipe(cu -> {
               ModuleListing.Entry entry = new ModuleListing.Matcher().require(cu, null)
                 .getModules().get(0).getEntry();
               assertThat(entry.getName()).isEqualTo("DLITCBL");
@@ -126,7 +127,7 @@ class ModuleListingTest implements RewriteTest {
     @Test
     void theSectionsTheModuleIsMadeOf() {
         rewriteRun(
-          listLoad(AMBLIST, spec -> spec.afterRecipe(cu -> {
+          text(AMBLIST, spec -> spec.afterRecipe(cu -> {
               ModuleListing.Module module = new ModuleListing.Matcher().require(cu, null).getModules().get(0);
               assertThat(module.getCsects())
                 .extracting(ModuleListing.Csect::getName, ModuleListing.Csect::getOffset,
@@ -141,10 +142,33 @@ class ModuleListingTest implements RewriteTest {
         );
     }
 
+    /**
+     * Column 1 of a report is what the printer acted on rather than something it printed, so a row
+     * whose carriage control stands against the name would otherwise take the character for part of
+     * it.
+     */
+    @Test
+    void columnOneOfAReportIsCarriageControlAndNotText() {
+        String report = String.join("\n",
+          "1                                          A M B L I S T                                 PAGE     1",
+          "0                                          ** MODULE SUMMARY **",
+          "      MEMBER NAME:                  CLMB010",
+          "0                                          ** CONTROL SECTION SUMMARY **",
+          "-CLMB010       00000000  00001C30  SD",
+          "");
+
+        rewriteRun(
+          text(report, spec -> spec.afterRecipe(cu -> assertThat(
+            new ModuleListing.Matcher().require(cu, null).getModules().get(0).getCsects())
+            .extracting(ModuleListing.Csect::getName)
+            .containsExactly("CLMB010")))
+        );
+    }
+
     @Test
     void whatCompiledEachSection() {
         rewriteRun(
-          listLoad(AMBLIST, spec -> spec.afterRecipe(cu -> assertThat(
+          text(AMBLIST, spec -> spec.afterRecipe(cu -> assertThat(
             new ModuleListing.Matcher().require(cu, null).getModules().get(0).getCsects())
             .extracting(csect -> csect.getTranslator().getProductId(),
               csect -> csect.getTranslator().getLanguage(),
@@ -159,7 +183,7 @@ class ModuleListingTest implements RewriteTest {
     @Test
     void whatTheReportWasAskedFor() {
         rewriteRun(
-          listLoad("  LISTLOAD OUTPUT=MODLIST,DDN=LOADLIB\n  LISTIDR  DDN=CICSLOAD\n",
+          text("  LISTLOAD OUTPUT=MODLIST,DDN=LOADLIB\n  LISTIDR  DDN=CICSLOAD\n",
             spec -> spec.afterRecipe(cu -> assertThat(new ModuleListing.Matcher().require(cu, null).getRequests())
               .extracting(ModuleListing.Request::getFunction, ModuleListing.Request::getDdName,
                 ModuleListing.Request::getOutput, ModuleListing.Request::getLine)
@@ -176,7 +200,7 @@ class ModuleListingTest implements RewriteTest {
     @Test
     void theDeckABinderListingEchoes() {
         rewriteRun(
-          listLoad(BINDER, spec -> spec.afterRecipe(cu -> {
+          text(BINDER, spec -> spec.afterRecipe(cu -> {
               ModuleListing.Module module = new ModuleListing.Matcher().require(cu, null).getModules().get(0);
               assertThat(module.getName()).isEqualTo("CLMC020");
               assertThat(module.getLine()).isEqualTo(9);
@@ -196,7 +220,7 @@ class ModuleListingTest implements RewriteTest {
     @Test
     void theSectionsABinderMapPlaces() {
         rewriteRun(
-          listLoad(BINDER, spec -> spec.afterRecipe(cu -> {
+          text(BINDER, spec -> spec.afterRecipe(cu -> {
               ModuleListing.Module module = new ModuleListing.Matcher().require(cu, null).getModules().get(0);
               assertThat(module.getCsects())
                 .extracting(ModuleListing.Csect::getName, ModuleListing.Csect::getOffset,
@@ -226,10 +250,34 @@ class ModuleListingTest implements RewriteTest {
             "");
 
         rewriteRun(
-          listLoad(listing, spec -> spec.afterRecipe(cu -> assertThat(
+          text(listing, spec -> spec.afterRecipe(cu -> assertThat(
             new ModuleListing.Matcher().require(cu, null).getModules().get(0).getCsects())
             .extracting(ModuleListing.Csect::getName)
             .containsExactly("CLMC020", "DFHECI", "CLMU020")))
         );
+    }
+
+    @Test
+    void typesAReportByItsHeadingAndADeckByItsFunction() {
+        assertThat(Members.isReport("1                     A M B L I S T          PAGE 1\n")).isTrue();
+        assertThat(Members.isReport("1z/OS V2 R5 BINDER\n IEW2278I B352 INVOCATION PARAMETERS - LIST,MAP\n")).isTrue();
+        assertThat(Members.isRequest("  LISTLOAD OUTPUT=MODLIST,DDN=LOADLIB\n")).isTrue();
+
+        assertThat(Members.isModuleListing("  SORT FIELDS=(1,8,CH,A)\n")).isFalse();
+        assertThat(Members.isModuleListing("  DELETE CLM.PROD.EXTRACT\n")).isFalse();
+    }
+
+    /**
+     * A member that says nothing about itself must not cost a full read to type: a report announces
+     * itself in its heading and a deck in its first card.
+     */
+    @Test
+    void doesNotReadAWholeFileToRefuseIt() {
+        StringBuilder parms = new StringBuilder();
+        for (int i = 0; i < 200; i++) {
+            parms.append("  RECFM=FB,LRECL=80\n");
+        }
+        parms.append("1                     A M B L I S T\n");
+        assertThat(Members.isModuleListing(parms.toString())).isFalse();
     }
 }

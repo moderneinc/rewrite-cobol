@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openrewrite.textmember.trait;
+package org.openrewrite.estate.trait;
 
 import org.junit.jupiter.api.Test;
 import org.openrewrite.test.RewriteTest;
-import org.openrewrite.textmember.tree.TextMember;
+import org.openrewrite.text.PlainText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +25,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.openrewrite.textmember.Assertions.clist;
-import static org.openrewrite.textmember.Assertions.document;
-import static org.openrewrite.textmember.Assertions.rexx;
+import static org.openrewrite.test.SourceSpecs.text;
 
 class ScriptTest implements RewriteTest {
 
@@ -38,7 +36,7 @@ class ScriptTest implements RewriteTest {
     @Test
     void readsWhatEachStatementOfAClistReaches() {
         rewriteRun(
-          clist(
+          text(
             """
               PROC 1 JOB
               /*  %CLMSUB IN A COMMENT IS NOT A CALL  */
@@ -54,7 +52,7 @@ class ScriptTest implements RewriteTest {
               WRITENR CLMSUB: SUBMIT &JOB FROM CLM.PROD.JCL (Y/N)?
               SUBMIT 'CLM.PROD.JCL(CLMJ010)'
               """,
-            spec -> spec.afterRecipe(cu -> assertThat(references(cu))
+            spec -> spec.path("CLMDLG.clist").afterRecipe(cu -> assertThat(references(cu))
               .extracting(Script.Reference::getKind, Script.Reference::getName,
                 Script.Reference::getDataSet, Script.Reference::getLine)
               .containsExactly(
@@ -77,13 +75,13 @@ class ScriptTest implements RewriteTest {
     @Test
     void readsTheVerbOfTheStatementAndNotAWordInAMessage() {
         rewriteRun(
-          clist(
+          text(
             """
               WRITE CLMNITE: SUBMIT CLMJ010 (Y/N/Q)?
               SET &ZEDLMSG = &STR(EDIT OF CLM.PROD.JCL(CLMJ010) ENDED RC=&RC)
               IF &JOB = CLMCMPC THEN SUBMIT 'CLM.PROD.JCL(CLMCMPC)'
               """,
-            spec -> spec.afterRecipe(cu -> assertThat(references(cu))
+            spec -> spec.path("CLMNITE.clist").afterRecipe(cu -> assertThat(references(cu))
               .extracting(Script.Reference::getKind, Script.Reference::getName)
               .containsExactly(tuple(Script.Reference.Kind.SUBMIT, "CLMCMPC"))))
         );
@@ -96,13 +94,13 @@ class ScriptTest implements RewriteTest {
     @Test
     void saysWhichNamesTheScriptComputedAndWhichItWroteDown() {
         rewriteRun(
-          clist(
+          text(
             """
               SUBMIT '&CLMHLQ..JCL(&JOB)'
               CALL '&CLMHLQ..LOADLIB(CLMB010)'
               ALTLIB ACTIVATE APPLICATION(CLIST) DATASET('&CLMHLQ..CLIST') QUIET
               """,
-            spec -> spec.afterRecipe(cu -> assertThat(references(cu))
+            spec -> spec.path("CLMSUB.clist").afterRecipe(cu -> assertThat(references(cu))
               .extracting(Script.Reference::getName, Script.Reference::isSymbolic)
               .containsExactly(
                 tuple("&JOB", true),
@@ -120,7 +118,7 @@ class ScriptTest implements RewriteTest {
     @Test
     void joinsUpTheStringsARexxExecBuildsACommandFrom() {
         rewriteRun(
-          rexx(
+          text(
             """
               /* REXX */
               HLQ = 'CLM.PROD'
@@ -129,7 +127,7 @@ class ScriptTest implements RewriteTest {
               "SUBMIT '"HLQ".JCL(CLMJ010)'"
               "SUBMIT * END(@@)"
               """,
-            spec -> spec.afterRecipe(cu -> assertThat(references(cu))
+            spec -> spec.path("CLMPICK.rexx").afterRecipe(cu -> assertThat(references(cu))
               .extracting(Script.Reference::getKind, Script.Reference::getName,
                 Script.Reference::getDataSet, Script.Reference::getDdName,
                 Script.Reference::isSymbolic)
@@ -141,6 +139,24 @@ class ScriptTest implements RewriteTest {
     }
 
     /**
+     * An exec kept without an extension — which is how a PDS member arrives when it is copied off as
+     * it stands — is known by the comment TSO itself reads, and by nothing else.
+     */
+    @Test
+    void readsAnExecKeptWithoutAnExtension() {
+        rewriteRun(
+          text(
+            """
+              /* REXX - SUBMIT THE NIGHTLY STREAM */
+              "SUBMIT 'CLM.PROD.JCL(CLMJ010)'"
+              """,
+            spec -> spec.path("rexx/CLMNITE").afterRecipe(cu -> assertThat(references(cu))
+              .extracting(Script.Reference::getKind, Script.Reference::getName)
+              .containsExactly(tuple(Script.Reference.Kind.SUBMIT, "CLMJ010"))))
+        );
+    }
+
+    /**
      * Every name a script writes, which is what a search for a member name finds in it. It
      * over-answers on purpose: an English word of eight letters or fewer is spelled exactly like a
      * member name, and which of these is a component is a join and not a lexical rule.
@@ -148,14 +164,14 @@ class ScriptTest implements RewriteTest {
     @Test
     void findsEveryNameAScriptWritesDown() {
         rewriteRun(
-          clist(
+          text(
             """
               /*  RUN THE NIGHTLY STREAM, TABLE CLMNIGHT  */
               SET &JOB1 = CLMJ010
               SET &JOB2 = CLMJ020
               %CLMSUB &JOB NOASK
               """,
-            spec -> spec.afterRecipe(cu -> {
+            spec -> spec.path("CLMNITE.clist").afterRecipe(cu -> {
                 List<String> names = new ArrayList<>();
                 new Script.Matcher().require(cu, null).getMentions().forEach(name -> names.add(name.getText()));
                 assertThat(names).contains("CLMNIGHT", "CLMJ010", "CLMJ020", "CLMSUB");
@@ -178,17 +194,17 @@ class ScriptTest implements RewriteTest {
     @Test
     void doesNotReadARunBookAsAScript() {
         rewriteRun(
-          document(
+          text(
             """
               DOCPGM   CLMB010
               CALLS        NONE
               """,
-            spec -> spec.afterRecipe(cu ->
+            spec -> spec.path("CLMB010.docpgm").afterRecipe(cu ->
               assertThat(new Script.Matcher().lower(cu).collect(Collectors.toList())).isEmpty()))
         );
     }
 
-    private static List<Script.Reference> references(TextMember.CompilationUnit cu) {
+    private static List<Script.Reference> references(PlainText cu) {
         return new Script.Matcher().require(cu, null).getReferences();
     }
 }

@@ -31,11 +31,6 @@ import org.openrewrite.db2.bind.BindParser;
 import org.openrewrite.ims.ImsParser;
 import org.openrewrite.jcl.JclParser;
 import org.openrewrite.linkedit.LinkEditParser;
-import org.openrewrite.listload.ListLoadParser;
-import org.openrewrite.sas.SasParser;
-import org.openrewrite.textmember.ClistParser;
-import org.openrewrite.textmember.DocumentParser;
-import org.openrewrite.textmember.RexxParser;
 import org.openrewrite.tree.ParseError;
 
 import java.io.IOException;
@@ -85,14 +80,12 @@ class FixtureCoverageTest {
         readers.put("sort", SortParser.builder().build());
         readers.put("IDCAMS", IdcamsParser.builder().build());
         readers.put("link-edit", LinkEditParser.builder().build());
-        readers.put("load module listing", ListLoadParser.builder().build());
         readers.put("DB2 DDL", Db2Parser.builder().build());
         readers.put("IMS gen", ImsParser.builder().build());
         readers.put("assembler", AssemblerParser.builder().build());
-        readers.put("SAS", SasParser.builder().build());
-        readers.put("CLIST", ClistParser.builder().build());
-        readers.put("REXX", RexxParser.builder().build());
-        readers.put("run book", DocumentParser.builder().build());
+        // The scripts, run books, SAS members and listings are one reader: what each of them is
+        // comes from its path rather than from having been parsed as its own language.
+        readers.put("text", Corpus.plainTextReader());
 
         List<String> claimedTwice = new ArrayList<>();
         List<String> failures = new ArrayList<>();

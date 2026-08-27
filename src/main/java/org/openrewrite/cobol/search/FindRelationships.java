@@ -56,6 +56,10 @@ import org.openrewrite.db2.bind.BindIsoVisitor;
 import org.openrewrite.db2.bind.InStreamBindDeck;
 import org.openrewrite.db2.bind.trait.BindCommand;
 import org.openrewrite.db2.bind.tree.Bind;
+import org.openrewrite.estate.Members;
+import org.openrewrite.estate.trait.Mention;
+import org.openrewrite.estate.trait.RunBook;
+import org.openrewrite.estate.trait.Script;
 import org.openrewrite.internal.ListUtils;
 import org.openrewrite.internal.StringUtils;
 import org.openrewrite.ims.ImsIsoVisitor;
@@ -76,21 +80,14 @@ import org.openrewrite.linkedit.InStreamLinkEditDeck;
 import org.openrewrite.linkedit.LinkEditIsoVisitor;
 import org.openrewrite.linkedit.trait.LinkEditDeck;
 import org.openrewrite.linkedit.tree.LinkEdit;
-import org.openrewrite.listload.ListLoadIsoVisitor;
 import org.openrewrite.listload.trait.ModuleListing;
-import org.openrewrite.listload.tree.ListLoad;
 import org.openrewrite.marker.Range;
 import org.openrewrite.marker.SearchResult;
-import org.openrewrite.sas.SasIsoVisitor;
 import org.openrewrite.sas.trait.Include;
 import org.openrewrite.sas.trait.InstreamSas;
 import org.openrewrite.sas.trait.SqlQuery;
-import org.openrewrite.sas.tree.Sas;
-import org.openrewrite.textmember.TextMemberIsoVisitor;
-import org.openrewrite.textmember.trait.Mention;
-import org.openrewrite.textmember.trait.RunBook;
-import org.openrewrite.textmember.trait.Script;
-import org.openrewrite.textmember.tree.TextMember;
+import org.openrewrite.text.PlainText;
+import org.openrewrite.text.PlainTextVisitor;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -404,15 +401,6 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
             }
         };
 
-        SasIsoVisitor<ExecutionContext> sasVisitor = new SasIsoVisitor<ExecutionContext>() {
-            @Override
-            public Sas.CompilationUnit visitCompilationUnit(Sas.CompilationUnit cu, ExecutionContext ctx) {
-                sasRelationships(cu, memberName(cu.getSourcePath()), SAS,
-                        cu.getSourcePath().toString(), 0, ctx);
-                return cu;
-            }
-        };
-
         LinkEditIsoVisitor<ExecutionContext> linkEditVisitor = new LinkEditIsoVisitor<ExecutionContext>() {
             @Override
             public LinkEdit.CompilationUnit visitCompilationUnit(LinkEdit.CompilationUnit cu, ExecutionContext ctx) {
@@ -431,14 +419,6 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
                 psbRelationships(cu, ctx);
                 systemDefinitionRelationships(cu, ctx);
                 formatSetRelationships(cu, ctx);
-                return cu;
-            }
-        };
-
-        ListLoadIsoVisitor<ExecutionContext> listingVisitor = new ListLoadIsoVisitor<ExecutionContext>() {
-            @Override
-            public ListLoad.CompilationUnit visitCompilationUnit(ListLoad.CompilationUnit cu, ExecutionContext ctx) {
-                listingRelationships(cu, ctx);
                 return cu;
             }
         };
@@ -486,12 +466,35 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
             }
         };
 
-        TextMemberIsoVisitor<ExecutionContext> textMemberVisitor = new TextMemberIsoVisitor<ExecutionContext>() {
+        // Every member kept as plain text arrives as the same tree, so what one is has to be asked.
+        PlainTextVisitor<ExecutionContext> textVisitor = new PlainTextVisitor<ExecutionContext>() {
             @Override
-            public TextMember.CompilationUnit visitCompilationUnit(TextMember.CompilationUnit cu, ExecutionContext ctx) {
-                new Script.Matcher().lower(cu).forEach(script -> scriptRelationships(script, cu, acc, ctx));
-                new RunBook.Matcher().lower(cu).forEach(book -> runBookRelationships(book, cu, ctx));
-                return cu;
+            public PlainText visitText(PlainText text, ExecutionContext ctx) {
+                Members.Kind kind = Members.kindOf(text);
+                if (kind == null) {
+                    return text;
+                }
+                switch (kind) {
+                    case CLIST:
+                    case REXX:
+                        new Script.Matcher().lower(text)
+                                .forEach(script -> scriptRelationships(script, text, acc, ctx));
+                        break;
+                    case DOCUMENT:
+                        new RunBook.Matcher().lower(text)
+                                .forEach(book -> runBookRelationships(book, text, ctx));
+                        break;
+                    case SAS:
+                        sasRelationships(text, memberName(text.getSourcePath()), SAS,
+                                text.getSourcePath().toString(), 0, ctx);
+                        break;
+                    case LISTING:
+                        listingRelationships(text, ctx);
+                        break;
+                    default:
+                        break;
+                }
+                return text;
             }
         };
 
@@ -601,12 +604,8 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
                     t = cobolVisitor.visit(t, ctx);
                 } else if (tree instanceof Assembler) {
                     t = assemblerVisitor.visit(t, ctx);
-                } else if (tree instanceof Sas) {
-                    t = sasVisitor.visit(t, ctx);
                 } else if (tree instanceof LinkEdit) {
                     t = linkEditVisitor.visit(t, ctx);
-                } else if (tree instanceof ListLoad) {
-                    t = listingVisitor.visit(t, ctx);
                 } else if (tree instanceof Ims) {
                     t = genVisitor.visit(t, ctx);
                 } else if (tree instanceof Bind) {
@@ -619,8 +618,8 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
                     t = preprocessorVisitor.visit(t, ctx);
                 } else if (tree instanceof ControlM) {
                     t = controlMVisitor.visit(t, ctx);
-                } else if (tree instanceof TextMember) {
-                    t = textMemberVisitor.visit(t, ctx);
+                } else if (tree instanceof PlainText) {
+                    t = textVisitor.visit(t, ctx);
                 }
                 return t;
             }
@@ -705,17 +704,17 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
      *                   which is nothing for a member of its own and the SYSIN's position for an
      *                   in-stream one.
      */
-    private void sasRelationships(Sas.CompilationUnit program, String memberName,
+    private void sasRelationships(PlainText program, String memberName,
                                   CobolRelationships.ResourceType memberType, String sourcePath,
                                   int lineOffset, ExecutionContext ctx) {
         Set<String> seen = new HashSet<>();
-        for (Include include : new Include.Matcher().lower(program).collect(Collectors.toList())) {
+        for (Include.Reference include : new Include.Matcher().require(program, null).getReferences()) {
             if (include.getMember() != null) {
                 insertDeckRow(seen, memberName, memberType, INCLUDE, include.getMember(), SAS,
                         sourcePath, lineOffset + include.getLine(), ctx);
             }
         }
-        for (SqlQuery query : new SqlQuery.Matcher().lower(program).collect(Collectors.toList())) {
+        for (SqlQuery.Query query : new SqlQuery.Matcher().require(program, null).getQueries()) {
             for (SqlQuery.Table table : query.getTables()) {
                 // A name read out of a SAS library is a data set of that library and not a table any
                 // DB2 catalog has heard of; only what came through the connection is.
@@ -826,13 +825,13 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
      * allocates, which close against the DD names of the program it runs and belong to a recipe that
      * has both.
      */
-    private void scriptRelationships(Script script, TextMember.CompilationUnit member, Assemblers acc,
+    private void scriptRelationships(Script script, PlainText member, Assemblers acc,
                                      ExecutionContext ctx) {
         Set<String> seen = new HashSet<>();
         String memberName = memberName(member.getSourcePath());
         String sourcePath = member.getSourcePath().toString();
         CobolRelationships.ResourceType scriptType =
-                member.getKind() == TextMember.Kind.REXX ? REXX : CLIST;
+                Members.kindOf(member) == Members.Kind.REXX ? REXX : CLIST;
 
         for (Script.Reference reference : script.getReferences()) {
             if (reference.isSymbolic()) {
@@ -872,7 +871,7 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
      * looking it up among the members a repository holds, which is a join and not something one member
      * says.
      */
-    private void runBookRelationships(RunBook book, TextMember.CompilationUnit member, ExecutionContext ctx) {
+    private void runBookRelationships(RunBook book, PlainText member, ExecutionContext ctx) {
         Mention subject = book.getSubject();
         CobolRelationships.ResourceType documented = documented(book.getShape());
         if (subject == null || documented == null) {
@@ -906,7 +905,7 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
      * the language interface the autocall pulled in as well as the objects the deck asked for — so
      * reconciling the two finds a module built from something other than the source a shop keeps.
      */
-    private void listingRelationships(ListLoad.CompilationUnit listing, ExecutionContext ctx) {
+    private void listingRelationships(PlainText listing, ExecutionContext ctx) {
         Set<String> seen = new HashSet<>();
         String sourcePath = listing.getSourcePath().toString();
         for (ModuleListing.Module module : new ModuleListing.Matcher().require(listing, null).getModules()) {

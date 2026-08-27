@@ -21,7 +21,7 @@
 
 ## What is this?
 
-This project implements a [Rewrite module](https://github.com/openrewrite/rewrite) that provides parsers, visitors, and recipes for COBOL and related mainframe technologies. It supports parsing and transforming COBOL source code, JCL (Job Control Language), BMS map sets, DB2 DDL, DB2 bind cards, link-edit decks, load module listings, DFSORT and IDCAMS control cards, Control-M job definitions, IMS gen source, HLASM assembler and SAS, and it types the CLISTs, REXX execs, run book members, C and PL/I an estate keeps beside them.
+This project implements a [Rewrite module](https://github.com/openrewrite/rewrite) that provides parsers, visitors, and recipes for COBOL and related mainframe technologies. It supports parsing and transforming COBOL source code, JCL (Job Control Language), BMS map sets, DB2 DDL, DB2 bind cards, link-edit decks, DFSORT and IDCAMS control cards, Control-M job definitions, IMS gen source and HLASM assembler, and it reads the SAS, load module listings, CLISTs, REXX execs, run book members, C and PL/I an estate keeps beside them out of the plain text a build keeps them as.
 
 ### Language Support
 
@@ -31,14 +31,14 @@ This project implements a [Rewrite module](https://github.com/openrewrite/rewrit
 - **DB2 DDL** — DB2 for z/OS DDL (`.ddl`, `.sql`, and the `SYSIN` streams of the jobs that create a schema): every statement the SQL reference documents is modelled, so a statement that cannot be read is a syntax error rather than a node that says nothing
 - **Bind cards** — DSN command decks (`.bnd`, and an extensionless CARDLIB member whose first subcommand binds): `BIND PLAN`, `BIND PACKAGE` and `REBIND` with their keyword operands, read from a member of their own or from the in-stream `SYSTSIN` of the job that runs them
 - **Link-edit decks** — Binder control statements (`.lnk`, `.lked`, and an extensionless LINKLIB member whose first statement links): `INCLUDE ddname(member)`, `ENTRY`, `ALIAS`, `NAME xxx(R)`, `ORDER`, `MODE`, `SETCODE` and `SETOPT`, with column 72 saying which card continues which. A deck is the only place a load module's composition is written down — a step names the module, and the module names its programs here
-- **Load module listings** — What AMBLIST and the binder printed about a load library (`.amblist`, `.binder`, `.listload`, and a control card member that asks for a report): the module and its entry point, aliases and size, the control sections it holds with their offsets and lengths, the alternate entry points within them, and the compiler each section came from. A deck says what a module was meant to hold; a listing says what it holds, including the language interface and the runtime nobody wrote a card for
+- **Load module listings** — What AMBLIST and the binder printed about a load library (`.amblist`, `.binder`, `.listload`, and a control card member that asks for a report), kept as plain text and read for what it names: the module and its entry point, aliases and size, the control sections it holds with their offsets and lengths, the alternate entry points within them, and the compiler each section came from. A deck says what a module was meant to hold; a listing says what it holds, including the language interface and the runtime nobody wrote a card for
 - **Sort cards** — DFSORT and ICETOOL control statements: `SORT`/`MERGE FIELDS`, `INCLUDE`/`OMIT COND`, `INREC`/`OUTREC`/`OUTFIL`, `SUM`, `OPTION`, with the control fields read as byte positions into the record, which is what joins a sort card to the copybook that describes it
 - **IDCAMS cards** — Access method services commands: `DEFINE CLUSTER`/`AIX`/`PATH`/`GDG` with their parameter groups, `REPRO`, `DELETE`, `LISTCAT`, `PRINT` and `ALTER`, which is where a VSAM file's key, record size and components are written down
 - **Control-M** — Job scheduling definitions, both dialects a shop has: the z/OS panel (`.ctms`) and the XML an export writes (`.controlm`). The JCL member each job runs, the `IN` and `OUT` conditions that order them, the SMART table they sit in and the calendars they run on, which is what turns a library of jobs into the order they actually run in
 - **IMS gen source** — The DBDs, PSBs, MFS format sets and stage 1 decks a shop gens its IMS system from (`.dbd`, `.psb`, `.mfs`, `.gen`, and an `.asm` whose first macro is one that gens, since a gen library is assembler source and is often kept as such): the databases with their segments, keys and logical relationships, the PCBs a program is handed and the segments each is sensitive to, the screens a message is laid out on, and the transactions that schedule a PSB. A DL/I call names a PCB by position and a segment by name, and the gen source is the only place either resolves to anything
 - **Assembler** — HLASM statement source (`.asm`, `.mac`): control sections and the DSECTs that are the assembler's copybooks, laid out constant by constant so a layout can be compared with the COBOL one; `COPY` members, macro prototypes and invocations, `CALL` and `V`-type constants, DCBs, entry points and external names. There is no grammar because the columns are the syntax — a card continues the one above it because of a character in column 72, and `ICTL` moves the columns at run time
-- **SAS** — SAS programs (`.sas`, and the `SYSIN` a job carries in-stream): `%INCLUDE`, `LIBNAME`, `INFILE`/`FILE`/`FILENAME`, macro definitions and invocations, `INPUT` column layouts and the tables a `PROC SQL` reads, which is where a batch extract is read again by the group that asks what the numbers mean. A statement runs to the first semicolon outside a quoted string or a comment and SAS has no reserved words, so what there is to read is a text search and a name reference rather than a grammar
-- **CLISTs, REXX execs and run book members** — Typed and held as the lines they were written as, since a member no parser claims reaches a repository as a text file and a text file is not searchable as the technology it is. A CLIST (`.clist`, `.clst`) and an exec (`.rexx`, `.rex`, `.rx`, and an extensionless member whose first line is the `/* REXX */` comment TSO reads) are read for the jobs they submit, the programs they run and the scripts they call, which is the only place in an estate that says how a job is started by hand; a run book member (`.docjob`, `.docpgm`, `.docfich`, `.docappl`, `.docoper`) for the component it documents and the components it names. C (`.c`, `.h`) and PL/I (`.pli`, `.pl1`) are typed and nothing more is read from them
+- **SAS** — SAS programs (`.sas`, and the `SYSIN` a job carries in-stream), kept as plain text and read for `%INCLUDE`, `LIBNAME`, `INFILE`/`FILE`/`FILENAME`, macro definitions and invocations, `INPUT` column layouts and the tables a `PROC SQL` reads, which is where a batch extract is read again by the group that asks what the numbers mean. A statement runs to the first semicolon outside a quoted string or a comment and SAS has no reserved words, so what there is to read is a text search and a name reference rather than a grammar
+- **CLISTs, REXX execs and run book members** — Kept as plain text and read for what they name, since a member no grammar claims still says who runs what. A CLIST (`.clist`, `.clst`) and an exec (`.rexx`, `.rex`, `.rx`, and an extensionless member whose first line is the `/* REXX */` comment TSO reads) are read for the jobs they submit, the programs they run and the scripts they call, which is the only place in an estate that says how a job is started by hand; a run book member (`.docjob`, `.docpgm`, `.docfich`, `.docappl`, `.docoper`) for the component it documents and the components it names. C (`.c`, `.h`) and PL/I (`.pli`, `.pl1`) are kept so that they are searchable as what they are, and nothing more is read from them
 
 ### Recipes
 
@@ -119,8 +119,8 @@ adds the 110 jobs, among them DB2 DDL and BIND in JCL, where Bank of Z has one.
 
 The last row is not a public application but a fixture: one fictional insurance claims
 application, CLAIMS, written so that every `COPY`, `CALL`, `EXEC PROC`, `SEND MAP` and `SYSIN`
-member in it resolves to a member of the same repository, and every member of it a parser here reads
-parses. Seventeen readers take 260 of its members between them and the only member kind left is the
+member in it resolves to a member of the same repository, and every member of it a reader here takes
+reads. The readers take 260 of its members between them and the only member kind left is the
 plain control card — the nine IEBGENER, DSN, RUNSTATS and parm cards of `claims/ctlcard` — which the
 walks skip rather than count against a parser. Nothing else in the repository is a member of a
 library at all: its licence and its two markdown documents are the whole of the rest. The public
@@ -133,19 +133,22 @@ the walk cannot see, a symbolic link say, would otherwise pass as an empty appli
 claimed by one reader and no more and the kinds nothing reads are claimed by none: a reader that
 quietly takes a parm card reports something plausible about a file it cannot read.
 
-Clone them side by side into one directory and point the tests at it. The tests find files the way
-the parsers accept them, whatever the case of the extension: programs by `.cbl`, `.cob` and
+Clone them side by side into one directory and point the tests at it. The tests find files the way a
+build does, whatever the case of the extension: programs by `.cbl`, `.cob` and
 `.cobol`, copybooks by `.cpy`, `.copy` and `.dcl`, map sets by `.bms`, bind decks by `.bnd`, link-edit
 decks by `.lnk` and `.lked`, module listings by `.amblist`, `.binder` and `.listload`, schedules by
 `.ctms` and `.controlm`, IMS gen members by `.dbd`, `.psb`, `.gen` and `.mfs`, assembler programs and
 macro library members by `.asm` and `.mac`, SAS members by `.sas`, CLISTs by `.clist` and `.clst`,
 REXX execs by `.rexx`, `.rex` and `.rx`, run book members by `.docjob`, `.docpgm`, `.docfich`,
 `.docappl` and `.docoper`, C by `.c` and `.h`, PL/I by `.pli` and `.pl1`, and jobs by `.jcl`, `.prc` and
-`.proc` — or, since MainframeJCL, ADCD setup and Zowe's SZWESAMP keep their members as they came off
-the PDS, by a `.txt` or extensionless file whose first card is JCL, by an extensionless file
-whose first subcommand binds, and by an extensionless file whose first line is the `/* REXX */`
-comment TSO itself reads. Control card members are typed by what they say rather than by what
-they are called: a `.ctl`, `.prm` or extensionless member is a sort deck, an IDCAMS deck, a
+`.proc`. Module listings, SAS members, scripts, run book members, C and PL/I have no grammar here: a
+build keeps them as plain text — the CLI takes these same extensions as its path masks — and which
+technology a member is comes from its path, which is what the traits reading it are matched by.
+Since MainframeJCL, ADCD setup and Zowe's SZWESAMP keep their members as they came off the PDS, a
+`.txt` or extensionless file whose first card is JCL is a job, an extensionless file whose first
+subcommand binds is a bind deck, and an extensionless file whose first line is the `/* REXX */`
+comment TSO itself reads is an exec. Control card members are typed by what they say rather than by
+what they are called: a `.ctl`, `.prm` or extensionless member is a sort deck, an IDCAMS deck, a
 link-edit deck or an AMBLIST request deck if its first statement is one, and anything else stays
 plain. An IMS gen library is often kept as `.asm` — Bank of Z writes its DBDs as
 `src/base/ims/DBD/*.asm` and its PSBs as `src/base/ims/PSB/*.asm` — so an `.asm` is a gen member when
@@ -254,10 +257,10 @@ informat reads.
 
 `JCL_CORPUS` also reads 117 scripts and run book members — zorow's 45, Zowe install packaging's 22,
 Z Open Editor sample's 4, GenApp's 2, ADCD setup's 2 and the fixture's 42 — every line of them kept
-as it was written, since there is no grammar for any of the five kinds and the point of reading them
-at all is that a member reaches a repository as the technology it is rather than as a text file. A
-verb is what makes a reference. Every script writes `SUBMIT &JOB (Y/N)?` in a message somewhere, so
-a name in prose reaches nothing and only `SUBMIT`, `CALL`, `RUN PROGRAM`, `EXEC`, `ALLOC`, `EDIT`
+as it was written, since there is no grammar for any of the five kinds and what is to be had from
+them is what they name. A verb is what makes a reference. Every script writes `SUBMIT &JOB (Y/N)?`
+in a message somewhere, so a name in prose reaches nothing and only `SUBMIT`, `CALL`, `RUN PROGRAM`,
+`EXEC`, `ALLOC`, `EDIT`
 and `SELECT` are followed. A REXX command is built out of quoted strings and variables written side
 by side, so the quotes come off and what was between them joins up — `"SUBMIT '"HLQ".JCL("JOB")'"`
 is the one command `SUBMIT 'HLQ.JCL(JOB)'` — while what was written outside them is what the exec
@@ -265,7 +268,7 @@ computed. Nothing resolves a variable, and the fixture is why that is the honest
 a gap: not one of its four submits names a job, because the job a script really submits is a fact
 about two members and a parameter.
 
-`TextMemberCorpusTest` holds the fixture to `INTERLINKS.md` sections 17.1 to 17.3 and 18.1 to 18.2
+`PlainTextCorpusTest` holds the fixture to `INTERLINKS.md` sections 17.1 to 17.3 and 18.1 to 18.2
 row by row: forty three statements over eleven scripts, of which ten call another script, one
 `CALL`s a load module and one `RUN`s a program under a plan; eleven allocations, four of them
 carrying the DD names `CLMB010` and `CLMD020` assign; and all thirty one run book subjects — ten

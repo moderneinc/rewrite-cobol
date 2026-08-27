@@ -22,8 +22,7 @@ import org.openrewrite.InMemoryExecutionContext;
 import org.openrewrite.Parser;
 import org.openrewrite.SourceFile;
 import org.openrewrite.cobol.Corpus;
-import org.openrewrite.listload.ListLoadParser;
-import org.openrewrite.listload.tree.ListLoad;
+import org.openrewrite.text.PlainText;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -98,7 +97,7 @@ class ListLoadCorpusTest {
                 listings++;
                 String name = corpus.relativize(member).toString();
                 String source = new String(Files.readAllBytes(member));
-                ListLoad.CompilationUnit cu = parse(member, source);
+                PlainText cu = parse(member, source);
                 if (cu == null) {
                     failures.add(name + ": did not parse");
                     continue;
@@ -162,7 +161,7 @@ class ListLoadCorpusTest {
 
         TreeMap<String, List<ModuleListing.Module>> byMember = new TreeMap<>();
         for (Path member : Corpus.moduleListings(listload)) {
-            ListLoad.CompilationUnit cu = parse(member, new String(Files.readAllBytes(member)));
+            PlainText cu = parse(member, new String(Files.readAllBytes(member)));
             assertThat(cu).as("%s", member).isNotNull();
             byMember.put(member.getFileName().toString(),
               new ModuleListing.Matcher().require(cu, null).getModules());
@@ -238,7 +237,7 @@ class ListLoadCorpusTest {
         TreeMap<String, ModuleListing.Module> printed = new TreeMap<>();
 
         for (Path member : Corpus.moduleListings(listload)) {
-            ListLoad.CompilationUnit cu = parse(member, new String(Files.readAllBytes(member)));
+            PlainText cu = parse(member, new String(Files.readAllBytes(member)));
             assertThat(cu).as("%s", member).isNotNull();
             boolean binder = member.getFileName().toString().endsWith(".binder");
             for (ModuleListing.Module module : new ModuleListing.Matcher().require(cu, null).getModules()) {
@@ -297,7 +296,7 @@ class ListLoadCorpusTest {
 
         List<ModuleListing.Request> requests = new ArrayList<>();
         for (Path deck : decks) {
-            ListLoad.CompilationUnit cu = parse(deck, new String(Files.readAllBytes(deck)));
+            PlainText cu = parse(deck, new String(Files.readAllBytes(deck)));
             assertThat(cu).as("%s", deck).isNotNull();
             ModuleListing listing = new ModuleListing.Matcher().require(cu, null);
             assertThat(listing.getModules()).isEmpty();
@@ -327,12 +326,11 @@ class ListLoadCorpusTest {
         return count;
     }
 
-    private static ListLoad.@Nullable CompilationUnit parse(Path member, String source) {
-        List<SourceFile> parsed = ListLoadParser.builder().build()
+    private static @Nullable PlainText parse(Path member, String source) {
+        List<SourceFile> parsed = Corpus.plainTextReader()
           .parseInputs(singletonList(new Parser.Input(member, () -> new ByteArrayInputStream(source.getBytes()))),
             null, new InMemoryExecutionContext())
           .collect(Collectors.toList());
-        return parsed.size() == 1 && parsed.get(0) instanceof ListLoad.CompilationUnit ?
-          (ListLoad.CompilationUnit) parsed.get(0) : null;
+        return parsed.size() == 1 && parsed.get(0) instanceof PlainText ? (PlainText) parsed.get(0) : null;
     }
 }

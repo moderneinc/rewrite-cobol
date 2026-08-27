@@ -38,11 +38,7 @@ import static org.openrewrite.db2.bind.Assertions.bind;
 import static org.openrewrite.ims.Assertions.ims;
 import static org.openrewrite.jcl.Assertions.jcl;
 import static org.openrewrite.linkedit.Assertions.linkEdit;
-import static org.openrewrite.listload.Assertions.listLoad;
-import static org.openrewrite.sas.Assertions.sas;
-import static org.openrewrite.textmember.Assertions.clist;
-import static org.openrewrite.textmember.Assertions.document;
-import static org.openrewrite.textmember.Assertions.rexx;
+import static org.openrewrite.test.SourceSpecs.text;
 
 class FindRelationshipsTest extends CobolTest {
 
@@ -439,7 +435,7 @@ class FindRelationshipsTest extends CobolTest {
               assertThat(rows).allSatisfy(r ->
                 assertThat(lineAt(listing, r.getDependentLine())).contains(r.getDependency()));
           }),
-          listLoad(listing, spec -> spec.path("CICSLOAD.amblist"))
+          text(listing, spec -> spec.path("CICSLOAD.amblist"))
         );
     }
 
@@ -1299,7 +1295,7 @@ class FindRelationshipsTest extends CobolTest {
               assertThat(rows).filteredOn(r -> r.getDependentType() == SAS).allSatisfy(r ->
                 assertThat(lineAt(program, r.getDependentLine())).contains(r.getDependency()));
           }),
-          sas(program, spec -> spec.path("sas/CLMSPOL.sas")));
+          text(program, spec -> spec.path("sas/CLMSPOL.sas")));
     }
 
     /**
@@ -1403,7 +1399,7 @@ class FindRelationshipsTest extends CobolTest {
                 tuple("CLMFXTR", CLIST, CALL, "CLMSETUP", CLIST, "EXEC"),
                 tuple("CLMFXTR", CLIST, SUBMITS, "CLMJ010", JCL, "SUBMIT"),
                 tuple("CLMFXTR", CLIST, CALL, "CLMB010", COBOL, "CALL"))),
-          clist("""
+          text("""
             PROC 0 ENV(PROD)
             %CLMSETUP ENV(&ENV)
             SUBMIT 'CLM.PROD.JCL(CLMJ010)'
@@ -1425,7 +1421,7 @@ class FindRelationshipsTest extends CobolTest {
               .containsExactly(
                 tuple("CLMRERUN", REXX, SUBMITS, "CLMJ030", JCL),
                 tuple("CLMRERUN", REXX, CALL, "CLMPICK", REXX))),
-          rexx("""
+          text("""
             /* REXX */
             HLQ = 'CLM.PROD'
             "SUBMIT '"HLQ".JCL(CLMJ030)'"
@@ -1449,14 +1445,14 @@ class FindRelationshipsTest extends CobolTest {
               .containsExactly(
                 tuple("CLMJ010", DOCUMENT, REFERENCES, "CLMJ010", JCL, "DOCJOB", 3),
                 tuple("CLMEXTR", DOCUMENT, REFERENCES, "CLM.PROD.EXTRACT", DATA_SET, "DOCFICH", 3))),
-          document("""
+          text("""
             DOCJOB   CLMJ010                                CASCADE MUTUAL - CLAIMS
             ========================================================================
             JOB          CLMJ010                    LIBRARY  CLM.PROD.JCL
             STEPS
               EXTRACT    PROC CLMBATCH  PGM CLMB010
             """, spec -> spec.path("CLMJ010.docjob")),
-          document("""
+          text("""
             DOCFICH  CLMEXTR                                CASCADE MUTUAL - CLAIMS
             ========================================================================
             FILE         CLM.PROD.EXTRACT           APPLICATION  CLAIMS

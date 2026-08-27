@@ -17,15 +17,14 @@ package org.openrewrite.sas.trait;
 
 import org.junit.jupiter.api.Test;
 import org.openrewrite.DocumentExample;
-import org.openrewrite.sas.tree.Sas;
 import org.openrewrite.test.RewriteTest;
+import org.openrewrite.text.PlainText;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.openrewrite.sas.Assertions.sas;
+import static org.openrewrite.test.SourceSpecs.text;
 
 class InputLayoutTest implements RewriteTest {
 
@@ -38,7 +37,7 @@ class InputLayoutTest implements RewriteTest {
     @Test
     void readsEachVariableAtTheColumnItStartsIn() {
         rewriteRun(
-          sas(
+          text(
             """
               DATA CLMSAS.CLMAUD;
                  INFILE CLMAUDIT LRECL=120 RECFM=FB;
@@ -48,7 +47,7 @@ class InputLayoutTest implements RewriteTest {
                        @057 RETCODE  2.;
               RUN;
               """,
-            spec -> spec.afterRecipe(cu ->
+            spec -> spec.path("sas/CLMSAUD.sas").afterRecipe(cu ->
               assertThat(fields(cu)).extracting(InputLayout.Field::getColumn,
                   InputLayout.Field::getName, InputLayout.Field::getInformat,
                   InputLayout.Field::getBytes)
@@ -68,13 +67,13 @@ class InputLayoutTest implements RewriteTest {
     @Test
     void followsThePointerWhereNoColumnIsWritten() {
         rewriteRun(
-          sas(
+          text(
             """
               DATA CLM;
                  INPUT @001 CLAIMNO $CHAR10. POLICYNO $CHAR12. TYPECODE $CHAR4.;
               RUN;
               """,
-            spec -> spec.afterRecipe(cu ->
+            spec -> spec.path("sas/CLMSEXTR.sas").afterRecipe(cu ->
               assertThat(fields(cu)).extracting(InputLayout.Field::getColumn, InputLayout.Field::getName)
                 .containsExactly(tuple(1, "CLAIMNO"), tuple(11, "POLICYNO"), tuple(23, "TYPECODE")))
           )
@@ -88,13 +87,13 @@ class InputLayoutTest implements RewriteTest {
     @Test
     void saysNothingAboutAWidthTheInformatDoesNotWrite() {
         rewriteRun(
-          sas(
+          text(
             """
               DATA CLM;
                  INPUT @001 CLAIMNO $CHAR. POLICYNO;
               RUN;
               """,
-            spec -> spec.afterRecipe(cu ->
+            spec -> spec.path("sas/CLMSEXTR.sas").afterRecipe(cu ->
               assertThat(fields(cu)).extracting(InputLayout.Field::getColumn,
                   InputLayout.Field::getName, InputLayout.Field::getBytes)
                 .containsExactly(tuple(1, "CLAIMNO", 0), tuple(1, "POLICYNO", 0)))
@@ -110,7 +109,7 @@ class InputLayoutTest implements RewriteTest {
     @Test
     void readsNoLayoutOutsideADataStep() {
         rewriteRun(
-          sas(
+          text(
             """
               %WINDOW ASK;
               %INPUT CLAIMNO;
@@ -121,14 +120,14 @@ class InputLayoutTest implements RewriteTest {
 
               INPUT @001 CLAIMNO $CHAR10.;
               """,
-            spec -> spec.afterRecipe(cu ->
-              assertThat(new InputLayout.Matcher().lower(cu).collect(Collectors.toList())).isEmpty())
+            spec -> spec.path("sas/CLMSPOL.sas").afterRecipe(cu ->
+              assertThat(new InputLayout.Matcher().require(cu, null).getLayouts()).isEmpty())
           )
         );
     }
 
-    private static List<InputLayout.Field> fields(Sas.CompilationUnit cu) {
-        List<InputLayout> layouts = new InputLayout.Matcher().lower(cu).collect(Collectors.toList());
+    private static List<InputLayout.Field> fields(PlainText cu) {
+        List<InputLayout.Layout> layouts = new InputLayout.Matcher().require(cu, null).getLayouts();
         assertThat(layouts).hasSize(1);
         return layouts.get(0).getFields();
     }

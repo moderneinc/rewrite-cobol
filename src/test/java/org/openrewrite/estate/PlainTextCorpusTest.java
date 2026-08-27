@@ -13,20 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openrewrite.textmember.trait;
+package org.openrewrite.estate;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.openrewrite.InMemoryExecutionContext;
-import org.openrewrite.Parser;
 import org.openrewrite.SourceFile;
 import org.openrewrite.cobol.Corpus;
-import org.openrewrite.textmember.CParser;
-import org.openrewrite.textmember.ClistParser;
-import org.openrewrite.textmember.DocumentParser;
-import org.openrewrite.textmember.PliParser;
-import org.openrewrite.textmember.RexxParser;
-import org.openrewrite.textmember.tree.TextMember;
+import org.openrewrite.estate.trait.Mention;
+import org.openrewrite.estate.trait.RunBook;
+import org.openrewrite.estate.trait.Script;
+import org.openrewrite.text.PlainText;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -39,7 +36,6 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -55,7 +51,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * whose members these traits could join to.
  */
 @EnabledIfEnvironmentVariable(named = "JCL_CORPUS", matches = ".+")
-class TextMemberCorpusTest {
+class PlainTextCorpusTest {
 
     @Test
     void readsRealScriptsAndRunBooks() throws IOException {
@@ -79,7 +75,7 @@ class TextMemberCorpusTest {
             for (Path member : paths) {
                 members++;
                 String name = corpus.relativize(member).toString();
-                TextMember.CompilationUnit cu = parse(corpus, member);
+                PlainText cu = parse(corpus, member);
                 if (!new String(Files.readAllBytes(member)).equals(cu.printAll())) {
                     failures.add(name + ": did not print back");
                     continue;
@@ -122,19 +118,19 @@ class TextMemberCorpusTest {
 
         System.out.println("C and PL/I members read, by application:");
         for (Path repository : Corpus.repositories(corpus)) {
-            Map<TextMember.Kind, List<Path>> libraries = new LinkedHashMap<>();
-            libraries.put(TextMember.Kind.C, Corpus.cSources(repository));
-            libraries.put(TextMember.Kind.PLI, Corpus.pliSources(repository));
+            Map<Members.Kind, List<Path>> libraries = new LinkedHashMap<>();
+            libraries.put(Members.Kind.C, Corpus.cSources(repository));
+            libraries.put(Members.Kind.PLI, Corpus.pliSources(repository));
             int found = 0;
             int read = 0;
-            for (Map.Entry<TextMember.Kind, List<Path>> library : libraries.entrySet()) {
+            for (Map.Entry<Members.Kind, List<Path>> library : libraries.entrySet()) {
                 for (Path member : library.getValue()) {
                     members++;
                     found++;
                     String name = corpus.relativize(member).toString();
-                    TextMember.CompilationUnit cu = parse(corpus, member);
-                    if (cu.getKind() != library.getKey()) {
-                        failures.add(name + ": read as " + cu.getKind());
+                    PlainText cu = parse(corpus, member);
+                    if (Members.kindOf(cu) != library.getKey()) {
+                        failures.add(name + ": read as " + Members.kindOf(cu));
                     } else if (!new String(Files.readAllBytes(member)).equals(cu.printAll())) {
                         failures.add(name + ": did not print back");
                     } else {
@@ -424,26 +420,12 @@ class TextMemberCorpusTest {
         return references;
     }
 
-    private static TextMember.CompilationUnit parse(Path relativeTo, Path member) {
-        List<SourceFile> parsed = readerFor(member)
+    private static PlainText parse(Path relativeTo, Path member) {
+        List<SourceFile> parsed = Corpus.plainTextReader()
           .parseInputs(Corpus.inputs(singletonList(member)), relativeTo, new InMemoryExecutionContext())
           .collect(Collectors.toList());
-        assertThat(parsed).singleElement().isInstanceOf(TextMember.CompilationUnit.class);
-        return (TextMember.CompilationUnit) parsed.get(0);
-    }
-
-    /**
-     * The REXX reader comes last, since it is the one that takes a member by its first line rather than
-     * by its extension.
-     */
-    private static Parser readerFor(Path member) {
-        for (Parser reader : asList(ClistParser.builder().build(), DocumentParser.builder().build(),
-          CParser.builder().build(), PliParser.builder().build(), RexxParser.builder().build())) {
-            if (reader.accept(member)) {
-                return reader;
-            }
-        }
-        throw new IllegalArgumentException("No reader takes " + member);
+        assertThat(parsed).singleElement().isInstanceOf(PlainText.class);
+        return (PlainText) parsed.get(0);
     }
 
     private static Path fixture() {

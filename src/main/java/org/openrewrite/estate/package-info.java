@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 @NullMarked
-package org.openrewrite.textmember.internal;
+package org.openrewrite.estate;
 
 import org.jspecify.annotations.NullMarked;

@@ -18,15 +18,17 @@ package org.openrewrite.sas.trait;
 import lombok.Value;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
-import org.openrewrite.sas.tree.Sas;
+import org.openrewrite.text.PlainText;
 import org.openrewrite.trait.SimpleTraitMatcher;
 import org.openrewrite.trait.Trait;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 /**
- * A {@code %INCLUDE}, which reads another member in where it stands — the SAS answer to a COBOL
- * {@code COPY}.
+ * The {@code %INCLUDE} statements of a program, which read another member in where they stand — the
+ * SAS answer to a COBOL {@code COPY}.
  * <p>
  * {@code %INCLUDE SASSRC(CLMSMAC);} names a DD and not a path: {@code SASSRC} is whatever the step
  * running the program allocated it to, so the reference closes only by reading the JCL. That is the
@@ -34,60 +36,82 @@ import java.util.Locale;
  * is exposed here rather than resolved.
  */
 @Value
-public class Include implements Trait<Sas.Statement> {
+public class Include implements Trait<PlainText> {
 
     Cursor cursor;
 
     /**
-     * The DD the member is read from, or null for an include that names a member alone and leaves
-     * the DD to the {@code SASAUTOS} search order.
+     * The members the program includes, in the order it includes them.
      */
-    public @Nullable String getDdName() {
-        String source = getSource();
-        int paren = source == null ? -1 : source.indexOf('(');
-        return paren > 0 && source.endsWith(")") ?
-                source.substring(0, paren).toUpperCase(Locale.ROOT) : null;
-    }
-
-    /**
-     * The member included, or null for one written as a quoted path.
-     */
-    public @Nullable String getMember() {
-        String source = getSource();
-        if (source == null || source.startsWith("'") || source.startsWith("\"")) {
-            return null;
+    public List<Reference> getReferences() {
+        List<Reference> references = new ArrayList<>();
+        for (Statements.Statement statement : Statements.in(getTree().getText())) {
+            if (statement.isKeyword("%INCLUDE") && statement.getWordText(1) != null) {
+                references.add(new Reference(source(statement), statement.getLine()));
+            }
         }
-        int paren = source.indexOf('(');
-        String member = paren > 0 && source.endsWith(")") ?
-                source.substring(paren + 1, source.length() - 1) : source;
-        return member.isEmpty() ? null : member.toUpperCase(Locale.ROOT);
+        return references;
     }
 
     /**
      * What was written after the keyword, as written. Options after a {@code /} are the run's
      * business and not the reference's.
      */
-    public @Nullable String getSource() {
-        String source = getTree().getWordText(1);
-        return source == null || "/".equals(source) ? null : source;
+    private static @Nullable String source(Statements.Statement statement) {
+        String source = statement.getWordText(1);
+        return "/".equals(source) ? null : source;
     }
 
-    public int getLine() {
-        return Statements.lineOf(cursor);
+    @Value
+    public static class Reference {
+
+        /**
+         * What the statement named, as written.
+         */
+        @Nullable
+        String source;
+
+        int line;
+
+        /**
+         * The DD the member is read from, or null for an include that names a member alone and leaves
+         * the DD to the {@code SASAUTOS} search order.
+         */
+        public @Nullable String getDdName() {
+            int paren = source == null ? -1 : source.indexOf('(');
+            return paren > 0 && source.endsWith(")") ?
+                    source.substring(0, paren).toUpperCase(Locale.ROOT) : null;
+        }
+
+        /**
+         * The member included, or null for one written as a quoted path.
+         */
+        public @Nullable String getMember() {
+            if (source == null || source.startsWith("'") || source.startsWith("\"")) {
+                return null;
+            }
+            int paren = source.indexOf('(');
+            String member = paren > 0 && source.endsWith(")") ?
+                    source.substring(paren + 1, source.length() - 1) : source;
+            return member.isEmpty() ? null : member.toUpperCase(Locale.ROOT);
+        }
+
+        @Override
+        public String toString() {
+            return "%INCLUDE " + source;
+        }
     }
 
     public static class Matcher extends SimpleTraitMatcher<Include> {
 
         @Override
         protected @Nullable Include test(Cursor cursor) {
-            Object value = cursor.getValue();
-            return value instanceof Sas.Statement && ((Sas.Statement) value).isKeyword("%INCLUDE") &&
-                   ((Sas.Statement) value).getWordText(1) != null ? new Include(cursor) : null;
+            return Statements.isProgram(cursor) ? new Include(cursor) : null;
         }
     }
 
     @Override
     public String toString() {
-        return "%INCLUDE " + getSource();
+        return "%INCLUDE of " + getTree().getSourcePath();
     }
 }

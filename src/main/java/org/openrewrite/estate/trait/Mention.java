@@ -13,29 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openrewrite.textmember;
+package org.openrewrite.estate.trait;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import org.openrewrite.cobol.LineEndings;
-import org.openrewrite.marker.Markers;
-import org.openrewrite.textmember.tree.TextMember;
+import lombok.Value;
+import org.openrewrite.estate.Members;
+import org.openrewrite.text.PlainText;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
+import java.util.Set;
 import java.util.regex.Pattern;
 
-import static org.openrewrite.Tree.randomId;
-
 /**
- * Splits a member into the lines it was written as, and says what a line names.
- * <p>
- * Nothing else is taken out of the text. There is no grammar for any of these members here, so a line
- * is kept as it was written and what it says is read by the traits.
+ * A name a member writes down, and the line it was written on.
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class TextMemberLineReader {
+@Value
+public class Mention {
 
     /**
      * The longest a data set name may be, and the longest a member name may be. Both are what says a
@@ -50,30 +44,33 @@ public final class TextMemberLineReader {
      */
     private static final Pattern JOINERS = Pattern.compile("[.\\-_]{2,}");
 
-    /**
-     * Whether text is a REXX exec, by the rule TSO/E itself uses: the first line is a comment holding
-     * the word {@code REXX}.
-     * <p>
-     * This is what types an exec kept in a library without an extension, which is how a PDS member
-     * arrives when it is copied off as it stands. A member whose first line does not say so is not an
-     * exec as far as TSO is concerned either — {@code SYSEXEC} would refuse to run it.
-     */
-    public static boolean isRexxExec(String source) {
-        for (String line : source.split("\n")) {
-            if (line.trim().isEmpty()) {
-                continue;
-            }
-            String first = line.trim();
-            return first.startsWith("/*") && first.toUpperCase(Locale.ROOT).contains("REXX");
-        }
-        return false;
-    }
+    String text;
 
-    public static List<TextMember.Line> readLines(String source) {
-        List<TextMember.Line> lines = new ArrayList<>();
-        LineEndings.split(source, (text, lineEnding) ->
-                lines.add(new TextMember.Line(randomId(), Markers.EMPTY, text, lineEnding)));
-        return lines;
+    /**
+     * The one-based line the name was first written on.
+     */
+    int line;
+
+    /**
+     * Every name a member writes, distinct, in the order it first writes them.
+     * <p>
+     * This is what a search for a member name finds in the text, before any statement is understood.
+     * It over-answers on purpose — an English word of eight letters or fewer is spelled exactly like a
+     * member name — and which of these names is a component of the estate is answered by looking each
+     * one up among the members a repository holds.
+     */
+    public static List<Mention> in(PlainText member) {
+        List<Mention> names = new ArrayList<>();
+        Set<String> seen = new HashSet<>();
+        List<String> lines = Members.lines(member.getText());
+        for (int i = 0; i < lines.size(); i++) {
+            for (String name : namesIn(lines.get(i))) {
+                if (seen.add(name)) {
+                    names.add(new Mention(name, i + 1));
+                }
+            }
+        }
+        return names;
     }
 
     /**
@@ -81,14 +78,11 @@ public final class TextMemberLineReader {
      * at most eight characters, a data set name of such qualifiers, or a condition name written with
      * hyphens or underscores.
      * <p>
-     * This says only how a name may be spelled, and deliberately over-answers: an English word of eight
-     * letters or fewer is shaped exactly like a member name, and no rule tells {@code MASTER} in a
-     * sentence from {@code MASTER} in a library. Which of these tokens is a component is answered by
-     * looking each one up among the members a repository holds, which is a join and not a lexical rule.
-     * A token holding a lower case letter is not a name: the estate's names are upper case, so a word
-     * that is not is prose.
+     * This says only how a name may be spelled, and deliberately over-answers: no rule tells
+     * {@code MASTER} in a sentence from {@code MASTER} in a library. A token holding a lower case
+     * letter is not a name: the estate's names are upper case, so a word that is not is prose.
      */
-    public static List<String> names(String text) {
+    private static List<String> namesIn(String text) {
         List<String> names = new ArrayList<>();
         int cursor = 0;
         while (cursor < text.length()) {

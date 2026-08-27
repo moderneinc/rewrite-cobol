@@ -15,33 +15,34 @@
  */
 package org.openrewrite.cobol;
 
+import org.jspecify.annotations.Nullable;
 import org.openrewrite.Parser;
 import org.openrewrite.assembler.AssemblerParser;
 import org.openrewrite.bms.BmsParser;
+import org.openrewrite.controlcard.ControlCards;
 import org.openrewrite.controlcard.idcams.IdcamsParser;
 import org.openrewrite.controlm.ControlMParser;
 import org.openrewrite.controlcard.sort.SortParser;
 import org.openrewrite.db2.bind.BindParser;
+import org.openrewrite.estate.Members;
 import org.openrewrite.ims.ImsParser;
 import org.openrewrite.jcl.JclParser;
 import org.openrewrite.linkedit.LinkEditParser;
-import org.openrewrite.listload.ListLoadParser;
-import org.openrewrite.sas.SasParser;
-import org.openrewrite.textmember.CParser;
-import org.openrewrite.textmember.ClistParser;
-import org.openrewrite.textmember.DocumentParser;
-import org.openrewrite.textmember.PliParser;
-import org.openrewrite.textmember.RexxParser;
+import org.openrewrite.text.PlainTextParser;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -55,6 +56,12 @@ import static java.util.stream.Collectors.toList;
  * would read and nothing else.
  */
 public final class Corpus {
+
+    /**
+     * The extensions a shop's control card library uses, where an AMBLIST request deck sits beside
+     * the sort cards, the IDCAMS cards and the parm cards it is not.
+     */
+    private static final List<String> CONTROL_CARD_FILE_EXTENSIONS = Arrays.asList(".ctl", ".prm");
 
     private Corpus() {
     }
@@ -113,7 +120,7 @@ public final class Corpus {
      * in-stream is not among them and is reached through the job.
      */
     public static List<Path> sasPrograms(Path repository) throws IOException {
-        return files(repository, SasParser.builder().build());
+        return members(repository, Members.Kind.SAS);
     }
 
     /**
@@ -121,22 +128,19 @@ public final class Corpus {
      * them in two: they call each other, and either kind submits the same jobs.
      */
     public static List<Path> scripts(Path repository) throws IOException {
-        List<Path> scripts = new ArrayList<>(files(repository, ClistParser.builder().build()));
-        scripts.addAll(files(repository, RexxParser.builder().build()));
-        Collections.sort(scripts);
-        return scripts;
+        return members(repository, Members.Kind.CLIST, Members.Kind.REXX);
     }
 
     public static List<Path> runBooks(Path repository) throws IOException {
-        return files(repository, DocumentParser.builder().build());
+        return members(repository, Members.Kind.DOCUMENT);
     }
 
     public static List<Path> cSources(Path repository) throws IOException {
-        return files(repository, CParser.builder().build());
+        return members(repository, Members.Kind.C);
     }
 
     public static List<Path> pliSources(Path repository) throws IOException {
-        return files(repository, PliParser.builder().build());
+        return members(repository, Members.Kind.PLI);
     }
 
     public static List<Path> jobs(Path repository) throws IOException {
@@ -156,7 +160,7 @@ public final class Corpus {
     }
 
     public static List<Path> moduleListings(Path repository) throws IOException {
-        return files(repository, ListLoadParser.builder().build());
+        return members(repository, Members.Kind.LISTING);
     }
 
     public static List<Path> sortCards(Path repository) throws IOException {
@@ -165,6 +169,55 @@ public final class Corpus {
 
     public static List<Path> idcamsCards(Path repository) throws IOException {
         return files(repository, IdcamsParser.builder().build());
+    }
+
+    /**
+     * The members an application keeps as text, of the kinds asked for.
+     */
+    public static List<Path> members(Path repository, Members.Kind... kinds) throws IOException {
+        Set<Members.Kind> wanted = EnumSet.copyOf(asList(kinds));
+        try (Stream<Path> paths = Files.walk(repository)) {
+            return paths
+              .filter(Files::isRegularFile)
+              .filter(p -> isSource(repository.relativize(p)))
+              .filter(p -> wanted.contains(kindOf(p)))
+              .sorted()
+              .collect(toList());
+        }
+    }
+
+    /**
+     * How a build reads the members an estate keeps as text.
+     * <p>
+     * The Moderne CLI builds this reader's masks from {@link Members#masks()}. Here it is asked
+     * about a file on disk instead, so it answers from the path and — for the two kinds a path does
+     * not name — from what the member opens with. The masks cannot answer that: a reader built with
+     * {@code plainTextMasks} takes any text file whose absolute path no mask matches, which over a
+     * walk of a repository is every member of it.
+     */
+    public static Parser plainTextReader() {
+        return new PlainTextParser() {
+            @Override
+            public boolean accept(Path path) {
+                return kindOf(path) != null;
+            }
+        };
+    }
+
+    /**
+     * What a member kept as text is: its path, or for an exec kept without an extension and an
+     * AMBLIST request deck in a control card library, what its first cards say.
+     */
+    private static Members.@Nullable Kind kindOf(Path member) {
+        Members.Kind kind = Members.kindOf(member);
+        if (kind != null) {
+            return kind;
+        }
+        if (ControlCards.accept(member, emptyList(), Members::isRexxExec)) {
+            return Members.Kind.REXX;
+        }
+        return ControlCards.accept(member, CONTROL_CARD_FILE_EXTENSIONS, Members::isModuleListing) ?
+          Members.Kind.LISTING : null;
     }
 
     public static List<Parser.Input> inputs(List<Path> paths) {

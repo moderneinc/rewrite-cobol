@@ -23,10 +23,7 @@ import org.openrewrite.SourceFile;
 import org.openrewrite.cobol.Corpus;
 import org.openrewrite.jcl.JclParser;
 import org.openrewrite.jcl.tree.Jcl;
-import org.openrewrite.sas.SasIsoVisitor;
-import org.openrewrite.sas.SasParser;
-import org.openrewrite.sas.tree.Sas;
-import org.openrewrite.sas.tree.Space;
+import org.openrewrite.text.PlainText;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -37,7 +34,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.singletonList;
@@ -84,50 +80,35 @@ class SasCorpusTest {
                 members++;
                 String name = corpus.relativize(member).toString();
                 String source = new String(Files.readAllBytes(member));
-                List<SourceFile> parsed = SasParser.builder().build()
-                  .parseInputs(Corpus.inputs(singletonList(member)), corpus, new InMemoryExecutionContext())
-                  .collect(Collectors.toList());
-                if (parsed.size() != 1 || !(parsed.get(0) instanceof Sas.CompilationUnit)) {
-                    failures.add(name + ": did not parse");
-                    continue;
-                }
-                Sas.CompilationUnit cu = (Sas.CompilationUnit) parsed.get(0);
-
+                PlainText cu = parse(corpus, member);
                 if (!source.equals(cu.printAll())) {
                     failures.add(name + ": did not print back");
                     continue;
                 }
 
                 // Counting the semicolons is the independent count: a statement is what one ends, and
-                // the reader is wrong about every boundary if it does not agree.
-                boolean counted = true;
+                // the boundaries are all wrong if the two do not agree.
+                List<Statements.Statement> parsed = Statements.in(source);
                 int written = semicolons(source);
-                int terminated = terminated(cu);
+                int terminated = 0;
+                for (Statements.Statement statement : parsed) {
+                    terminated += statement.isTerminated() ? 1 : 0;
+                }
                 if (written != terminated) {
                     failures.add(name + ": " + terminated + " statements terminated, " + written +
                                  " semicolons written");
-                    counted = false;
-                }
-
-                // Text nobody took into a node ends up in the white space in front of the next one,
-                // and that prints back perfectly while saying nothing.
-                String swallowed = swallowedText(cu);
-                if (swallowed != null) {
-                    failures.add(name + ": left '" + swallowed + "' in the white space");
-                    counted = false;
-                }
-                if (counted) {
+                } else {
                     read++;
                 }
 
-                statements += cu.getStatements().size();
-                includes += new Include.Matcher().lower(cu).collect(Collectors.toList()).size();
-                libraries += new Library.Matcher().lower(cu).collect(Collectors.toList()).size();
-                files += new FileReference.Matcher().lower(cu).collect(Collectors.toList()).size();
-                macros += new MacroDefinition.Matcher().lower(cu).collect(Collectors.toList()).size();
-                macroCalls += new MacroCall.Matcher().lower(cu).collect(Collectors.toList()).size();
-                layouts += new InputLayout.Matcher().lower(cu).collect(Collectors.toList()).size();
-                for (SqlQuery query : new SqlQuery.Matcher().lower(cu).collect(Collectors.toList())) {
+                statements += parsed.size();
+                includes += new Include.Matcher().require(cu, null).getReferences().size();
+                libraries += new Library.Matcher().require(cu, null).getReferences().size();
+                files += new FileReference.Matcher().require(cu, null).getReferences().size();
+                macros += new MacroDefinition.Matcher().require(cu, null).getMacros().size();
+                macroCalls += new MacroCall.Matcher().require(cu, null).getReferences().size();
+                layouts += new InputLayout.Matcher().require(cu, null).getLayouts().size();
+                for (SqlQuery.Query query : new SqlQuery.Matcher().require(cu, null).getQueries()) {
                     tables += query.getTables().size();
                 }
             }
@@ -156,8 +137,9 @@ class SasCorpusTest {
     @Test
     void readsEveryIncludeTheFixtureWrites() throws IOException {
         List<String> included = new ArrayList<>();
-        for (Map.Entry<String, Sas.CompilationUnit> program : programs().entrySet()) {
-            for (Include include : new Include.Matcher().lower(program.getValue()).collect(Collectors.toList())) {
+        for (Map.Entry<String, PlainText> program : programs().entrySet()) {
+            for (Include.Reference include :
+              new Include.Matcher().require(program.getValue(), null).getReferences()) {
                 included.add(program.getKey() + " %INCLUDE " + include.getDdName() + "(" +
                              include.getMember() + ")");
             }
@@ -179,13 +161,17 @@ class SasCorpusTest {
     void readsTheDdNamesTheFixtureReachesItsDataBy() throws IOException {
         List<String> libraries = new ArrayList<>();
         List<String> files = new ArrayList<>();
-        for (Map.Entry<String, Sas.CompilationUnit> program : programs().entrySet()) {
-            new Library.Matcher().lower(program.getValue()).forEach(library ->
-              libraries.add(program.getKey() + " LIBNAME " + library.getName() + " -> DD " +
-                            library.getDdName()));
-            new FileReference.Matcher().lower(program.getValue()).forEach(file ->
-              files.add(program.getKey() + " " + file.getKind() + " " + file.getName() + " -> DD " +
-                        file.getDdName()));
+        for (Map.Entry<String, PlainText> program : programs().entrySet()) {
+            for (Library.Reference library :
+              new Library.Matcher().require(program.getValue(), null).getReferences()) {
+                libraries.add(program.getKey() + " LIBNAME " + library.getName() + " -> DD " +
+                              library.getDdName());
+            }
+            for (FileReference.Reference file :
+              new FileReference.Matcher().require(program.getValue(), null).getReferences()) {
+                files.add(program.getKey() + " " + file.getKind() + " " + file.getName() + " -> DD " +
+                          file.getDdName());
+            }
         }
 
         assertThat(libraries).containsExactly(
@@ -206,17 +192,18 @@ class SasCorpusTest {
      */
     @Test
     void readsTheMacroTheFixtureDefinesAndEveryInvocationOfIt() throws IOException {
-        Map<String, Sas.CompilationUnit> programs = programs();
-        List<MacroDefinition> defined = new ArrayList<>();
-        for (Sas.CompilationUnit program : programs.values()) {
-            new MacroDefinition.Matcher().lower(program).forEach(defined::add);
+        Map<String, PlainText> programs = programs();
+        List<MacroDefinition.Macro> defined = new ArrayList<>();
+        for (PlainText program : programs.values()) {
+            defined.addAll(new MacroDefinition.Matcher().require(program, null).getMacros());
         }
-        assertThat(defined).extracting(MacroDefinition::getName, MacroDefinition::getParameters)
+        assertThat(defined).extracting(MacroDefinition.Macro::getName, MacroDefinition.Macro::getParameters)
           .containsExactly(tuple("CLMTITL", List.of("SUBTTL")));
 
         Map<String, Integer> invoked = new TreeMap<>();
-        for (Map.Entry<String, Sas.CompilationUnit> program : programs.entrySet()) {
-            for (MacroCall macro : new MacroCall.Matcher().lower(program.getValue()).collect(Collectors.toList())) {
+        for (Map.Entry<String, PlainText> program : programs.entrySet()) {
+            for (MacroCall.Reference macro :
+              new MacroCall.Matcher().require(program.getValue(), null).getReferences()) {
                 assertThat(macro.isDefinedBy(List.of("CLMSMAC", "CLMTITL"))).as("%s", macro).isTrue();
                 invoked.merge(program.getKey(), 1, Integer::sum);
             }
@@ -225,7 +212,7 @@ class SasCorpusTest {
           entry("CLMSPOL", 1), entry("CLMSTAT", 1));
 
         // The argument is the subtitle the report prints, which is the only thing the invocation says.
-        assertThat(new MacroCall.Matcher().lower(programs.get("CLMSPOL")).collect(Collectors.toList()))
+        assertThat(new MacroCall.Matcher().require(programs.get("CLMSPOL"), null).getReferences())
           .singleElement()
           .satisfies(macro -> assertThat(macro.getArguments())
             .containsExactly("POLICIES RESERVED ABOVE 80 PERCENT OF THE COVERAGE LIMIT"));
@@ -239,7 +226,7 @@ class SasCorpusTest {
      */
     @Test
     void readsTheTwoInputLayoutsColumnForColumn() throws IOException {
-        Map<String, Sas.CompilationUnit> programs = programs();
+        Map<String, PlainText> programs = programs();
 
         assertThat(layout(programs.get("CLMSEXTR")))
           .extracting(InputLayout.Field::getColumn, InputLayout.Field::getName,
@@ -282,8 +269,10 @@ class SasCorpusTest {
     @Test
     void readsTheOneDb2TableTheFixtureReaches() throws IOException {
         List<SqlQuery.Table> tables = new ArrayList<>();
-        for (Sas.CompilationUnit program : programs().values()) {
-            new SqlQuery.Matcher().lower(program).forEach(query -> tables.addAll(query.getTables()));
+        for (PlainText program : programs().values()) {
+            for (SqlQuery.Query query : new SqlQuery.Matcher().require(program, null).getQueries()) {
+                tables.addAll(query.getTables());
+            }
         }
         assertThat(tables).extracting(SqlQuery.Table::getName, SqlQuery.Table::getDbms)
           .containsExactly(
@@ -304,12 +293,11 @@ class SasCorpusTest {
         assertThat(streams).extracting(InstreamSas::getName, InstreamSas::getLine)
           .containsExactly(tuple("SYSIN", 35));
 
-        Sas.CompilationUnit program = streams.get(0).parse();
-        assertThat(program.getSourcePath()).isEqualTo(job.getSourcePath());
+        PlainText program = streams.get(0).parse();
         assertThat(streams.get(0).getText()).isEqualTo(program.printAll());
 
         // The three the job runs by name are members; this one is only in the job.
-        assertThat(new Library.Matcher().lower(program).collect(Collectors.toList()))
+        assertThat(new Library.Matcher().require(program, null).getReferences())
           .singleElement().satisfies(library -> assertThat(library.getDdName()).isEqualTo("CLMSAS"));
     }
 
@@ -318,8 +306,8 @@ class SasCorpusTest {
      * member every one of them includes, and the program written in the job — which is keyed by the
      * job's name because it has none of its own.
      */
-    private static Map<String, Sas.CompilationUnit> programs() throws IOException {
-        Map<String, Sas.CompilationUnit> programs = new LinkedHashMap<>();
+    private static Map<String, PlainText> programs() throws IOException {
+        Map<String, PlainText> programs = new LinkedHashMap<>();
         Path directory = fixture("sas");
         for (Path member : Corpus.sasPrograms(directory)) {
             programs.put(memberName(member), parse(directory, member));
@@ -342,9 +330,9 @@ class SasCorpusTest {
         return (Jcl.CompilationUnit) parsed.get(0);
     }
 
-    private static List<InputLayout.Field> layout(Sas.@Nullable CompilationUnit program) {
+    private static List<InputLayout.Field> layout(@Nullable PlainText program) {
         assertThat(program).isNotNull();
-        List<InputLayout> layouts = new InputLayout.Matcher().lower(program).collect(Collectors.toList());
+        List<InputLayout.Layout> layouts = new InputLayout.Matcher().require(program, null).getLayouts();
         assertThat(layouts).hasSize(1);
         return layouts.get(0).getFields();
     }
@@ -358,12 +346,12 @@ class SasCorpusTest {
         return last.getColumn() + last.getBytes();
     }
 
-    private static Sas.CompilationUnit parse(Path directory, Path member) {
-        List<SourceFile> parsed = SasParser.builder().build()
+    private static PlainText parse(Path directory, Path member) {
+        List<SourceFile> parsed = Corpus.plainTextReader()
           .parseInputs(Corpus.inputs(singletonList(member)), directory, new InMemoryExecutionContext())
           .collect(Collectors.toList());
-        assertThat(parsed).singleElement().isInstanceOf(Sas.CompilationUnit.class);
-        return (Sas.CompilationUnit) parsed.get(0);
+        assertThat(parsed).singleElement().isInstanceOf(PlainText.class);
+        return (PlainText) parsed.get(0);
     }
 
     private static Path fixture(String library) {
@@ -406,31 +394,5 @@ class SasCorpusTest {
         return count;
     }
 
-    private static int terminated(Sas.CompilationUnit cu) {
-        int count = 0;
-        for (Sas statement : cu.getStatements()) {
-            if (statement instanceof Sas.Statement && ((Sas.Statement) statement).getEnd() != null) {
-                count++;
-            }
-        }
-        return count;
-    }
 
-    /**
-     * The first white space of the member holding something that is not white space, or null when
-     * every character of it was taken into a node of its own.
-     */
-    private static @Nullable String swallowedText(Sas.CompilationUnit cu) {
-        AtomicReference<String> swallowed = new AtomicReference<>();
-        new SasIsoVisitor<Integer>() {
-            @Override
-            public Space visitSpace(Space space, Space.Location location, Integer p) {
-                if (!space.getWhitespace().trim().isEmpty()) {
-                    swallowed.compareAndSet(null, space.getWhitespace().trim());
-                }
-                return space;
-            }
-        }.visit(cu, 0);
-        return swallowed.get();
-    }
 }

@@ -22,9 +22,7 @@ import org.openrewrite.jcl.SourcePositions;
 import org.openrewrite.jcl.trait.DataDefinition;
 import org.openrewrite.jcl.tree.Jcl;
 import org.openrewrite.marker.Range;
-import org.openrewrite.sas.SasLineReader;
-import org.openrewrite.sas.SasParser;
-import org.openrewrite.sas.tree.Sas;
+import org.openrewrite.text.PlainText;
 import org.openrewrite.trait.SimpleTraitMatcher;
 import org.openrewrite.trait.Trait;
 
@@ -89,16 +87,30 @@ public class InstreamSas implements Trait<Jcl.JobControlStatement> {
     }
 
     /**
-     * The stream read as SAS. Detached from the JCL rather than grafted into it: two source files
-     * cannot share a path, and the program is a fact about the estate rather than about the job.
+     * The stream held as the program it is. Detached from the JCL rather than grafted into it: the
+     * program is a fact about the estate rather than about the job, and it is read by the same traits
+     * a member of the SAS library is — which is why the path it is given says SAS.
      */
-    public Sas.CompilationUnit parse() {
-        return SasParser.parse(sourcePath(), getText());
+    public PlainText parse() {
+        return PlainText.builder()
+                .sourcePath(sourcePath())
+                .text(getText())
+                .build();
     }
 
+    /**
+     * The job's own path with {@code .sas} in place of its extension. The program has no member name
+     * of its own, so there is no other name to give it.
+     */
     private Path sourcePath() {
         Jcl.CompilationUnit cu = cursor.firstEnclosing(Jcl.CompilationUnit.class);
-        return cu == null ? Paths.get(getName()) : cu.getSourcePath();
+        if (cu == null) {
+            return Paths.get(getName() + ".sas");
+        }
+        Path fileName = cu.getSourcePath().getFileName();
+        String name = fileName == null ? getName() : fileName.toString();
+        int dot = name.lastIndexOf('.');
+        return cu.getSourcePath().resolveSibling((dot < 0 ? name : name.substring(0, dot)) + ".sas");
     }
 
     private @Nullable Range firstCard() {
@@ -129,14 +141,14 @@ public class InstreamSas implements Trait<Jcl.JobControlStatement> {
                 return null;
             }
             InstreamSas sas = new InstreamSas(cursor);
-            return SasLineReader.isSasProgram(sas.getText()) ? sas : null;
+            return Statements.isSasProgram(sas.getText()) ? sas : null;
         }
     }
 
     /**
      * Every SAS program written in a job, read.
      */
-    public static List<Sas.CompilationUnit> parseAll(Jcl.CompilationUnit cu) {
+    public static List<PlainText> parseAll(Jcl.CompilationUnit cu) {
         return new Matcher().lower(cu)
                 .map(InstreamSas::parse)
                 .collect(toList());

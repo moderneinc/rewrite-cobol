@@ -18,7 +18,7 @@ package org.openrewrite.sas.trait;
 import lombok.Value;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
-import org.openrewrite.sas.tree.Sas;
+import org.openrewrite.text.PlainText;
 import org.openrewrite.trait.SimpleTraitMatcher;
 import org.openrewrite.trait.Trait;
 
@@ -29,64 +29,89 @@ import java.util.Locale;
 import static java.util.Collections.emptyList;
 
 /**
- * A {@code %MACRO}, which is what makes a name an invocation rather than a statement of the macro
- * language. A shop's macro library is one member per macro, so this is also the member's own name.
+ * The {@code %MACRO} statements of a program, which are what make a name an invocation rather than a
+ * statement of the macro language. A shop's macro library is one member per macro, so a definition is
+ * also the member's own name.
  */
 @Value
-public class MacroDefinition implements Trait<Sas.Statement> {
+public class MacroDefinition implements Trait<PlainText> {
 
     Cursor cursor;
 
-    public String getName() {
-        String prototype = prototype();
-        int paren = prototype.indexOf('(');
-        return (paren < 0 ? prototype : prototype.substring(0, paren)).toUpperCase(Locale.ROOT);
-    }
-
     /**
-     * The parameter names, positional and keyword alike, in the order the prototype writes them. A
-     * keyword parameter's default is left on it: {@code SUBTTL=} is a parameter that defaults to
-     * nothing.
+     * The macros the program defines, in the order it defines them.
      */
-    public List<String> getParameters() {
-        String text = getTree().getText();
-        int open = text.indexOf('(');
-        int close = text.lastIndexOf(')');
-        if (open < 0 || close < open) {
-            return emptyList();
-        }
-        List<String> parameters = new ArrayList<>();
-        for (String argument : Statements.argumentsOf(text.substring(open + 1, close))) {
-            int equals = argument.indexOf('=');
-            String name = equals < 0 ? argument : argument.substring(0, equals);
-            if (!name.trim().isEmpty()) {
-                parameters.add(name.trim().toUpperCase(Locale.ROOT));
+    public List<Macro> getMacros() {
+        List<Macro> macros = new ArrayList<>();
+        for (Statements.Statement statement : Statements.in(getTree().getText())) {
+            if (statement.isKeyword("%MACRO") && statement.getWordText(1) != null) {
+                macros.add(new Macro(statement.getWordText(1), statement.getText(),
+                        statement.getLine()));
             }
         }
-        return parameters;
+        return macros;
     }
 
-    public int getLine() {
-        return Statements.lineOf(cursor);
-    }
+    @Value
+    public static class Macro {
 
-    private String prototype() {
-        String prototype = getTree().getWordText(1);
-        return prototype == null ? "" : prototype;
+        /**
+         * The prototype as written: the name, and the parameters where the macro takes any.
+         */
+        @Nullable
+        String prototype;
+
+        /**
+         * The statement as written, which is where the parameters are read from.
+         */
+        String text;
+
+        int line;
+
+        public String getName() {
+            String written = prototype == null ? "" : prototype;
+            int paren = written.indexOf('(');
+            return (paren < 0 ? written : written.substring(0, paren)).toUpperCase(Locale.ROOT);
+        }
+
+        /**
+         * The parameter names, positional and keyword alike, in the order the prototype writes them.
+         * A keyword parameter's default is left off: {@code SUBTTL=} is a parameter that defaults to
+         * nothing.
+         */
+        public List<String> getParameters() {
+            int open = text.indexOf('(');
+            int close = text.lastIndexOf(')');
+            if (open < 0 || close < open) {
+                return emptyList();
+            }
+            List<String> parameters = new ArrayList<>();
+            for (String argument : Statements.argumentsOf(text.substring(open + 1, close))) {
+                int equals = argument.indexOf('=');
+                String name = equals < 0 ? argument : argument.substring(0, equals);
+                if (!name.trim().isEmpty()) {
+                    parameters.add(name.trim().toUpperCase(Locale.ROOT));
+                }
+            }
+            return parameters;
+        }
+
+        @Override
+        public String toString() {
+            return "%MACRO " + getName();
+        }
     }
 
     public static class Matcher extends SimpleTraitMatcher<MacroDefinition> {
 
         @Override
         protected @Nullable MacroDefinition test(Cursor cursor) {
-            Object value = cursor.getValue();
-            return value instanceof Sas.Statement && ((Sas.Statement) value).isKeyword("%MACRO") &&
-                   ((Sas.Statement) value).getWordText(1) != null ? new MacroDefinition(cursor) : null;
+            return Statements.isProgram(cursor) ? new MacroDefinition(cursor) : null;
         }
     }
 
     @Override
     public String toString() {
-        return "%MACRO " + getName();
+        return "%MACRO of " + getTree().getSourcePath();
     }
 }

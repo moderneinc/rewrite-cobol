@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openrewrite.textmember.trait;
+package org.openrewrite.estate.trait;
 
 import lombok.Value;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
-import org.openrewrite.textmember.tree.TextMember;
+import org.openrewrite.estate.Members;
+import org.openrewrite.text.PlainText;
 import org.openrewrite.trait.SimpleTraitMatcher;
 import org.openrewrite.trait.Trait;
 
@@ -39,7 +40,7 @@ import java.util.Locale;
  * two of the fixture's are wrong on purpose so that a name index has something to be wrong about.
  */
 @Value
-public class RunBook implements Trait<TextMember.CompilationUnit> {
+public class RunBook implements Trait<PlainText> {
 
     Cursor cursor;
 
@@ -87,9 +88,9 @@ public class RunBook implements Trait<TextMember.CompilationUnit> {
      * The value of a labelled field: the second word of the first line the label opens.
      */
     private @Nullable Mention field(String label) {
-        List<TextMember.Line> lines = getTree().getLines();
+        List<String> lines = Members.lines(getTree().getText());
         for (int i = 0; i < lines.size(); i++) {
-            String[] words = lines.get(i).getText().trim().split("\\s+");
+            String[] words = lines.get(i).trim().split("\\s+");
             if (words.length >= 2 && label.equalsIgnoreCase(words[0])) {
                 return new Mention(words[1], i + 1);
             }
@@ -101,9 +102,9 @@ public class RunBook implements Trait<TextMember.CompilationUnit> {
      * The name on the header line, which every shape writes after its own word.
      */
     private @Nullable Mention headerName() {
-        List<TextMember.Line> lines = getTree().getLines();
+        List<String> lines = Members.lines(getTree().getText());
         for (int i = 0; i < lines.size(); i++) {
-            String[] words = lines.get(i).getText().trim().split("\\s+");
+            String[] words = lines.get(i).trim().split("\\s+");
             if (words.length >= 2 && !words[0].isEmpty()) {
                 return new Mention(words[1], i + 1);
             }
@@ -112,8 +113,8 @@ public class RunBook implements Trait<TextMember.CompilationUnit> {
     }
 
     private String firstWord() {
-        for (TextMember.Line line : getTree().getLines()) {
-            String text = line.getText().trim();
+        for (String line : Members.lines(getTree().getText())) {
+            String text = line.trim();
             if (!text.isEmpty()) {
                 return text.split("\\s+")[0].toUpperCase(Locale.ROOT);
             }
@@ -152,8 +153,8 @@ public class RunBook implements Trait<TextMember.CompilationUnit> {
 
         @Override
         protected @Nullable RunBook test(Cursor cursor) {
-            return cursor.getValue() instanceof TextMember.CompilationUnit &&
-                   ((TextMember.CompilationUnit) cursor.getValue()).getKind() == TextMember.Kind.DOCUMENT ?
+            return cursor.getValue() instanceof PlainText &&
+                   Members.kindOf((PlainText) cursor.getValue()) == Members.Kind.DOCUMENT ?
                     new RunBook(cursor) : null;
         }
     }

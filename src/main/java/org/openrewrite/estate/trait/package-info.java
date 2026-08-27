@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 @NullMarked
-package org.openrewrite.sas;
+package org.openrewrite.estate.trait;
 
 import org.jspecify.annotations.NullMarked;

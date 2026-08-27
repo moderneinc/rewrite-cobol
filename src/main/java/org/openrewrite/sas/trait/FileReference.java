@@ -18,14 +18,16 @@ package org.openrewrite.sas.trait;
 import lombok.Value;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
-import org.openrewrite.sas.tree.Sas;
+import org.openrewrite.text.PlainText;
 import org.openrewrite.trait.SimpleTraitMatcher;
 import org.openrewrite.trait.Trait;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 /**
- * An external file the program reads or writes: {@code INFILE} in a DATA step, {@code FILE} in one,
+ * The external files a program reads or writes: {@code INFILE} in a DATA step, {@code FILE} in one,
  * and the {@code FILENAME} that declares a fileref for either.
  * <p>
  * The three are one trait because the name they carry is one thing — a fileref, which on z/OS is a
@@ -35,7 +37,7 @@ import java.util.Locale;
  * well, so the DD name is exposed here and resolved nowhere.
  */
 @Value
-public class FileReference implements Trait<Sas.Statement> {
+public class FileReference implements Trait<PlainText> {
 
     public enum Kind {
         /**
@@ -54,57 +56,72 @@ public class FileReference implements Trait<Sas.Statement> {
 
     Cursor cursor;
 
-    public Kind getKind() {
-        return Kind.valueOf(getTree().getKeyword());
-    }
-
     /**
-     * The fileref, or empty for a statement that names a data set directly.
+     * The files the program names, in the order it names them.
      */
-    public String getName() {
-        String name = getTree().getWordText(1);
-        return name == null || name.startsWith("'") || name.startsWith("\"") ?
-                "" : name.toUpperCase(Locale.ROOT);
+    public List<Reference> getReferences() {
+        List<Reference> references = new ArrayList<>();
+        for (Statements.Statement statement : Statements.in(getTree().getText())) {
+            if (statement.getWordText(1) == null) {
+                continue;
+            }
+            for (Kind kind : Kind.values()) {
+                if (statement.isKeyword(kind.name())) {
+                    references.add(new Reference(kind, statement.getWordText(1),
+                            Statements.literalIn(statement, 1), statement.getLine()));
+                }
+            }
+        }
+        return references;
     }
 
-    /**
-     * The data set the statement names, or null where it names none.
-     */
-    public @Nullable String getPath() {
-        return Statements.literalIn(getTree(), 1);
-    }
+    @Value
+    public static class Reference {
+        Kind kind;
 
-    /**
-     * The DD the step has to allocate for this reference to resolve, or null for a file the program
-     * names itself.
-     */
-    public @Nullable String getDdName() {
-        return getPath() == null && !getName().isEmpty() ? getName() : null;
-    }
+        @Nullable
+        String fileref;
 
-    public int getLine() {
-        return Statements.lineOf(cursor);
+        /**
+         * The data set the statement names, or null where it names none.
+         */
+        @Nullable
+        String path;
+
+        int line;
+
+        /**
+         * The fileref, or empty for a statement that names a data set directly.
+         */
+        public String getName() {
+            return fileref == null || fileref.startsWith("'") || fileref.startsWith("\"") ?
+                    "" : fileref.toUpperCase(Locale.ROOT);
+        }
+
+        /**
+         * The DD the step has to allocate for this reference to resolve, or null for a file the
+         * program names itself.
+         */
+        public @Nullable String getDdName() {
+            return path == null && !getName().isEmpty() ? getName() : null;
+        }
+
+        @Override
+        public String toString() {
+            return kind + " " + (path == null ? getName() : "'" + path + "'");
+        }
     }
 
     public static class Matcher extends SimpleTraitMatcher<FileReference> {
 
         @Override
         protected @Nullable FileReference test(Cursor cursor) {
-            Object value = cursor.getValue();
-            if (!(value instanceof Sas.Statement) || ((Sas.Statement) value).getWordText(1) == null) {
-                return null;
-            }
-            for (Kind kind : Kind.values()) {
-                if (((Sas.Statement) value).isKeyword(kind.name())) {
-                    return new FileReference(cursor);
-                }
-            }
-            return null;
+            return Statements.isProgram(cursor) ? new FileReference(cursor) : null;
         }
     }
 
     @Override
     public String toString() {
-        return getKind() + " " + (getPath() == null ? getName() : "'" + getPath() + "'");
+        return "files of " + getTree().getSourcePath();
     }
 }

@@ -18,11 +18,11 @@ package org.openrewrite.listload.trait;
 import lombok.Value;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
+import org.openrewrite.estate.Members;
 import org.openrewrite.linkedit.LinkEditParser;
 import org.openrewrite.linkedit.trait.LinkEditDeck;
 import org.openrewrite.linkedit.tree.LinkEdit;
-import org.openrewrite.listload.ListLoadLineReader;
-import org.openrewrite.listload.tree.ListLoad;
+import org.openrewrite.text.PlainText;
 import org.openrewrite.trait.SimpleTraitMatcher;
 import org.openrewrite.trait.Trait;
 
@@ -46,9 +46,19 @@ import java.util.Map;
  * Offsets and lengths are given as hexadecimal with no leading zeros, whichever report they came from:
  * AMBLIST writes eight digits and the binder writes as few as one, and an entry point's offset is
  * relative to the module in both, though the binder map prints it relative to its section.
+ * <p>
+ * A report is known by the headings it opens with and a request deck by its first card, wherever the
+ * text came from: an AMBLIST request deck in a control card library has no extension of its own, so
+ * what it asks for is the only thing that says what it is.
  */
 @Value
-public class ModuleListing implements Trait<ListLoad.CompilationUnit> {
+public class ModuleListing implements Trait<PlainText> {
+
+    /**
+     * The ASA carriage control characters a listing uses: throw a page, skip a line, skip two, print
+     * without spacing, print on the next line.
+     */
+    private static final String CARRIAGE_CONTROL = "10-+ ";
 
     /**
      * VS COBOL II, COBOL for MVS & VM, COBOL for OS/390 & VM, and Enterprise COBOL 3, 4 and 5.
@@ -73,8 +83,9 @@ public class ModuleListing implements Trait<ListLoad.CompilationUnit> {
      * AMBLIST run, the one module that was linked for a binder {@code SYSPRINT}.
      */
     public List<Module> getModules() {
-        List<Module> modules = readSummaries(readTranslators());
-        modules.addAll(readBinderListing());
+        List<String> lines = lines();
+        List<Module> modules = readSummaries(lines, readTranslators(lines));
+        modules.addAll(readBinderListing(lines));
         return modules;
     }
 
@@ -84,10 +95,10 @@ public class ModuleListing implements Trait<ListLoad.CompilationUnit> {
      */
     public List<Request> getRequests() {
         List<Request> requests = new ArrayList<>();
-        List<ListLoad.Line> lines = getTree().getLines();
+        List<String> lines = lines();
         for (int i = 0; i < lines.size(); i++) {
-            String text = lines.get(i).getText();
-            if (!ListLoadLineReader.isRequestCard(text)) {
+            String text = lines.get(i);
+            if (!Members.isRequestCard(text)) {
                 continue;
             }
             String card = text.trim();
@@ -112,16 +123,15 @@ public class ModuleListing implements Trait<ListLoad.CompilationUnit> {
      * part of the report that moves between releases; a line with no colon carries on the key above
      * it, which is how a module with several aliases writes them.
      */
-    private List<Module> readSummaries(Map<String, Map<String, Translator>> translators) {
+    private List<Module> readSummaries(List<String> lines, Map<String, Map<String, Translator>> translators) {
         List<Module> modules = new ArrayList<>();
-        List<ListLoad.Line> lines = getTree().getLines();
         Summary summary = null;
         boolean sections = false;
         String key = "";
 
         for (int i = 0; i < lines.size(); i++) {
-            String text = lines.get(i).getText();
-            String squeezed = ListLoadLineReader.squeeze(text);
+            String text = lines.get(i);
+            String squeezed = Members.squeeze(text);
             if (squeezed.startsWith("AMBLIST")) {
                 // The page heading falls in the middle of whatever it interrupts.
                 continue;
@@ -150,7 +160,7 @@ public class ModuleListing implements Trait<ListLoad.CompilationUnit> {
             } else {
                 int colon = text.indexOf(':');
                 if (colon >= 0) {
-                    key = ListLoadLineReader.squeeze(text.substring(0, colon));
+                    key = Members.squeeze(text.substring(0, colon));
                     readSummaryLine(summary, key, text.substring(colon + 1).trim(), i + 1);
                 } else if (!text.trim().isEmpty()) {
                     readSummaryLine(summary, key, text.trim(), i + 1);
@@ -159,6 +169,25 @@ public class ModuleListing implements Trait<ListLoad.CompilationUnit> {
         }
         add(modules, summary, translators);
         return modules;
+    }
+
+    /**
+     * The lines of the report, with the ASA carriage control taken off column 1: it is what the
+     * printer acted on rather than something that was printed, so the report's own column 1 is column
+     * 2 of the file and a row read by its columns would otherwise be one out. A request deck is cards
+     * and has no carriage control, so there the whole card is text.
+     */
+    private List<String> lines() {
+        List<String> lines = Members.lines(getTree().getText());
+        if (!Members.isReport(getTree().getText())) {
+            return lines;
+        }
+        List<String> printed = new ArrayList<>(lines.size());
+        for (String line : lines) {
+            printed.add(!line.isEmpty() && CARRIAGE_CONTROL.indexOf(line.charAt(0)) >= 0 ?
+                    line.substring(1) : line);
+        }
+        return printed;
     }
 
     private static void readSummaryLine(Summary summary, String key, String value, int line) {
@@ -219,15 +248,14 @@ public class ModuleListing implements Trait<ListLoad.CompilationUnit> {
      * one and the line under it holds the product number, its version and modification level, and the
      * date it compiled. Keyed by member and then by CSECT, which is how the report itself is keyed.
      */
-    private Map<String, Map<String, Translator>> readTranslators() {
+    private Map<String, Map<String, Translator>> readTranslators(List<String> lines) {
         Map<String, Map<String, Translator>> translators = new HashMap<>();
         String member = null;
         String csect = null;
         boolean reading = false;
 
-        for (ListLoad.Line line : getTree().getLines()) {
-            String text = line.getText();
-            String squeezed = ListLoadLineReader.squeeze(text);
+        for (String text : lines) {
+            String squeezed = Members.squeeze(text);
             if (squeezed.contains("IDENTIFICATIONRECORDDATA")) {
                 member = wordAfter(text, "MEMBER");
                 reading = false;
@@ -268,22 +296,21 @@ public class ModuleListing implements Trait<ListLoad.CompilationUnit> {
      * reader rather than a second time here. A card the deck continued past column 72 cannot be
      * recovered — the echo does not show that column — so a continued statement is read as two.
      */
-    private List<Module> readBinderListing() {
-        List<ListLoad.Line> lines = getTree().getLines();
+    private List<Module> readBinderListing(List<String> lines) {
         List<String> cards = new ArrayList<>();
         List<Integer> cardLines = new ArrayList<>();
         List<Csect> csects = new ArrayList<>();
         boolean map = false;
 
         for (int i = 0; i < lines.size(); i++) {
-            String text = lines.get(i).getText();
+            String text = lines.get(i);
             String card = echoedCard(text);
             if (card != null) {
                 cards.add(card);
                 cardLines.add(i + 1);
                 continue;
             }
-            String squeezed = ListLoadLineReader.squeeze(text);
+            String squeezed = Members.squeeze(text);
             if (squeezed.contains("ENDOFMODULEMAP")) {
                 map = false;
             } else if (squeezed.contains("MODULEMAP")) {
@@ -643,7 +670,9 @@ public class ModuleListing implements Trait<ListLoad.CompilationUnit> {
 
         @Override
         protected @Nullable ModuleListing test(Cursor cursor) {
-            return cursor.getValue() instanceof ListLoad.CompilationUnit ? new ModuleListing(cursor) : null;
+            return cursor.getValue() instanceof PlainText &&
+                   Members.kindOf((PlainText) cursor.getValue()) == Members.Kind.LISTING ?
+                    new ModuleListing(cursor) : null;
         }
     }
 

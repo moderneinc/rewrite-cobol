@@ -20,11 +20,10 @@ import org.openrewrite.DocumentExample;
 import org.openrewrite.test.RewriteTest;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.openrewrite.sas.Assertions.sas;
+import static org.openrewrite.test.SourceSpecs.text;
 
 class ReferencesTest implements RewriteTest {
 
@@ -37,7 +36,7 @@ class ReferencesTest implements RewriteTest {
     @Test
     void readsWhatAProgramReachesByDdName() {
         rewriteRun(
-          sas(
+          text(
             """
               %INCLUDE SASSRC(CLMSMAC);
 
@@ -47,16 +46,18 @@ class ReferencesTest implements RewriteTest {
                  INFILE CLMEXTR LRECL=200 RECFM=FB;
               RUN;
               """,
-            spec -> spec.afterRecipe(cu -> {
-                assertThat(new Include.Matcher().lower(cu).collect(Collectors.toList()))
-                  .extracting(Include::getDdName, Include::getMember, Include::getLine)
+            spec -> spec.path("sas/CLMSEXTR.sas").afterRecipe(cu -> {
+                assertThat(new Include.Matcher().require(cu, null).getReferences())
+                  .extracting(Include.Reference::getDdName, Include.Reference::getMember,
+                    Include.Reference::getLine)
                   .containsExactly(tuple("SASSRC", "CLMSMAC", 1));
-                assertThat(new Library.Matcher().lower(cu).collect(Collectors.toList()))
-                  .extracting(Library::getName, Library::getPath, Library::getDdName, Library::getLine)
+                assertThat(new Library.Matcher().require(cu, null).getReferences())
+                  .extracting(Library.Reference::getName, Library.Reference::getPath,
+                    Library.Reference::getDdName, Library.Reference::getLine)
                   .containsExactly(tuple("CLMSAS", null, "CLMSAS", 3));
-                assertThat(new FileReference.Matcher().lower(cu).collect(Collectors.toList()))
-                  .extracting(FileReference::getKind, FileReference::getName,
-                    FileReference::getDdName, FileReference::getLine)
+                assertThat(new FileReference.Matcher().require(cu, null).getReferences())
+                  .extracting(FileReference.Reference::getKind, FileReference.Reference::getName,
+                    FileReference.Reference::getDdName, FileReference.Reference::getLine)
                   .containsExactly(tuple(FileReference.Kind.INFILE, "CLMEXTR", "CLMEXTR", 6));
             })
           )
@@ -70,7 +71,7 @@ class ReferencesTest implements RewriteTest {
     @Test
     void tellsADataSetTheProgramNamesFromOneTheStepAllocates() {
         rewriteRun(
-          sas(
+          text(
             """
               LIBNAME CLMSAS V9 'CLM.PROD.SASLIB';
               FILENAME CLMRPT 'CLM.PROD.CLMRPT';
@@ -78,13 +79,14 @@ class ReferencesTest implements RewriteTest {
                  FILE CLMRPT;
               RUN;
               """,
-            spec -> spec.afterRecipe(cu -> {
-                assertThat(new Library.Matcher().lower(cu).collect(Collectors.toList()))
-                  .extracting(Library::getName, Library::getEngine, Library::getPath, Library::getDdName)
+            spec -> spec.path("sas/CLMSTAT.sas").afterRecipe(cu -> {
+                assertThat(new Library.Matcher().require(cu, null).getReferences())
+                  .extracting(Library.Reference::getName, Library.Reference::getEngine,
+                    Library.Reference::getPath, Library.Reference::getDdName)
                   .containsExactly(tuple("CLMSAS", "V9", "CLM.PROD.SASLIB", null));
-                assertThat(new FileReference.Matcher().lower(cu).collect(Collectors.toList()))
-                  .extracting(FileReference::getKind, FileReference::getName,
-                    FileReference::getPath, FileReference::getDdName)
+                assertThat(new FileReference.Matcher().require(cu, null).getReferences())
+                  .extracting(FileReference.Reference::getKind, FileReference.Reference::getName,
+                    FileReference.Reference::getPath, FileReference.Reference::getDdName)
                   .containsExactly(
                     tuple(FileReference.Kind.FILENAME, "CLMRPT", "CLM.PROD.CLMRPT", null),
                     tuple(FileReference.Kind.FILE, "CLMRPT", null, "CLMRPT"));
@@ -101,7 +103,7 @@ class ReferencesTest implements RewriteTest {
     @Test
     void tellsAMacroInvocationFromAStatementOfTheMacroLanguage() {
         rewriteRun(
-          sas(
+          text(
             """
               %MACRO CLMTITL(SUBTTL);
                  TITLE1 "CASCADE MUTUAL - CLAIMS - &SYSDATE";
@@ -112,15 +114,16 @@ class ReferencesTest implements RewriteTest {
 
               %CLMTITL(RESERVE CHANGE BY CLAIM TYPE);
               """,
-            spec -> spec.afterRecipe(cu -> {
-                assertThat(new MacroDefinition.Matcher().lower(cu).collect(Collectors.toList()))
-                  .extracting(MacroDefinition::getName, MacroDefinition::getParameters,
-                    MacroDefinition::getLine)
+            spec -> spec.path("sas/CLMSMAC.sas").afterRecipe(cu -> {
+                assertThat(new MacroDefinition.Matcher().require(cu, null).getMacros())
+                  .extracting(MacroDefinition.Macro::getName, MacroDefinition.Macro::getParameters,
+                    MacroDefinition.Macro::getLine)
                   .containsExactly(tuple("CLMTITL", List.of("SUBTTL"), 1));
 
-                List<MacroCall> macros = new MacroCall.Matcher().lower(cu).collect(Collectors.toList());
-                assertThat(macros).extracting(MacroCall::getName, MacroCall::getArguments,
-                    MacroCall::getLine)
+                List<MacroCall.Reference> macros =
+                  new MacroCall.Matcher().require(cu, null).getReferences();
+                assertThat(macros).extracting(MacroCall.Reference::getName,
+                    MacroCall.Reference::getArguments, MacroCall.Reference::getLine)
                   .containsExactly(
                     tuple("CLMTITL", List.of("RESERVE CHANGE BY CLAIM TYPE"), 8));
                 // Whether a macro is one the estate keeps is the library's answer: SAS finds most of
@@ -139,14 +142,14 @@ class ReferencesTest implements RewriteTest {
     @Test
     void readsAnIncludeWrittenWithoutALibrary() {
         rewriteRun(
-          sas(
+          text(
             """
               %INCLUDE CLMSMAC;
               %INCLUDE '/u/clm/clmsmac.sas';
               """,
-            spec -> spec.afterRecipe(cu ->
-              assertThat(new Include.Matcher().lower(cu).collect(Collectors.toList()))
-                .extracting(Include::getDdName, Include::getMember)
+            spec -> spec.path("sas/CLMSAUD.sas").afterRecipe(cu ->
+              assertThat(new Include.Matcher().require(cu, null).getReferences())
+                .extracting(Include.Reference::getDdName, Include.Reference::getMember)
                 .containsExactly(tuple(null, "CLMSMAC"), tuple(null, null)))
           )
         );

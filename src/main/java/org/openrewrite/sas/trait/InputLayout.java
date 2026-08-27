@@ -18,7 +18,7 @@ package org.openrewrite.sas.trait;
 import lombok.Value;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
-import org.openrewrite.sas.tree.Sas;
+import org.openrewrite.text.PlainText;
 import org.openrewrite.trait.SimpleTraitMatcher;
 import org.openrewrite.trait.Trait;
 
@@ -28,7 +28,8 @@ import java.util.Locale;
 import java.util.regex.Pattern;
 
 /**
- * The {@code INPUT} statement of a DATA step, which is a copybook written again in SAS.
+ * The {@code INPUT} statements of a program's DATA steps, each of which is a copybook written again
+ * in SAS.
  * <p>
  * {@code @001 CLAIMNO $CHAR10.} says the same thing as {@code 05 EXT-CLAIM-NO PIC X(10)} at offset
  * zero: the column is the offset the copybook gives and the informat is what the COBOL picture is on
@@ -37,7 +38,7 @@ import java.util.regex.Pattern;
  * which is why the column and the width in bytes are what this trait answers.
  */
 @Value
-public class InputLayout implements Trait<Sas.Statement> {
+public class InputLayout implements Trait<PlainText> {
 
     /**
      * An informat: an optional {@code $}, a name, the width, and the decimal places after the point.
@@ -49,11 +50,30 @@ public class InputLayout implements Trait<Sas.Statement> {
     Cursor cursor;
 
     /**
-     * The variables read, in the order the statement reads them.
+     * The record layouts the program reads, in the order it reads them.
      */
-    public List<Field> getFields() {
+    public List<Layout> getLayouts() {
+        List<Layout> layouts = new ArrayList<>();
+        List<Statements.Statement> statements = Statements.in(getTree().getText());
+        for (int i = 0; i < statements.size(); i++) {
+            Statements.Statement statement = statements.get(i);
+            // A record layout is read in a DATA step and nowhere else: the macro language has an
+            // %INPUT of its own, and a statement in no step reports columns of a record nobody read.
+            Statements.Statement step = Statements.stepOf(statements, i);
+            if (statement.isKeyword("INPUT") && statement.getWordText(1) != null &&
+                step != null && step.isKeyword("DATA")) {
+                layouts.add(new Layout(fields(statement), statement.getLine()));
+            }
+        }
+        return layouts;
+    }
+
+    /**
+     * The variables one statement reads, in the order it reads them.
+     */
+    private static List<Field> fields(Statements.Statement statement) {
         List<Field> fields = new ArrayList<>();
-        List<String> words = getTree().getWordTexts();
+        List<String> words = statement.getWordTexts();
         int column = 1;
         String pending = null;
         for (int i = 1; i < words.size(); i++) {
@@ -80,10 +100,6 @@ public class InputLayout implements Trait<Sas.Statement> {
         return fields;
     }
 
-    public int getLine() {
-        return Statements.lineOf(cursor);
-    }
-
     private static int add(List<Field> fields, int column, String name, String informat) {
         int bytes = bytesOf(informat);
         fields.add(new Field(column, name.toUpperCase(Locale.ROOT), informat, bytes));
@@ -105,6 +121,18 @@ public class InputLayout implements Trait<Sas.Statement> {
             at--;
         }
         return dot < 0 || at == dot ? 0 : Integer.parseInt(informat.substring(at, dot));
+    }
+
+    @Value
+    public static class Layout {
+        List<Field> fields;
+
+        int line;
+
+        @Override
+        public String toString() {
+            return "INPUT of " + fields.size() + " variables";
+        }
     }
 
     @Value
@@ -133,18 +161,12 @@ public class InputLayout implements Trait<Sas.Statement> {
 
         @Override
         protected @Nullable InputLayout test(Cursor cursor) {
-            Object value = cursor.getValue();
-            if (!(value instanceof Sas.Statement) || !((Sas.Statement) value).isKeyword("INPUT") ||
-                ((Sas.Statement) value).getWordText(1) == null) {
-                return null;
-            }
-            Sas.Statement step = Statements.stepOf(cursor);
-            return step != null && step.isKeyword("DATA") ? new InputLayout(cursor) : null;
+            return Statements.isProgram(cursor) ? new InputLayout(cursor) : null;
         }
     }
 
     @Override
     public String toString() {
-        return "INPUT of " + getFields().size() + " variables";
+        return "INPUT of " + getTree().getSourcePath();
     }
 }

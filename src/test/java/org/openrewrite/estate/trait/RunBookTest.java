@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openrewrite.textmember.trait;
+package org.openrewrite.estate.trait;
 
 import org.junit.jupiter.api.Test;
 import org.openrewrite.test.RewriteTest;
-import org.openrewrite.textmember.tree.TextMember;
+import org.openrewrite.text.PlainText;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.openrewrite.textmember.Assertions.document;
+import static org.openrewrite.test.SourceSpecs.text;
 
 class RunBookTest implements RewriteTest {
 
     @Test
     void readsTheJobADocjobDocuments() {
         rewriteRun(
-          document(
+          text(
             """
               DOCJOB   CLMJ010                                CASCADE MUTUAL - CLAIMS
               ========================================================================
@@ -39,7 +39,7 @@ class RunBookTest implements RewriteTest {
               STEPS
                 EXTRACT    PROC CLMBATCH  PGM CLMB010
               """,
-            spec -> spec.afterRecipe(cu -> {
+            spec -> spec.path("doc/CLMJ010.docjob").afterRecipe(cu -> {
                 RunBook book = book(cu);
                 assertThat(book.getShape()).isEqualTo(RunBook.Shape.DOCJOB);
                 assertThat(book.getSubject()).isNotNull()
@@ -61,14 +61,14 @@ class RunBookTest implements RewriteTest {
     @Test
     void readsTheDataSetADocfichDocumentsRatherThanItsOwnName() {
         rewriteRun(
-          document(
+          text(
             """
               DOCFICH  EXTSORT                                CASCADE MUTUAL - CLAIMS
               ========================================================================
               FILE         CLM.PROD.EXTRACT.SORTED    APPLICATION  CLAIMS
               LAYOUT       COPYBOOK CLMEXTR
               """,
-            spec -> spec.afterRecipe(cu -> {
+            spec -> spec.path("doc/EXTSORT.docfich").afterRecipe(cu -> {
                 RunBook book = book(cu);
                 assertThat(book.getShape()).isEqualTo(RunBook.Shape.DOCFICH);
                 assertThat(book.getSubject()).isNotNull()
@@ -86,7 +86,7 @@ class RunBookTest implements RewriteTest {
     @Test
     void readsTheShapeFromTheFirstWordAndFallsBackToTheExtension() {
         rewriteRun(
-          document(
+          text(
             """
               DOCPGM   CLMB010
               PROGRAM      CLMB010                    LIBRARY  CLM.PROD.COBOL
@@ -95,7 +95,7 @@ class RunBookTest implements RewriteTest {
               .afterRecipe(cu -> assertThat(book(cu).getShape()).isEqualTo(RunBook.Shape.DOCPGM)))
         );
         rewriteRun(
-          document(
+          text(
             """
               CLAIMS APPLICATION
               APPLICATION  CLAIMS
@@ -117,7 +117,7 @@ class RunBookTest implements RewriteTest {
     @Test
     void findsEveryNameARunBookMentions() {
         rewriteRun(
-          document(
+          text(
             """
               DOCJOB   CLMJ060
               RUNS AFTER   CLMJ030 (CONDITION CLMNIGHT_CLMJ030_OK) AND THE /DBR BY
@@ -126,7 +126,7 @@ class RunBookTest implements RewriteTest {
                 CLMDB01    CLM.PROD.IMS.CLMDB01.LOG(+1)    IMS LOG, TAPE, GDG
               LAST CHANGE  05/18/1994 RJM  Written with the IMS load
               """,
-            spec -> spec.afterRecipe(cu -> {
+            spec -> spec.path("doc/CLMJ060.docjob").afterRecipe(cu -> {
                 List<String> names = texts(book(cu).getMentions());
                 assertThat(names).contains("CLMJ030", "CLMNIGHT_CLMJ030_OK", "IMSP-DBR-CLMDBD01",
                   "CLMDB01", "CLM.PROD.IMS.CLMDB01.LOG");
@@ -136,7 +136,7 @@ class RunBookTest implements RewriteTest {
         );
     }
 
-    private static RunBook book(TextMember.CompilationUnit cu) {
+    private static RunBook book(PlainText cu) {
         return new RunBook.Matcher().require(cu, null);
     }
 

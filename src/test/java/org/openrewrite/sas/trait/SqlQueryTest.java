@@ -17,16 +17,15 @@ package org.openrewrite.sas.trait;
 
 import org.junit.jupiter.api.Test;
 import org.openrewrite.DocumentExample;
-import org.openrewrite.sas.tree.Sas;
 import org.openrewrite.test.RewriteTest;
+import org.openrewrite.text.PlainText;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.openrewrite.sas.Assertions.sas;
+import static org.openrewrite.test.SourceSpecs.text;
 
 class SqlQueryTest implements RewriteTest {
 
@@ -39,7 +38,7 @@ class SqlQueryTest implements RewriteTest {
     @Test
     void tellsATableReadThroughAConnectionFromADataSetOfASasLibrary() {
         rewriteRun(
-          sas(
+          text(
             """
               PROC SQL;
                  CONNECT TO DB2 (SSID=&DB2SSN);
@@ -59,7 +58,7 @@ class SqlQueryTest implements RewriteTest {
                      WHERE P.POLICYNO = C.POLICYNO;
               QUIT;
               """,
-            spec -> spec.afterRecipe(cu ->
+            spec -> spec.path("sas/CLMSPOL.sas").afterRecipe(cu ->
               assertThat(tables(cu)).extracting(SqlQuery.Table::getName, SqlQuery.Table::getDbms,
                   SqlQuery.Table::getLine)
                 .containsExactly(
@@ -77,14 +76,14 @@ class SqlQueryTest implements RewriteTest {
     @Test
     void readsNoTableOnAConnectStatement() {
         rewriteRun(
-          sas(
+          text(
             """
               PROC SQL;
                  CONNECT TO DB2 (SSID=DB2P);
                  DISCONNECT FROM DB2;
               QUIT;
               """,
-            spec -> spec.afterRecipe(cu -> assertThat(tables(cu)).isEmpty())
+            spec -> spec.path("sas/CLMSPOL.sas").afterRecipe(cu -> assertThat(tables(cu)).isEmpty())
           )
         );
     }
@@ -96,7 +95,7 @@ class SqlQueryTest implements RewriteTest {
     @Test
     void readsNoTableOutsideAProcSqlStep() {
         rewriteRun(
-          sas(
+          text(
             """
               PROC SQL;
               QUIT;
@@ -107,15 +106,16 @@ class SqlQueryTest implements RewriteTest {
 
               SELECT AMTRSV FROM CLMSAS.CLMDAY;
               """,
-            spec -> spec.afterRecipe(cu -> assertThat(tables(cu)).isEmpty())
+            spec -> spec.path("sas/CLMSPOL.sas").afterRecipe(cu -> assertThat(tables(cu)).isEmpty())
           )
         );
     }
 
-    private static List<SqlQuery.Table> tables(Sas.CompilationUnit cu) {
+    private static List<SqlQuery.Table> tables(PlainText cu) {
         List<SqlQuery.Table> tables = new ArrayList<>();
-        new SqlQuery.Matcher().lower(cu).collect(Collectors.toList())
-          .forEach(query -> tables.addAll(query.getTables()));
+        for (SqlQuery.Query query : new SqlQuery.Matcher().require(cu, null).getQueries()) {
+            tables.addAll(query.getTables());
+        }
         return tables;
     }
 }

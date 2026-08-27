@@ -18,10 +18,11 @@ package org.openrewrite.sas.trait;
 import lombok.Value;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
-import org.openrewrite.sas.tree.Sas;
+import org.openrewrite.text.PlainText;
 import org.openrewrite.trait.SimpleTraitMatcher;
 import org.openrewrite.trait.Trait;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -32,16 +33,16 @@ import java.util.Set;
 import static java.util.Collections.emptyList;
 
 /**
- * An invocation of a macro: {@code %CLMTITL(RESERVE CHANGE BY CLAIM TYPE);}.
+ * The macros a program invokes: {@code %CLMTITL(RESERVE CHANGE BY CLAIM TYPE);}.
  * <p>
  * A name after a {@code %} is a macro the shop wrote or one of the statements the macro language
  * itself has, and nothing in the source tells them apart — so the statements are listed here and
- * everything else is an invocation. Whether the macro is one the estate defines is a second
- * question, answered by {@link MacroDefinition} over the members that could define it: a macro comes
- * as often out of an autocall library nobody keeps as out of a member beside the program.
+ * everything else is an invocation. Whether the macro is one the estate defines is a second question,
+ * answered by {@link MacroDefinition} over the members that could define it: a macro comes as often
+ * out of an autocall library nobody keeps as out of a member beside the program.
  */
 @Value
-public class MacroCall implements Trait<Sas.Statement> {
+public class MacroCall implements Trait<PlainText> {
 
     /**
      * The macro language's own statements, which begin with a {@code %} and invoke nothing.
@@ -55,62 +56,79 @@ public class MacroCall implements Trait<Sas.Statement> {
     Cursor cursor;
 
     /**
-     * The macro's name, without the {@code %}.
+     * The macros the program invokes, in the order it invokes them.
      */
-    public String getName() {
-        String word = getTree().getKeyword();
-        int paren = word.indexOf('(');
-        return (paren < 0 ? word : word.substring(0, paren)).substring(1);
-    }
-
-    /**
-     * The arguments, in order, or empty for a macro invoked without parentheses.
-     */
-    public List<String> getArguments() {
-        String text = getTree().getText();
-        int open = text.indexOf('(');
-        int close = text.lastIndexOf(')');
-        return open < 0 || close < open ? emptyList() :
-                Statements.argumentsOf(text.substring(open + 1, close));
-    }
-
-    /**
-     * Whether one of {@code members} defines this macro. Member names are compared without regard to
-     * case, the way a mainframe library holds them.
-     */
-    public boolean isDefinedBy(Collection<String> members) {
-        for (String member : members) {
-            if (member.equalsIgnoreCase(getName())) {
-                return true;
+    public List<Reference> getReferences() {
+        List<Reference> references = new ArrayList<>();
+        for (Statements.Statement statement : Statements.in(getTree().getText())) {
+            String keyword = statement.getKeyword();
+            if (!keyword.startsWith("%") || keyword.length() < 2) {
+                continue;
+            }
+            int paren = keyword.indexOf('(');
+            String name = paren < 0 ? keyword : keyword.substring(0, paren);
+            if (!STATEMENTS.contains(name.toUpperCase(Locale.ROOT))) {
+                references.add(new Reference(name.substring(1), statement.getText(),
+                        statement.getLine()));
             }
         }
-        return false;
+        return references;
     }
 
-    public int getLine() {
-        return Statements.lineOf(cursor);
+    @Value
+    public static class Reference {
+
+        /**
+         * The macro's name, without the {@code %}.
+         */
+        String name;
+
+        /**
+         * The statement as written, which is where the arguments are read from.
+         */
+        String text;
+
+        int line;
+
+        /**
+         * The arguments, in order, or empty for a macro invoked without parentheses.
+         */
+        public List<String> getArguments() {
+            int open = text.indexOf('(');
+            int close = text.lastIndexOf(')');
+            return open < 0 || close < open ? emptyList() :
+                    Statements.argumentsOf(text.substring(open + 1, close));
+        }
+
+        /**
+         * Whether one of {@code members} defines this macro. Member names are compared without regard
+         * to case, the way a mainframe library holds them.
+         */
+        public boolean isDefinedBy(Collection<String> members) {
+            for (String member : members) {
+                if (member.equalsIgnoreCase(name)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public String toString() {
+            return "%" + name;
+        }
     }
 
     public static class Matcher extends SimpleTraitMatcher<MacroCall> {
 
         @Override
         protected @Nullable MacroCall test(Cursor cursor) {
-            Object value = cursor.getValue();
-            if (!(value instanceof Sas.Statement)) {
-                return null;
-            }
-            String keyword = ((Sas.Statement) value).getKeyword();
-            if (!keyword.startsWith("%") || keyword.length() < 2) {
-                return null;
-            }
-            int paren = keyword.indexOf('(');
-            String name = paren < 0 ? keyword : keyword.substring(0, paren);
-            return STATEMENTS.contains(name.toUpperCase(Locale.ROOT)) ? null : new MacroCall(cursor);
+            return Statements.isProgram(cursor) ? new MacroCall(cursor) : null;
         }
     }
 
     @Override
     public String toString() {
-        return "%" + getName();
+        return "macros invoked by " + getTree().getSourcePath();
     }
 }

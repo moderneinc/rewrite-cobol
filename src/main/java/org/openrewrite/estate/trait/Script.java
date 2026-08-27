@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openrewrite.textmember.trait;
+package org.openrewrite.estate.trait;
 
 import lombok.Value;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
-import org.openrewrite.textmember.tree.TextMember;
+import org.openrewrite.estate.Members;
+import org.openrewrite.text.PlainText;
 import org.openrewrite.trait.SimpleTraitMatcher;
 import org.openrewrite.trait.Trait;
 
@@ -40,7 +41,7 @@ import java.util.List;
  * a parameter and not one this can read off a statement.
  */
 @Value
-public class Script implements Trait<TextMember.CompilationUnit> {
+public class Script implements Trait<PlainText> {
 
     Cursor cursor;
 
@@ -49,10 +50,10 @@ public class Script implements Trait<TextMember.CompilationUnit> {
      */
     public List<Reference> getReferences() {
         List<Reference> references = new ArrayList<>();
-        List<TextMember.Line> lines = getTree().getLines();
-        boolean rexx = getTree().getKind() == TextMember.Kind.REXX;
+        List<String> lines = Members.lines(getTree().getText());
+        boolean rexx = Members.kindOf(getTree()) == Members.Kind.REXX;
         for (int i = 0; i < lines.size(); i++) {
-            String text = lines.get(i).getText();
+            String text = lines.get(i);
             if (text.trim().startsWith("/*")) {
                 continue;
             }
@@ -237,11 +238,12 @@ public class Script implements Trait<TextMember.CompilationUnit> {
 
         @Override
         protected @Nullable Script test(Cursor cursor) {
-            if (!(cursor.getValue() instanceof TextMember.CompilationUnit)) {
+            if (!(cursor.getValue() instanceof PlainText)) {
                 return null;
             }
-            TextMember.Kind kind = ((TextMember.CompilationUnit) cursor.getValue()).getKind();
-            return kind == TextMember.Kind.CLIST || kind == TextMember.Kind.REXX ? new Script(cursor) : null;
+            Members.Kind kind = Members.kindOf((PlainText) cursor.getValue());
+            return kind == Members.Kind.CLIST || kind == Members.Kind.REXX ?
+                    new Script(cursor) : null;
         }
     }
 
@@ -499,6 +501,6 @@ public class Script implements Trait<TextMember.CompilationUnit> {
 
     @Override
     public String toString() {
-        return getTree().getKind() + " " + getTree().getSourcePath();
+        return Members.kindOf(getTree()) + " " + getTree().getSourcePath();
     }
 }
