@@ -21,7 +21,7 @@
 
 ## What is this?
 
-This project implements a [Rewrite module](https://github.com/openrewrite/rewrite) that provides parsers, visitors, and recipes for COBOL and related mainframe technologies. It supports parsing and transforming COBOL source code, JCL (Job Control Language), BMS map sets, DB2 DDL, DB2 bind cards, link-edit decks, load module listings, DFSORT and IDCAMS control cards, and Control-M job definitions.
+This project implements a [Rewrite module](https://github.com/openrewrite/rewrite) that provides parsers, visitors, and recipes for COBOL and related mainframe technologies. It supports parsing and transforming COBOL source code, JCL (Job Control Language), BMS map sets, DB2 DDL, DB2 bind cards, link-edit decks, load module listings, DFSORT and IDCAMS control cards, Control-M job definitions, IMS gen source, HLASM assembler and SAS, and it types the CLISTs, REXX execs and run book members an estate keeps beside them.
 
 ### Language Support
 
@@ -35,6 +35,9 @@ This project implements a [Rewrite module](https://github.com/openrewrite/rewrit
 - **Sort cards** — DFSORT and ICETOOL control statements: `SORT`/`MERGE FIELDS`, `INCLUDE`/`OMIT COND`, `INREC`/`OUTREC`/`OUTFIL`, `SUM`, `OPTION`, with the control fields read as byte positions into the record, which is what joins a sort card to the copybook that describes it
 - **IDCAMS cards** — Access method services commands: `DEFINE CLUSTER`/`AIX`/`PATH`/`GDG` with their parameter groups, `REPRO`, `DELETE`, `LISTCAT`, `PRINT` and `ALTER`, which is where a VSAM file's key, record size and components are written down
 - **Control-M** — Job scheduling definitions, both dialects a shop has: the z/OS panel (`.ctms`) and the XML an export writes (`.controlm`). The JCL member each job runs, the `IN` and `OUT` conditions that order them, the SMART table they sit in and the calendars they run on, which is what turns a library of jobs into the order they actually run in
+- **IMS gen source** — The DBDs, PSBs, MFS format sets and stage 1 decks a shop gens its IMS system from (`.dbd`, `.psb`, `.mfs`, `.gen`, and an `.asm` whose first macro is one that gens, since a gen library is assembler source and is often kept as such): the databases with their segments, keys and logical relationships, the PCBs a program is handed and the segments each is sensitive to, the screens a message is laid out on, and the transactions that schedule a PSB. A DL/I call names a PCB by position and a segment by name, and the gen source is the only place either resolves to anything
+- **Assembler** — HLASM statement source (`.asm`, `.mac`): control sections and the DSECTs that are the assembler's copybooks, laid out constant by constant so a layout can be compared with the COBOL one; `COPY` members, macro prototypes and invocations, `CALL` and `V`-type constants, DCBs, entry points and external names. There is no grammar because the columns are the syntax — a card continues the one above it because of a character in column 72, and `ICTL` moves the columns at run time
+- **SAS** — SAS programs (`.sas`, and the `SYSIN` a job carries in-stream): `%INCLUDE`, `LIBNAME`, `INFILE`/`FILE`/`FILENAME`, macro definitions and invocations, `INPUT` column layouts and the tables a `PROC SQL` reads, which is where a batch extract is read again by the group that asks what the numbers mean. A statement runs to the first semicolon outside a quoted string or a comment and SAS has no reserved words, so what there is to read is a text search and a name reference rather than a grammar
 - **CLISTs, REXX execs and run book members** — Typed and held as the lines they were written as, since a member no parser claims reaches a repository as a text file and a text file is not searchable as the technology it is. A CLIST (`.clist`, `.clst`) and an exec (`.rexx`, `.rex`, `.rx`, and an extensionless member whose first line is the `/* REXX */` comment TSO reads) are read for the jobs they submit, the programs they run and the scripts they call, which is the only place in an estate that says how a job is started by hand; a run book member (`.docjob`, `.docpgm`, `.docfich`, `.docappl`, `.docoper`) for the component it documents and the components it names. C (`.c`, `.h`) and PL/I (`.pli`, `.pl1`) are typed and nothing more is read from them
 
 ### Recipes
@@ -77,6 +80,34 @@ parsed and printed back byte for byte; a job when it also had exactly the EXEC c
 found and nothing in it was left unplaced. The gaps are the measurement: `CorpusCoverageTest` groups
 the COBOL failures by cause and `JclCorpusTest` names each member it could not read and why.
 
+The other member kinds are not spread the way COBOL and JCL are — most applications hold none of
+them at all — so they are counted in a table of their own, read of found. CBSA, the COBOL
+Programming Course, Cash Account, GenevaERS Workbench and MainframeJCL have none of the four and are
+left out of it:
+
+| Application | IMS gen | Assembler | SAS | Scripts and run books |
+|---|---:|---:|---:|---:|
+| CardDemo | 8 of 8 | 4 of 4 | — | — |
+| GenApp | — | — | — | 2 of 2 |
+| Bank of Z | 17 of 17 | — | — | — |
+| zAppBuild | — | 1 of 1 | — | — |
+| DBB Samples | 1 of 1 | — | — | — |
+| Z Open Editor sample | — | 3 of 3 | — | 4 of 4 |
+| base64 | — | 2 of 2 | — | — |
+| GenevaERS Performance Engine | — | 116 of 116 | — | — |
+| ADCD setup | — | — | — | 2 of 2 |
+| Zowe install packaging | — | — | — | 22 of 22 |
+| zorow | — | — | — | 45 of 45 |
+| CLAIMS fixture | 19 of 19 | 8 of 8 | 4 of 4 | 42 of 42 |
+
+That is 45 IMS gen members, 134 assembler members, 4 SAS members and 117 scripts and run book
+members, every one of them read and printed back byte for byte. Two of the four are thin outside the
+fixture: no public application here has any SAS at all, and 25 of the 26 public IMS gen members
+belong to the two applications that run IMS. The assembler goes the other way — 116 of the 134 are
+one build engine's. Bank of Z's seventeen count in the IMS column and not the assembler one because
+that is what they are: `src/base/ims/DBD/*.asm` and `src/base/ims/PSB/*.asm` are a gen library kept
+as assembler, which is the ordinary way to keep one.
+
 Bank of Z descends from CBSA, so the two are not independent measurements. 29 of CBSA's 31 program
 names, 36 of its 37 copybooks and all 10 of its map sets are in Bank of Z too; of the shared
 programs two are byte-identical, 19 differ by a few lines, and eight (BANKDATA, BNK1DCS, CREACC,
@@ -86,9 +117,11 @@ adds the 110 jobs, among them DB2 DDL and BIND in JCL, where Bank of Z has one.
 The last row is not a public application but a fixture: one fictional insurance claims
 application, CLAIMS, written so that every `COPY`, `CALL`, `EXEC PROC`, `SEND MAP` and `SYSIN`
 member in it resolves to a member of the same repository, and every member of it a parser here reads
-parses. The only member kind nothing here reads is the plain control card — the IEBGENER, DSN,
-RUNSTATS and parm cards of `claims/ctlcard` — and the walks skip those rather than counting them
-against a parser. The public applications are measured;
+parses. Seventeen readers take 260 of its members between them and the only member kind left is the
+plain control card — the nine IEBGENER, DSN, RUNSTATS and parm cards of `claims/ctlcard` — which the
+walks skip rather than count against a parser. Nothing else in the repository is a member of a
+library at all: its licence and its two markdown documents are the whole of the rest. The public
+applications are measured;
 the fixture is required. The tests know it by its directory name, `mainframe-fixtures`, and fail when
 a program, copybook, job, procedure, map set, bind deck, link-edit deck, module listing, DDL member,
 IMS gen member, assembler member, SAS member, CLIST, REXX exec, run book member, control card or schedule of it does not parse, read or print back — or when the corpus root does not contain it, since a fixture
@@ -122,9 +155,8 @@ the variables are unset, so a normal `./gradlew test` does not need them:
 
 ```bash
 COBOL_CORPUS=/path/to/corpus JCL_CORPUS=/path/to/corpus BMS_CORPUS=/path/to/corpus \
-  DB2_CORPUS=/path/to/corpus IMS_CORPUS=/path/to/corpus ASM_CORPUS=/path/to/corpus \
-  SAS_CORPUS=/path/to/corpus ./gradlew test
-CONTROLM_CORPUS=/path/to/corpus ./gradlew test --rerun
+  CONTROLM_CORPUS=/path/to/corpus DB2_CORPUS=/path/to/corpus IMS_CORPUS=/path/to/corpus \
+  ASM_CORPUS=/path/to/corpus SAS_CORPUS=/path/to/corpus ./gradlew test
 ```
 
 `IMS_CORPUS` reads 45 gen members — Bank of Z's 17, CardDemo's 8, DBB Samples' 1 and the fixture's 19
@@ -217,9 +249,34 @@ by position and never by name — a SAS variable holds eight characters and `AUD
 fifteen — so `InputLayout.Field` gives the column each variable starts in and how many bytes its
 informat reads.
 
-Bind decks, link-edit decks, module listings and control cards ride on `JCL_CORPUS`, since a deck is
-reached through the step that runs it and a listing is what that step printed. `--rerun` matters: the corpus path is an environment variable, not a task input, so a
-run left up to date by an earlier `./gradlew test` is replayed without reading the corpus at all.
+`JCL_CORPUS` also reads 117 scripts and run book members — zorow's 45, Zowe install packaging's 22,
+Z Open Editor sample's 4, GenApp's 2, ADCD setup's 2 and the fixture's 42 — every line of them kept
+as it was written, since there is no grammar for any of the five kinds and the point of reading them
+at all is that a member reaches a repository as the technology it is rather than as a text file. A
+verb is what makes a reference. Every script writes `SUBMIT &JOB (Y/N)?` in a message somewhere, so
+a name in prose reaches nothing and only `SUBMIT`, `CALL`, `RUN PROGRAM`, `EXEC`, `ALLOC`, `EDIT`
+and `SELECT` are followed. A REXX command is built out of quoted strings and variables written side
+by side, so the quotes come off and what was between them joins up — `"SUBMIT '"HLQ".JCL("JOB")'"`
+is the one command `SUBMIT 'HLQ.JCL(JOB)'` — while what was written outside them is what the exec
+computed. Nothing resolves a variable, and the fixture is why that is the honest answer rather than
+a gap: not one of its four submits names a job, because the job a script really submits is a fact
+about two members and a parameter.
+
+`TextMemberCorpusTest` holds the fixture to `INTERLINKS.md` sections 17.1 to 17.3 and 18.1 to 18.2
+row by row: forty three statements over eleven scripts, of which ten call another script, one
+`CALL`s a load module and one `RUN`s a program under a plan; eleven allocations, four of them
+carrying the DD names `CLMB010` and `CLMD020` assign; and all thirty one run book subjects — ten
+jobs, fourteen programs and seven data sets. The names a member merely mentions are reported and not
+resolved — 7,005 of them over the 117 members — and two of the fixture's matches are wrong on
+purpose: an English word of eight letters or fewer is spelled exactly like a member name, so which
+of them is a component of the estate is a join against the members a repository holds rather than
+something one member says.
+
+Bind decks, link-edit decks, module listings and control cards ride on `JCL_CORPUS` too, since a
+deck is reached through the step that runs it and a listing is what that step printed. Each of the
+eight variables and the files under it are declared as inputs of the `test` task, so a corpus that
+grew, or a variable that was not set on the last run, invalidates the task rather than replaying its
+old counts from the cache.
 
 The numbers above were taken at these commits. CBSA's `main` is a README; the application is on the
 `July2024Refresh` branch. DBB Samples declares an EBCDIC working-tree encoding in `.gitattributes`,
@@ -244,7 +301,7 @@ not text the parser can read.
 | Zowe install packaging | `v3.x/staging` 20977c3 | EPL-2.0 |
 | MainframeJCL | `main` 598744a | MIT |
 | zorow | `master` 9f1fdf0 | Apache-2.0 |
-| CLAIMS fixture | `main` 1deff74 | Apache-2.0 |
+| CLAIMS fixture | `main` f19dc71 | Apache-2.0 |
 
 `CorpusCoverageTest` reports how much of each application parses rather than requiring all of it to:
 what the parser cannot yet read is the point of the measurement. It asserts that every program it
