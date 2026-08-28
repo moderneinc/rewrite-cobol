@@ -47,7 +47,7 @@ import static java.util.Collections.emptyList;
  * file and {@code LIBRARY=} in {@code PROC FORMAT} names a libref. Nothing but position says so, so
  * the statements stay flat and the step is read from the ones before.
  */
-final class Statements {
+public final class Statements {
 
     private final String text;
 
@@ -75,7 +75,7 @@ final class Statements {
      * Every statement of a program, in source order. A comment is not one: it carries nothing a
      * reference is read from, and where it stands has already moved the boundaries around it.
      */
-    static List<Statement> in(String text) {
+    public static List<Statement> in(String text) {
         return new Statements(text).statements;
     }
 
@@ -281,7 +281,7 @@ final class Statements {
      * and the reading is left to the traits.
      */
     @Value
-    static class Statement {
+    public static class Statement {
         List<Word> words;
 
         /**
@@ -295,7 +295,7 @@ final class Statements {
          */
         boolean terminated;
 
-        List<String> getWordTexts() {
+        public List<String> getWordTexts() {
             List<String> texts = new ArrayList<>(words.size());
             for (Word word : words) {
                 texts.add(word.getText());
@@ -306,18 +306,18 @@ final class Statements {
         /**
          * The first word upper cased, which is what says what the statement is.
          */
-        String getKeyword() {
+        public String getKeyword() {
             return words.isEmpty() ? "" : words.get(0).getUpperText();
         }
 
-        boolean isKeyword(String keyword) {
+        public boolean isKeyword(String keyword) {
             return keyword.equalsIgnoreCase(getKeyword());
         }
 
         /**
          * The nth word's text, or null where the statement wrote fewer than that.
          */
-        @Nullable String getWordText(int index) {
+        public @Nullable String getWordText(int index) {
             return index >= 0 && index < words.size() ? words.get(index).getText() : null;
         }
 
@@ -325,7 +325,7 @@ final class Statements {
          * The words joined by a single blank, which is what a trait reading a statement lexically
          * asks for.
          */
-        String getText() {
+        public String getText() {
             return String.join(" ", getWordTexts());
         }
     }
@@ -335,11 +335,11 @@ final class Statements {
      * lines is not the line its statement begins on.
      */
     @Value
-    static class Word {
+    public static class Word {
         String text;
         int line;
 
-        String getUpperText() {
+        public String getUpperText() {
             return text.toUpperCase(Locale.ROOT);
         }
     }
