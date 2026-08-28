@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="mod-cobol build" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="io.moderne.cobol.Mod" />
-    <module name="rewrite-cobol.cobol-cli.main" />
+    <module name="rewrite-mainframe.cobol-cli.main" />
     <option name="PROGRAM_PARAMETERS" value="build --path $PROJECT_DIR$/../../moderneinc/cobol-samples" />
     <option name="VM_PARAMETERS" value="-Dpicocli.ansi=true" />
     <extension name="coverage">

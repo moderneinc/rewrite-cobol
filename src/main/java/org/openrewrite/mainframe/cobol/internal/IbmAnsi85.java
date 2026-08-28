@@ -1,0 +1,53 @@
+/*
+ * Copyright 2025 the original author or authors.
+ * <p>
+ * Licensed under the Moderne Source Available License (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * https://docs.moderne.io/licensing/moderne-source-available-license
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.openrewrite.mainframe.cobol.internal;
+
+import lombok.Getter;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
+public class IbmAnsi85 implements CobolDialect {
+
+    private static final IbmAnsi85 INSTANCE = new IbmAnsi85();
+
+    public static IbmAnsi85 getInstance() {
+        return INSTANCE;
+    }
+
+    private final Set<String> separators;
+    private final Set<Character> commentIndicators;
+	@Getter
+	private final Columns columns;
+
+    private IbmAnsi85() {
+        this.separators = new HashSet<>(Arrays.asList(",\r\n", ",\n", ";\r\n", ";\n", ", ", "; "));
+        this.commentIndicators = new HashSet<>(Arrays.asList('*', '/'));
+        this.columns = Columns.IBM_ANSI_85;
+    }
+
+    @Override
+    public Collection<String> getSeparators() {
+        return separators;
+    }
+
+    @Override
+    public Collection<Character> getCommentIndicators() {
+        return commentIndicators;
+    }
+}

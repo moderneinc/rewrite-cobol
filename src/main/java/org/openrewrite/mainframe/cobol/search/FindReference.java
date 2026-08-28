@@ -1,0 +1,130 @@
+/*
+ * Copyright 2025 the original author or authors.
+ * <p>
+ * Licensed under the Moderne Source Available License (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * https://docs.moderne.io/licensing/moderne-source-available-license
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.openrewrite.mainframe.cobol.search;
+
+import lombok.EqualsAndHashCode;
+import lombok.Value;
+import org.jspecify.annotations.Nullable;
+import org.openrewrite.*;
+import org.openrewrite.mainframe.cobol.CobolPreprocessorVisitor;
+import org.openrewrite.mainframe.cobol.NameVisitor;
+import org.openrewrite.mainframe.cobol.table.ReferenceSearchResult;
+import org.openrewrite.mainframe.cobol.tree.Cobol;
+import org.openrewrite.mainframe.cobol.tree.CobolPreprocessor;
+import org.openrewrite.mainframe.jcl.JclIsoVisitor;
+import org.openrewrite.mainframe.jcl.tree.Jcl;
+import org.openrewrite.marker.SearchResult;
+
+import java.util.regex.Pattern;
+
+@EqualsAndHashCode(callSuper = false)
+@Value
+public class FindReference extends Recipe {
+
+    @Option(displayName = "Term to search for",
+            description = "A word or regex pattern to find. By default the search term is case insensitive.",
+            example = "CM102M or cm1.*")
+    String searchTerm;
+
+    @Nullable
+    @Option(displayName = "Only match exact word",
+            description = "Search for a word based on an exact match of the search term.",
+            example = "true")
+    Boolean exactMatch;
+
+    transient ReferenceSearchResult referenceSearchResult = new ReferenceSearchResult(this);
+
+    String displayName = "Find matching identifiers in COBOL, copybooks, and JCL";
+
+    String description = "Finds an identifier by an exact match or regex pattern in COBOL, copybooks, and/or JCL.";
+
+    @Override
+    public TreeVisitor<?, ExecutionContext> getVisitor() {
+        return new TreeVisitor<Tree, ExecutionContext>() {
+            private final CobolReference cobolReference = new CobolReference();
+            private final CopybookReference copybookReference = new CopybookReference();
+            private final JclReference jclReference = new JclReference();
+
+            @Nullable
+            private final Pattern pattern = Boolean.TRUE.equals(exactMatch) ? null : Pattern.compile(searchTerm.toLowerCase());
+
+            @Override
+            public boolean isAcceptable(SourceFile sourceFile, ExecutionContext ctx) {
+                return cobolReference.isAcceptable(sourceFile, ctx) ||
+                       copybookReference.isAcceptable(sourceFile, ctx) ||
+                       jclReference.isAcceptable(sourceFile, ctx);
+            }
+
+            @Override
+            public @Nullable Tree visit(@Nullable Tree tree, ExecutionContext ctx) {
+				if (tree instanceof Cobol) {
+					return cobolReference.visit(tree, ctx, getCursor().getParentOrThrow());
+				}
+				if (tree instanceof CobolPreprocessor.Copybook) {
+					return copybookReference.visit(tree, ctx, getCursor().getParentOrThrow());
+				}
+				if (tree instanceof Jcl.CompilationUnit) {
+					return jclReference.visit(tree, ctx, getCursor().getParentOrThrow());
+				}
+				return super.visit(tree, ctx);
+			}
+
+            class CobolReference extends NameVisitor<ExecutionContext> {
+                @Override
+                public Cobol.Word visitWord(Cobol.Word word, ExecutionContext ctx) {
+                    if (matches(word.getWord())) {
+                        referenceSearchResult.insertRow(ctx, new ReferenceSearchResult.Row(
+                                getCursor().firstEnclosingOrThrow(Cobol.CompilationUnit.class).getSourcePath().toString(),
+                                ReferenceSearchResult.SourceType.COBOL,
+                                word.getWord()));
+                        return SearchResult.found(word);
+                    }
+                    return super.visitWord(word, ctx);
+                }
+            }
+
+            class CopybookReference extends CobolPreprocessorVisitor<ExecutionContext> {
+                private String sourcePath = "";
+
+                @Override
+                public CobolPreprocessor visitCopybook(CobolPreprocessor.Copybook copybook, ExecutionContext ctx) {
+                    sourcePath = copybook.getSourcePath().toString();
+                    return super.visitCopybook(copybook, ctx);
+                }
+
+                @Override
+                public CobolPreprocessor visitWord(CobolPreprocessor.Word word, ExecutionContext ctx) {
+                    if (matches(word.getCobolWord().getWord())) {
+                        referenceSearchResult.insertRow(ctx, new ReferenceSearchResult.Row(
+                                sourcePath,
+                                ReferenceSearchResult.SourceType.COPYBOOK,
+                                word.getCobolWord().getWord()));
+                        return SearchResult.found(word);
+                    }
+                    return super.visitWord(word, ctx);
+                }
+            }
+
+            class JclReference extends JclIsoVisitor<ExecutionContext> {
+                // TODO: FIXME.
+            }
+
+            private boolean matches(String word) {
+                return pattern != null && pattern.matcher(word.toLowerCase()).matches() || pattern == null && word.equals(searchTerm);
+            }
+        };
+    }
+}

@@ -1,1 +1,1 @@
-rootProject.name = "rewrite-cobol"
+rootProject.name = "rewrite-mainframe"

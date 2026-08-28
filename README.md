@@ -9,14 +9,14 @@
 </p>
 
 <div align="center">
-  <h1>rewrite-cobol</h1>
+  <h1>rewrite-mainframe</h1>
 </div>
 
 <div align="center">
 
 <!-- Keep the gap above this line, otherwise they won't render correctly! -->
-[![ci](https://github.com/moderneinc/rewrite-cobol/actions/workflows/ci.yml/badge.svg)](https://github.com/moderneinc/rewrite-cobol/actions/workflows/ci.yml)
-[![Maven Central](https://img.shields.io/maven-central/v/org.openrewrite/rewrite-cobol.svg)](https://mvnrepository.com/artifact/org.openrewrite/rewrite-cobol)
+[![ci](https://github.com/moderneinc/rewrite-mainframe/actions/workflows/ci.yml/badge.svg)](https://github.com/moderneinc/rewrite-mainframe/actions/workflows/ci.yml)
+[![Maven Central](https://img.shields.io/maven-central/v/org.openrewrite/rewrite-mainframe.svg)](https://mvnrepository.com/artifact/org.openrewrite/rewrite-mainframe)
 </div>
 
 ## What is this?

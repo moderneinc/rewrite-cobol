@@ -17,5 +17,5 @@
 ---
 type: specs.openrewrite.org/v1beta/category
 name: z/OS COBOL
-packageName: org.openrewrite.cobol
+packageName: org.openrewrite.mainframe.cobol
 description: 'Recipes to search and transform z/OS COBOL.'

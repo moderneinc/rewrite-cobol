@@ -13,7 +13,7 @@
 # limitations under the License.
 ---
 type: specs.openrewrite.org/v1beta/example
-recipeName: org.openrewrite.cobol.cleanup.RemoveWithDebuggingMode
+recipeName: org.openrewrite.mainframe.cobol.cleanup.RemoveWithDebuggingMode
 examples:
 - description: '`RemoveWithDebuggingModeTest#removeWithDebuggingMode`'
   parameters:
@@ -43,7 +43,7 @@ examples:
     language: cobol
 ---
 type: specs.openrewrite.org/v1beta/example
-recipeName: org.openrewrite.cobol.search.FindCopybook
+recipeName: org.openrewrite.mainframe.cobol.search.FindCopybook
 examples:
 - description: '`FindCopybookTest#isUsedInCopyStatement`'
   parameters:
@@ -67,7 +67,7 @@ examples:
     language: cobol
 ---
 type: specs.openrewrite.org/v1beta/example
-recipeName: org.openrewrite.cobol.search.FindWord
+recipeName: org.openrewrite.mainframe.cobol.search.FindWord
 examples:
 - description: '`FindWordTest#cm102mExactMatch`'
   parameters:
@@ -830,7 +830,7 @@ examples:
     language: cobol
 ---
 type: specs.openrewrite.org/v1beta/example
-recipeName: org.openrewrite.jcl.search.FindWord
+recipeName: org.openrewrite.mainframe.jcl.search.FindWord
 examples:
 - description: '`FindWordTest#exactMatch`'
   parameters:

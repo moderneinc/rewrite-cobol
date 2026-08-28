@@ -1,0 +1,79 @@
+/*
+ * Copyright 2025 the original author or authors.
+ * <p>
+ * Licensed under the Moderne Source Available License (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * https://docs.moderne.io/licensing/moderne-source-available-license
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.openrewrite.mainframe.jcl.tree;
+
+import org.junit.jupiter.api.Test;
+import org.openrewrite.test.RewriteTest;
+
+import static org.openrewrite.mainframe.jcl.tree.ParserAssertions.jcl;
+
+class ControlMTest implements RewriteTest {
+
+    @Test
+    void controlM() {
+        rewriteRun(
+          jcl("%%LIBSYM NAME.FIELD %%MEMSYM NAME.FIELD")
+        );
+    }
+
+    @Test
+    void conditionalParameter() {
+        rewriteRun(
+          jcl(
+            """
+              //Name DD DSNAME=DS4,
+              %%IF (1 EQ 1) THEN
+              // DISP=(NEW,KEEP)
+              %%ELSE
+              // DISP=(OLD,DELETE)
+              %%ENDIF
+              //* CM condition changes the parameter in the JCL file.
+              """
+          )
+        );
+    }
+
+    @Test
+    void commentsAndCmBetweenParameters() {
+        rewriteRun(
+          jcl(
+            """
+              //Name DD DSNAME=DS4,
+              //* CM allows code to be inject into comments.
+              //* %%VALUE=DSNAME
+              // DISP=(NEW,KEEP),
+              %%VALUE=DISP
+              // DISP=(OLD,DELETE)
+              //* CM condition changes the parameter in the JCL file.
+              """
+          )
+        );
+    }
+
+    @Test
+    void cmAfterJobControlStatement() {
+        rewriteRun(
+          jcl(
+            """
+              //Name DD DSNAME=DS4
+              //*
+              %%VALUE=DISP %%NAME2 %%NAME3
+              //Name DD DSNAME=DS4
+              """
+          )
+        );
+    }
+}

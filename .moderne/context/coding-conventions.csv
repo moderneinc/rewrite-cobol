@@ -3,17 +3,17 @@ imports,Static imports from org.assertj.core.api,org.assertj.core.api.Assertions
 imports,Static imports from org.openrewrite.test,org.openrewrite.test.RewriteTest.toRecipe,,project-wide
 naming,Test suffix for classes,CobolTest,,project-wide
 naming,get* method naming pattern,getNistResourcePaths,,project-wide
-imports,Static imports from org.openrewrite.cobol,org.openrewrite.cobol.Assertions.cobol,,project-wide
+imports,Static imports from org.openrewrite.mainframe.cobol,org.openrewrite.mainframe.cobol.Assertions.cobol,,project-wide
 naming,is* method naming pattern,isContinued,,project-wide
-imports,Static imports from org.openrewrite.cobol.table.CopybookSource,org.openrewrite.cobol.table.CopybookSource.ResolutionStatus.MISSING_SOURCE,,project-wide
+imports,Static imports from org.openrewrite.mainframe.cobol.table.CopybookSource,org.openrewrite.mainframe.cobol.table.CopybookSource.ResolutionStatus.MISSING_SOURCE,,project-wide
 naming,find* method naming pattern,findMissingCopybookInCopySource,,project-wide
-imports,Static imports from org.openrewrite.cobol.table.CobolRelationships,org.openrewrite.cobol.table.CobolRelationships.ResourceAction.*,,project-wide
-imports,Static imports from org.openrewrite.controlm,org.openrewrite.controlm.Assertions.controlM,,project-wide
+imports,Static imports from org.openrewrite.mainframe.cobol.table.CobolRelationships,org.openrewrite.mainframe.cobol.table.CobolRelationships.ResourceAction.*,,project-wide
+imports,Static imports from org.openrewrite.mainframe.controlm,org.openrewrite.mainframe.controlm.Assertions.controlM,,project-wide
 naming,camelCase for constants,sm101A,,project-wide
 naming,UPPER_SNAKE_CASE for constants,DIALECT,,project-wide
-imports,Static imports from org.openrewrite.controlm.tree,org.openrewrite.controlm.tree.ParserAssertions.controlM,,project-wide
-imports,Static imports from org.openrewrite.jcl,org.openrewrite.jcl.Assertions.jcl,,project-wide
-imports,Static imports from org.openrewrite.jcl.tree,org.openrewrite.jcl.tree.ParserAssertions.jcl,,project-wide
+imports,Static imports from org.openrewrite.mainframe.controlm.tree,org.openrewrite.mainframe.controlm.tree.ParserAssertions.controlM,,project-wide
+imports,Static imports from org.openrewrite.mainframe.jcl,org.openrewrite.mainframe.jcl.Assertions.jcl,,project-wide
+imports,Static imports from org.openrewrite.mainframe.jcl.tree,org.openrewrite.mainframe.jcl.tree.ParserAssertions.jcl,,project-wide
 imports,Static imports from java.util.stream,java.util.stream.Collectors.toList,,project-wide
 comments,Classes have Javadoc documentation,CobolLineReader,,project-wide
 comments,Methods have Javadoc documentation,startOfLiteralOrHexNumber,,project-wide
@@ -24,11 +24,11 @@ naming,Exception suffix for classes,CobolParsingException,,project-wide
 naming,Utils suffix for classes,CobolPrinterUtils,,project-wide
 imports,Static imports from org.openrewrite,org.openrewrite.Tree.randomId,,project-wide
 naming,set* method naming pattern,setCobolDialect,,project-wide
-imports,Static imports from org.openrewrite.cobol.tree,org.openrewrite.cobol.tree.Space.EMPTY,,project-wide
-imports,Static imports from org.openrewrite.cobol.internal,org.openrewrite.cobol.internal.CobolGrammarToken.COMMENT_ENTRY,,project-wide
+imports,Static imports from org.openrewrite.mainframe.cobol.tree,org.openrewrite.mainframe.cobol.tree.Space.EMPTY,,project-wide
+imports,Static imports from org.openrewrite.mainframe.cobol.internal,org.openrewrite.mainframe.cobol.internal.CobolGrammarToken.COMMENT_ENTRY,,project-wide
 naming,convert* method naming pattern,convertAll,,project-wide
 naming,process* method naming pattern,processTokenText,,project-wide
 naming,delete* method naming pattern,deleteStatement,,project-wide
 imports,Static imports from java.util.regex,java.util.regex.Pattern.MULTILINE,,project-wide
-imports,Static imports from org.openrewrite.cobol,org.openrewrite.cobol.Assertions.preprocessor,,project-wide
+imports,Static imports from org.openrewrite.mainframe.cobol,org.openrewrite.mainframe.cobol.Assertions.preprocessor,,project-wide
 naming,Test suffix for classes,BadBoysTest,,project-wide
