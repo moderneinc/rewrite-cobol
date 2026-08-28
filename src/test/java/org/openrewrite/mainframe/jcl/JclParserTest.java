@@ -24,16 +24,22 @@ import org.openrewrite.ParseExceptionResult;
 import org.openrewrite.Parser;
 import org.openrewrite.SourceFile;
 import org.openrewrite.mainframe.jcl.tree.Jcl;
+import org.openrewrite.mainframe.jcl.trait.Step;
 import org.openrewrite.tree.ParseError;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.Arrays;
 
 import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class JclParserTest {
@@ -134,5 +140,41 @@ class JclParserTest {
         Parser.Input input = new Parser.Input(Paths.get(name),
                 () -> new ByteArrayInputStream(source.getBytes(StandardCharsets.UTF_8)));
         return parser.parseInputs(singletonList(input), null, new InMemoryExecutionContext()).findFirst().orElseThrow();
+    }
+
+    /**
+     * A repository checked out whole is its own procedure library, so every job is in it twice over:
+     * as a member the expansion reads and as a source of its own. It is read once.
+     */
+    @Test
+    void readsAMemberOfTheLibraryOnce(@TempDir Path dir) throws IOException {
+        Path job = dir.resolve("CLMJ010.jcl");
+        Path procedure = dir.resolve("CLMBATCH.prc");
+        Files.writeString(job, "//CLMJ010  JOB (CLM,PROD)\n//EXTRACT  EXEC CLMBATCH,PGM=CLMB010\n//\n");
+        Files.writeString(procedure, "//CLMBATCH PROC PGM=\n//RUN      EXEC PGM=&PGM\n//         PEND\n");
+
+        List<SourceFile> parsed = JclParser.builder().procedureLibrary(Arrays.asList(job, procedure)).build()
+          .parseInputs(Arrays.asList(
+            new Parser.Input(job, () -> open(job)),
+            // Opening it again is what a second parse would do.
+            new Parser.Input(procedure, () -> {
+                throw new AssertionError("the procedure was read a second time");
+            })), dir, new InMemoryExecutionContext())
+          .collect(toList());
+
+        assertThat(parsed).hasSize(2).allMatch(Jcl.CompilationUnit.class::isInstance);
+        assertThat(parsed.get(1).getSourcePath()).isEqualTo(Paths.get("CLMBATCH.prc"));
+        assertThat(new Step.Matcher().lower((Jcl.CompilationUnit) parsed.get(0)).findFirst()
+          .orElseThrow().getProcedureSteps())
+          .extracting(Step::getProgram)
+          .containsExactly("CLMB010");
+    }
+
+    private static InputStream open(Path path) {
+        try {
+            return Files.newInputStream(path);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 }

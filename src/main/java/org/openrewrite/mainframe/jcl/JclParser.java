@@ -44,12 +44,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
 
 @AllArgsConstructor
@@ -94,8 +98,10 @@ public class JclParser implements Parser {
         // JCL source rather than rebuilding it (and re-tokenizing every member) per source.
         ExpandExternalSysinVisitor<ExecutionContext> sysinExpander = parmMembers.isEmpty() ? null :
                 new ExpandExternalSysinVisitor<>(readParmMembers(parmMembers, ctx));
-        ExpandJobVisitor<ExecutionContext> jobExpander = procedureLibrary.isEmpty() ? null :
-                new ExpandJobVisitor<>(readProcedureLibrary(procedureLibrary, ctx));
+        Map<Path, Jcl.CompilationUnit> library = procedureLibrary.isEmpty() ? emptyMap() :
+                readProcedureLibrary(procedureLibrary, ctx);
+        ExpandJobVisitor<ExecutionContext> jobExpander = library.isEmpty() ? null :
+                new ExpandJobVisitor<>(byMemberName(library));
 
         return accepted
                 .map(sourceFile -> {
@@ -105,30 +111,14 @@ public class JclParser implements Parser {
                     Timer.Sample sample = Timer.start();
                     Path path = sourceFile.getRelativePath(relativeTo);
                     try {
-                        EncodingDetectingInputStream is = sourceFile.getSource(ctx);
-                        String sourceStr = is.readFully();
-                        // The grammar reads anything, so a member that is not JCL has to be refused
-                        // before it, or it would be read as a job of unknown cards.
-                        if (!sourceFile.isSynthetic() && !JclLineReader.hasJcl(sourceStr)) {
-                            throw new WrongLanguageException(sourceFile.getPath(),
-                                    sourceFile.getPath() + " is not JCL: no card begins with //.", null);
+                        // A member of the library was read for the expansion already; as a source of
+                        // its own it is the same tree under its path from the root.
+                        Jcl.CompilationUnit cu = library.get(sourceFile.getPath());
+                        if (cu != null) {
+                            cu = cu.withSourcePath(path);
+                        } else {
+                            cu = read(sourceFile, path, ctx);
                         }
-                        String postProcess = JclLineReader.readLines(sourceStr);
-                        CommonTokenStream tokens = new CommonTokenStream(new JCLLexer(
-                                CharStreams.fromString(postProcess)));
-                        JCLParser parser = new JCLParser(tokens);
-
-                        parser.removeErrorListeners();
-                        parser.addErrorListener(new ForwardingErrorListener(sourceFile.getPath(), ctx));
-
-                        Jcl.CompilationUnit cu = new JclParserVisitor(
-                                path,
-                                sourceFile.getFileAttributes(),
-                                sourceStr,
-                                is.getCharset(),
-                                is.isCharsetBomMarked(),
-                                tokens
-                        ).visitCompilationUnit(parser.compilationUnit());
 
                         if (sysinExpander != null) {
                             cu = sysinExpander.visitCompilationUnit(cu, ctx);
@@ -145,6 +135,32 @@ public class JclParser implements Parser {
                         return ParseError.build(this, sourceFile, relativeTo, pctx, t);
                     }
                 });
+    }
+
+    private Jcl.CompilationUnit read(Input sourceFile, Path path, ExecutionContext ctx) {
+        EncodingDetectingInputStream is = sourceFile.getSource(ctx);
+        String sourceStr = is.readFully();
+        // The grammar reads anything, so a member that is not JCL has to be refused before it, or
+        // it would be read as a job of unknown cards.
+        if (!sourceFile.isSynthetic() && !JclLineReader.hasJcl(sourceStr)) {
+            throw new WrongLanguageException(sourceFile.getPath(),
+                    sourceFile.getPath() + " is not JCL: no card begins with //.", null);
+        }
+        String postProcess = JclLineReader.readLines(sourceStr);
+        CommonTokenStream tokens = new CommonTokenStream(new JCLLexer(CharStreams.fromString(postProcess)));
+        JCLParser parser = new JCLParser(tokens);
+
+        parser.removeErrorListeners();
+        parser.addErrorListener(new ForwardingErrorListener(sourceFile.getPath(), ctx));
+
+        return new JclParserVisitor(
+                path,
+                sourceFile.getFileAttributes(),
+                sourceStr,
+                is.getCharset(),
+                is.isCharsetBomMarked(),
+                tokens
+        ).visitCompilationUnit(parser.compilationUnit());
     }
 
     /**
@@ -166,17 +182,18 @@ public class JclParser implements Parser {
     }
 
     /**
-     * Parses each procedure library member once, keyed by member name. A member that does not parse
-     * is reported and left out, so one bad member costs the procedures it holds rather than the
-     * whole portfolio. The parser used has no library of its own: what a member of it in turn
-     * refers to is resolved by {@link ExpandJobVisitor} as it expands, not by parsing it twice.
+     * Parses each procedure library member once, in the order given, the first member of a name
+     * standing for it. A member that does not parse is reported and left out, so one bad member
+     * costs the procedures it holds rather than the whole portfolio. The parser used has no library
+     * of its own: what a member of it in turn refers to is resolved by {@link ExpandJobVisitor} as it
+     * expands, not by parsing it twice.
      */
-    private static Map<String, Jcl.CompilationUnit> readProcedureLibrary(List<Path> paths, ExecutionContext ctx) {
-        Map<String, Jcl.CompilationUnit> members = new HashMap<>();
+    private static Map<Path, Jcl.CompilationUnit> readProcedureLibrary(List<Path> paths, ExecutionContext ctx) {
+        Map<Path, Jcl.CompilationUnit> members = new LinkedHashMap<>();
+        Set<String> names = new HashSet<>();
         JclParser parser = new JclParser(emptyList(), emptyList());
         for (Path path : paths) {
-            String key = memberName(path);
-            if (members.containsKey(key)) {
+            if (!names.add(memberName(path))) {
                 continue;
             }
             parser.parseInputs(singletonList(new Parser.Input(path, () -> {
@@ -187,10 +204,16 @@ public class JclParser implements Parser {
                 }
             })), null, ctx).forEach(parsed -> {
                 if (parsed instanceof Jcl.CompilationUnit) {
-                    members.put(key, (Jcl.CompilationUnit) parsed);
+                    members.put(path, (Jcl.CompilationUnit) parsed);
                 }
             });
         }
+        return members;
+    }
+
+    private static Map<String, Jcl.CompilationUnit> byMemberName(Map<Path, Jcl.CompilationUnit> library) {
+        Map<String, Jcl.CompilationUnit> members = new HashMap<>();
+        library.forEach((path, cu) -> members.put(memberName(path), cu));
         return members;
     }
 
