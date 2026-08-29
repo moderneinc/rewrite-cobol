@@ -18,10 +18,19 @@ package org.openrewrite.mainframe.cobol.search;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.openrewrite.DocumentExample;
+import org.openrewrite.ExecutionContext;
+import org.openrewrite.Recipe;
+import org.openrewrite.Tree;
+import org.openrewrite.TreeVisitor;
 import org.openrewrite.mainframe.cobol.CobolTest;
+import org.openrewrite.mainframe.cobol.table.CobolRelationships;
 import org.openrewrite.mainframe.cobol.table.CobolRelationships.Row;
+import org.openrewrite.mainframe.linkedit.tree.LinkEdit;
 import org.openrewrite.test.RecipeSpec;
+import org.openrewrite.text.PlainText;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -1609,5 +1618,91 @@ class FindRelationshipsTest extends CobolTest {
             FILE         CLM.PROD.EXTRACT           APPLICATION  CLAIMS
             LAYOUT       COPYBOOK CLMEXTR
             """, spec -> spec.path("CLMEXTR.docfich")));
+    }
+
+    /**
+     * The two halves that say what a load module is made of are named so that a recipe already drawing
+     * the rest of these edges runs them alone rather than the whole of this one and every other edge a
+     * second time. Alone they write the rows this recipe writes.
+     */
+    @Test
+    void theLoadModuleHalvesRunOnTheirOwn() {
+        String deck = """
+          *  CLMC020 - CLAIM INQUIRY.  CLMU020 IS CALLED STATICALLY.
+            INCLUDE SYSLIB(DFHECI)
+            INCLUDE OBJLIB(CLMU020)
+            ENTRY CLMC020
+            ALIAS CLMINQ
+            NAME CLMC020(R)
+          """;
+        String listing = String.join("\n",
+          "1                                          A M B L I S T                        PAGE     1",
+          "0                                          ** MODULE SUMMARY **",
+          "0",
+          "      MEMBER NAME:                  CLMC020",
+          "      MAIN ENTRY POINT:             00000000",
+          "      LIBRARY:                      DDNAME=CICSLOAD DSNAME=CLM.PROD.CICSLOAD",
+          "      MODULE SIZE (HEX):            00003658",
+          "0",
+          "0                                          ** CONTROL SECTION SUMMARY **",
+          "0",
+          "      CSECT NAME    ORIGIN    LENGTH    TYPE   AMODE   ENTRY NAME    LOCATION",
+          "      CLMC020       00000000  00002F10  SD     31",
+          "      DFHECI        00002F10  00000058  SD     31      DFHEI1        00002F18",
+          "      CLMU020       00002F68  000006E8  SD     31",
+          "");
+
+        List<Row> whole = new ArrayList<>();
+        rewriteRun(
+          spec -> spec.dataTable(Row.class, whole::addAll),
+          linkEdit(deck, spec -> spec.path("linklib/CLMC020.lnk")),
+          text(listing, spec -> spec.path("listload/CICSLOAD.amblist"))
+        );
+
+        List<Row> halves = new ArrayList<>();
+        rewriteRun(
+          spec -> spec.recipe(new LoadModuleRelationships()).dataTable(Row.class, halves::addAll),
+          linkEdit(deck, spec -> spec.path("linklib/CLMC020.lnk")),
+          text(listing, spec -> spec.path("listload/CICSLOAD.amblist"))
+        );
+
+        assertThat(whole).extracting(Row::getDependentType).contains(LINKEDIT, LOAD_MODULE);
+        assertThat(halves).containsExactlyInAnyOrderElementsOf(whole);
+    }
+
+    /**
+     * What a recipe with edges of its own asks these two halves for, which is what
+     * {@code AnalyzeLoadModuleRelationships} in the recipes does.
+     */
+    static class LoadModuleRelationships extends Recipe {
+        transient CobolRelationships relationships = new CobolRelationships(this);
+
+        @Override
+        public String getDisplayName() {
+            return "Find the relationships of a load module";
+        }
+
+        @Override
+        public String getDescription() {
+            return "The link-edit and listing halves of `FindRelationships`, run without the rest of it.";
+        }
+
+        @Override
+        public TreeVisitor<?, ExecutionContext> getVisitor() {
+            FindRelationships.Assemblers assemblers = new FindRelationships.Assemblers();
+            TreeVisitor<?, ExecutionContext> decks =
+              new FindRelationships.LinkEditRelationships(relationships, assemblers);
+            TreeVisitor<?, ExecutionContext> listings =
+              new FindRelationships.ListingRelationships(relationships, assemblers);
+            return new TreeVisitor<Tree, ExecutionContext>() {
+                @Override
+                public @Nullable Tree visit(@Nullable Tree tree, ExecutionContext ctx) {
+                    if (tree instanceof LinkEdit) {
+                        return decks.visit(tree, ctx);
+                    }
+                    return tree instanceof PlainText ? listings.visit(tree, ctx) : tree;
+                }
+            };
+        }
     }
 }

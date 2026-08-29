@@ -146,6 +146,118 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
         }
     }
 
+    /**
+     * The load module a link-edit deck builds and what it is built from, which nothing else in an
+     * estate writes down: a step names a module and the module names its programs here. A subroutine
+     * an {@code INCLUDE} names is bound into the module and reached without the system ever looking
+     * the name up; one the deck leaves out is called dynamically and is a module of its own.
+     * <p>
+     * Named because a recipe that already draws the rest of these edges runs this half by itself,
+     * rather than the whole of {@link FindRelationships} and every other edge a second time.
+     */
+    public static class LinkEditRelationships extends LinkEditIsoVisitor<ExecutionContext> {
+        private final CobolRelationships relationships;
+        private final Assemblers assemblers;
+
+        public LinkEditRelationships(CobolRelationships relationships, Assemblers assemblers) {
+            this.relationships = relationships;
+            this.assemblers = assemblers;
+        }
+
+        @Override
+        public LinkEdit.CompilationUnit visitCompilationUnit(LinkEdit.CompilationUnit cu, ExecutionContext ctx) {
+            deck(cu, memberName(cu.getSourcePath()), LINKEDIT, cu.getSourcePath().toString(), 0, ctx);
+            return cu;
+        }
+
+        /**
+         * A deck wherever it was written, since one a job writes in its own stream says what a member
+         * of a link-edit library says.
+         *
+         * @param deckType   what the deck is, which differs by where it was written: a {@code LINKLIB}
+         *                   member is a link-edit deck, a deck written in-stream is the job.
+         * @param lineOffset how many lines of the source come before the deck's first card, which is
+         *                   nothing for a member of its own and the DD's position for an in-stream one.
+         */
+        void deck(LinkEdit.CompilationUnit deck, String deckName, CobolRelationships.ResourceType deckType,
+                  String sourcePath, int lineOffset, ExecutionContext ctx) {
+            Set<String> seen = new HashSet<>();
+            LinkEditDeck linkEdit = new LinkEditDeck.Matcher().require(deck, null);
+            LinkEditDeck.Name module = linkEdit.getModule();
+
+            if (module != null) {
+                int line = lineOffset + module.getLine();
+                insertDeckRow(relationships, seen, deckName, deckType, DEFINES, module.getText(), LOAD_MODULE,
+                        sourcePath, line, ctx);
+                for (LinkEditDeck.Name alias : linkEdit.getAliases()) {
+                    insertDeckRow(relationships, seen, deckName, deckType, DEFINES, alias.getText(), LOAD_MODULE,
+                            sourcePath, lineOffset + alias.getLine(), ctx);
+                }
+                LinkEditDeck.Name entry = linkEdit.getEntry();
+                if (entry != null) {
+                    insertDeckRow(relationships, seen, module.getText(), LOAD_MODULE, ENTRY, entry.getText(),
+                            assemblers.typeOf(entry.getText()), sourcePath, lineOffset + entry.getLine(), ctx);
+                }
+            }
+
+            for (LinkEditDeck.Include include : linkEdit.getIncludes()) {
+                int line = lineOffset + include.getLine();
+                // A deck names an object and never what it was written in, so the member decides it: an
+                // assembler subroutine and a vendor stub are included the same way a program is.
+                CobolRelationships.ResourceType included = assemblers.typeOf(include.getMember());
+                insertDeckRow(relationships, seen, deckName, deckType, INCLUDE, include.getMember(), included,
+                        sourcePath, line, include.getDdName(), ctx);
+                if (module != null) {
+                    insertDeckRow(relationships, seen, module.getText(), LOAD_MODULE, CONTAINS,
+                            include.getMember(), included, sourcePath, line, ctx);
+                }
+            }
+        }
+    }
+
+    /**
+     * What a load module actually holds, which only a listing says. A link-edit deck says what a
+     * module was meant to be built from; the listing says what the binder put there — the runtime and
+     * the language interface the autocall pulled in as well as the objects the deck asked for — so
+     * reconciling the two finds a module built from something other than the source a shop keeps.
+     * <p>
+     * Named for the same reason {@link LinkEditRelationships} is, and a listing is the other half of
+     * what a load module is made of.
+     */
+    public static class ListingRelationships extends PlainTextVisitor<ExecutionContext> {
+        private final CobolRelationships relationships;
+        private final Assemblers assemblers;
+
+        public ListingRelationships(CobolRelationships relationships, Assemblers assemblers) {
+            this.relationships = relationships;
+            this.assemblers = assemblers;
+        }
+
+        @Override
+        public PlainText visitText(PlainText text, ExecutionContext ctx) {
+            if (Members.kindOf(text) == Members.Kind.LISTING) {
+                listing(text, ctx);
+            }
+            return text;
+        }
+
+        void listing(PlainText listing, ExecutionContext ctx) {
+            Set<String> seen = new HashSet<>();
+            String sourcePath = listing.getSourcePath().toString();
+            for (ModuleListing.Module module : new ModuleListing.Matcher().require(listing, null).getModules()) {
+                ModuleListing.Entry entry = module.getEntry();
+                if (entry != null) {
+                    insertDeckRow(relationships, seen, module.getName(), LOAD_MODULE, ENTRY, entry.getName(),
+                            assemblers.typeOf(entry.getName()), sourcePath, entry.getLine(), ctx);
+                }
+                for (ModuleListing.Csect csect : module.getCsects()) {
+                    insertCsectRow(relationships, seen, module.getName(), LOAD_MODULE, CONTAINS, csect.getName(),
+                            sourcePath, csect.getLine(), ctx);
+                }
+            }
+        }
+    }
+
     @Override
     public Assemblers getInitialValue(ExecutionContext ctx) {
         return new Assemblers();
@@ -407,14 +519,8 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
             }
         };
 
-        LinkEditIsoVisitor<ExecutionContext> linkEditVisitor = new LinkEditIsoVisitor<ExecutionContext>() {
-            @Override
-            public LinkEdit.CompilationUnit visitCompilationUnit(LinkEdit.CompilationUnit cu, ExecutionContext ctx) {
-                linkEditRelationships(cu, memberName(cu.getSourcePath()), LINKEDIT,
-                        cu.getSourcePath().toString(), 0, acc, ctx);
-                return cu;
-            }
-        };
+        LinkEditRelationships linkEditVisitor = new LinkEditRelationships(cobolRelationships, acc);
+        ListingRelationships listingVisitor = new ListingRelationships(cobolRelationships, acc);
 
         ImsIsoVisitor<ExecutionContext> genVisitor = new ImsIsoVisitor<ExecutionContext>() {
             @Override
@@ -454,7 +560,10 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
                     bindRelationships(stream.getDeck(), memberName(cu.getSourcePath()), JCL,
                             cu.getSourcePath().toString(), stream.getLine() - 1, ctx);
                 }
-                linkEditRelationships(cu, acc, ctx);
+                for (InStreamLinkEditDeck stream : InStreamLinkEditDeck.of(cu)) {
+                    linkEditVisitor.deck(stream.getDeck(), memberName(cu.getSourcePath()), JCL,
+                            cu.getSourcePath().toString(), stream.getLine() - 1, ctx);
+                }
                 for (InStreamCards cards : InStreamCards.of(cu)) {
                     if (IdcamsLineReader.isIdcamsDeck(cards.getText())) {
                         idcamsRelationships(IdcamsParser.parse(cu.getSourcePath(), cards.getText()),
@@ -492,7 +601,7 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
                                 text.getSourcePath().toString(), 0, ctx);
                         break;
                     case LISTING:
-                        listingRelationships(text, acc, ctx);
+                        listingVisitor.listing(text, ctx);
                         break;
                     default:
                         break;
@@ -784,62 +893,6 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
     }
 
     /**
-     * The load module a link-edit deck builds and what it is built from, which nothing else in an
-     * estate writes down: a step names a module and the module names its programs here. A subroutine
-     * an {@code INCLUDE} names is bound into the module and reached without the system ever looking
-     * the name up; one the deck leaves out is called dynamically and is a module of its own.
-     *
-     * @param deckType   what the deck is, which differs by where it was written: a {@code LINKLIB}
-     *                   member is a link-edit deck, a deck written in-stream is the job.
-     * @param lineOffset how many lines of the source come before the deck's first card, which is
-     *                   nothing for a member of its own and the DD's position for an in-stream one.
-     */
-    private void linkEditRelationships(LinkEdit.CompilationUnit deck, String deckName,
-                                       CobolRelationships.ResourceType deckType, String sourcePath,
-                                       int lineOffset, Assemblers acc, ExecutionContext ctx) {
-        Set<String> seen = new HashSet<>();
-        LinkEditDeck linkEdit = new LinkEditDeck.Matcher().require(deck, null);
-        LinkEditDeck.Name module = linkEdit.getModule();
-
-        if (module != null) {
-            int line = lineOffset + module.getLine();
-            insertDeckRow(seen, deckName, deckType, DEFINES, module.getText(), LOAD_MODULE, sourcePath, line, ctx);
-            for (LinkEditDeck.Name alias : linkEdit.getAliases()) {
-                insertDeckRow(seen, deckName, deckType, DEFINES, alias.getText(), LOAD_MODULE, sourcePath,
-                        lineOffset + alias.getLine(), ctx);
-            }
-            LinkEditDeck.Name entry = linkEdit.getEntry();
-            if (entry != null) {
-                insertDeckRow(seen, module.getText(), LOAD_MODULE, ENTRY, entry.getText(),
-                        acc.typeOf(entry.getText()), sourcePath, lineOffset + entry.getLine(), ctx);
-            }
-        }
-
-        for (LinkEditDeck.Include include : linkEdit.getIncludes()) {
-            int line = lineOffset + include.getLine();
-            // A deck names an object and never what it was written in, so the member decides it: an
-            // assembler subroutine and a vendor stub are included the same way a program is.
-            CobolRelationships.ResourceType included = acc.typeOf(include.getMember());
-            insertDeckRow(seen, deckName, deckType, INCLUDE, include.getMember(), included, sourcePath, line,
-                    include.getDdName(), ctx);
-            if (module != null) {
-                insertDeckRow(seen, module.getText(), LOAD_MODULE, CONTAINS, include.getMember(), included,
-                        sourcePath, line, ctx);
-            }
-        }
-    }
-
-    /**
-     * The decks a job writes in its own stream, which say what a member of a link-edit library says.
-     */
-    private void linkEditRelationships(Jcl.CompilationUnit cu, Assemblers acc, ExecutionContext ctx) {
-        for (InStreamLinkEditDeck stream : InStreamLinkEditDeck.of(cu)) {
-            linkEditRelationships(stream.getDeck(), memberName(cu.getSourcePath()), JCL,
-                    cu.getSourcePath().toString(), stream.getLine() - 1, acc, ctx);
-        }
-    }
-
-    /**
      * What a CLIST or a REXX exec reaches: the jobs it submits, the programs it runs and the other
      * scripts it calls.
      * <p>
@@ -920,28 +973,6 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
                 return DATA_SET;
             default:
                 return null;
-        }
-    }
-
-    /**
-     * What a load module actually holds, which only a listing says. A link-edit deck says what a
-     * module was meant to be built from; the listing says what the binder put there — the runtime and
-     * the language interface the autocall pulled in as well as the objects the deck asked for — so
-     * reconciling the two finds a module built from something other than the source a shop keeps.
-     */
-    private void listingRelationships(PlainText listing, Assemblers acc, ExecutionContext ctx) {
-        Set<String> seen = new HashSet<>();
-        String sourcePath = listing.getSourcePath().toString();
-        for (ModuleListing.Module module : new ModuleListing.Matcher().require(listing, null).getModules()) {
-            ModuleListing.Entry entry = module.getEntry();
-            if (entry != null) {
-                insertDeckRow(seen, module.getName(), LOAD_MODULE, ENTRY, entry.getName(),
-                        acc.typeOf(entry.getName()), sourcePath, entry.getLine(), ctx);
-            }
-            for (ModuleListing.Csect csect : module.getCsects()) {
-                insertCsectRow(seen, module.getName(), LOAD_MODULE, CONTAINS, csect.getName(), sourcePath,
-                        csect.getLine(), ctx);
-            }
         }
     }
 
@@ -1120,6 +1151,34 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
         insertDeckRow(seen, dependent, dependentType, action, dependency, dependencyType, sourcePath, line, "", ctx);
     }
 
+    private void insertDeckRow(Set<String> seen, String dependent, CobolRelationships.ResourceType dependentType,
+                               CobolRelationships.ResourceAction action, String dependency,
+                               CobolRelationships.ResourceType dependencyType, String sourcePath, int line,
+                               String actionMetadata, ExecutionContext ctx) {
+        insertDeckRow(cobolRelationships, seen, dependent, dependentType, action, dependency, dependencyType,
+                sourcePath, line, actionMetadata, ctx);
+    }
+
+    private static void insertDeckRow(CobolRelationships relationships, Set<String> seen, String dependent,
+                                      CobolRelationships.ResourceType dependentType,
+                                      CobolRelationships.ResourceAction action, String dependency,
+                                      CobolRelationships.ResourceType dependencyType, String sourcePath, int line,
+                                      ExecutionContext ctx) {
+        insertDeckRow(relationships, seen, dependent, dependentType, action, dependency, dependencyType,
+                sourcePath, line, "", ctx);
+    }
+
+    private static void insertDeckRow(CobolRelationships relationships, Set<String> seen, String dependent,
+                                      CobolRelationships.ResourceType dependentType,
+                                      CobolRelationships.ResourceAction action, String dependency,
+                                      CobolRelationships.ResourceType dependencyType, String sourcePath, int line,
+                                      String actionMetadata, ExecutionContext ctx) {
+        if (seen.add(dependent + ':' + action + ':' + dependency + ':' + line)) {
+            relationships.insertRow(ctx, new CobolRelationships.Row(dependent, dependentType, action,
+                    dependency, dependencyType, false, actionMetadata, sourcePath, line, null, null));
+        }
+    }
+
     /**
      * A control section, which is anchored at both ends: the statement drawing the edge is also the
      * place the section itself was written down, so a section on a diagram opens where it was reported
@@ -1128,19 +1187,16 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
     private void insertCsectRow(Set<String> seen, String dependent, CobolRelationships.ResourceType dependentType,
                                 CobolRelationships.ResourceAction action, String csect, String sourcePath,
                                 int line, ExecutionContext ctx) {
-        if (seen.add(dependent + ':' + action + ':' + csect + ':' + line)) {
-            cobolRelationships.insertRow(ctx, new CobolRelationships.Row(dependent, dependentType, action,
-                    csect, CSECT, false, "", sourcePath, line, sourcePath, line));
-        }
+        insertCsectRow(cobolRelationships, seen, dependent, dependentType, action, csect, sourcePath, line, ctx);
     }
 
-    private void insertDeckRow(Set<String> seen, String dependent, CobolRelationships.ResourceType dependentType,
-                               CobolRelationships.ResourceAction action, String dependency,
-                               CobolRelationships.ResourceType dependencyType, String sourcePath, int line,
-                               String actionMetadata, ExecutionContext ctx) {
-        if (seen.add(dependent + ':' + action + ':' + dependency + ':' + line)) {
-            cobolRelationships.insertRow(ctx, new CobolRelationships.Row(dependent, dependentType, action,
-                    dependency, dependencyType, false, actionMetadata, sourcePath, line, null, null));
+    private static void insertCsectRow(CobolRelationships relationships, Set<String> seen, String dependent,
+                                       CobolRelationships.ResourceType dependentType,
+                                       CobolRelationships.ResourceAction action, String csect, String sourcePath,
+                                       int line, ExecutionContext ctx) {
+        if (seen.add(dependent + ':' + action + ':' + csect + ':' + line)) {
+            relationships.insertRow(ctx, new CobolRelationships.Row(dependent, dependentType, action,
+                    csect, CSECT, false, "", sourcePath, line, sourcePath, line));
         }
     }
 
