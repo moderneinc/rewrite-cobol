@@ -644,8 +644,8 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
 
         for (ControlSection section : new ControlSection.Matcher().lower(member).collect(Collectors.toList())) {
             if (!section.isDummy() && !section.getName().isEmpty()) {
-                insertDeckRow(seen, memberName, ASSEMBLER, DEFINES, section.getName(), CSECT,
-                        sourcePath, section.getLine(), ctx);
+                insertCsectRow(seen, memberName, ASSEMBLER, DEFINES, section.getName(), sourcePath,
+                        section.getLine(), ctx);
             }
         }
         for (EntryPoint entry : new EntryPoint.Matcher().lower(member).collect(Collectors.toList())) {
@@ -930,8 +930,8 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
                         acc.typeOf(entry.getName()), sourcePath, entry.getLine(), ctx);
             }
             for (ModuleListing.Csect csect : module.getCsects()) {
-                insertDeckRow(seen, module.getName(), LOAD_MODULE, CONTAINS, csect.getName(), CSECT,
-                        sourcePath, csect.getLine(), ctx);
+                insertCsectRow(seen, module.getName(), LOAD_MODULE, CONTAINS, csect.getName(), sourcePath,
+                        csect.getLine(), ctx);
             }
         }
     }
@@ -1109,6 +1109,20 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
                                CobolRelationships.ResourceType dependencyType, String sourcePath, int line,
                                ExecutionContext ctx) {
         insertDeckRow(seen, dependent, dependentType, action, dependency, dependencyType, sourcePath, line, "", ctx);
+    }
+
+    /**
+     * A control section, which is anchored at both ends: the statement drawing the edge is also the
+     * place the section itself was written down, so a section on a diagram opens where it was reported
+     * rather than nowhere at all.
+     */
+    private void insertCsectRow(Set<String> seen, String dependent, CobolRelationships.ResourceType dependentType,
+                                CobolRelationships.ResourceAction action, String csect, String sourcePath,
+                                int line, ExecutionContext ctx) {
+        if (seen.add(dependent + ':' + action + ':' + csect + ':' + line)) {
+            cobolRelationships.insertRow(ctx, new CobolRelationships.Row(dependent, dependentType, action,
+                    csect, CSECT, false, "", sourcePath, line, sourcePath, line));
+        }
     }
 
     private void insertDeckRow(Set<String> seen, String dependent, CobolRelationships.ResourceType dependentType,

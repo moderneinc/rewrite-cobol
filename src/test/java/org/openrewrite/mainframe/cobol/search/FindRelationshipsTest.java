@@ -509,6 +509,53 @@ class FindRelationshipsTest extends CobolTest {
         );
     }
 
+    /**
+     * A control section is a node of its own on a diagram, so both ends of the row have to be
+     * openable: the {@code CSECT} statement that emitted the section, and the listing line the binder
+     * reported it on.
+     */
+    @Test
+    void aControlSectionIsAnchoredWhereItWasWrittenDown() {
+        String program = """
+          *  CLMU040 - CLAIM MASTER RECORD EDIT.
+          CLMU040  CSECT
+          CLMU040  AMODE 31
+                   END   CLMU040
+          """;
+        String listing = String.join("\n",
+          "1                                          A M B L I S T                        PAGE     1",
+          "0                                          ** MODULE SUMMARY **",
+          "0",
+          "      MEMBER NAME:                  CLMU040",
+          "      MAIN ENTRY POINT:             00000000",
+          "      LIBRARY:                      DDNAME=LOADLIB DSNAME=CLM.PROD.LOADLIB",
+          "      MODULE SIZE (HEX):            00000A18",
+          "0",
+          "0                                          ** CONTROL SECTION SUMMARY **",
+          "0",
+          "      CSECT NAME    ORIGIN    LENGTH    TYPE   AMODE   ENTRY NAME    LOCATION",
+          "      CLMU040       00000000  000006E8  SD     31",
+          "      CLMU030       000006E8  00000330  SD     31",
+          "");
+        rewriteRun(
+          spec -> spec.dataTable(Row.class, rows -> {
+              assertThat(rows).filteredOn(r -> r.getAction() == DEFINES).singleElement().satisfies(r -> {
+                  assertThat(r.getDependency()).isEqualTo("CLMU040");
+                  assertThat(r.getDependencyPath()).isEqualTo("asm/CLMU040.asm");
+                  assertThat(lineAt(program, r.getDependencyLine())).isEqualTo("CLMU040  CSECT");
+              });
+              assertThat(rows).filteredOn(r -> r.getAction() == CONTAINS)
+                .extracting(Row::getDependency).containsExactly("CLMU040", "CLMU030");
+              assertThat(rows).filteredOn(r -> r.getAction() == CONTAINS).allSatisfy(r -> {
+                  assertThat(r.getDependencyPath()).isEqualTo("listload/LOADLIB.amblist");
+                  assertThat(lineAt(listing, r.getDependencyLine())).contains(r.getDependency());
+              });
+          }),
+          assembler(program, spec -> spec.path("asm/CLMU040.asm")),
+          text(listing, spec -> spec.path("listload/LOADLIB.amblist"))
+        );
+    }
+
     @Test
     void includeCopybookWithCopyAndInclude() {
         rewriteRun(
