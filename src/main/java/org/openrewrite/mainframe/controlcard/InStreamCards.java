@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * The cards written inside a job rather than in a library of their own — the in-stream data of a DD.
  * <p>
- * Both shapes occur in a real estate and neither stands for the other: the deck a shop keeps as a
+ * Both shapes occur at a real shop and neither stands for the other: the deck a shop keeps as a
  * control card member is read once and run from several jobs, while the deck written in the job is
  * the only place its cards exist. The cards are already in the job's own LST, so they are read back
  * from it by printing — a card's layout lives in the white space in front of each word, and where the

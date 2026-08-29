@@ -23,6 +23,8 @@
 
 This project implements a [Rewrite module](https://github.com/openrewrite/rewrite) that provides parsers, visitors, and recipes for COBOL and related mainframe technologies. It supports parsing and transforming COBOL source code, JCL (Job Control Language), BMS map sets, DB2 DDL, DB2 bind cards, link-edit decks, DFSORT and IDCAMS control cards, Control-M job definitions, IMS gen source and HLASM assembler, and it reads the SAS, load module listings, CLISTs, REXX execs, run book members, C and PL/I an estate keeps beside them out of the plain text a build keeps them as.
 
+Three words recur in the documentation and are not interchangeable. The *shop* is the organization: its conventions, its libraries, what its people wrote down. The *estate* is the mainframe world the shop runs — jobs, load modules, databases, schedules — whether or not every piece of it was checked in. The *portfolio* is the set of sources an analysis was actually given, which is why a member the estate has and the portfolio does not is a finding rather than a surprise.
+
 ### Language Support
 
 - **COBOL** — Full parsing of COBOL-85 (IBM ANSI 85 and HP Tandem dialects), including preprocessor directives (COPY, REPLACE) and copybook resolution; programs by `.cbl`, `.cob` and `.cobol`, copybooks by `.cpy`, `.copy` and `.dcl`

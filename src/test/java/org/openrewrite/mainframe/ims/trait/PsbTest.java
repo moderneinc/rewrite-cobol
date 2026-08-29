@@ -114,7 +114,7 @@ class PsbTest {
             tuple("CLMROOT", null, "G", 5),
             tuple("CLMDETL", "CLMROOT", "G", 9));
 
-        // The I/O area a field sensitive PCB builds is not the segment: it is these fields, in this
+        // The I/O area a field-sensitive PCB builds is not the segment: it is these fields, in this
         // order, and it is shorter.
         SensitiveSegment root = claims.getSensitiveSegments().get(0);
         assertThat(root.isRoot()).isTrue();
