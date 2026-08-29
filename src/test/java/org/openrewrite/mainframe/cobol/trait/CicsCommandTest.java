@@ -184,12 +184,15 @@ class CicsCommandTest implements RewriteTest {
             000000 PROGRAM-ID. CICSPGM.                                            \s
             000000 PROCEDURE DIVISION.                                             \s
             000000     EXEC CICS LINK COMMAREA(WS-TAB(WS-I, WS-J)) END-EXEC.       \s
+            000000     EXEC CICS LINK COMMAREA(WS-TAB(WS-I,WS-J)) END-EXEC.        \s
             000000     STOP RUN.                                                   \s
             """
         );
 
-        assertThat(commands).hasSize(1);
+        assertThat(commands).hasSize(2);
         assertThat(commands.get(0).getOption("COMMAREA")).isEqualTo("WS-TAB(WS-I, WS-J)");
+        // The same list written without the blank, which is not put back.
+        assertThat(commands.get(1).getOption("COMMAREA")).isEqualTo("WS-TAB(WS-I,WS-J)");
     }
 
     @Test

@@ -322,29 +322,31 @@ public class CicsCommand implements Trait<Cobol.Word> {
     }
 
     /**
-     * What was written between this word and the one before it. Neither a blank nor a comma is a
-     * word — both are kept in the whitespace around one — so an operand read off the words alone
-     * has {@code APPLID(APPLIDO OF COSGN0AO)} arriving as {@code APPLIDOOFCOSGN0AO}, and a field a
-     * program names only inside an {@code EXEC CICS} then belongs to no data item at all.
+     * What was written between this word and the one before it, with a run of blanks reduced to one
+     * so that an operand broken over two cards reads as a line. Neither a blank nor a comma is a
+     * word — both are kept in the whitespace around one — so an operand read off the words alone has
+     * {@code APPLID(APPLIDO OF COSGN0AO)} arriving as {@code APPLIDOOFCOSGN0AO}.
      * <p>
-     * A separator is kept as it was written and everything else becomes one blank, so an operand
-     * broken over two cards reads as one line. What follows a word up to column 73 separates it from
-     * the next just as a blank before that one would, so both are read.
+     * What follows a word up to column 73 separates it from the next just as a blank before that one
+     * would, so both are read.
      */
     private static String separator(List<Cobol.Word> words, int at) {
         CommentArea trailing = words.get(at - 1).getCommentArea();
         String between = (trailing == null ? "" : trailing.getPrefix().getWhitespace()) +
                          words.get(at).getPrefix().getWhitespace();
-        if (between.isEmpty()) {
-            return "";
-        }
         StringBuilder separator = new StringBuilder();
+        boolean blank = false;
         for (int i = 0; i < between.length(); i++) {
-            if (!Character.isWhitespace(between.charAt(i))) {
-                separator.append(between.charAt(i));
+            char c = between.charAt(i);
+            if (!Character.isWhitespace(c)) {
+                separator.append(c);
+                blank = false;
+            } else if (!blank) {
+                separator.append(' ');
+                blank = true;
             }
         }
-        return separator.append(' ').toString();
+        return separator.toString();
     }
 
     /**
