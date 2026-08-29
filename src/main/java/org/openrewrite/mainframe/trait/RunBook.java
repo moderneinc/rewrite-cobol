@@ -136,7 +136,7 @@ public class RunBook implements Trait<PlainText> {
             if (second >= 0) {
                 int gap = gapIn(text, second);
                 fields.add(field(text.substring(second, gap).trim(),
-                        singletonList(text.substring(gap).trim()), i + 1));
+                        singletonList(text.substring(gap)), i + 1));
             }
             i = below - 1;
         }

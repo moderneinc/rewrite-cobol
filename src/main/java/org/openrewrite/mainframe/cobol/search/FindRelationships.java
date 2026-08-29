@@ -138,11 +138,12 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
         }
 
         CobolRelationships.ResourceType typeOf(String name) {
-            // A name the language interface owns is a section of a module and nobody's program.
-            if (LanguageInterface.isName(name)) {
-                return CSECT;
+            if (isEntryPoint(name)) {
+                return ASSEMBLER;
             }
-            return isEntryPoint(name) ? ASSEMBLER : COBOL;
+            // A name no member offers and the language interface owns is a section of a module and
+            // nobody's program, which is the one name a repository cannot answer for itself.
+            return LanguageInterface.isName(name) ? CSECT : COBOL;
         }
     }
 

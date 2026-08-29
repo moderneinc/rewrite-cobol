@@ -237,8 +237,9 @@ everything that is not a boundary stays a word, which is the depth a text search
 need. What does move a boundary is read: a `/* */` comment anywhere a blank may go, a statement
 beginning `*` that runs to its own semicolon, and a quoted string, where a semicolon means nothing.
 `SasCorpusTest` holds it to `INTERLINKS.md` sections 21.1 to 21.5 — four `%INCLUDE` statements over
-one member, four `LIBNAME`s over the one libref `CLMSAS`, two `INFILE`s whose DD names are the ones
-the COBOL programs `SELECT` for the same two data sets, five invocations of the one macro the shop
+one member, four `LIBNAME`s over the one libref `CLMSAS`, the libref `LIBRARY` that `PROC FORMAT`
+writes its formats to and no statement of the member declares, two `INFILE`s whose DD names are the
+ones the COBOL programs `SELECT` for the same two data sets, five invocations of the one macro the shop
 wrote, the eleven and seven columns of the two `INPUT` layouts against the copybooks they were
 written from, and the one DB2 name the subsystem reads — and counts the statements of every member
 against the semicolons its source writes, since a boundary read in the wrong place prints back byte
@@ -272,7 +273,11 @@ about two members and a parameter.
 row by row: forty three statements over eleven scripts, of which ten call another script, one
 `CALL`s a load module and one `RUN`s a program under a plan; eleven allocations, four of them
 carrying the DD names `CLMB010` and `CLMD020` assign; and all thirty one run book subjects — ten
-jobs, fourteen programs and seven data sets. The names a member merely mentions are reported and not
+jobs, fourteen programs and seven data sets. What a CLIST writes down beside its submits is held to
+17.1 the same way: the `PROC` each of the eight declares, the ten calls they make of one another, and
+the eleven job names a `SET` chooses. A run book is held to the labelled fields it writes — the fifty
+one labels of the shop's own vocabulary — since a field is where the member says a name is a
+component and a sentence is not. The names a member merely mentions are reported and not
 resolved — 7,005 of them over the 117 members — and two of the fixture's matches are wrong on
 purpose: an English word of eight letters or fewer is spelled exactly like a member name, so which
 of them is a component of the estate is a join against the members a repository holds rather than
@@ -316,7 +321,10 @@ did parse prints back byte-identical to the input, which is the property recipes
 
 `BmsCorpusTest` asserts the same over the 50 map sets, and counts the macros it read against an
 independent count of the source. A map set that groups its continuation lines wrongly still prints
-back perfectly — it just says something else — so printing alone would not catch it.
+back perfectly — it just says something else — so printing alone would not catch it. 47 of the
+corpus's fields are initialised with a literal written over more than one card, and none of them
+comes back with a quote nothing closes, which is what a field read only as far as its first blank
+looks like.
 
 `Db2CorpusTest` does the same for the schema, over both places DDL is written: 49 files of DDL and
 the 23 `SYSIN` streams the corpus's jobs submit. It reads 22 tables, 192 columns, 31 indexes and
