@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.openrewrite.test.SourceSpecs.text;
 
 class RunBookTest implements RewriteTest {
@@ -49,6 +50,52 @@ class RunBookTest implements RewriteTest {
                   });
                 assertThat(texts(book.getMentions())).contains("CLMNIGHT", "CLMWORK", "CLMBATCH",
                   "CLMB010", "CLM.PROD.JCL");
+            }))
+        );
+    }
+
+    /**
+     * The labelled fields, which is where the member says a name is a component. A label stands in
+     * the first thirteen columns and its value in the rest of the line and every line indented under
+     * it; the header block writes a second field from column forty one, so the job and the library it
+     * is in are two fields and not one field with a stray word in it.
+     */
+    @Test
+    void readsTheLabelledFieldsAndNotTheProseAsOne() {
+        rewriteRun(
+          text(
+            """
+              DOCJOB   CLMJ010                                CASCADE MUTUAL - CLAIMS
+              ========================================================================
+              JOB          CLMJ010                    LIBRARY  CLM.PROD.JCL
+              ------------------------------------------------------------------------
+              DESCRIPTION
+                FIRST JOB OF THE NIGHTLY STREAM.  RUN IT BY HAND WITH CLMFXTR.
+              STEPS
+                EXTRACT    PROC CLMBATCH  PGM CLMB010
+              OUTPUT
+                CLMEXTR    CLM.PROD.EXTRACT(+1)            GDG, LAYOUT CLMEXTR
+              SEE ALSO     DOCPGM CLMB010   DOCFICH CLMMAST
+              """,
+            spec -> spec.path("doc/CLMJ010.docjob").afterRecipe(cu -> {
+                List<RunBook.Field> fields = book(cu).getFields();
+                assertThat(fields).extracting(RunBook.Field::getLabel, RunBook.Field::getLine)
+                  .containsExactly(
+                    tuple("JOB", 3), tuple("LIBRARY", 3), tuple("DESCRIPTION", 5), tuple("STEPS", 7),
+                    tuple("OUTPUT", 9), tuple("SEE ALSO", 11));
+                assertThat(fields).extracting(field -> texts(field.getNames()))
+                  .containsExactly(
+                    List.of("CLMJ010"),
+                    List.of("CLM.PROD.JCL"),
+                    List.of("FIRST", "JOB", "OF", "THE", "NIGHTLY", "STREAM", "RUN", "IT", "BY",
+                      "HAND", "WITH", "CLMFXTR"),
+                    List.of("EXTRACT", "PROC", "CLMBATCH", "PGM", "CLMB010"),
+                    // The DD and the copybook the record is laid out by, both written CLMEXTR.
+                    List.of("CLMEXTR", "CLM.PROD.EXTRACT", "GDG", "LAYOUT", "CLMEXTR"),
+                    List.of("DOCPGM", "CLMB010", "DOCFICH", "CLMMAST"));
+                // The value as written, which a field laid out in columns is read from.
+                assertThat(fields.get(3).getLines())
+                  .containsExactly("  EXTRACT    PROC CLMBATCH  PGM CLMB010");
             }))
         );
     }

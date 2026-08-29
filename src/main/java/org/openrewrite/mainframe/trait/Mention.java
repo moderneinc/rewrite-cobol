@@ -74,6 +74,19 @@ public class Mention {
     }
 
     /**
+     * The names one line writes, in the order and as often as it writes them. A field of a run book
+     * writes the same name twice where it means two things — a DD and the layout it is read by — and
+     * both are worth having.
+     */
+    public static List<Mention> in(String text, int line) {
+        List<Mention> names = new ArrayList<>();
+        for (String name : namesIn(text)) {
+            names.add(new Mention(name, line));
+        }
+        return names;
+    }
+
+    /**
      * Every token of a line that is spelled the way a name of the estate is spelled: a member name of
      * at most eight characters, a data set name of such qualifiers, or a condition name written with
      * hyphens or underscores.

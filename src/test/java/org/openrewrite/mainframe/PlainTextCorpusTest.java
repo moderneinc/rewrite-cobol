@@ -38,6 +38,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.entry;
 import static org.assertj.core.api.Assertions.tuple;
 
 /**
@@ -449,6 +450,71 @@ class PlainTextCorpusTest {
           "CLMU020 DOCPGM CLMU020",
           "EXTSORT DOCFICH CLM.PROD.EXTRACT.SORTED",
           "MASTBKUP DOCFICH CLM.PROD.CLMMAST.BACKUP");
+    }
+
+    /**
+     * INTERLINKS 18. A run book is written in one fixed set of labelled fields, and those are where it
+     * says a name is a component: a job's {@code STEPS} name the programs it runs, its {@code INPUT}
+     * and {@code OUTPUT} the data sets, its {@code SEE ALSO} the other run books. What is under no
+     * label at all is prose, and a name found only there is not a claim about anything.
+     */
+    @Test
+    void readsTheLabelledFieldsOfTheFixtureRunBooks() throws IOException {
+        Map<String, List<RunBook.Field>> fields = new TreeMap<>();
+        for (RunBook book : runBooks()) {
+            fields.put(book.getName(), book.getFields());
+        }
+
+        // Seventeen fields, in the order the member writes them. The header block writes two to the
+        // line, so the job and the library it is in are fields of their own and not one field's
+        // names.
+        assertThat(fields.get("CLMJ010")).extracting(RunBook.Field::getLabel).containsExactly(
+          "JOB", "LIBRARY", "APPLICATION", "OWNER", "SCHEDULE", "TITLE", "DESCRIPTION", "STEPS",
+          "INPUT", "OUTPUT", "RUNS AFTER", "RUNS BEFORE", "RETURN CODES", "RESTART", "CONTACT",
+          "SEE ALSO", "LAST CHANGE");
+
+        Map<String, List<String>> named = new LinkedHashMap<>();
+        fields.get("CLMJ010").forEach(field -> named.put(field.getLabel(),
+          field.getNames().stream().map(Mention::getText).collect(Collectors.toList())));
+        assertThat(named).contains(
+          entry("JOB", List.of("CLMJ010")),
+          entry("LIBRARY", List.of("CLM.PROD.JCL")),
+          entry("STEPS", List.of("EXTRACT", "PROC", "CLMBATCH", "PGM", "CLMB010")),
+          entry("INPUT", List.of("CLMMAST", "CLM.PROD.CLMMAST", "VSAM", "KSDS", "CLAIM", "MASTER",
+            "PARMCARD", "CLM.PROD.CTLCARD", "PRMCLM01")),
+          // CLMEXTR twice: the DD the step allocates and the copybook the record is laid out by.
+          entry("OUTPUT", List.of("CLMEXTR", "CLM.PROD.EXTRACT", "GDG", "LAYOUT", "CLMEXTR")),
+          entry("SEE ALSO", List.of("DOCPGM", "CLMB010", "DOCFICH", "CLMMAST", "CLMEXTR")));
+
+        // The CLIST the member names is named in prose, under a label about restarting the job and
+        // not one that says anything is a component. A finding over the mentions would claim it; one
+        // over a field somebody chose would not.
+        assertThat(fields.get("CLMJ010")).filteredOn(field -> field.getNames().stream()
+            .anyMatch(name -> "CLMFXTR".equals(name.getText())))
+          .extracting(RunBook.Field::getLabel).containsExactly("RESTART");
+
+        // The whole vocabulary the shop writes, and nothing this reader invented.
+        Map<String, Integer> labels = new TreeMap<>();
+        fields.values().forEach(book ->
+          book.forEach(field -> labels.merge(field.getLabel(), 1, Integer::sum)));
+        assertThat(labels).containsOnlyKeys("APPLICATION", "BACKED UP BY", "BUILD", "CALLED BY",
+          "CALLS", "CHANGES", "CICS", "CICS FILES", "CICS QUEUES", "CONTACT", "COPYBOOKS",
+          "DATABASE", "DEFINED BY", "DESCRIPTION", "FILE", "FILES", "INPUT", "JOB", "KIND",
+          "LAST CHANGE", "LAYOUT", "LIBRARY", "LINKED FROM", "LINKS TO", "MAPS", "NOTE", "OUTPUT",
+          "OWNER", "PARM", "PRINTED BY", "PROGRAM", "READ BY", "RECOVERY", "RELOADED BY", "REPRINT",
+          "RESTART", "RETENTION", "RETURN CODES", "RUN BY", "RUNS AFTER", "RUNS BEFORE", "SCHEDULE",
+          "SEE ALSO", "SORTED INTO", "STEPS", "TABLES", "TITLE", "UPDATED BY", "WRITTEN BY",
+          "XCTL FROM", "XCTL TO");
+
+        // Four labels every member writes, and the three that say which shape it is: ten DOCJOB,
+        // fourteen DOCPGM, seven DOCFICH. A DOCJOB's header names the library the job is in and a
+        // DOCFICH's names the application instead, which is why LIBRARY is 24 and not 31.
+        assertThat(labels).contains(
+          entry("APPLICATION", 31), entry("DESCRIPTION", 31), entry("SEE ALSO", 31),
+          entry("TITLE", 31), entry("JOB", 10), entry("PROGRAM", 14), entry("FILE", 7),
+          entry("LIBRARY", 24), entry("STEPS", 10), entry("INPUT", 10), entry("OUTPUT", 10),
+          entry("BUILD", 14), entry("RUN BY", 14), entry("COPYBOOKS", 14), entry("FILES", 10),
+          entry("DEFINED BY", 7), entry("LAYOUT", 7), entry("RETENTION", 7));
     }
 
     /**
