@@ -26,6 +26,8 @@ import org.openrewrite.trait.Trait;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Collections.emptyList;
+
 /**
  * A CLIST or a REXX exec, read for the members it reaches.
  * <p>
@@ -38,7 +40,10 @@ import java.util.List;
  * A name written as a variable is reported as it stands and marked {@link Reference#isSymbolic()}.
  * Nothing here resolves one: {@code CLMCOMP} picks a job into {@code &JOB} and hands it to
  * {@code CLMSUB}, which submits it, so the job a script really submits is a fact about two members and
- * a parameter and not one this can read off a statement.
+ * a parameter and not one this can read off a statement. What each member writes of that fact is
+ * here — {@link #getAssignments()} the values it sets, {@link #getInvocations()} the scripts it calls
+ * and what it hands them, {@link #getParameters()} what it takes — so a recipe holding both members
+ * joins them without reading the text again.
  */
 @Value
 public class Script implements Trait<PlainText> {
@@ -57,7 +62,7 @@ public class Script implements Trait<PlainText> {
             if (text.trim().startsWith("/*")) {
                 continue;
             }
-            read(new Card(text, rexx), i + 1, references);
+            read(new Card(text, rexx, i + 1), references);
         }
         return references;
     }
@@ -70,47 +75,182 @@ public class Script implements Trait<PlainText> {
     }
 
     /**
+     * What the script sets into its variables, in the order it sets them.
+     * <p>
+     * This is the other half of a name a statement computed: {@code CLMCOMP} writes
+     * {@code SET &JOB = CLMCMPB} under each {@code WHEN} and hands {@code &JOB} to {@code CLMSUB},
+     * so the four compile jobs are written down after all — in the member that chooses one, not in
+     * the member that submits it.
+     */
+    public List<Assignment> getAssignments() {
+        List<Assignment> assignments = new ArrayList<>();
+        for (Card card : statements()) {
+            if (!"SET".equals(card.getVerb())) {
+                continue;
+            }
+            int equals = card.getText().indexOf('=', card.getVerbEnd());
+            if (equals < 0) {
+                continue;
+            }
+            String variable = card.between(card.getVerbEnd(), equals);
+            if (variable.startsWith("&")) {
+                variable = variable.substring(1);
+            }
+            if (!variable.isEmpty()) {
+                assignments.add(new Assignment(variable,
+                        card.between(equals + 1, card.getText().length()), card.getLine()));
+            }
+        }
+        return assignments;
+    }
+
+    /**
+     * The other scripts this one calls, with what it hands each of them, in the order it calls them.
+     * A CLIST passes its arguments by position and by keyword, so what is written here binds to the
+     * {@link #getParameters()} of the member called.
+     */
+    public List<Invocation> getInvocations() {
+        List<Invocation> invocations = new ArrayList<>();
+        for (Card card : statements()) {
+            if (card.getVerb().startsWith("%")) {
+                invocations.add(new Invocation(card.getVerbText().substring(1),
+                        card.operandsAfter(card.getVerbEnd()), card.getLine()));
+            }
+        }
+        return invocations;
+    }
+
+    /**
+     * What the {@code PROC} statement says a caller may hand this member. A CLIST declares them on its
+     * first statement or takes none at all.
+     */
+    public List<Parameter> getParameters() {
+        List<Card> statements = statements();
+        if (statements.isEmpty() || !"PROC".equals(statements.get(0).getVerb())) {
+            return emptyList();
+        }
+        Card card = statements.get(0);
+        List<String> operands = card.operandsAfter(card.getVerbEnd());
+        List<Parameter> parameters = new ArrayList<>();
+        int positional = operands.isEmpty() ? 0 : positionalCount(operands.get(0));
+        for (int i = 1; i < operands.size(); i++) {
+            String operand = operands.get(i);
+            int open = operand.indexOf('(');
+            parameters.add(new Parameter(open < 0 ? operand : operand.substring(0, open),
+                    open < 0 || !operand.endsWith(")") ? null :
+                            operand.substring(open + 1, operand.length() - 1),
+                    i <= positional));
+        }
+        return parameters;
+    }
+
+    private static int positionalCount(String operand) {
+        try {
+            return Integer.parseInt(operand);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    /**
+     * The statements of a CLIST, with a line continued by a trailing {@code +} or {@code -} joined to
+     * the one below it.
+     * <p>
+     * Empty for a REXX exec: an exec takes its arguments with {@code PARSE ARG}, assigns without a
+     * verb at all, and calls another exec by writing its name where a command goes, so none of the
+     * three readings above is the same reading there.
+     */
+    private List<Card> statements() {
+        if (Members.kindOf(getTree()) != Members.Kind.CLIST) {
+            return emptyList();
+        }
+        List<Card> statements = new ArrayList<>();
+        List<String> lines = Members.lines(getTree().getText());
+        for (int i = 0; i < lines.size(); i++) {
+            String text = lines.get(i);
+            if (text.trim().startsWith("/*") || text.trim().isEmpty()) {
+                continue;
+            }
+            int line = i + 1;
+            while (continues(text) && i + 1 < lines.size()) {
+                String written = trimEnd(text);
+                String next = lines.get(++i);
+                text = written.substring(0, written.length() - 1) +
+                       (written.charAt(written.length() - 1) == '+' ? trimStart(next) : next);
+            }
+            statements.add(new Card(text, false, line));
+        }
+        return statements;
+    }
+
+    /**
+     * Whether the line is continued onto the one below, which a CLIST says with a {@code +} or a
+     * {@code -} written on its own at the end.
+     */
+    private static boolean continues(String line) {
+        String text = trimEnd(line);
+        return text.length() > 1 && (text.endsWith("+") || text.endsWith("-")) &&
+               Character.isWhitespace(text.charAt(text.length() - 2));
+    }
+
+    private static String trimEnd(String text) {
+        int end = text.length();
+        while (end > 0 && Character.isWhitespace(text.charAt(end - 1))) {
+            end--;
+        }
+        return text.substring(0, end);
+    }
+
+    private static String trimStart(String text) {
+        int start = 0;
+        while (start < text.length() && Character.isWhitespace(text.charAt(start))) {
+            start++;
+        }
+        return text.substring(start);
+    }
+
+    /**
      * What one card reaches. The verb decides: a name in the middle of a message is not a reference,
      * and every script writes {@code WRITE ...: SUBMIT &JOB (Y/N)?} somewhere.
      */
-    private static void read(Card card, int line, List<Reference> references) {
+    private static void read(Card card, List<Reference> references) {
         // A function, not a statement, so it is looked for wherever it was written.
         for (int at = card.find("SYSDSN", 0); at >= 0; at = card.find("SYSDSN", at + 1)) {
-            add(references, Reference.Kind.CHECK, card, card.parenthesised(at + "SYSDSN".length()), null, line);
+            add(references, Reference.Kind.CHECK, card, card.parenthesised(at + "SYSDSN".length()), null);
         }
 
         switch (card.getVerb()) {
             case "SUBMIT":
-                add(references, Reference.Kind.SUBMIT, card, card.operandAt(card.getVerbEnd()), null, line);
+                add(references, Reference.Kind.SUBMIT, card, card.operandAt(card.getVerbEnd()), null);
                 break;
             case "CALL":
-                add(references, Reference.Kind.CALL, card, card.operandAt(card.getVerbEnd()), null, line);
+                add(references, Reference.Kind.CALL, card, card.operandAt(card.getVerbEnd()), null);
                 break;
             case "RUN":
-                add(references, Reference.Kind.RUN, card, card.keywordOperand("PROGRAM"), null, line);
+                add(references, Reference.Kind.RUN, card, card.keywordOperand("PROGRAM"), null);
                 break;
             case "EXEC":
-                add(references, Reference.Kind.EXEC, card, card.operandAt(card.getVerbEnd()), null, line);
+                add(references, Reference.Kind.EXEC, card, card.operandAt(card.getVerbEnd()), null);
                 break;
             case "ALLOC":
             case "ALLOCATE":
             case "ALTLIB":
             case "LMINIT":
                 add(references, Reference.Kind.ALLOCATE, card,
-                        card.keywordOperand("DA", "DSN", "DSNAME", "DATASET"), card.ddName(), line);
+                        card.keywordOperand("DA", "DSN", "DSNAME", "DATASET"), card.ddName());
                 break;
             case "EDIT":
             case "VIEW":
             case "BROWSE":
                 Operand edited = card.keywordOperand("DA", "DSN", "DSNAME", "DATASET");
                 add(references, Reference.Kind.EDIT, card,
-                        edited == null ? card.quotedAt(card.getVerbEnd()) : edited, null, line);
+                        edited == null ? card.quotedAt(card.getVerbEnd()) : edited, null);
                 break;
             case "SELECT":
-                add(references, Reference.Kind.SELECT, card, card.keywordOperand("PGM", "CMD"), null, line);
+                add(references, Reference.Kind.SELECT, card, card.keywordOperand("PGM", "CMD"), null);
                 break;
             case "LISTDS":
-                add(references, Reference.Kind.CHECK, card, card.operandAt(card.getVerbEnd()), null, line);
+                add(references, Reference.Kind.CHECK, card, card.operandAt(card.getVerbEnd()), null);
                 break;
             default:
                 // The name is the statement itself, so there is nothing here a script could have
@@ -118,14 +258,14 @@ public class Script implements Trait<PlainText> {
                 if (card.getVerb().startsWith("%")) {
                     String called = card.getVerbText().substring(1);
                     references.add(new Reference(Reference.Kind.EXEC, null, called, null, called,
-                            false, line));
+                            false, card.getLine()));
                 }
                 break;
         }
     }
 
     private static void add(List<Reference> references, Reference.Kind kind, Card card,
-                            @Nullable Operand operand, @Nullable String ddName, int line) {
+                            @Nullable Operand operand, @Nullable String ddName) {
         String text = operand == null ? "" : operand.text;
         String member = null;
         String dataSet = null;
@@ -149,7 +289,7 @@ public class Script implements Trait<PlainText> {
         boolean symbolic = name.indexOf('&') >= 0 ||
                            operand != null && text.contains(name) &&
                            card.isVariable(operand.start + text.lastIndexOf(name), name.length());
-        references.add(new Reference(kind, dataSet, member, ddName, name, symbolic, line));
+        references.add(new Reference(kind, dataSet, member, ddName, name, symbolic, card.getLine()));
     }
 
     private static String lastQualifier(String dataSetName) {
@@ -234,6 +374,96 @@ public class Script implements Trait<PlainText> {
         }
     }
 
+    /**
+     * A value a {@code SET} put into a variable.
+     */
+    @Value
+    public static class Assignment {
+
+        /**
+         * The variable, without the {@code &} a CLIST writes in front of it.
+         */
+        String variable;
+
+        /**
+         * What was written after the equals sign, as it stands.
+         */
+        String value;
+
+        int line;
+
+        /**
+         * Whether the value is written down rather than computed: one word of name characters, with
+         * no variable, no function and no quotes in it. {@code SET &JOB = CLMCMPB} is a name a member
+         * of the estate may be found under; {@code SET &JOB = &&JOB&I} is a name only the run has.
+         */
+        public boolean isLiteral() {
+            for (int i = 0; i < value.length(); i++) {
+                char c = value.charAt(i);
+                if (!Character.isLetterOrDigit(c) && c != '@' && c != '#' && c != '$' && c != '.') {
+                    return false;
+                }
+            }
+            return !value.isEmpty();
+        }
+
+        @Override
+        public String toString() {
+            return "SET &" + variable + " = " + value;
+        }
+    }
+
+    /**
+     * A call of another script, and what it was handed.
+     */
+    @Value
+    public static class Invocation {
+
+        /**
+         * The script called, without the {@code %}.
+         */
+        String name;
+
+        /**
+         * What the call was given, in the order it was written: a value, a variable of the calling
+         * member, or a {@code KEYWORD(value)}.
+         */
+        List<String> arguments;
+
+        int line;
+
+        @Override
+        public String toString() {
+            return "%" + name + (arguments.isEmpty() ? "" : " " + String.join(" ", arguments));
+        }
+    }
+
+    /**
+     * Something the {@code PROC} statement says a caller may hand the script.
+     */
+    @Value
+    public static class Parameter {
+
+        String name;
+
+        /**
+         * What the {@code PROC} gives the parameter where the caller writes nothing, or null for one
+         * declared without a value.
+         */
+        @Nullable
+        String defaultValue;
+
+        /**
+         * Whether the caller gives it by position rather than by name.
+         */
+        boolean positional;
+
+        @Override
+        public String toString() {
+            return name + (defaultValue == null ? "" : "(" + defaultValue + ")");
+        }
+    }
+
     public static class Matcher extends SimpleTraitMatcher<Script> {
 
         @Override
@@ -263,15 +493,17 @@ public class Script implements Trait<PlainText> {
         private final String verb;
         private final int verbAt;
         private final int verbEnd;
+        private final int line;
 
-        Card(String line, boolean rexx) {
-            StringBuilder built = new StringBuilder(line.length());
-            boolean[] computed = new boolean[line.length()];
+        Card(String written, boolean rexx, int line) {
+            this.line = line;
+            StringBuilder built = new StringBuilder(written.length());
+            boolean[] computed = new boolean[written.length()];
             if (rexx) {
                 boolean quoted = false;
                 boolean doubled = false;
-                for (int i = 0; i < line.length(); i++) {
-                    char c = line.charAt(i);
+                for (int i = 0; i < written.length(); i++) {
+                    char c = written.charAt(i);
                     if (!quoted && c == '"') {
                         doubled = !doubled;
                         continue;
@@ -284,8 +516,8 @@ public class Script implements Trait<PlainText> {
                 }
             } else {
                 boolean symbol = false;
-                for (int i = 0; i < line.length(); i++) {
-                    char c = line.charAt(i);
+                for (int i = 0; i < written.length(); i++) {
+                    char c = written.charAt(i);
                     symbol = c == '&' || symbol && isNameCharacter(c);
                     computed[i] = symbol;
                     built.append(c);
@@ -359,6 +591,44 @@ public class Script implements Trait<PlainText> {
 
         int getVerbEnd() {
             return verbEnd;
+        }
+
+        String getText() {
+            return text;
+        }
+
+        int getLine() {
+            return line;
+        }
+
+        String between(int start, int end) {
+            return text.substring(start, Math.min(end, text.length())).trim();
+        }
+
+        /**
+         * The words written after {@code from}, a parenthesised group staying with the word in front
+         * of it, which is how a CLIST hands a keyword its value.
+         */
+        List<String> operandsAfter(int from) {
+            List<String> operands = new ArrayList<>();
+            int at = from;
+            while (at < text.length()) {
+                while (at < text.length() && Character.isWhitespace(text.charAt(at))) {
+                    at++;
+                }
+                int end = at;
+                int depth = 0;
+                while (end < text.length() && (depth > 0 || !Character.isWhitespace(text.charAt(end)))) {
+                    char c = text.charAt(end);
+                    depth += c == '(' ? 1 : c == ')' ? -1 : 0;
+                    end++;
+                }
+                if (end > at) {
+                    operands.add(text.substring(at, end));
+                }
+                at = end;
+            }
+            return operands;
         }
 
         /**

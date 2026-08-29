@@ -188,6 +188,81 @@ class ScriptTest implements RewriteTest {
     }
 
     /**
+     * The other half of a submit by argument: what the member sets, what it calls and what it takes.
+     * The job is written down under the {@code WHEN} that chooses it and handed on as a variable, so
+     * nothing but the caller and the callee together says which job is submitted.
+     */
+    @Test
+    void readsWhatAClistSetsCallsAndDeclares() {
+        rewriteRun(
+          text(
+            """
+              PROC 1 MEM ENV(PROD)
+              /*  SET &JOB = CLMCMPX IN A COMMENT IS NOT AN ASSIGNMENT  */
+              %CLMSETUP ENV(&ENV)
+              SET &KIND = &SUBSTR(4,&MEM)
+              SELECT (&KIND)
+                WHEN (B) SET &JOB = CLMCMPB
+                WHEN (C) SET &JOB = CLMCMPC
+              END
+              SET &CARD = +
+                &STR(//COMPILE EXEC &PROC,MEM=&MEM)
+              %CLMSUB &JOB NOASK
+              """,
+            spec -> spec.path("CLMCOMP.clist").afterRecipe(cu -> {
+                Script script = new Script.Matcher().require(cu, null);
+                assertThat(script.getParameters())
+                  .extracting(Script.Parameter::getName, Script.Parameter::getDefaultValue,
+                    Script.Parameter::isPositional)
+                  .containsExactly(tuple("MEM", null, true), tuple("ENV", "PROD", false));
+                assertThat(script.getAssignments())
+                  .extracting(Script.Assignment::getVariable, Script.Assignment::getValue,
+                    Script.Assignment::isLiteral, Script.Assignment::getLine)
+                  .containsExactly(
+                    tuple("KIND", "&SUBSTR(4,&MEM)", false, 4),
+                    tuple("JOB", "CLMCMPB", true, 6),
+                    tuple("JOB", "CLMCMPC", true, 7),
+                    // The continuation is joined, so the value is what was set and not a plus sign.
+                    tuple("CARD", "&STR(//COMPILE EXEC &PROC,MEM=&MEM)", false, 9));
+                assertThat(script.getInvocations())
+                  .extracting(Script.Invocation::getName, Script.Invocation::getArguments,
+                    Script.Invocation::getLine)
+                  .containsExactly(
+                    tuple("CLMSETUP", List.of("ENV(&ENV)"), 3),
+                    tuple("CLMSUB", List.of("&JOB", "NOASK"), 11));
+            }))
+        );
+    }
+
+    /**
+     * An exec takes its arguments with {@code PARSE ARG}, assigns without a verb and calls another
+     * exec by writing its name where a command goes, so none of the three readings is the same
+     * reading there and none of them is done.
+     */
+    @Test
+    void readsNeitherAssignmentNorParameterOfARexxExec() {
+        rewriteRun(
+          text(
+            """
+              /*  REXX  */
+              PARSE ARG MEM
+              PROC = 'CLMCLB'
+              "SUBMIT '"HLQ".JCL("JOB")'"
+              """,
+            spec -> spec.path("CLMCMPX.rexx").afterRecipe(cu -> {
+                Script script = new Script.Matcher().require(cu, null);
+                assertThat(script.getAssignments()).isEmpty();
+                assertThat(script.getInvocations()).isEmpty();
+                assertThat(script.getParameters()).isEmpty();
+                // What it reaches is read as it always was.
+                assertThat(references(cu))
+                  .extracting(Script.Reference::getKind, Script.Reference::getName)
+                  .containsExactly(tuple(Script.Reference.Kind.SUBMIT, "JOB"));
+            }))
+        );
+    }
+
+    /**
      * A run book is not a script, so the matcher leaves it alone: the trait would report the
      * {@code CALLS} and {@code RUN BY} lines of a run book as statements, and they are prose.
      */

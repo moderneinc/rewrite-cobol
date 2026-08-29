@@ -38,6 +38,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 /**
  * Reads the members no grammar here reads — the scripts, the run books, the C and the PL/I — and
@@ -269,6 +270,106 @@ class PlainTextCorpusTest {
           "CLMSUB &CLMHLQ..JCL(&JOB)",
           "CLMPICK HLQ.JCL(MEM.I)",
           "CLMPICK HLQ.JCL(JOB)");
+    }
+
+    /**
+     * INTERLINKS 17.1, the other half of a submit by argument. None of the four submits names a job,
+     * and the eleven literal job names of 17.1 are all written in a {@code SET}: four under the
+     * {@code SELECT} of {@code CLMCOMP}, six in stream order in {@code CLMNITE}, one as the dialog
+     * default in {@code CLMDLG}. What a member sets, what it calls and what it takes are read here;
+     * putting the three together across two members is a recipe's, since it holds both.
+     */
+    @Test
+    void readsWhatTheFixtureClistsSetCallAndDeclare() throws IOException {
+        Map<String, Script> scripts = scripts();
+
+        List<String> declared = new ArrayList<>();
+        List<String> called = new ArrayList<>();
+        List<String> set = new ArrayList<>();
+        scripts.forEach((member, script) -> {
+            if (!script.getParameters().isEmpty()) {
+                declared.add(member + " PROC " +
+                             script.getParameters().stream().filter(Script.Parameter::isPositional).count() +
+                             " " + script.getParameters().stream().map(Script.Parameter::toString)
+                               .collect(Collectors.joining(" ")));
+            }
+            for (Script.Invocation invocation : script.getInvocations()) {
+                called.add(member + ":" + invocation.getLine() + " " + invocation);
+            }
+            for (Script.Assignment assignment : script.getAssignments()) {
+                if (assignment.isLiteral()) {
+                    set.add(member + " " + assignment.getVariable() + " = " + assignment.getValue());
+                }
+            }
+        });
+
+        // The eight CLISTs and none of the three execs: a PROC statement is CLIST's way of saying what
+        // a caller may hand it, and %CLMSUB &JOB NOASK binds to the JOB and NOASK of the first row.
+        assertThat(declared).containsExactly(
+          "CLMCOMP PROC 1 MEM ENV(PROD)",
+          "CLMCOMP1 PROC 1 MEM ENV(PROD) CLASS(A) DB2",
+          "CLMDLG PROC 0 ENV(PROD)",
+          "CLMFXTR PROC 0 ENV(PROD) PARM(PRMCLM01)",
+          "CLMNITE PROC 0 FROM(CLMJ010) ENV(PROD)",
+          "CLMRECON PROC 0 ENV(PROD)",
+          "CLMSETUP PROC 0 ENV(PROD)",
+          "CLMSUB PROC 1 JOB NOASK");
+        assertThat(called).containsExactly(
+          "CLMCOMP:24 %CLMSETUP ENV(&ENV)",
+          "CLMCOMP:46 %CLMSUB &JOB NOASK",
+          "CLMCOMP1:19 %CLMSETUP ENV(&ENV)",
+          "CLMDLG:12 %CLMSETUP ENV(&ENV)",
+          "CLMDLG:52 %CLMSUB &JOB NOASK",
+          "CLMFXTR:20 %CLMSETUP ENV(&ENV)",
+          "CLMNITE:19 %CLMSETUP ENV(&ENV)",
+          "CLMNITE:44 %CLMSUB &JOB NOASK",
+          "CLMRECON:20 %CLMSETUP ENV(&ENV)",
+          "CLMSUB:16 %CLMSETUP ENV(PROD)");
+
+        // The eleven job names of 17.1 and nothing that is not written down: a return code and a
+        // counter are literal too, and which of these is a member of the estate is the name index's
+        // answer, not the reader's.
+        assertThat(set).containsExactly(
+          "CLMCOMP JOB = CLMCMPB",
+          "CLMCOMP JOB = CLMCMPB",
+          "CLMCOMP JOB = CLMCMPC",
+          "CLMCOMP JOB = CLMCMPD",
+          "CLMCOMP JOB = CLMCMPI",
+          "CLMCOMP1 PROC = CLMCOB",
+          "CLMCOMP1 PROC = CLMCLB",
+          "CLMCOMP1 PROC = CLMCLB",
+          "CLMCOMP1 PROC = CLMCLD",
+          "CLMCOMP1 PROC = CLMCLC",
+          "CLMCOMP1 PROC = CLMCLX",
+          "CLMDLG CLMLASTJ = CLMJ010",
+          "CLMDLG N = 0",
+          "CLMNITE JOB1 = CLMJ010",
+          "CLMNITE JOB2 = CLMJ020",
+          "CLMNITE JOB3 = CLMJ030",
+          "CLMNITE JOB4 = CLMJ040",
+          "CLMNITE JOB5 = CLMJ050",
+          "CLMNITE JOB6 = CLMJ060",
+          "CLMNITE NJOBS = 6",
+          "CLMNITE STARTED = NO",
+          "CLMNITE SUBMITTED = 0",
+          "CLMNITE I = 1",
+          "CLMNITE STARTED = YES",
+          "CLMSETUP CLMSSID = DB2P",
+          "CLMSETUP CLMSSID = DB2Q",
+          "CLMSETUP CLMSSID = DB2T",
+          "CLMSETUP CLMRC = 12",
+          "CLMSETUP CLMRC = 0",
+          "CLMSUB CLMRC = 8",
+          "CLMSUB CLMRC = 4");
+
+        // Every name a script computes is set from another variable or a function: CLMSUB's &JOB is
+        // its argument, CLMNITE reads its six back through the composed name &&JOB&I, and CLMDLG's
+        // goes through &CLMLASTJ. So no submit of the fixture resolves inside the member that writes
+        // it, and none is resolved here.
+        assertThat(scripts.get("CLMSUB").getAssignments())
+          .filteredOn(assignment -> "JOB".equals(assignment.getVariable()))
+          .extracting(Script.Assignment::getValue, Script.Assignment::isLiteral)
+          .containsExactly(tuple("&SYSCAPS(&JOB)", false));
     }
 
     /**
