@@ -76,8 +76,9 @@ final class Operands {
     }
 
     /**
-     * A quoted string without its quotes, with doubled quotes reduced to one. Anything unquoted is
-     * returned as it stands — {@code INITIAL} is usually quoted and need not be.
+     * A quoted string without its quotes, with a doubled quote and a doubled ampersand each reduced
+     * to one, since inside a quoted string the assembler reads both as the character itself.
+     * Anything unquoted is returned as it stands — {@code INITIAL} is usually quoted and need not be.
      */
     static @Nullable String unquote(@Nullable String text) {
         if (text == null) {
@@ -87,6 +88,6 @@ final class Operands {
         if (trimmed.length() < 2 || !trimmed.startsWith("'") || !trimmed.endsWith("'")) {
             return trimmed;
         }
-        return trimmed.substring(1, trimmed.length() - 1).replace("''", "'");
+        return trimmed.substring(1, trimmed.length() - 1).replace("''", "'").replace("&&", "&");
     }
 }

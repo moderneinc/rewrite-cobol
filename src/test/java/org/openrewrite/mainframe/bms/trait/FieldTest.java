@@ -181,6 +181,26 @@ class FieldTest implements RewriteTest {
     }
 
     /**
+     * A doubled ampersand, which is how a literal writes one: the assembler reads {@code &} on its
+     * own as the start of a variable, so a screen offering {@code Save&Exit} has to write it twice.
+     */
+    @Test
+    void aLiteralWritingADoubledAmpersand() {
+        rewriteRun(
+          bms(
+            """
+              COUSR0A DFHMDI SIZE=(24,80)
+                      DFHMDF LENGTH=22,POS=(23,1),INITIAL='F3=Save&&Exit  F4=Clear'
+              """,
+            spec -> spec.afterRecipe(cu -> {
+                Field field = new Field.Matcher().lower(cu).findFirst().orElseThrow();
+                assertThat(field.getInitial()).isEqualTo("F3=Save&Exit  F4=Clear");
+            })
+          )
+        );
+    }
+
+    /**
      * A literal too long for one card. The operand field ends at the first blank, but not one inside
      * a quoted string — reading it that way leaves the field saying {@code 'This}, with a quote
      * nothing closes.
