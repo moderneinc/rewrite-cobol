@@ -400,6 +400,76 @@ class FindRelationshipsTest extends CobolTest {
     }
 
     /**
+     * INTERLINKS 12. A deck names an object and never what it was written in, so what each name is
+     * has to be answered elsewhere: {@code CLMU030} is assembler because {@code asm/CLMU030} offers
+     * the name, {@code DFSLI000} and the {@code DLITCBL} the module is entered at are the DL/I
+     * language interface's and no program anybody keeps, and a name nothing else claims is COBOL.
+     */
+    @Test
+    void aDeckNamesObjectsOfMoreThanOneLanguage() {
+        rewriteRun(
+          spec -> spec.dataTable(Row.class, rows -> {
+              assertThat(rows).filteredOn(r -> r.getDependentType() == LINKEDIT)
+                .extracting(Row::getAction, Row::getDependency, Row::getDependencyType)
+                .containsExactly(
+                  tuple(DEFINES, "CLMI050", LOAD_MODULE),
+                  tuple(INCLUDE, "DFSLI000", CSECT),
+                  tuple(INCLUDE, "CLMU030", ASSEMBLER));
+              assertThat(rows).filteredOn(r -> r.getDependentType() == LOAD_MODULE)
+                .extracting(Row::getAction, Row::getDependency, Row::getDependencyType)
+                .containsExactlyInAnyOrder(
+                  tuple(ENTRY, "DLITCBL", CSECT),
+                  tuple(CONTAINS, "DFSLI000", CSECT),
+                  tuple(CONTAINS, "CLMU030", ASSEMBLER));
+          }),
+          linkEdit("""
+            *  CLMI050 - CLAIM CLOSE.  DL/I, AND CLMU030 STATICALLY.
+              INCLUDE RESLIB(DFSLI000)
+              INCLUDE OBJLIB(CLMU030)
+              ENTRY DLITCBL
+              NAME CLMI050(R)
+            """, spec -> spec.path("linklib/CLMI050.lnk")),
+          assembler("""
+            *  CLMU030 - CLAIM NUMBER EDIT.
+                     END   CLMU030
+            """, spec -> spec.path("asm/CLMU030.asm")));
+    }
+
+    /**
+     * INTERLINKS 14. A listing types its names the same way a deck does: a DL/I module is entered at
+     * the {@code DLITCBL} label the program declares, which is a place in the module and not a
+     * program of its own.
+     */
+    @Test
+    void aListingEntersADliModuleAtItsLabel() {
+        rewriteRun(
+          spec -> spec.dataTable(Row.class, rows -> {
+              assertThat(rows).filteredOn(r -> r.getAction() == ENTRY).singleElement()
+                .extracting(Row::getDependency, Row::getDependencyType)
+                .containsExactly("DLITCBL", CSECT);
+              assertThat(rows).filteredOn(r -> r.getAction() == CONTAINS)
+                .extracting(Row::getDependency, Row::getDependencyType)
+                .containsExactly(tuple("CLMI050", CSECT), tuple("DFSLI000", CSECT));
+          }),
+          text(String.join("\n",
+            "1                                          A M B L I S T                        PAGE     1",
+            "0                                          ** MODULE SUMMARY **",
+            "0",
+            "      MEMBER NAME:                  CLMI050",
+            "      MAIN ENTRY POINT:             000000F8",
+            "      LIBRARY:                      DDNAME=LOADLIB DSNAME=CLM.PROD.LOADLIB",
+            "      MODULE SIZE (HEX):            00003658",
+            "0",
+            "0                                          ** CONTROL SECTION SUMMARY **",
+            "0",
+            "      CSECT NAME    ORIGIN    LENGTH    TYPE   AMODE   ENTRY NAME    LOCATION",
+            "      CLMI050       00000000  00002F10  SD     31      DLITCBL       000000F8",
+            "      DFSLI000      00002F10  00000058  SD     31      CBLTDLI       00002F18",
+            ""), spec -> spec.path("listload/LOADLIB.amblist"))
+        );
+    }
+
+    /**
      * A deck says what a module was meant to hold and a listing says what it holds: the language
      * interface and the runtime the autocall pulled in are in the module and in no deck anybody wrote,
      * so a module's parts are only complete once the listing has been read.
