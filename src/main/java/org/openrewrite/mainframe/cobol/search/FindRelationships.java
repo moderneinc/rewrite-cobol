@@ -754,8 +754,8 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
 
         for (ControlSection section : new ControlSection.Matcher().lower(member).collect(Collectors.toList())) {
             if (!section.isDummy() && !section.getName().isEmpty()) {
-                insertCsectRow(seen, memberName, ASSEMBLER, DEFINES, section.getName(), sourcePath,
-                        section.getLine(), ctx);
+                insertCsectRow(cobolRelationships, seen, memberName, ASSEMBLER, DEFINES, section.getName(),
+                        sourcePath, section.getLine(), ctx);
             }
         }
         for (EntryPoint entry : new EntryPoint.Matcher().lower(member).collect(Collectors.toList())) {
@@ -763,7 +763,7 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
                 continue;
             }
             for (String name : entry.getNames()) {
-                insertDeckRow(seen, memberName, ASSEMBLER, ENTRY, name, CSECT, sourcePath,
+                insertDeckRow(cobolRelationships, seen, memberName, ASSEMBLER, ENTRY, name, CSECT, sourcePath,
                         entry.getLine(), ctx);
             }
         }
@@ -771,26 +771,25 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
         // resolves from an object library or, where no deck includes it, by autocall.
         for (ExternalName external : new ExternalName.Matcher().lower(member).collect(Collectors.toList())) {
             for (String name : external.getNames()) {
-                insertDeckRow(seen, memberName, ASSEMBLER, REFERENCES, name, acc.typeOf(name), sourcePath,
-                        external.getLine(), external.isWeak() ? "WXTRN" : "EXTRN", ctx);
+                insertDeckRow(cobolRelationships, seen, memberName, ASSEMBLER, REFERENCES, name, acc.typeOf(name),
+                        sourcePath, external.getLine(), external.isWeak() ? "WXTRN" : "EXTRN", ctx);
             }
         }
         for (Copy copy : new Copy.Matcher().lower(member).collect(Collectors.toList())) {
-            insertDeckRow(seen, memberName, ASSEMBLER, COPY, copy.getMember(), ASSEMBLER, sourcePath,
-                    copy.getLine(), ctx);
+            insertDeckRow(cobolRelationships, seen, memberName, ASSEMBLER, COPY, copy.getMember(), ASSEMBLER,
+                    sourcePath, copy.getLine(), ctx);
         }
         for (MacroCall macro : new MacroCall.Matcher().lower(member).collect(Collectors.toList())) {
             if (acc.isMacro(macro.getName())) {
-                insertDeckRow(seen, memberName, ASSEMBLER, INCLUDE, macro.getName(), ASSEMBLER,
+                insertDeckRow(cobolRelationships, seen, memberName, ASSEMBLER, INCLUDE, macro.getName(), ASSEMBLER,
                         sourcePath, macro.getLine(), ctx);
             }
         }
         for (Call call : new Call.Matcher().lower(member).collect(Collectors.toList())) {
             // A DL/I interface is not a program of the estate; what the call reached is the database.
             if (!call.isDli()) {
-                insertDeckRow(seen, memberName, ASSEMBLER, CALL, call.getTarget(),
-                        acc.typeOf(call.getTarget()), sourcePath, call.getLine(),
-                        call.getKind().name(), ctx);
+                insertDeckRow(cobolRelationships, seen, memberName, ASSEMBLER, CALL, call.getTarget(),
+                        acc.typeOf(call.getTarget()), sourcePath, call.getLine(), call.getKind().name(), ctx);
             }
         }
         // Qualified because COBOL has a DliCall of its own, which this one deliberately mirrors.
@@ -799,12 +798,12 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
             if (dli.getPcb() != null) {
                 // An assembler program addresses the mask by register rather than naming it, so the
                 // dependency is the operand as written; which PCB that register holds is the PSB's answer.
-                insertDeckRow(seen, memberName, ASSEMBLER, ACCESS, dli.getPcb(), IMS_PCB, sourcePath,
-                        dli.getLine(), function, ctx);
+                insertDeckRow(cobolRelationships, seen, memberName, ASSEMBLER, ACCESS, dli.getPcb(), IMS_PCB,
+                        sourcePath, dli.getLine(), function, ctx);
             }
             for (String segment : dli.getSegments()) {
-                insertDeckRow(seen, memberName, ASSEMBLER, ACCESS, segment, IMS_SEGMENT, sourcePath,
-                        dli.getLine(), function, ctx);
+                insertDeckRow(cobolRelationships, seen, memberName, ASSEMBLER, ACCESS, segment, IMS_SEGMENT,
+                        sourcePath, dli.getLine(), function, ctx);
             }
         });
     }
@@ -830,7 +829,7 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
         Set<String> seen = new HashSet<>();
         for (Include.Reference include : new Include.Matcher().require(program, null).getReferences()) {
             if (include.getMember() != null) {
-                insertDeckRow(seen, memberName, memberType, INCLUDE, include.getMember(), SAS,
+                insertDeckRow(cobolRelationships, seen, memberName, memberType, INCLUDE, include.getMember(), SAS,
                         sourcePath, lineOffset + include.getLine(), ctx);
             }
         }
@@ -839,8 +838,8 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
                 // A name read out of a SAS library is a data set of that library and not a table any
                 // DB2 catalog has heard of; only what came through the connection is.
                 if (table.isPassthrough()) {
-                    insertDeckRow(seen, memberName, memberType, ACCESS, table.getName(), SQL_TABLE,
-                            sourcePath, lineOffset + table.getLine(), table.getDbms(), ctx);
+                    insertDeckRow(cobolRelationships, seen, memberName, memberType, ACCESS, table.getName(),
+                            SQL_TABLE, sourcePath, lineOffset + table.getLine(), table.getDbms(), ctx);
                 }
             }
         }
@@ -868,26 +867,33 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
 
             for (String plan : command.getPlans()) {
                 if (rebind) {
-                    insertDeckRow(seen, deckName, deckType, REFERENCES, plan, BINDPLAN, sourcePath, line, ctx);
+                    insertDeckRow(cobolRelationships, seen, deckName, deckType, REFERENCES, plan, BINDPLAN,
+                            sourcePath, line, ctx);
                     continue;
                 }
-                insertDeckRow(seen, deckName, deckType, DEFINES, plan, BINDPLAN, sourcePath, line, ctx);
+                insertDeckRow(cobolRelationships, seen, deckName, deckType, DEFINES, plan, BINDPLAN, sourcePath,
+                        line, ctx);
                 for (String packageName : command.getPackageList()) {
-                    insertDeckRow(seen, plan, BINDPLAN, BINDS, packageName, BINDPACKAGE, sourcePath, line, ctx);
+                    insertDeckRow(cobolRelationships, seen, plan, BINDPLAN, BINDS, packageName, BINDPACKAGE,
+                            sourcePath, line, ctx);
                 }
                 for (String member : command.getMembers()) {
-                    insertDeckRow(seen, plan, BINDPLAN, BINDS, member, DBRM, sourcePath, line, ctx);
+                    insertDeckRow(cobolRelationships, seen, plan, BINDPLAN, BINDS, member, DBRM, sourcePath,
+                            line, ctx);
                 }
             }
 
             for (String packageName : command.getPackages()) {
                 String qualified = collection == null ? packageName : collection + '.' + packageName;
                 if (rebind) {
-                    insertDeckRow(seen, deckName, deckType, REFERENCES, qualified, BINDPACKAGE, sourcePath, line, ctx);
+                    insertDeckRow(cobolRelationships, seen, deckName, deckType, REFERENCES, qualified, BINDPACKAGE,
+                            sourcePath, line, ctx);
                     continue;
                 }
-                insertDeckRow(seen, deckName, deckType, DEFINES, qualified, BINDPACKAGE, sourcePath, line, ctx);
-                insertDeckRow(seen, qualified, BINDPACKAGE, BINDS, packageName, DBRM, sourcePath, line, ctx);
+                insertDeckRow(cobolRelationships, seen, deckName, deckType, DEFINES, qualified, BINDPACKAGE,
+                        sourcePath, line, ctx);
+                insertDeckRow(cobolRelationships, seen, qualified, BINDPACKAGE, BINDS, packageName, DBRM, sourcePath,
+                        line, ctx);
             }
         }
     }
@@ -916,19 +922,19 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
             }
             switch (reference.getKind()) {
                 case SUBMIT:
-                    insertDeckRow(seen, memberName, scriptType, SUBMITS, reference.getName(), JCL,
+                    insertDeckRow(cobolRelationships, seen, memberName, scriptType, SUBMITS, reference.getName(), JCL,
                             sourcePath, reference.getLine(), reference.getKind().name(), ctx);
                     break;
                 case EXEC:
                     // Which library the name is found in is the session's answer and not the
                     // statement's, so a script reaches one of its own kind: SYSPROC first for a CLIST,
                     // SYSEXEC for an exec.
-                    insertDeckRow(seen, memberName, scriptType, CALL, reference.getName(), scriptType,
-                            sourcePath, reference.getLine(), reference.getKind().name(), ctx);
+                    insertDeckRow(cobolRelationships, seen, memberName, scriptType, CALL, reference.getName(),
+                            scriptType, sourcePath, reference.getLine(), reference.getKind().name(), ctx);
                     break;
                 case CALL:
                 case RUN:
-                    insertDeckRow(seen, memberName, scriptType, CALL, reference.getName(),
+                    insertDeckRow(cobolRelationships, seen, memberName, scriptType, CALL, reference.getName(),
                             acc.typeOf(reference.getName()), sourcePath, reference.getLine(),
                             reference.getKind().name(), ctx);
                     break;
@@ -954,9 +960,8 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
         if (subject == null || documented == null) {
             return;
         }
-        insertDeckRow(new HashSet<>(), book.getName(), DOCUMENT, REFERENCES, subject.getText(),
-                documented, member.getSourcePath().toString(), subject.getLine(),
-                book.getShape().name(), ctx);
+        insertDeckRow(cobolRelationships, new HashSet<>(), book.getName(), DOCUMENT, REFERENCES, subject.getText(),
+                documented, member.getSourcePath().toString(), subject.getLine(), book.getShape().name(), ctx);
     }
 
     /**
@@ -991,15 +996,15 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
         String sourcePath = member.getSourcePath().toString();
         for (Database database : new Database.Matcher().lower(member).collect(Collectors.toList())) {
             String name = database.getName();
-            insertDeckRow(seen, memberName, ASSEMBLER, DEFINES, name, IMS_DATABASE, sourcePath,
+            insertDeckRow(cobolRelationships, seen, memberName, ASSEMBLER, DEFINES, name, IMS_DATABASE, sourcePath,
                     database.getLine(), ctx);
             for (Segment segment : database.getSegments()) {
-                insertDeckRow(seen, name, IMS_DATABASE, CONTAINS, segment.getName(), IMS_SEGMENT,
+                insertDeckRow(cobolRelationships, seen, name, IMS_DATABASE, CONTAINS, segment.getName(), IMS_SEGMENT,
                         sourcePath, segment.getLine(), ctx);
             }
             for (Database.Reference reference : database.getReferences()) {
                 if (reference.getKind() != Database.Reference.Kind.INDEX_SOURCE) {
-                    insertDeckRow(seen, name, IMS_DATABASE, REFERENCES, reference.getDatabase(),
+                    insertDeckRow(cobolRelationships, seen, name, IMS_DATABASE, REFERENCES, reference.getDatabase(),
                             IMS_DATABASE, sourcePath, reference.getLine(), reference.getMember(), ctx);
                 }
             }
@@ -1020,27 +1025,26 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
         String sourcePath = member.getSourcePath().toString();
         for (Psb psb : new Psb.Matcher().lower(member).collect(Collectors.toList())) {
             String psbName = psb.getName();
-            insertDeckRow(seen, memberName, ASSEMBLER, DEFINES, psbName, IMS_PSB, sourcePath,
+            insertDeckRow(cobolRelationships, seen, memberName, ASSEMBLER, DEFINES, psbName, IMS_PSB, sourcePath,
                     psb.getLine(), ctx);
             for (Pcb pcb : psb.getPcbs()) {
                 String pcbName = pcbName(psbName, pcb);
-                insertDeckRow(seen, psbName, IMS_PSB, CONTAINS, pcbName, IMS_PCB, sourcePath,
+                insertDeckRow(cobolRelationships, seen, psbName, IMS_PSB, CONTAINS, pcbName, IMS_PCB, sourcePath,
                         pcb.getLine(), String.valueOf(pcb.getPosition()), ctx);
                 String procopt = pcb.getProcessingOptions() == null ? "" : pcb.getProcessingOptions();
                 if (pcb.getDatabaseName() != null) {
-                    insertDeckRow(seen, pcbName, IMS_PCB, ACCESS, pcb.getDatabaseName(), IMS_DATABASE,
-                            sourcePath, pcb.getLine(), procopt, ctx);
+                    insertDeckRow(cobolRelationships, seen, pcbName, IMS_PCB, ACCESS, pcb.getDatabaseName(),
+                            IMS_DATABASE, sourcePath, pcb.getLine(), procopt, ctx);
                 }
                 // A PROCSEQ is a second database the PCB opens: the index the roots are walked in.
                 if (pcb.getProcessingSequence() != null) {
-                    insertDeckRow(seen, pcbName, IMS_PCB, ACCESS, pcb.getProcessingSequence(),
+                    insertDeckRow(cobolRelationships, seen, pcbName, IMS_PCB, ACCESS, pcb.getProcessingSequence(),
                             IMS_DATABASE, sourcePath, pcb.getLine(), "PROCSEQ", ctx);
                 }
                 for (SensitiveSegment segment : pcb.getSensitiveSegments()) {
-                    insertDeckRow(seen, pcbName, IMS_PCB, ACCESS, segment.getName(), IMS_SEGMENT,
+                    insertDeckRow(cobolRelationships, seen, pcbName, IMS_PCB, ACCESS, segment.getName(), IMS_SEGMENT,
                             sourcePath, segment.getLine(),
-                            segment.getProcessingOptions() == null ? procopt :
-                                    segment.getProcessingOptions(), ctx);
+                            segment.getProcessingOptions() == null ? procopt : segment.getProcessingOptions(), ctx);
                 }
             }
         }
@@ -1064,17 +1068,17 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
             if (psb == null) {
                 continue;
             }
-            insertDeckRow(seen, memberName, ASSEMBLER, REFERENCES, psb, IMS_PSB, sourcePath,
+            insertDeckRow(cobolRelationships, seen, memberName, ASSEMBLER, REFERENCES, psb, IMS_PSB, sourcePath,
                     application.getLine(),
                     application.getProgramType() == null ? "" : application.getProgramType(), ctx);
             for (Transaction transaction : application.getTransactions()) {
-                insertDeckRow(seen, transaction.getCode(), IMS_TRANSACTION, SCHEDULES, psb, IMS_PSB,
-                        sourcePath, transaction.getLine(), ctx);
+                insertDeckRow(cobolRelationships, seen, transaction.getCode(), IMS_TRANSACTION, SCHEDULES, psb,
+                        IMS_PSB, sourcePath, transaction.getLine(), ctx);
             }
         }
         for (DatabaseAccess database : new DatabaseAccess.Matcher().lower(member).collect(Collectors.toList())) {
-            insertDeckRow(seen, memberName, ASSEMBLER, REFERENCES, database.getName(), IMS_DATABASE,
-                    sourcePath, database.getLine(),
+            insertDeckRow(cobolRelationships, seen, memberName, ASSEMBLER, REFERENCES, database.getName(),
+                    IMS_DATABASE, sourcePath, database.getLine(),
                     database.getAccess() == null ? "" : database.getAccess(), ctx);
         }
     }
@@ -1093,19 +1097,19 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
         String memberName = memberName(member.getSourcePath());
         String sourcePath = member.getSourcePath().toString();
         for (FormatSet format : new FormatSet.Matcher().lower(member).collect(Collectors.toList())) {
-            insertDeckRow(seen, memberName, ASSEMBLER, DEFINES, format.getName(), MFS_FORMAT, sourcePath,
-                    format.getLine(), ctx);
+            insertDeckRow(cobolRelationships, seen, memberName, ASSEMBLER, DEFINES, format.getName(), MFS_FORMAT,
+                    sourcePath, format.getLine(), ctx);
         }
         for (Message message : new Message.Matcher().lower(member).collect(Collectors.toList())) {
             String type = message.getType() == null ? "" : message.getType();
-            insertDeckRow(seen, memberName, ASSEMBLER, DEFINES, message.getName(), MFS_MAP, sourcePath,
-                    message.getLine(), type, ctx);
+            insertDeckRow(cobolRelationships, seen, memberName, ASSEMBLER, DEFINES, message.getName(), MFS_MAP,
+                    sourcePath, message.getLine(), type, ctx);
             if (message.getFormatName() != null) {
-                insertDeckRow(seen, message.getName(), MFS_MAP, REFERENCES, message.getFormatName(),
-                        MFS_FORMAT, sourcePath, message.getLine(), "SOR", ctx);
+                insertDeckRow(cobolRelationships, seen, message.getName(), MFS_MAP, REFERENCES,
+                        message.getFormatName(), MFS_FORMAT, sourcePath, message.getLine(), "SOR", ctx);
             }
             if (message.getNextName() != null) {
-                insertDeckRow(seen, message.getName(), MFS_MAP, REFERENCES, message.getNextName(),
+                insertDeckRow(cobolRelationships, seen, message.getName(), MFS_MAP, REFERENCES, message.getNextName(),
                         MFS_MAP, sourcePath, message.getLine(), "NXT", ctx);
             }
         }
@@ -1139,24 +1143,10 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
         for (IdcamsCommand command : new IdcamsCommand.Matcher().lower(deck).collect(Collectors.toList())) {
             int line = lineOffset + command.getLine();
             for (String name : command.getDefinedNames()) {
-                insertDeckRow(seen, deckName, deckType, DEFINES, name, DATA_SET, sourcePath, line, ctx);
+                insertDeckRow(cobolRelationships, seen, deckName, deckType, DEFINES, name, DATA_SET, sourcePath,
+                        line, ctx);
             }
         }
-    }
-
-    private void insertDeckRow(Set<String> seen, String dependent, CobolRelationships.ResourceType dependentType,
-                               CobolRelationships.ResourceAction action, String dependency,
-                               CobolRelationships.ResourceType dependencyType, String sourcePath, int line,
-                               ExecutionContext ctx) {
-        insertDeckRow(seen, dependent, dependentType, action, dependency, dependencyType, sourcePath, line, "", ctx);
-    }
-
-    private void insertDeckRow(Set<String> seen, String dependent, CobolRelationships.ResourceType dependentType,
-                               CobolRelationships.ResourceAction action, String dependency,
-                               CobolRelationships.ResourceType dependencyType, String sourcePath, int line,
-                               String actionMetadata, ExecutionContext ctx) {
-        insertDeckRow(cobolRelationships, seen, dependent, dependentType, action, dependency, dependencyType,
-                sourcePath, line, actionMetadata, ctx);
     }
 
     private static void insertDeckRow(CobolRelationships relationships, Set<String> seen, String dependent,
@@ -1184,12 +1174,6 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
      * place the section itself was written down, so a section on a diagram opens where it was reported
      * rather than nowhere at all.
      */
-    private void insertCsectRow(Set<String> seen, String dependent, CobolRelationships.ResourceType dependentType,
-                                CobolRelationships.ResourceAction action, String csect, String sourcePath,
-                                int line, ExecutionContext ctx) {
-        insertCsectRow(cobolRelationships, seen, dependent, dependentType, action, csect, sourcePath, line, ctx);
-    }
-
     private static void insertCsectRow(CobolRelationships relationships, Set<String> seen, String dependent,
                                        CobolRelationships.ResourceType dependentType,
                                        CobolRelationships.ResourceAction action, String csect, String sourcePath,
