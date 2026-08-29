@@ -22,6 +22,7 @@ import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
 import org.openrewrite.mainframe.cobol.tree.Cobol;
 import org.openrewrite.mainframe.cobol.tree.CobolPreprocessor;
+import org.openrewrite.mainframe.cobol.tree.CommentArea;
 import org.openrewrite.trait.SimpleTraitMatcher;
 import org.openrewrite.trait.Trait;
 
@@ -261,7 +262,8 @@ public class CicsCommand implements Trait<Cobol.Word> {
     }
 
     private static CicsCommand parse(Cursor cursor, CobolPreprocessor.ExecStatement exec) {
-        List<String> tokens = tokens(exec);
+        List<Cobol.Word> words = Execs.wordsOf(exec);
+        List<String> tokens = textOf(words);
         if (tokens.isEmpty()) {
             return new CicsCommand(cursor, exec, "", null, emptyMap());
         }
@@ -293,7 +295,8 @@ public class CicsCommand implements Trait<Cobol.Word> {
                 StringBuilder operand = new StringBuilder();
                 int depth = 0;
                 do {
-                    String token = tokens.get(i++);
+                    int at = i++;
+                    String token = tokens.get(at);
                     if ("(".equals(token)) {
                         depth++;
                         if (depth == 1) {
@@ -304,6 +307,9 @@ public class CicsCommand implements Trait<Cobol.Word> {
                         if (depth == 0) {
                             break;
                         }
+                    }
+                    if (operand.length() > 0) {
+                        operand.append(separator(words, at));
                     }
                     operand.append(token);
                 } while (i < tokens.size());
@@ -316,11 +322,41 @@ public class CicsCommand implements Trait<Cobol.Word> {
     }
 
     /**
+     * What was written between this word and the one before it. Neither a blank nor a comma is a
+     * word — both are kept in the whitespace around one — so an operand read off the words alone
+     * has {@code APPLID(APPLIDO OF COSGN0AO)} arriving as {@code APPLIDOOFCOSGN0AO}, and a field a
+     * program names only inside an {@code EXEC CICS} then belongs to no data item at all.
+     * <p>
+     * A separator is kept as it was written and everything else becomes one blank, so an operand
+     * broken over two cards reads as one line. What follows a word up to column 73 separates it from
+     * the next just as a blank before that one would, so both are read.
+     */
+    private static String separator(List<Cobol.Word> words, int at) {
+        CommentArea trailing = words.get(at - 1).getCommentArea();
+        String between = (trailing == null ? "" : trailing.getPrefix().getWhitespace()) +
+                         words.get(at).getPrefix().getWhitespace();
+        if (between.isEmpty()) {
+            return "";
+        }
+        StringBuilder separator = new StringBuilder();
+        for (int i = 0; i < between.length(); i++) {
+            if (!Character.isWhitespace(between.charAt(i))) {
+                separator.append(between.charAt(i));
+            }
+        }
+        return separator.append(' ').toString();
+    }
+
+    /**
      * The words of an {@code EXEC} block body, flattened across continuation lines.
      */
     static List<String> tokens(CobolPreprocessor.ExecStatement exec) {
-        List<String> tokens = new ArrayList<>();
-        for (Cobol.Word word : Execs.wordsOf(exec)) {
+        return textOf(Execs.wordsOf(exec));
+    }
+
+    private static List<String> textOf(List<Cobol.Word> words) {
+        List<String> tokens = new ArrayList<>(words.size());
+        for (Cobol.Word word : words) {
             tokens.add(word.getWord());
         }
         return tokens;

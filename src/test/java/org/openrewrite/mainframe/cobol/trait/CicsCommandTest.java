@@ -148,6 +148,50 @@ class CicsCommandTest implements RewriteTest {
         assertThat(commands.get(0).getOption("PROGRAM")).isEqualTo("WS-TAB(1)");
     }
 
+    /**
+     * A blank inside an operand. Read off the words alone it disappears, so a field a program names
+     * only here reads as one long name and belongs to no data item.
+     */
+    @Test
+    void keepsTheBlanksInsideAnOperand() {
+        List<CicsCommand> commands = parse(
+          """
+            000000 IDENTIFICATION DIVISION.                                        \s
+            000000 PROGRAM-ID. CICSPGM.                                            \s
+            000000 PROCEDURE DIVISION.                                             \s
+            000000     EXEC CICS ASSIGN APPLID(APPLIDO OF COSGN0AO) END-EXEC.      \s
+            000000     EXEC CICS RETURN TRANSID(WS-TRANID)                         \s
+            000000          LENGTH(LENGTH OF CARDDEMO-COMMAREA) END-EXEC.          \s
+            000000     STOP RUN.                                                   \s
+            """
+        );
+
+        assertThat(commands).hasSize(2);
+        assertThat(commands.get(0).getOption("APPLID")).isEqualTo("APPLIDO OF COSGN0AO");
+        assertThat(commands.get(0).getOptionsText()).isEqualTo("APPLID(APPLIDO OF COSGN0AO)");
+        assertThat(commands.get(1).getOption("LENGTH")).isEqualTo("LENGTH OF CARDDEMO-COMMAREA");
+    }
+
+    /**
+     * Only the blanks that were written. A subscript list keeps the one after its comma and nothing
+     * where the name meets its brackets.
+     */
+    @Test
+    void keepsOnlyTheBlanksThatWereWritten() {
+        List<CicsCommand> commands = parse(
+          """
+            000000 IDENTIFICATION DIVISION.                                        \s
+            000000 PROGRAM-ID. CICSPGM.                                            \s
+            000000 PROCEDURE DIVISION.                                             \s
+            000000     EXEC CICS LINK COMMAREA(WS-TAB(WS-I, WS-J)) END-EXEC.       \s
+            000000     STOP RUN.                                                   \s
+            """
+        );
+
+        assertThat(commands).hasSize(1);
+        assertThat(commands.get(0).getOption("COMMAREA")).isEqualTo("WS-TAB(WS-I, WS-J)");
+    }
+
     @Test
     void classifiesFileAccess() {
         List<CicsCommand> commands = parse(
