@@ -29,6 +29,7 @@ import org.openrewrite.mainframe.assembler.trait.Call;
 import org.openrewrite.mainframe.assembler.trait.ControlSection;
 import org.openrewrite.mainframe.assembler.trait.Copy;
 import org.openrewrite.mainframe.assembler.trait.EntryPoint;
+import org.openrewrite.mainframe.assembler.trait.ExternalName;
 import org.openrewrite.mainframe.assembler.trait.MacroCall;
 import org.openrewrite.mainframe.assembler.trait.MacroDefinition;
 import org.openrewrite.mainframe.assembler.tree.Assembler;
@@ -655,6 +656,14 @@ public class FindRelationships extends ScanningRecipe<FindRelationships.Assemble
             for (String name : entry.getNames()) {
                 insertDeckRow(seen, memberName, ASSEMBLER, ENTRY, name, CSECT, sourcePath,
                         entry.getLine(), ctx);
+            }
+        }
+        // The other end of an ENTRY: a name the member uses and does not define, which the binder
+        // resolves from an object library or, where no deck includes it, by autocall.
+        for (ExternalName external : new ExternalName.Matcher().lower(member).collect(Collectors.toList())) {
+            for (String name : external.getNames()) {
+                insertDeckRow(seen, memberName, ASSEMBLER, REFERENCES, name, acc.typeOf(name), sourcePath,
+                        external.getLine(), external.isWeak() ? "WXTRN" : "EXTRN", ctx);
             }
         }
         for (Copy copy : new Copy.Matcher().lower(member).collect(Collectors.toList())) {

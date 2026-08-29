@@ -1380,6 +1380,40 @@ class FindRelationshipsTest extends CobolTest {
     }
 
     /**
+     * INTERLINKS 20. The other end of an {@code ENTRY}: a name a member uses and does not define. It
+     * is a reference and not a call — the {@code CALL} writes its own row — and it is the row a build
+     * reconciliation joins on, since an {@code EXTRN} no link-edit deck includes is what the binder's
+     * autocall goes hunting for.
+     */
+    @Test
+    void anExternalNameIsWhatTheBinderResolves() {
+        String program = """
+          *  CLMA010 - IMS CLAIM PURGE.
+          CLMA010  CSECT
+                   EXTRN CLMU030
+                   WXTRN CLMSTAT
+                   CALL  CLMU030,MF=(E,A10PLST)
+                   END   CLMA010
+          """;
+        rewriteRun(
+          spec -> spec.dataTable(Row.class, rows -> {
+              assertThat(rows).filteredOn(r -> r.getAction() == REFERENCES)
+                .extracting(Row::getDependent, Row::getDependency, Row::getDependencyType, Row::getActionMetadata)
+                .containsExactly(
+                  tuple("CLMA010", "CLMU030", ASSEMBLER, "EXTRN"),
+                  // WXTRN says the binder may leave the name unresolved rather than go looking for it.
+                  tuple("CLMA010", "CLMSTAT", COBOL, "WXTRN"));
+              assertThat(rows).filteredOn(r -> r.getAction() == REFERENCES).allSatisfy(r ->
+                assertThat(lineAt(program, r.getDependentLine())).contains(r.getDependency()));
+          }),
+          assembler(program, spec -> spec.path("asm/CLMA010.asm")),
+          assembler("""
+            *  CLMU030 - CLAIM NUMBER EDIT.
+                     END   CLMU030
+            """, spec -> spec.path("asm/CLMU030.asm")));
+    }
+
+    /**
      * INTERLINKS 21.2 and 21.5. A SAS report reaches its macro library by member name and DB2 through
      * a passthrough connection. What it reaches by DD name — {@code SASSRC}, {@code CLMSAS} — is left
      * on the traits: a DD name closes only against the job that ran the program.
