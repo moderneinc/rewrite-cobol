@@ -37,7 +37,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.Collections.singletonList;
 import static org.openrewrite.Tree.randomId;
 import static org.openrewrite.mainframe.bms.tree.Space.EMPTY;
 
@@ -144,16 +143,32 @@ public class BmsParserVisitor extends BMSParserBaseVisitor<Bms> {
                 expectOperand = true;
             }
             if (expectOperand) {
-                // The operand field runs to the first blank. A quoted string is its own token, so it
-                // can span several words — the ones with nothing between them.
-                StringBuilder run = new StringBuilder(word.getText());
-                Bms.Word last = word;
-                while (i + 1 < words.size() && !startsLine.get(i + 1) &&
-                       words.get(i + 1).getPrefix().getWhitespace().isEmpty()) {
-                    last = words.get(++i);
-                    run.append(last.getText());
+                // The operand field runs to the first blank outside a quoted string, so it is
+                // gathered a card at a time: a literal too long for one card carries on over the
+                // blanks and the line break inside it.
+                List<Bms.Word> cards = new ArrayList<>();
+                Space cardPrefix = word.getPrefix();
+                StringBuilder card = new StringBuilder(word.getText());
+                Markers cardMarkers = word.getMarkers();
+                boolean quoted = crossesQuote(word.getText());
+                while (i + 1 < words.size()) {
+                    Bms.Word next = words.get(i + 1);
+                    String blanks = next.getPrefix().getWhitespace();
+                    if (!quoted && !blanks.isEmpty()) {
+                        break;
+                    }
+                    quoted ^= crossesQuote(next.getText());
+                    if (startsLine.get(++i)) {
+                        cards.add(new Bms.Word(randomId(), cardPrefix, cardMarkers, card.toString()));
+                        cardPrefix = next.getPrefix();
+                        card = new StringBuilder(next.getText());
+                    } else {
+                        card.append(blanks).append(next.getText());
+                    }
+                    cardMarkers = next.getMarkers();
                 }
-                operands.addAll(operands(word.getPrefix(), run.toString(), last.getMarkers()));
+                cards.add(new Bms.Word(randomId(), cardPrefix, cardMarkers, card.toString()));
+                operands.addAll(operands(cards));
                 expectOperand = false;
                 continue;
             }
@@ -164,35 +179,54 @@ public class BmsParserVisitor extends BMSParserBaseVisitor<Bms> {
     }
 
     /**
-     * The operands of one operand field.
+     * The operands of one operand field, given the cards it was written over.
      * <p>
      * The field is a comma separated list, and the commas are not aligned with the tokens: the lexer
      * breaks on quotes, so {@code POS=(1,1),INITIAL='Tran :'} arrives as two words of which the
-     * first holds two operands. So the run is split on its text rather than on token boundaries,
-     * with each comma kept on the operand it follows. Concatenating the results reproduces the run
-     * exactly, which is what printing needs.
-     *
-     * @param trailing markers from the last word of the run — a sequence area belongs at the end of
-     *                 the line, so it goes on the last operand.
+     * first holds two operands. So the field is split on its text rather than on token boundaries,
+     * with each comma kept on the operand it follows. An operand keeps one word per card it covers,
+     * so that the card's own prefix and sequence area are still printed where they were written.
      */
-    private static List<Bms> operands(Space prefix, String run, Markers trailing) {
+    private static List<Bms> operands(List<Bms.Word> cards) {
+        StringBuilder field = new StringBuilder();
+        for (Bms.Word card : cards) {
+            field.append(card.getText());
+        }
+
         List<Bms> operands = new ArrayList<>();
-        List<String> parts = splitOnTopLevelCommas(run);
-        for (String text : parts) {
-            boolean isLast = operands.size() == parts.size() - 1;
-            Markers markers = isLast ? trailing : Markers.EMPTY;
-            Space operandPrefix = operands.isEmpty() ? prefix : EMPTY;
+        int card = 0;
+        int offset = 0;
+        for (String text : splitOnTopLevelCommas(field.toString())) {
+            List<Bms.Word> value = new ArrayList<>();
+            Space operandPrefix = EMPTY;
+            for (int taken = 0; taken < text.length(); ) {
+                Bms.Word from = cards.get(card);
+                int end = Math.min(from.getText().length(), offset + text.length() - taken);
+                Space wordPrefix = offset == 0 ? from.getPrefix() : EMPTY;
+                if (value.isEmpty()) {
+                    operandPrefix = wordPrefix;
+                    wordPrefix = EMPTY;
+                }
+                value.add(new Bms.Word(randomId(), wordPrefix,
+                        end == from.getText().length() ? from.getMarkers() : Markers.EMPTY,
+                        from.getText().substring(offset, end)));
+                taken += end - offset;
+                offset = end;
+                if (offset == from.getText().length()) {
+                    card++;
+                    offset = 0;
+                }
+            }
 
             int equals = indexOfAssignment(text);
-            if (equals <= 0) {
-                operands.add(new Bms.PositionalOperand(randomId(), operandPrefix, Markers.EMPTY,
-                        singletonList(new Bms.Word(randomId(), EMPTY, markers, text))));
+            if (equals <= 0 || equals >= value.get(0).getText().length()) {
+                operands.add(new Bms.PositionalOperand(randomId(), operandPrefix, Markers.EMPTY, value));
             } else {
                 // The keyword is its own word so it can be read and replaced without string work.
-                Bms.Word keyword = new Bms.Word(randomId(), EMPTY, Markers.EMPTY, text.substring(0, equals));
-                Bms.Word value = new Bms.Word(randomId(), EMPTY, markers, text.substring(equals));
-                operands.add(new Bms.KeywordOperand(randomId(), operandPrefix, Markers.EMPTY,
-                        keyword, singletonList(value)));
+                Bms.Word first = value.get(0);
+                Bms.Word keyword = new Bms.Word(randomId(), EMPTY, Markers.EMPTY, first.getText().substring(0, equals));
+                value.set(0, first.withText(first.getText().substring(equals)));
+                operands.add(new Bms.KeywordOperand(randomId(), operandPrefix, Markers.EMPTY, keyword, value));
             }
         }
         return operands;
@@ -226,6 +260,20 @@ public class BmsParserVisitor extends BMSParserBaseVisitor<Bms> {
             parts.add(run.substring(start));
         }
         return parts;
+    }
+
+    /**
+     * Whether the word holds an odd number of quotes, so what follows it is on the other side of
+     * one from what came before.
+     */
+    private static boolean crossesQuote(String text) {
+        int quotes = 0;
+        for (int i = 0; i < text.length(); i++) {
+            if (text.charAt(i) == '\'') {
+                quotes++;
+            }
+        }
+        return quotes % 2 == 1;
     }
 
     /**

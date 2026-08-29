@@ -180,6 +180,57 @@ class FieldTest implements RewriteTest {
         );
     }
 
+    /**
+     * A literal too long for one card. The operand field ends at the first blank, but not one inside
+     * a quoted string — reading it that way leaves the field saying {@code 'This}, with a quote
+     * nothing closes.
+     */
+    @Test
+    void aLiteralContinuedOntoASecondCard() {
+        rewriteRun(
+          bms(
+            """
+              COSGN0A DFHMDI SIZE=(24,80)
+                      DFHMDF ATTRB=(ASKIP,NORM),COLOR=NEUTRAL,LENGTH=66,POS=(5,6),   -
+                             INITIAL='This is a Credit Card Demo Application for Main-
+                             frame Modernization'
+              """,
+            spec -> spec.afterRecipe(cu -> {
+                Field field = new Field.Matcher().lower(cu).findFirst().orElseThrow();
+                assertThat(field.getInitial())
+                  .isEqualTo("This is a Credit Card Demo Application for Mainframe Modernization");
+                assertThat(field.getLength()).isEqualTo(66);
+            })
+          )
+        );
+    }
+
+    /**
+     * The rest of the operand field written after the literal closes on the second card. Carrying
+     * the whole card as the literal's value would lose the operands that follow it.
+     */
+    @Test
+    void operandsWrittenAfterAContinuedLiteralCloses() {
+        rewriteRun(
+          bms(
+            """
+              COSGN0A DFHMDI SIZE=(24,80)
+                      DFHMDF POS=(2,1),LENGTH=47,                                    *
+                             INITIAL='CICS Banking Sample Application - Transfer Fund*
+                             s',ATTRB=(PROT,NORM)
+              """,
+            spec -> spec.afterRecipe(cu -> {
+                Field field = new Field.Matcher().lower(cu).findFirst().orElseThrow();
+                assertThat(field.getInitial())
+                  .isEqualTo("CICS Banking Sample Application - Transfer Funds");
+                assertThat(field.getAttributes())
+                  .containsExactlyInAnyOrder(Attribute.PROT, Attribute.NORM);
+                assertThat(field.isProtected()).isTrue();
+            })
+          )
+        );
+    }
+
     @Test
     void picturesAndOccurs() {
         rewriteRun(

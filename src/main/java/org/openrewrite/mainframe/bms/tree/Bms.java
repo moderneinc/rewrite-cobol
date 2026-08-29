@@ -257,11 +257,7 @@ public interface Bms extends Tree {
          * kept there and left out here.
          */
         public String getValueText() {
-            StringBuilder text = new StringBuilder();
-            for (Word word : value) {
-                text.append(word.getText());
-            }
-            return trimSeparators(text.toString().substring(1));
+            return trimSeparators(join(value).substring(1));
         }
     }
 
@@ -291,16 +287,43 @@ public interface Bms extends Tree {
          * The value without the comma separating it from the next operand.
          */
         public String getValueText() {
-            StringBuilder text = new StringBuilder();
-            for (Word word : value) {
-                text.append(word.getText());
-            }
-            return trimSeparators(text.toString());
+            return trimSeparators(join(value));
         }
     }
 
     static String trimSeparators(String text) {
         return text.endsWith(",") ? text.substring(0, text.length() - 1) : text;
+    }
+
+    /**
+     * The value as it was written, one word per card it covers.
+     * <p>
+     * A quoted string may run over several cards, and what a continued card ends with is the
+     * character in column 72 saying it continues — neither that nor anything padding the card out
+     * after it is part of the value, and the card below picks the value up at column 16.
+     */
+    static String join(List<Word> words) {
+        StringBuilder text = new StringBuilder(words.get(0).getText());
+        for (int i = 1; i < words.size(); i++) {
+            Word word = words.get(i);
+            String prefix = word.getPrefix().getWhitespace();
+            int newline = prefix.indexOf('\n');
+            if (newline < 0) {
+                text.append(prefix);
+            } else {
+                text.append(prefix, 0, newline > 0 && prefix.charAt(newline - 1) == '\r' ? newline - 1 : newline);
+                // Back over whatever padded the card out, then over the character in column 72.
+                int end = text.length();
+                while (end > 0 && text.charAt(end - 1) == ' ') {
+                    end--;
+                }
+                text.setLength(Math.max(end - 1, 0));
+                // Columns 1-15 of the card below, which a continued value leaves blank.
+                text.append(prefix.substring(Math.min(prefix.length(), newline + 16)));
+            }
+            text.append(word.getText());
+        }
+        return text.toString();
     }
 
     @Value

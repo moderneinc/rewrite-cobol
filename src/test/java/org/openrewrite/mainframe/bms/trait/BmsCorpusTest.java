@@ -61,6 +61,7 @@ class BmsCorpusTest {
         int inputs = 0;
         int positioned = 0;
         int scalar = 0;
+        int continued = 0;
         int written = 0;
         int writtenScalar = 0;
         List<String> failures = new ArrayList<>();
@@ -141,6 +142,19 @@ class BmsCorpusTest {
                             if (isScalarPosition(field)) {
                                 scalar++;
                             }
+                            Bms.KeywordOperand initial = field.getTree().getParameter("INITIAL");
+                            if (initial == null) {
+                                continue;
+                            }
+                            if (initial.getValue().size() > 1) {
+                                continued++;
+                            }
+                            // A quote nothing closed is what a literal read only as far as its first
+                            // blank looks like: the field still has a value, it is just the wrong one.
+                            if (quotes(initial.getValueText()) % 2 == 1) {
+                                failures.add(name + ": " + field.getName() + " initialised to " +
+                                        initial.getValueText() + ", with a quote nothing closes");
+                            }
                         }
                     }
                 }
@@ -150,8 +164,9 @@ class BmsCorpusTest {
         assertThat(members).as("no .bms found under %s", corpus).isPositive();
 
         System.out.printf("BMS corpus: %d files, %d mapsets, %d maps, %d fields " +
-                        "(%d named, %d input, %d positioned, %d of them by offset)%n",
-                members, mapsets, maps, fields, named, inputs, positioned, scalar);
+                        "(%d named, %d input, %d positioned, %d of them by offset, " +
+                        "%d initialised over more than one card)%n",
+                members, mapsets, maps, fields, named, inputs, positioned, scalar, continued);
         if (!failures.isEmpty()) {
             System.out.println("failures:");
             failures.forEach(f -> System.out.println("  " + f));
@@ -180,6 +195,20 @@ class BmsCorpusTest {
         // A screen nobody can type into is a screen nobody uses, so a corpus of real applications
         // reporting no inputs would mean the attributes are not being read.
         assertThat(inputs).isPositive();
+
+        // The corpus writes literals too long for one card, so a run reporting none of them would
+        // mean the check above never had anything to catch.
+        assertThat(continued).as("literals written over more than one card").isPositive();
+    }
+
+    private static int quotes(String text) {
+        int count = 0;
+        for (int i = 0; i < text.length(); i++) {
+            if (text.charAt(i) == '\'') {
+                count++;
+            }
+        }
+        return count;
     }
 
     private static boolean isScalarPosition(Field field) {
