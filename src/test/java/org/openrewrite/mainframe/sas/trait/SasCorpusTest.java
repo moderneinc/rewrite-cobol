@@ -60,6 +60,7 @@ class SasCorpusTest {
         int statements = 0;
         int includes = 0;
         int libraries = 0;
+        int librefs = 0;
         int files = 0;
         int macros = 0;
         int macroCalls = 0;
@@ -103,7 +104,13 @@ class SasCorpusTest {
 
                 statements += parsed.size();
                 includes += new Include.Matcher().require(cu, null).getReferences().size();
-                libraries += new Library.Matcher().require(cu, null).getReferences().size();
+                for (Library.Reference library : new Library.Matcher().require(cu, null).getReferences()) {
+                    if (library.getKind() == Library.Kind.LIBNAME) {
+                        libraries++;
+                    } else {
+                        librefs++;
+                    }
+                }
                 files += new FileReference.Matcher().require(cu, null).getReferences().size();
                 macros += new MacroDefinition.Matcher().require(cu, null).getMacros().size();
                 macroCalls += new MacroCall.Matcher().require(cu, null).getReferences().size();
@@ -117,9 +124,10 @@ class SasCorpusTest {
         assertThat(members).as("no SAS member found under %s", corpus).isPositive();
 
         System.out.printf("SAS corpus: %d members, %d statements, %d %%INCLUDE, %d LIBNAME, " +
-                          "%d external files, %d macro definitions, %d macro invocations, " +
-                          "%d INPUT layouts, %d tables read%n",
-          members, statements, includes, libraries, files, macros, macroCalls, layouts, tables);
+                          "%d librefs a PROC names, %d external files, %d macro definitions, " +
+                          "%d macro invocations, %d INPUT layouts, %d tables read%n",
+          members, statements, includes, libraries, librefs, files, macros, macroCalls, layouts,
+          tables);
         if (!failures.isEmpty()) {
             System.out.println("failures:");
             failures.forEach(failure -> System.out.println("  " + failure));
@@ -153,9 +161,10 @@ class SasCorpusTest {
 
     /**
      * INTERLINKS 21.3. Every library and every file the subsystem reaches is a DD name the step
-     * resolves: four {@code LIBNAME} statements over the one libref {@code CLMSAS}, and two
-     * {@code INFILE}s whose DD names are the ones the COBOL programs {@code SELECT} for the same two
-     * data sets.
+     * resolves: four {@code LIBNAME} statements over the one libref {@code CLMSAS}, the libref
+     * {@code LIBRARY} that {@code PROC FORMAT} writes its formats to and no statement declares, and
+     * two {@code INFILE}s whose DD names are the ones the COBOL programs {@code SELECT} for the same
+     * two data sets.
      */
     @Test
     void readsTheDdNamesTheFixtureReachesItsDataBy() throws IOException {
@@ -164,8 +173,7 @@ class SasCorpusTest {
         for (Map.Entry<String, PlainText> program : programs().entrySet()) {
             for (Library.Reference library :
               new Library.Matcher().require(program.getValue(), null).getReferences()) {
-                libraries.add(program.getKey() + " LIBNAME " + library.getName() + " -> DD " +
-                              library.getDdName());
+                libraries.add(program.getKey() + " " + library + " -> DD " + library.getDdName());
             }
             for (FileReference.Reference file :
               new FileReference.Matcher().require(program.getValue(), null).getReferences()) {
@@ -174,11 +182,21 @@ class SasCorpusTest {
             }
         }
 
+        // Every libref of the subsystem is a DD: the one library the programs share, and the format
+        // library CLMSMAC writes to, which is the only DD name of section 21.3 no LIBNAME declares.
         assertThat(libraries).containsExactly(
           "CLMSAUD LIBNAME CLMSAS -> DD CLMSAS",
+          "CLMSAUD DATA CLMSAS.CLMAUD -> DD CLMSAS",
+          "CLMSAUD DATA CLMSAS.CLMAUD -> DD CLMSAS",
           "CLMSEXTR LIBNAME CLMSAS -> DD CLMSAS",
+          "CLMSEXTR BASE CLMSAS.CLMYTD -> DD CLMSAS",
+          "CLMSEXTR DATA CLMSAS.CLMDAY -> DD CLMSAS",
+          "CLMSEXTR DATA CLMSAS.CLMDAY -> DD CLMSAS",
+          "CLMSMAC LIBRARY LIBRARY -> DD LIBRARY",
           "CLMSPOL LIBNAME CLMSAS -> DD CLMSAS",
-          "CLMSTAT LIBNAME CLMSAS -> DD CLMSAS");
+          "CLMSPOL DATA CLMSAS.POLEXP -> DD CLMSAS",
+          "CLMSTAT LIBNAME CLMSAS -> DD CLMSAS",
+          "CLMSTAT DATA CLMSAS.CLMDAY -> DD CLMSAS");
         // Two INFILEs and no FILE at all: every report goes to SASLIST, which SAS opens itself.
         assertThat(files).containsExactly(
           "CLMSAUD INFILE CLMAUDIT -> DD CLMAUDIT",
@@ -298,7 +316,8 @@ class SasCorpusTest {
 
         // The three the job runs by name are members; this one is only in the job.
         assertThat(new Library.Matcher().require(program, null).getReferences())
-          .singleElement().satisfies(library -> assertThat(library.getDdName()).isEqualTo("CLMSAS"));
+          .extracting(Library.Reference::getKind, Library.Reference::getDdName)
+          .containsExactly(tuple(Library.Kind.LIBNAME, "CLMSAS"), tuple(Library.Kind.DATA, "CLMSAS"));
     }
 
     /**

@@ -96,6 +96,64 @@ class ReferencesTest implements RewriteTest {
     }
 
     /**
+     * INTERLINKS 21.3. A {@code PROC} names a libref two ways, and both are DD names where no
+     * {@code LIBNAME} of the member gave the libref a data set: {@code LIBRARY=} for the library a
+     * stored format outlives the step in, and the first qualifier of whatever {@code DATA=},
+     * {@code OUT=} or {@code BASE=} was given. An unqualified data set is in {@code WORK} and reaches
+     * nothing.
+     */
+    @Test
+    void readsTheLibrefsAProcNames() {
+        rewriteRun(
+          text(
+            """
+              PROC FORMAT LIBRARY=LIBRARY;
+                 VALUE $CLMSTA 'O' = 'OPEN';
+              RUN;
+
+              PROC APPEND BASE=CLMSAS.CLMYTD DATA=CLMSAS.CLMDAY;
+              RUN;
+
+              PROC SORT DATA = CLMSAS.CLMDAY(KEEP=AMTRSV) OUT=BIGRSV;
+              RUN;
+              """,
+            spec -> spec.path("sas/CLMSMAC.sas").afterRecipe(cu ->
+              assertThat(new Library.Matcher().require(cu, null).getReferences())
+                .extracting(Library.Reference::getKind, Library.Reference::getName,
+                  Library.Reference::getMember, Library.Reference::getDdName,
+                  Library.Reference::getLine)
+                .containsExactly(
+                  tuple(Library.Kind.LIBRARY, "LIBRARY", null, "LIBRARY", 1),
+                  tuple(Library.Kind.BASE, "CLMSAS", "CLMYTD", "CLMSAS", 5),
+                  tuple(Library.Kind.DATA, "CLMSAS", "CLMDAY", "CLMSAS", 5),
+                  tuple(Library.Kind.DATA, "CLMSAS", "CLMDAY", "CLMSAS", 8)))
+          )
+        );
+    }
+
+    /**
+     * A libref the member itself gave a data set to needs nothing of the step, so a {@code PROC} that
+     * uses it reaches no DD and is not reported twice.
+     */
+    @Test
+    void leavesOutALibrefALibnameAlreadyResolved() {
+        rewriteRun(
+          text(
+            """
+              LIBNAME CLMSAS V9 'CLM.PROD.SASLIB';
+              PROC PRINT DATA=CLMSAS.CLMDAY NOOBS LABEL;
+              RUN;
+              """,
+            spec -> spec.path("sas/CLMSPOL.sas").afterRecipe(cu ->
+              assertThat(new Library.Matcher().require(cu, null).getReferences())
+                .extracting(Library.Reference::getKind, Library.Reference::getName,
+                  Library.Reference::getPath)
+                .containsExactly(tuple(Library.Kind.LIBNAME, "CLMSAS", "CLM.PROD.SASLIB")))
+          )
+        );
+    }
+
+    /**
      * INTERLINKS 21.2. A name after a {@code %} is either a macro somebody wrote or a statement of
      * the macro language, and nothing in the source tells them apart — so the statements are listed
      * and everything else is an invocation. Read the other way, every {@code %LET} reports a call.
