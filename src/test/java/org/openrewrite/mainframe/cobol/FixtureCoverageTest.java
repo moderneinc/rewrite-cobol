@@ -25,6 +25,7 @@ import org.openrewrite.mainframe.assembler.AssemblerParser;
 import org.openrewrite.mainframe.bms.BmsParser;
 import org.openrewrite.mainframe.controlcard.idcams.IdcamsParser;
 import org.openrewrite.mainframe.controlcard.sort.SortParser;
+import org.openrewrite.mainframe.controlcard.utility.UtilityParser;
 import org.openrewrite.mainframe.controlm.ControlMParser;
 import org.openrewrite.mainframe.db2.Db2Parser;
 import org.openrewrite.mainframe.db2.bind.BindParser;
@@ -79,6 +80,7 @@ class FixtureCoverageTest {
         readers.put("bind", BindParser.builder().build());
         readers.put("sort", SortParser.builder().build());
         readers.put("IDCAMS", IdcamsParser.builder().build());
+        readers.put("Db2 utility", UtilityParser.builder().build());
         readers.put("link-edit", LinkEditParser.builder().build());
         readers.put("DB2 DDL", Db2Parser.builder().build());
         readers.put("IMS gen", ImsParser.builder().build());
@@ -127,9 +129,10 @@ class FixtureCoverageTest {
         assertThat(unread).containsExactly(
           // The repository's own licence, which is not a member of any library.
           entry("(none)", 1),
-          // The IEBGENER, DSN, RUNSTATS and parm cards of claims/ctlcard, beside the sort, IDCAMS and
-          // AMBLIST decks that do have readers: a member opening with nothing recognisable stays plain.
-          entry(".ctl", 9),
+          // The IEBGENER, DSN and parm cards of claims/ctlcard, beside the sort, IDCAMS, AMBLIST and
+          // Db2 utility decks that do have readers: a member opening with nothing recognisable stays
+          // plain.
+          entry(".ctl", 8),
           entry(".md", 2));
     }
 

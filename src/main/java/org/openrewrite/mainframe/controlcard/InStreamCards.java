@@ -20,10 +20,17 @@ import org.jspecify.annotations.Nullable;
 import org.openrewrite.mainframe.jcl.SourcePositions;
 import org.openrewrite.mainframe.jcl.trait.DataDefinition;
 import org.openrewrite.mainframe.jcl.tree.Jcl;
+import org.openrewrite.mainframe.jcl.tree.Space;
+import org.openrewrite.mainframe.jcl.tree.Statement;
+import org.openrewrite.marker.Markers;
 import org.openrewrite.marker.Range;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
+
+import static org.openrewrite.Tree.randomId;
 
 /**
  * The cards written inside a job rather than in a library of their own — the in-stream data of a DD.
@@ -54,6 +61,14 @@ public class InStreamCards {
 
     String text;
 
+    /**
+     * The in-stream statements the deck was read from, in the order they were written, where they are
+     * cards of this member. Empty for a deck written in a cataloged procedure or grafted in from a
+     * library member: those cards belong to another member, and changing them here would change
+     * nothing this job prints.
+     */
+    List<UUID> cards;
+
     public static List<InStreamCards> of(Jcl.CompilationUnit cu) {
         SourcePositions positions = SourcePositions.of(cu);
         List<InStreamCards> decks = new ArrayList<>();
@@ -75,6 +90,7 @@ public class InStreamCards {
         int start = -1;
         int end = -1;
         int line = 0;
+        List<UUID> cards = new ArrayList<>();
         for (Jcl.DataDefinitionStream data : dd.getInStreamData()) {
             Range card = cardOf(data, positions);
             if (card == null) {
@@ -85,6 +101,7 @@ public class InStreamCards {
                 line = card.getStart().getLine();
             }
             end = card.getEnd().getOffset();
+            cards.add(data.getId());
         }
         if (start < 0) {
             return null;
@@ -93,7 +110,68 @@ public class InStreamCards {
         String source = at == null ? positions.getSource() : at.getMemberSource();
         return new InStreamCards(dd.getName(),
                 at == null ? line : at.getBroughtInAt().getStart().getLine(),
-                source.substring(start, end));
+                source.substring(start, end),
+                at == null ? cards : Collections.<UUID>emptyList());
+    }
+
+    /**
+     * The job with these cards replaced by the text given, which is how an edited deck goes back into
+     * the job it was read from.
+     * <p>
+     * A deck is parsed on its own, detached from the job, because the two are different languages and
+     * only one of them is in the LST. So writing one back is putting the printed deck through the
+     * words the stream is held as — one word to a statement, the white space in front of it saying
+     * where the card breaks are — rather than editing anything the island parsed.
+     */
+    public Jcl.CompilationUnit write(Jcl.CompilationUnit cu, String text) {
+        if (cards.isEmpty()) {
+            throw new IllegalStateException("The " + ddName + " deck is not written among this member's " +
+                                            "own cards, so it cannot be written back through it.");
+        }
+        List<Statement> statements = new ArrayList<>(cu.getStatements().size());
+        boolean replaced = false;
+        for (Statement statement : cu.getStatements()) {
+            if (!cards.contains(statement.getId())) {
+                statements.add(statement);
+            } else if (!replaced) {
+                statements.addAll(split(text, statement.getPrefix().getWhitespace()));
+                replaced = true;
+            }
+        }
+        return cu.withStatements(statements);
+    }
+
+    /**
+     * The cards of a deck, as the words a job stream is held as. The first word keeps whatever ended
+     * the DD statement above it — a line ending, and on z/OS that may be two characters — and every
+     * word after it is separated by the white space the deck itself was written with.
+     * <p>
+     * A quoted string with a blank in it becomes more than one word here where the parser would have
+     * kept it as one. It prints the same either way, and the deck rather than the stream is the thing
+     * anything reads.
+     */
+    private static List<Statement> split(String text, String firstPrefix) {
+        String lineEnding = firstPrefix.substring(0, firstPrefix.lastIndexOf('\n') + 1);
+        List<Statement> statements = new ArrayList<>();
+        int i = 0;
+        while (i < text.length()) {
+            int start = i;
+            while (i < text.length() && Character.isWhitespace(text.charAt(i))) {
+                i++;
+            }
+            String prefix = text.substring(start, i);
+            int word = i;
+            while (i < text.length() && !Character.isWhitespace(text.charAt(i))) {
+                i++;
+            }
+            if (i == word) {
+                break;
+            }
+            statements.add(new Jcl.DataDefinitionStream(randomId(),
+                    Space.build(statements.isEmpty() ? lineEnding + prefix : prefix), Markers.EMPTY,
+                    new Jcl.Word(randomId(), Space.EMPTY, Markers.EMPTY, text.substring(word, i))));
+        }
+        return statements;
     }
 
     /**

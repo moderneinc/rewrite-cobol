@@ -206,8 +206,8 @@ class ControlCardCorpusTest {
     }
 
     /**
-     * The fixture's own oracle: INTERLINKS section 8.3 writes down all nineteen members of
-     * {@code claims/ctlcard} and which deck each one is.
+     * The fixture's own oracle: INTERLINKS sections 8.3 and 22 write down all twenty three members
+     * of {@code claims/ctlcard} and which deck each one is.
      */
     @Test
     void typesTheFixtureMembersByWhatTheySay() throws IOException {
@@ -217,11 +217,13 @@ class ControlCardCorpusTest {
         assertThat(names(Corpus.idcamsCards(ctlcard)))
                 .containsExactly("DEFCLM01", "DEFCLM02", "DEFGDG01", "REPCLM01", "REPCLM02", "REPCLM03");
         assertThat(names(Corpus.sortCards(ctlcard))).containsExactly("SRTCLM01", "SRTCLM02");
+        assertThat(names(Corpus.utilityCards(ctlcard)))
+                .containsExactly("STACLM01", "UNLCLM01", "UNLCLM02", "UNLCLM03", "UNLCLM04");
 
-        // Of the other eleven, the two AMBLIST decks are typed by the listload reader and the nine
+        // Of the other ten, the two AMBLIST decks are typed by the listload reader and the eight
         // IEBGENER, DSN and parm cards stay plain parameters.
         try (Stream<Path> paths = Files.list(ctlcard)) {
-            assertThat(paths.filter(Files::isRegularFile)).hasSize(19);
+            assertThat(paths.filter(Files::isRegularFile)).hasSize(23);
         }
     }
 

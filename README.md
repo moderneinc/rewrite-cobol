@@ -21,7 +21,7 @@
 
 ## What is this?
 
-This project implements a [Rewrite module](https://github.com/openrewrite/rewrite) that provides parsers, visitors, and recipes for COBOL and related mainframe technologies. It supports parsing and transforming COBOL source code, JCL (Job Control Language), BMS map sets, DB2 DDL, DB2 bind cards, link-edit decks, DFSORT and IDCAMS control cards, Control-M job definitions, IMS gen source and HLASM assembler, and it reads the SAS, load module listings, CLISTs, REXX execs, run book members, C and PL/I an estate keeps beside them out of the plain text a build keeps them as.
+This project implements a [Rewrite module](https://github.com/openrewrite/rewrite) that provides parsers, visitors, and recipes for COBOL and related mainframe technologies. It supports parsing and transforming COBOL source code, JCL (Job Control Language), BMS map sets, DB2 DDL, DB2 bind cards, DB2 utility control cards, link-edit decks, DFSORT and IDCAMS control cards, Control-M job definitions, IMS gen source and HLASM assembler, and it reads the SAS, load module listings, CLISTs, REXX execs, run book members, C and PL/I an estate keeps beside them out of the plain text a build keeps them as.
 
 Three words recur in the documentation and are not interchangeable. The *shop* is the organization: its conventions, its libraries, what its people wrote down. The *estate* is the mainframe world the shop runs — jobs, load modules, databases, schedules — whether or not every piece of it was checked in. The *portfolio* is the set of sources an analysis was actually given, which is why a member the estate has and the portfolio does not is a finding rather than a surprise.
 
@@ -36,6 +36,7 @@ Three words recur in the documentation and are not interchangeable. The *shop* i
 - **Load module listings** — What AMBLIST and the binder printed about a load library (`.amblist`, `.binder`, `.listload`, and a control card member that asks for a report), kept as plain text and read for what it names: the module and its entry point, aliases and size, the control sections it holds with their offsets and lengths, the alternate entry points within them, and the compiler each section came from. A deck says what a module was meant to hold; a listing says what it holds, including the language interface and the runtime nobody wrote a card for
 - **Sort cards** — DFSORT and ICETOOL control statements: `SORT`/`MERGE FIELDS`, `INCLUDE`/`OMIT COND`, `INREC`/`OUTREC`/`OUTFIL`, `SUM`, `OPTION`, with the control fields read as byte positions into the record, which is what joins a sort card to the copybook that describes it
 - **IDCAMS cards** — Access method services commands: `DEFINE CLUSTER`/`AIX`/`PATH`/`GDG` with their parameter groups, `REPRO`, `DELETE`, `LISTCAT`, `PRINT` and `ALTER`, which is where a VSAM file's key, record size and components are written down
+- **Db2 utility cards** — The control statements a `SYSIN` hands a Db2 utility, in both dialects: High Performance Unload's own `GLOBAL`, `UNLOAD` with a `SELECT` and an `OUTDDN` per output file, `FORMAT`, `OPTIONS`, `TEMPLATE` and `LISTDEF`, and the base utility's `UNLOAD ... FROM TABLE` with `SHRLEVEL`, beside `LOAD`, `COPY`, `REORG` and `RUNSTATS`. Which dialect a deck is in is read off the deck and never off the program name, since a shop may alias `DSNUTILB` to the unload product's compatibility entry point. What the deck leaves out matters as much as what it says: an omitted `FORMAT`, `DB2`, `LOCK` or `QUIESCE` is resolved from the site parmlib rather than from a default, so a trait says which keywords were coded and which the site answers
 - **Control-M** — Job scheduling definitions, both dialects a shop has: the z/OS panel (`.ctms`) and the XML an export writes (`.controlm`). The JCL member each job runs, the `IN` and `OUT` conditions that order them, the SMART table they sit in and the calendars they run on, which is what turns a library of jobs into the order they actually run in
 - **IMS gen source** — The DBDs, PSBs, MFS format sets and stage 1 decks a shop gens its IMS system from (`.dbd`, `.psb`, `.mfs`, `.gen`, and an `.asm` whose first macro is one that gens, since a gen library is assembler source and is often kept as such): the databases with their segments, keys and logical relationships, the PCBs a program is handed and the segments each is sensitive to, the screens a message is laid out on, and the transactions that schedule a PSB. A DL/I call names a PCB by position and a segment by name, and the gen source is the only place either resolves to anything
 - **Assembler** — HLASM statement source (`.asm`, `.mac`): control sections and the DSECTs that are the assembler's copybooks, laid out constant by constant so a layout can be compared with the COBOL one; `COPY` members, macro prototypes and invocations, `CALL` and `V`-type constants, DCBs, entry points and external names. There is no grammar because the columns are the syntax — a card continues the one above it because of a character in column 72, and `ICTL` moves the columns at run time
@@ -73,10 +74,10 @@ its own:
 | Zowe install packaging | [zowe/zowe-install-packaging](https://github.com/zowe/zowe-install-packaging) | — | 50 of 53 | — | — | — | — |
 | MainframeJCL | [billrain/MainframeJCL](https://github.com/billrain/MainframeJCL) | — | 83 of 108 | — | — | — | — |
 | zorow | [openmainframeproject/zorow](https://github.com/openmainframeproject/zorow) | — | 50 of 56 | — | — | — | — |
-| CLAIMS fixture | [moderneinc/mainframe-fixtures](https://github.com/moderneinc/mainframe-fixtures) | 19 of 19 | 42 of 42 | 5 | 4 | 4 | 6 |
+| CLAIMS fixture | [moderneinc/mainframe-fixtures](https://github.com/moderneinc/mainframe-fixtures) | 19 of 19 | 48 of 48 | 5 | 4 | 4 | 6 |
 
 Programs and Jobs say how many files of each kind the parser read, and out of how many: 216 of 229
-COBOL programs and 512 of 549 JCL members, plus all 50 BMS map sets in the seven applications that
+COBOL programs and 518 of 555 JCL members, plus all 50 BMS map sets in the seven applications that
 have them. The technology columns say how many programs use each. A program counts as read when it
 parsed and printed back byte for byte; a job when it also had exactly the EXEC cards the traits
 found and nothing in it was left unplaced. The gaps are the measurement: `CorpusCoverageTest` groups
@@ -122,14 +123,14 @@ adds the 110 jobs, among them DB2 DDL and BIND in JCL, where Bank of Z has one.
 The last row is not a public application but a fixture: one fictional insurance claims
 application, CLAIMS, written so that every `COPY`, `CALL`, `EXEC PROC`, `SEND MAP` and `SYSIN`
 member in it resolves to a member of the same repository, and every member of it a reader here takes
-reads. The readers take 260 of its members between them and the only member kind left is the
-plain control card — the nine IEBGENER, DSN, RUNSTATS and parm cards of `claims/ctlcard` — which the
+reads. The readers take 271 of its members between them and the only member kind left is the
+plain control card — the eight IEBGENER, DSN and parm cards of `claims/ctlcard` — which the
 walks skip rather than count against a parser. Nothing else in the repository is a member of a
 library at all: its licence and its two markdown documents are the whole of the rest. The public
 applications are measured;
 the fixture is required. The tests know it by its directory name, `mainframe-fixtures`, and fail when
 a program, copybook, job, procedure, map set, bind deck, link-edit deck, module listing, DDL member,
-IMS gen member, assembler member, SAS member, CLIST, REXX exec, run book member, control card or schedule of it does not parse, read or print back — or when the corpus root does not contain it, since a fixture
+Db2 utility deck, IMS gen member, assembler member, SAS member, CLIST, REXX exec, run book member, control card or schedule of it does not parse, read or print back — or when the corpus root does not contain it, since a fixture
 the walk cannot see, a symbolic link say, would otherwise pass as an empty application.
 `FixtureCoverageTest` puts every one of its members past every reader at once, so that a member is
 claimed by one reader and no more and the kinds nothing reads are claimed by none: a reader that
@@ -151,8 +152,8 @@ Since MainframeJCL, ADCD setup and Zowe's SZWESAMP keep their members as they ca
 subcommand binds is a bind deck, and an extensionless file whose first line is the `/* REXX */`
 comment TSO itself reads is an exec. Control card members are typed by what they say rather than by
 what they are called: a `.ctl`, `.prm` or extensionless member is a sort deck, an IDCAMS deck, a
-link-edit deck or an AMBLIST request deck if its first statement is one, and anything else stays
-plain. An IMS gen library is often kept as `.asm` — Bank of Z writes its DBDs as
+Db2 utility deck, a link-edit deck or an AMBLIST request deck if its first statement is one, and
+anything else stays plain. An IMS gen library is often kept as `.asm` — Bank of Z writes its DBDs as
 `src/base/ims/DBD/*.asm` and its PSBs as `src/base/ims/PSB/*.asm` — so an `.asm` is a gen member when
 the first macro it invokes is one that gens, and the HLASM reader takes the rest. A
 member whose name
@@ -359,8 +360,17 @@ in the library afterwards.
 
 `ControlCardCorpusTest` does the same for sort and IDCAMS cards, over 16 members and the 153 decks
 the corpus writes in-stream, and requires that no member is claimed by both parsers. It also checks
-the fixture's `ctlcard` library member by member against INTERLINKS section 8.3, which is where the
-six IDCAMS members, the two sort members and the eleven that are neither are written down.
+the fixture's `ctlcard` library member by member against INTERLINKS sections 8.3 and 22, which is
+where the six IDCAMS members, the two sort members, the five Db2 utility decks and the ten that are
+none of those are written down.
+
+`UnloadCorpusTest` does the same for Db2 utility cards, over six members and the twelve decks the
+corpus writes in-stream, counting every control statement it read against a card scan of the source.
+It checks the fixture's unload set against INTERLINKS section 22, which is where the six decks, the
+one written in the base utility's dialect, the seven `SELECT`s and their seven `OUTDDN`s, the
+thirteen DD names the decks reach and the four keywords `ctlcard/UNLCLM04` leaves to the site
+parmlib are written down. It runs under `JCL_CORPUS`: a utility deck is reached through the step
+that runs it.
 
 `SourcePositionsCorpusTest` reads every JCL position back out of the source, since a position landing
 anywhere but on the word it names is worse than no position at all. Over the 547 members it reads

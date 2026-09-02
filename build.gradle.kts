@@ -123,6 +123,19 @@ tasks.register<JavaExec>("generateAntlrSourcesIdcams") {
     finalizedBy("licenseFormat")
 }
 
+tasks.register<JavaExec>("generateAntlrSourcesUtility") {
+    mainClass.set("org.antlr.v4.Tool")
+    args = listOf(
+            "-o", "src/main/java/org/openrewrite/mainframe/controlcard/utility/internal/grammar",
+            "-package", "org.openrewrite.mainframe.controlcard.utility.internal.grammar",
+            "-visitor"
+    ) + fileTree("src/main/antlr-utility").matching { include("**/*.g4") }.map { it.path }
+
+    classpath = configurations["antlr"]
+
+    finalizedBy("licenseFormat")
+}
+
 tasks.register<JavaExec>("generateAntlrSourcesControlM") {
     mainClass.set("org.antlr.v4.Tool")
     args = listOf(
