@@ -149,6 +149,23 @@ class InStreamUnloadDeckTest implements RewriteTest {
     }
 
     /**
+     * A deck holds the cards it was read from and writing replaces them, so a deck read before an
+     * earlier write says so rather than writing nothing.
+     */
+    @Test
+    void refusesADeckReadBeforeAnEarlierWrite() {
+        rewriteRun(
+          jcl(JOB,
+            spec -> spec.afterRecipe(cu -> {
+                InStreamUnloadDeck deck = InStreamUnloadDeck.of(cu).get(0);
+                Jcl.CompilationUnit written = deck.write(cu);
+                assertThatThrownBy(() -> deck.write(written)).isInstanceOf(IllegalStateException.class);
+            })
+          )
+        );
+    }
+
+    /**
      * SYMBOLS=JCLONLY has JES substitute the job's symbols into the card text before the step runs.
      * The utility's own template variables are written the same way and are still there when it
      * reads the deck, so the two have to be told apart by name.

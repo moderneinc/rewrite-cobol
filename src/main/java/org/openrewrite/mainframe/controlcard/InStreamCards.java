@@ -27,10 +27,10 @@ import org.openrewrite.marker.Markers;
 import org.openrewrite.marker.Range;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import static java.util.Collections.emptyList;
 import static org.openrewrite.Tree.randomId;
 
 /**
@@ -124,7 +124,7 @@ public class InStreamCards {
         return new InStreamCards(dd.getName(), dd.getTree().getId(),
                 at == null ? line : at.getBroughtInAt().getStart().getLine(),
                 source.substring(start, end),
-                at == null ? cards : Collections.<UUID>emptyList());
+                at == null ? cards : emptyList());
     }
 
     /**
@@ -144,7 +144,7 @@ public class InStreamCards {
         Range reached = at == null ? positions.card(dd.getTree()) : at.getBroughtInAt();
         return new InStreamCards(dd.getName(), dd.getTree().getId(),
                 reached == null ? 0 : reached.getStart().getLine(),
-                text.toString(), Collections.<UUID>emptyList());
+                text.toString(), emptyList());
     }
 
     /**
@@ -155,6 +155,9 @@ public class InStreamCards {
      * only one of them is in the LST. So writing one back is putting the printed deck through the
      * words the stream is held as — one word to a statement, the white space in front of it saying
      * where the card breaks are — rather than editing anything the island parsed.
+     * <p>
+     * The cards written are the ones this deck was read from, so a job that has already been written
+     * to has to be read again before it is written to a second time.
      */
     public Jcl.CompilationUnit write(Jcl.CompilationUnit cu, String text) {
         if (cards.isEmpty()) {
@@ -170,6 +173,10 @@ public class InStreamCards {
                 statements.addAll(split(text, statement.getPrefix().getWhitespace()));
                 replaced = true;
             }
+        }
+        if (!replaced) {
+            throw new IllegalStateException("The " + ddName + " deck was read from cards this job no " +
+                                            "longer holds, so writing it back would change nothing.");
         }
         return cu.withStatements(statements);
     }
