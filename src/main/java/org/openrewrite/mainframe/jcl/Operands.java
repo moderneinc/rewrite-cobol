@@ -49,4 +49,43 @@ public final class Operands {
         }
         return elements;
     }
+
+    /**
+     * A value without the apostrophes that carried it. They are how a value with a comma or a blank
+     * in it is written down, and are not part of what the value says.
+     */
+    public static String unquoted(String value) {
+        return value.length() > 1 && value.startsWith("'") && value.endsWith("'") ?
+                value.substring(1, value.length() - 1) : value;
+    }
+
+    /**
+     * The comma-separated positions of a value, its outer parentheses or apostrophes dropped and a
+     * nested group left whole: {@code (CYL,(10,5),RLSE)} is three positions, not four, and Db2 High
+     * Performance Unload's {@code ssid,uid,HIDDEN(user,pswd)} is three rather than four.
+     * <p>
+     * A value carrying a comma may be quoted instead of parenthesised — {@code PARM='BMP,CBPAUP0C,
+     * PSBPAUTB'} is how most shops write an IMS region step — and the quotes are the JCL's, not part
+     * of the first position.
+     */
+    public static List<String> positions(String value) {
+        String text = value.startsWith("(") && value.endsWith(")") ?
+                value.substring(1, value.length() - 1) : unquoted(value);
+        List<String> positions = new ArrayList<>();
+        int depth = 0;
+        int from = 0;
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            if (c == '(') {
+                depth++;
+            } else if (c == ')') {
+                depth--;
+            } else if (c == ',' && depth == 0) {
+                positions.add(text.substring(from, i));
+                from = i + 1;
+            }
+        }
+        positions.add(text.substring(from));
+        return positions;
+    }
 }

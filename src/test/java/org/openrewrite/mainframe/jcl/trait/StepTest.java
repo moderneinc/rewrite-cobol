@@ -254,6 +254,45 @@ class StepTest implements RewriteTest {
         );
     }
 
+    /**
+     * A utility reads its PARM by position, and a group in it is one position: Db2 High Performance
+     * Unload is passed {@code ssid,uid} and options that carry commas of their own.
+     */
+    @Test
+    void readsThePositionsOfAParm() {
+        rewriteRun(
+          jcl(
+            """
+              //UNLOAD   EXEC PGM=INZUTILB,PARM='DB2P,CLMU001,HIDDEN(USER,PSWD)'
+              //SYSPRINT DD  SYSOUT=*
+              """,
+            spec -> spec.afterRecipe(cu -> {
+                Step step = steps(cu).get(0);
+                assertThat(step.getParm()).isEqualTo("DB2P,CLMU001,HIDDEN(USER,PSWD)");
+                assertThat(step.getParmPositions())
+                  .containsExactly("DB2P", "CLMU001", "HIDDEN(USER,PSWD)");
+                assertThat(step.getParmPosition(0)).isEqualTo("DB2P");
+                assertThat(step.getParmPosition(3)).isNull();
+            })
+          )
+        );
+    }
+
+    @Test
+    void readsNoParmFromAStepThatPassesNone() {
+        rewriteRun(
+          jcl(
+            "//STEP010  EXEC PGM=ACCTPOST\n",
+            spec -> spec.afterRecipe(cu -> {
+                Step step = steps(cu).get(0);
+                assertThat(step.getParm()).isNull();
+                assertThat(step.getParmPositions()).isEmpty();
+                assertThat(step.getParmPosition(0)).isNull();
+            })
+          )
+        );
+    }
+
     private static List<Step> steps(Jcl.CompilationUnit cu) {
         return new Step.Matcher().lower(cu).collect(Collectors.toList());
     }

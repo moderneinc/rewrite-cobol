@@ -18,6 +18,7 @@ package org.openrewrite.mainframe.jcl.trait;
 import lombok.Value;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
+import org.openrewrite.mainframe.jcl.Operands;
 import org.openrewrite.mainframe.jcl.marker.ExpandedMember;
 import org.openrewrite.mainframe.jcl.marker.Symbolic;
 import org.openrewrite.mainframe.jcl.marker.Symbolics;
@@ -74,6 +75,36 @@ public class Step implements Trait<Jcl.JobControlStatement> {
     public @Nullable String getProgram() {
         Jcl.KeywordParameter pgm = getTree().getParameter("PGM");
         return pgm == null || getProcedure() != null ? null : Steps.resolved(pgm);
+    }
+
+    /**
+     * What {@code PARM=} passes the program, with its symbols filled in and the apostrophes that
+     * carried it taken off — a step written {@code PARM='&SSID,&UID'} answers what the job ran with.
+     * Null when the step passes none.
+     */
+    public @Nullable String getParm() {
+        Jcl.KeywordParameter parm = getTree().getParameter("PARM");
+        return parm == null ? null : Operands.unquoted(Steps.resolved(parm));
+    }
+
+    /**
+     * The positions of the PARM, a group left whole: Db2 High Performance Unload is passed
+     * {@code ssid,uid,HIDDEN(user,pswd)}, which is three positions rather than four. Empty when the
+     * step passes no PARM.
+     */
+    public List<String> getParmPositions() {
+        String parm = getParm();
+        return parm == null ? emptyList() : Operands.positions(parm);
+    }
+
+    /**
+     * The PARM's position at {@code index}, counted from zero, or null when it has none. A utility
+     * reads its parameters by position, so a step that passes fewer than it expects is a step that
+     * defaults the rest.
+     */
+    public @Nullable String getParmPosition(int index) {
+        List<String> positions = getParmPositions();
+        return index < 0 || index >= positions.size() ? null : positions.get(index);
     }
 
     /**

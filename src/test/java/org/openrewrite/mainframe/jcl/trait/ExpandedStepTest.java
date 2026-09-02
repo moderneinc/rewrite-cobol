@@ -190,6 +190,37 @@ class ExpandedStepTest implements RewriteTest {
         );
     }
 
+    /**
+     * A Db2 unload step is passed the subsystem and a user id by position, and the subsystem is a
+     * symbol the calling job supplies — so the PARM answers nothing until the job is expanded.
+     */
+    @Test
+    void readsAProcedureStepsParmByPosition() {
+        rewriteRun(
+          jclWithProcedures(
+            """
+              //CLMJ040  JOB (CLM),'UNLOAD CLAIMS',CLASS=P
+              //UNL      EXEC CLMUNL,SSID=DB2T,UID=CLMU001
+              """,
+            singletonList(procedureMember("CLMUNL",
+              """
+                //CLMUNL   PROC SSID=DB2P,UID=
+                //UNLOAD   EXEC PGM=INZUTILB,PARM='&SSID,&UID,HIDDEN(&SSID)'
+                //SYSPRINT DD SYSOUT=*
+                //         PEND
+                """)),
+            spec -> spec.afterRecipe(cu -> {
+                Step unload = steps(cu).get(0).getProcedureSteps().get(0);
+                assertThat(unload.getProgram()).isEqualTo("INZUTILB");
+                assertThat(unload.getParm()).isEqualTo("DB2T,CLMU001,HIDDEN(DB2T)");
+                assertThat(unload.getParmPositions())
+                  .containsExactly("DB2T", "CLMU001", "HIDDEN(DB2T)");
+                assertThat(unload.getParmPosition(1)).isEqualTo("CLMU001");
+            })
+          )
+        );
+    }
+
     @Test
     void saysWhenTheProcedureIsNotInTheLibrary() {
         rewriteRun(

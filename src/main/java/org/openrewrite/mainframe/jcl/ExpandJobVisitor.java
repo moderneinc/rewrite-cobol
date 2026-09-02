@@ -338,7 +338,7 @@ public class ExpandJobVisitor<P> extends JclIsoVisitor<P> {
     private static @Nullable String assignedValue(Jcl.KeywordParameter parameter, Scope scope) {
         ResolvedText resolved = resolve(parameter.getValueText(), scope, false);
         if (resolved == null) {
-            return unquoted(parameter.getValueText());
+            return Operands.unquoted(parameter.getValueText());
         }
         for (Symbolic symbolic : resolved.getSymbolics()) {
             if (symbolic.getValue() == null) {
@@ -347,12 +347,7 @@ public class ExpandJobVisitor<P> extends JclIsoVisitor<P> {
                 return null;
             }
         }
-        return unquoted(resolved.getText());
-    }
-
-    private static String unquoted(String value) {
-        return value.length() > 1 && value.startsWith("'") && value.endsWith("'") ?
-                value.substring(1, value.length() - 1) : value;
+        return Operands.unquoted(resolved.getText());
     }
 
     private static String valueOf(Jcl.KeywordParameter parameter, Scope scope) {
