@@ -18,7 +18,6 @@ package org.openrewrite.mainframe.controlcard.utility;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -50,10 +49,10 @@ public final class Keywords {
     /**
      * The verbs that open a utility control statement.
      */
-    private static final Set<String> STATEMENTS = upper(
+    private static final Set<String> STATEMENTS = upper(asList(
             "UNLOAD", "GLOBAL", "TEMPLATE", "LISTDEF", "LISTDEFTBV", "PROCESS_OPTIONS", "OPTIONS",
             "LOAD", "COPY", "COPYTOCOPY", "MERGECOPY", "REORG", "RUNSTATS", "CHECK", "QUIESCE",
-            "REBUILD", "RECOVER", "REPAIR", "MODIFY", "STOSPACE", "DIAGNOSE");
+            "REBUILD", "RECOVER", "REPAIR", "MODIFY", "STOSPACE", "DIAGNOSE"));
 
     private static final Map<String, Set<String>> OPERANDS = new HashMap<>();
     private static final Map<String, Set<String>> BLOCKS = new HashMap<>();
@@ -229,12 +228,19 @@ public final class Keywords {
             "PARALLELISM", "MAXERR"));
 
     private static void block(String verb, List<String> blocks, List<String> operands) {
-        BLOCKS.put(verb, upper(blocks.toArray(new String[0])));
-        OPERANDS.put(verb, upper(operands.toArray(new String[0])));
+        BLOCKS.put(verb, upper(blocks));
+        OPERANDS.put(verb, upper(operands));
     }
 
-    private static Set<String> upper(String... words) {
-        Set<String> set = new HashSet<>(Arrays.asList(words));
+    /**
+     * A vocabulary is looked up by a word already upper cased, so an entry that is not would never
+     * be found.
+     */
+    private static Set<String> upper(List<String> words) {
+        Set<String> set = new HashSet<>(words.size());
+        for (String word : words) {
+            set.add(word.toUpperCase(Locale.ROOT));
+        }
         return Collections.unmodifiableSet(set);
     }
 
