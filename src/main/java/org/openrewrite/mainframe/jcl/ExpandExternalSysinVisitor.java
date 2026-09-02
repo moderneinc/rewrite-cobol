@@ -164,7 +164,8 @@ public class ExpandExternalSysinVisitor<P> extends JclIsoVisitor<P> {
      * per graft so the same member can be expanded into multiple JCL sources without id collisions.
      * <p>
      * The grafted nodes are never printed (the {@code JclPrinter} skips {@link GeneratedParmContent}),
-     * so their whitespace is irrelevant and simply {@link Space#EMPTY}.
+     * but the white space in front of each word is kept: a control card says something different in
+     * another column, so a reader of the deck needs the member's lines and not only its words.
      */
     private static List<Statement> buildStreamNodes(@Nullable List<String> words, String memberName) {
         if (words == null) {
@@ -172,18 +173,24 @@ public class ExpandExternalSysinVisitor<P> extends JclIsoVisitor<P> {
         }
         List<Statement> nodes = new ArrayList<>(words.size());
         for (String word : words) {
+            int text = 0;
+            while (text < word.length() && Character.isWhitespace(word.charAt(text))) {
+                text++;
+            }
             nodes.add(new Jcl.DataDefinitionStream(
                     randomId(),
-                    Space.EMPTY,
+                    Space.build(word.substring(0, text)),
                     Markers.EMPTY.addIfAbsent(new GeneratedParmContent(randomId(), memberName)),
-                    new Jcl.Word(randomId(), Space.EMPTY, Markers.EMPTY, word)));
+                    new Jcl.Word(randomId(), Space.EMPTY, Markers.EMPTY, word.substring(text))));
         }
         return nodes;
     }
 
     /**
-     * Tokenizes raw member content into its whitespace-delimited words. The grafted content is not
-     * printed, so only the words are kept — their surrounding whitespace is discarded.
+     * Tokenizes raw member content into its whitespace-delimited words, each carrying the white
+     * space written in front of it — the blanks of its own line, and the line endings of any blank
+     * line before it. Blanks written after the last word of a line are dropped, since no card means
+     * anything by them.
      * <p>
      * Only columns 1–72 of each line are tokenized; the identification/sequence-number area
      * in columns 73–80 of fixed-form PDS members is ignored, consistent with how the JCL
@@ -191,6 +198,8 @@ public class ExpandExternalSysinVisitor<P> extends JclIsoVisitor<P> {
      */
     private static List<String> tokenize(String content) {
         List<String> words = new ArrayList<>();
+        StringBuilder prefix = new StringBuilder();
+        boolean firstLine = true;
         for (String rawLine : content.split("\n", -1)) {
             String line = rawLine;
             if (line.endsWith("\r")) {
@@ -199,19 +208,26 @@ public class ExpandExternalSysinVisitor<P> extends JclIsoVisitor<P> {
             if (line.length() > 72) {
                 line = line.substring(0, 72);
             }
+            if (!firstLine) {
+                prefix.append('\n');
+            }
+            firstLine = false;
             int idx = 0;
             while (idx < line.length()) {
+                int blanks = idx;
                 while (idx < line.length() && Character.isWhitespace(line.charAt(idx))) {
                     idx++;
                 }
                 if (idx >= line.length()) {
                     break;
                 }
+                prefix.append(line, blanks, idx);
                 int textStart = idx;
                 while (idx < line.length() && !Character.isWhitespace(line.charAt(idx))) {
                     idx++;
                 }
-                words.add(line.substring(textStart, idx));
+                words.add(prefix + line.substring(textStart, idx));
+                prefix.setLength(0);
             }
         }
         return words;

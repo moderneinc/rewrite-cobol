@@ -18,6 +18,7 @@ package org.openrewrite.mainframe.controlcard;
 import lombok.Value;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.mainframe.jcl.SourcePositions;
+import org.openrewrite.mainframe.jcl.marker.GeneratedParmContent;
 import org.openrewrite.mainframe.jcl.trait.DataDefinition;
 import org.openrewrite.mainframe.jcl.tree.Jcl;
 import org.openrewrite.mainframe.jcl.tree.Space;
@@ -33,13 +34,15 @@ import java.util.UUID;
 import static org.openrewrite.Tree.randomId;
 
 /**
- * The cards written inside a job rather than in a library of their own — the in-stream data of a DD.
+ * The cards a DD hands the step: written in the job stream, or grafted in from the library member
+ * the DD named.
  * <p>
  * Both shapes occur at a real shop and neither stands for the other: the deck a shop keeps as a
  * control card member is read once and run from several jobs, while the deck written in the job is
- * the only place its cards exist. The cards are already in the job's own LST, so they are read back
- * from it by printing — a card's layout lives in the white space in front of each word, and where the
- * line ends is what decides whether the next one continues it.
+ * the only place its cards exist. Cards written in the stream are already in the job's own LST, so
+ * they are read back from it by printing — a card's layout lives in the white space in front of each
+ * word, and where the line ends is what decides whether the next one continues it. Cards of a member
+ * print nowhere and are put back together from the words the graft left behind.
  * <p>
  * Every DD is offered, not a list of the ones a shop is expected to use. A sort deck reaches DFSORT
  * on {@code SYSIN}, {@code DFSPARM}, {@code SORTCNTL} or a {@code xxxxCNTL} named by an ICETOOL
@@ -52,6 +55,12 @@ public class InStreamCards {
      * The DD the cards were written under.
      */
     String ddName;
+
+    /**
+     * The DD statement the cards belong to, which is what says which step reads them: a job runs
+     * {@code SYSIN} under as many steps as it has, and the name alone does not tell them apart.
+     */
+    UUID dataDefinition;
 
     /**
      * The one-based line of the job the deck is reached at: the first card for one written in the
@@ -87,31 +96,55 @@ public class InStreamCards {
         if (dd.isDataOverridden()) {
             return null;
         }
+        List<Jcl.DataDefinitionStream> data = dd.getInStreamData();
+        if (!data.isEmpty() && data.get(0).getMarkers().findFirst(GeneratedParmContent.class).isPresent()) {
+            return fromMember(dd, data, positions);
+        }
         int start = -1;
         int end = -1;
         int line = 0;
         List<UUID> cards = new ArrayList<>();
-        for (Jcl.DataDefinitionStream data : dd.getInStreamData()) {
-            Range card = cardOf(data, positions);
-            if (card == null) {
+        for (Jcl.DataDefinitionStream card : data) {
+            Range range = cardOf(card, positions);
+            if (range == null) {
                 continue;
             }
             if (start < 0) {
-                start = card.getStart().getOffset();
-                line = card.getStart().getLine();
+                start = range.getStart().getOffset();
+                line = range.getStart().getLine();
             }
-            end = card.getEnd().getOffset();
-            cards.add(data.getId());
+            end = range.getEnd().getOffset();
+            cards.add(card.getId());
         }
         if (start < 0) {
             return null;
         }
         SourcePositions.Expanded at = positions.expanded(dd.getTree());
         String source = at == null ? positions.getSource() : at.getMemberSource();
-        return new InStreamCards(dd.getName(),
+        return new InStreamCards(dd.getName(), dd.getTree().getId(),
                 at == null ? line : at.getBroughtInAt().getStart().getLine(),
                 source.substring(start, end),
                 at == null ? cards : Collections.<UUID>emptyList());
+    }
+
+    /**
+     * A deck the DD named as a member of a library rather than writing out. Its cards are written in
+     * that member and nowhere in this job, so there is no source to read them out of and the text is
+     * put back together from the words and the white space in front of them. The line reported is
+     * where the job reaches the deck: the DD that named the member, or the EXEC that called the
+     * procedure the DD is written in.
+     */
+    private static InStreamCards fromMember(DataDefinition dd, List<Jcl.DataDefinitionStream> data,
+                                            SourcePositions positions) {
+        StringBuilder text = new StringBuilder();
+        for (Jcl.DataDefinitionStream card : data) {
+            text.append(card.getPrefix().getWhitespace()).append(card.getWord().getText());
+        }
+        SourcePositions.Expanded at = positions.expanded(dd.getTree());
+        Range reached = at == null ? positions.card(dd.getTree()) : at.getBroughtInAt();
+        return new InStreamCards(dd.getName(), dd.getTree().getId(),
+                reached == null ? 0 : reached.getStart().getLine(),
+                text.toString(), Collections.<UUID>emptyList());
     }
 
     /**

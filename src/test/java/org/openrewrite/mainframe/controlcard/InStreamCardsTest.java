@@ -22,8 +22,9 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.openrewrite.mainframe.jcl.Assertions.jcl;
+import static org.openrewrite.mainframe.jcl.tree.ParserAssertions.jcl;
 import static org.openrewrite.mainframe.jcl.tree.ParserAssertions.jclWithProcedures;
+import static org.openrewrite.mainframe.jcl.tree.ParserAssertions.parmMember;
 import static org.openrewrite.mainframe.jcl.tree.ParserAssertions.procedureMember;
 
 class InStreamCardsTest implements RewriteTest {
@@ -87,6 +88,45 @@ class InStreamCardsTest implements RewriteTest {
                     assertThat(deck.getLine()).isEqualTo(2);
                     assertThat(deck.getText()).isEqualTo(
                       "  SORT FIELDS=(1,8,CH,A)\n  INCLUDE COND=(9,2,CH,EQ,C'CA')");
+                });
+            })
+          )
+        );
+    }
+
+    /**
+     * A deck the DD named as a member of a library is a deck this job runs too, and it is the shape
+     * a shop uses when several jobs run the same cards. Its cards print nowhere in the job, so what
+     * they say is put back together from the words the graft left behind — including the columns
+     * each word was written in, without which a comment card swallows the deck.
+     */
+    @Test
+    void cardsOfTheMemberADdNamed() {
+        rewriteRun(
+          jcl(
+            """
+              //CLMJ040  JOB (CLM),'SORT CLAIMS',CLASS=P
+              //SORT     EXEC PGM=SORT
+              //SYSIN    DD DISP=SHR,DSN=CLM.PROD.CTLCARD(SRTCLM01)
+              """,
+            List.of(parmMember("SRTCLM01",
+              """
+                * SORT THE CLAIM MASTER BY ACCOUNT
+                  SORT FIELDS=(1,8,CH,A)
+                  INCLUDE COND=(9,2,CH,EQ,C'CA')
+                """)),
+            spec -> spec.afterRecipe(cu -> {
+                List<InStreamCards> decks = InStreamCards.of(cu);
+                assertThat(decks).singleElement().satisfies(deck -> {
+                    assertThat(deck.getDdName()).isEqualTo("SYSIN");
+                    // The deck is reached at the DD that named the member.
+                    assertThat(deck.getLine()).isEqualTo(3);
+                    assertThat(deck.getText()).isEqualTo("""
+                      * SORT THE CLAIM MASTER BY ACCOUNT
+                        SORT FIELDS=(1,8,CH,A)
+                        INCLUDE COND=(9,2,CH,EQ,C'CA')""");
+                    // The cards belong to the member, so nothing writes them back through the job.
+                    assertThat(deck.getCards()).isEmpty();
                 });
             })
           )

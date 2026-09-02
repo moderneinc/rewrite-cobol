@@ -101,10 +101,15 @@ public class UtilityParser implements Parser {
     private static Utility.CompilationUnit parse(Path path, @Nullable FileAttributes fileAttributes, String source,
                                                  Charset charset, boolean charsetBomMarked,
                                                  ANTLRErrorListener errorListener) {
-        CommonTokenStream tokens = new CommonTokenStream(new UtilityCardLexer(
-                CharStreams.fromString(UtilityLineReader.readLines(source))));
-        UtilityCardParser parser = new UtilityCardParser(tokens);
+        // The grammar takes any run of words, so the lexer is where a deck is refused: a card the
+        // lexer cannot make a token of is one nothing read, and it would otherwise be dropped and
+        // the rest of the deck reported as if it were whole.
+        UtilityCardLexer lexer = new UtilityCardLexer(
+                CharStreams.fromString(UtilityLineReader.readLines(source)));
+        lexer.removeErrorListeners();
+        lexer.addErrorListener(errorListener);
 
+        UtilityCardParser parser = new UtilityCardParser(new CommonTokenStream(lexer));
         parser.removeErrorListeners();
         parser.addErrorListener(errorListener);
 
