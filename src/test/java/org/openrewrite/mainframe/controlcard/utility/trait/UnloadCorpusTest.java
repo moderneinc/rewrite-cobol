@@ -160,7 +160,8 @@ class UnloadCorpusTest {
         Path claims = Paths.get(System.getenv("JCL_CORPUS"), "mainframe-fixtures", "claims");
         assertThat(Files.isDirectory(claims)).as("%s", claims).isTrue();
 
-        // 22.1: six decks, four members of ctlcard and two written in stream.
+        // 22.1: six unload decks, four of them members of ctlcard and two written in stream. The
+        // fifth member of ctlcard is STACLM01, whose two RUNSTATS are read by the same island.
         List<Utility.CompilationUnit> decks = new ArrayList<>();
         for (Path member : Corpus.utilityCards(claims.resolve("ctlcard"))) {
             Utility.CompilationUnit cu = parse(member, new String(Files.readAllBytes(member)));
@@ -200,7 +201,8 @@ class UnloadCorpusTest {
         assertThat(unloads.stream()
                 .filter(u -> u.getDialect() == Dialect.Kind.BASE_UTILITY)).hasSize(1);
 
-        // 22.4: seven SELECT blocks and seven OUTDDNs, one per SELECT, and six FORMAT blocks.
+        // 22.4: seven SELECT blocks and seven OUTDDNs, one per SELECT, and six FORMAT blocks. The
+        // eighth output DD is the base utility deck's UNLDDN, which is where it writes instead.
         assertThat(unloads.stream().mapToInt(u -> u.getSelects().size()).sum()).isEqualTo(7);
         assertThat(unloads.stream().mapToInt(u -> u.getOutputDdNames().size()).sum()).isEqualTo(8);
         assertThat(unloads.stream().mapToInt(u -> u.getFormats().size()).sum()).isEqualTo(6);
