@@ -168,6 +168,30 @@ class UnloadCommandTest implements RewriteTest {
             })
           )
         );
+        rewriteRun(
+          utilityCard(
+            """
+                UNLOAD TABLESPACE CLMDB01.CLMTSPOL
+                  SELECT * FROM CLM.POLICY
+                  OUTDDN (POLUNL)
+                  FORMAT DSNTIAUL ;
+                GLOBAL DB2 NO ;
+                UNLOAD TABLESPACE CLMDB01.CLMTSHST
+                  SELECT * FROM CLM.CLAIM_HIST
+                  OUTDDN (HSTUNL)
+                  FORMAT DSNTIAUL
+              """,
+            spec -> spec.afterRecipe(cu -> {
+                List<UnloadCommand> unloads = new UnloadCommand.Matcher().lower(cu).collect(toList());
+                // A GLOBAL governs what follows it, so the unload written above it takes DB2 from the
+                // site and the one below it does not.
+                assertThat(unloads.get(0).isCoded("DB2")).isFalse();
+                assertThat(unloads.get(0).getDb2()).isNull();
+                assertThat(unloads.get(1).isCoded("DB2")).isTrue();
+                assertThat(unloads.get(1).getDb2()).isEqualTo("NO");
+            })
+          )
+        );
     }
 
     /**

@@ -256,6 +256,9 @@ public class UnloadCommand implements Trait<Utility.Block> {
     private List<Utility.Block> globals() {
         List<Utility.Block> globals = new ArrayList<>();
         for (Statement statement : cursor.firstEnclosingOrThrow(Utility.CompilationUnit.class).getStatements()) {
+            if (statement == getTree()) {
+                break;
+            }
             if (statement instanceof Utility.Block && ((Utility.Block) statement).isVerb("GLOBAL")) {
                 globals.add((Utility.Block) statement);
             }
