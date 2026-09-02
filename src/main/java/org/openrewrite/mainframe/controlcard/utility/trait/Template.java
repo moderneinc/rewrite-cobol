@@ -67,8 +67,9 @@ public class Template implements Trait<Utility.Block> {
      */
     public List<String> getVariables() {
         List<String> variables = new ArrayList<>();
+        Set<String> declared = declared();
         for (String name : references()) {
-            if (VARIABLES.contains(name) || declared().contains(name)) {
+            if (VARIABLES.contains(name) || declared.contains(name)) {
                 variables.add(name);
             }
         }
@@ -82,8 +83,9 @@ public class Template implements Trait<Utility.Block> {
      */
     public List<String> getSymbols() {
         List<String> symbols = new ArrayList<>();
+        Set<String> declared = declared();
         for (String name : references()) {
-            if (!VARIABLES.contains(name) && !declared().contains(name)) {
+            if (!VARIABLES.contains(name) && !declared.contains(name)) {
                 symbols.add(name);
             }
         }
