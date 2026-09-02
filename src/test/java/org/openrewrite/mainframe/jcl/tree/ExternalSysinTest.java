@@ -18,6 +18,8 @@ package org.openrewrite.mainframe.jcl.tree;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.openrewrite.mainframe.jcl.JclIsoVisitor;
+import org.openrewrite.mainframe.jcl.JclVisitor;
 import org.openrewrite.mainframe.jcl.marker.GeneratedParmContent;
 import org.openrewrite.mainframe.jcl.marker.ParmMember;
 import org.openrewrite.mainframe.jcl.tree.Jcl.DataDefinitionStream;
@@ -25,6 +27,7 @@ import org.openrewrite.mainframe.jcl.tree.Jcl.JobControlStatement;
 import org.openrewrite.test.RewriteTest;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,7 +35,9 @@ import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openrewrite.mainframe.jcl.tree.ParserAssertions.jcl;
+import static org.openrewrite.mainframe.jcl.tree.ParserAssertions.jclWithProcedures;
 import static org.openrewrite.mainframe.jcl.tree.ParserAssertions.parmMember;
+import static org.openrewrite.mainframe.jcl.tree.ParserAssertions.procedureMember;
 
 class ExternalSysinTest implements RewriteTest {
 
@@ -46,8 +51,8 @@ class ExternalSysinTest implements RewriteTest {
      * searched rather than the statement list.
      */
     private static Optional<ParmMember> parmMarker(Jcl.CompilationUnit cu) {
-        List<ParmMember> found = new java.util.ArrayList<>();
-        new org.openrewrite.mainframe.jcl.JclIsoVisitor<List<ParmMember>>() {
+        List<ParmMember> found = new ArrayList<>();
+        new JclIsoVisitor<List<ParmMember>>() {
             @Override
             public Jcl.KeywordParameter visitKeywordParameter(Jcl.KeywordParameter parameter,
                                                               List<ParmMember> markers) {
@@ -68,6 +73,24 @@ class ExternalSysinTest implements RewriteTest {
                 .filter(s -> s.getMarkers().findFirst(GeneratedParmContent.class).isPresent())
                 .map(s -> ((DataDefinitionStream) s).getWord().getText())
                 .collect(toList());
+    }
+
+    /**
+     * The grafted words wherever they were put, which for a procedure's own DD is inside the
+     * expansion rather than among the job's own cards.
+     */
+    private static List<String> graftedAnywhere(Jcl.CompilationUnit cu) {
+        List<String> found = new ArrayList<>();
+        new JclVisitor<List<String>>() {
+            @Override
+            public Jcl visitDataDefinitionStream(DataDefinitionStream data, List<String> words) {
+                if (data.getMarkers().findFirst(GeneratedParmContent.class).isPresent()) {
+                    words.add(data.getWord().getText());
+                }
+                return super.visitDataDefinitionStream(data, words);
+            }
+        }.visit(cu, found);
+        return found;
     }
 
     private static String wordText(Statement s) {
@@ -409,6 +432,43 @@ class ExternalSysinTest implements RewriteTest {
           jcl(
             "//SYSIN DD DSN=DWL.PARMLIB(MGSLAP8F),DISP=SHR",
             spec -> spec.afterRecipe(cu -> assertThat(parmMarker(cu)).isEmpty())
+          )
+        );
+    }
+
+    /**
+     * The DD is a procedure's, and the member it names is the job's: neither exists until the job
+     * has been expanded and the symbols filled in. This is how a Db2 unload job is written.
+     */
+    @Test
+    void expandsAMemberNamedByAProceduresDd() {
+        rewriteRun(
+          jclWithProcedures(
+            """
+              //CLMJ030  JOB (CLM),'UNLOAD CLAIMS',CLASS=P
+              //UNL      EXEC HPUUNL,MEM=CLMUNL01
+              """,
+            singletonList(procedureMember("HPUUNL",
+              """
+                //HPUUNL   PROC CTLLIB=DB2.PROD.CNTL,MEM=NONE
+                //UNLOAD   EXEC PGM=INZUTILB
+                //SYSIN    DD DSN=&CTLLIB(&MEM),DISP=SHR
+                //SYSPRINT DD SYSOUT=*
+                //         PEND
+                """)),
+            singletonList(parmMember("CLMUNL01",
+              """
+                UNLOAD TABLESPACE CLMDB.CLMTS
+                """)),
+            spec -> spec.afterRecipe(cu -> {
+                Optional<ParmMember> marker = parmMarker(cu, ParmMember.Status.EXPANDED);
+                assertThat(marker).isPresent();
+                assertThat(marker.get().getDdName()).isEqualTo("SYSIN");
+                assertThat(marker.get().getDataSetName()).isEqualTo("DB2.PROD.CNTL");
+                assertThat(marker.get().getMemberName()).isEqualTo("CLMUNL01");
+                assertThat(graftedAnywhere(cu)).containsExactly(
+                    "UNLOAD", "TABLESPACE", "CLMDB.CLMTS");
+            })
           )
         );
     }

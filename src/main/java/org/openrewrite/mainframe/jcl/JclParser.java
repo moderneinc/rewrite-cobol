@@ -120,11 +120,14 @@ public class JclParser implements Parser {
                             cu = read(sourceFile, path, ctx);
                         }
 
-                        if (sysinExpander != null) {
-                            cu = sysinExpander.visitCompilationUnit(cu, ctx);
-                        }
+                        // The job first: a DD written in a procedure is not a card of this member
+                        // until the procedure has been expanded, and the member its DSN names is
+                        // not known until that has filled in the symbols.
                         if (jobExpander != null) {
                             cu = jobExpander.visitCompilationUnit(cu, ctx);
+                        }
+                        if (sysinExpander != null) {
+                            cu = sysinExpander.visitCompilationUnit(cu, ctx);
                         }
 
                         sample.stop(MetricsHelper.successTags(timer).register(Metrics.globalRegistry));

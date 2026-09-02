@@ -18,6 +18,7 @@ package org.openrewrite.mainframe.jcl;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.mainframe.jcl.marker.GeneratedParmContent;
 import org.openrewrite.mainframe.jcl.marker.ParmMember;
+import org.openrewrite.mainframe.jcl.marker.ResolvedText;
 import org.openrewrite.mainframe.jcl.tree.Jcl;
 import org.openrewrite.mainframe.jcl.tree.Space;
 import org.openrewrite.internal.ListUtils;
@@ -68,10 +69,28 @@ public class ExpandExternalSysinVisitor<P> extends JclIsoVisitor<P> {
 
     @Override
     public Jcl.CompilationUnit visitCompilationUnit(Jcl.CompilationUnit cu, P p) {
-        List<Statement> out = new ArrayList<>(cu.getStatements().size());
+        List<Statement> expanded = expand(cu.getStatements());
+        return expanded == cu.getStatements() ? cu : cu.withStatements(expanded);
+    }
+
+    /**
+     * One run of cards, each qualifying DD marked and its member's content grafted in after it. A
+     * procedure's own cards are a run of their own: the DD only exists once
+     * {@link ExpandJobVisitor} has expanded the job, and the member it names only once that has
+     * filled in its symbols, which is why this runs after it and walks what it produced.
+     */
+    private List<Statement> expand(List<Statement> statements) {
+        List<Statement> out = new ArrayList<>(statements.size());
         boolean changed = false;
 
-        for (Statement statement : cu.getStatements()) {
+        for (Statement statement : statements) {
+            if (statement instanceof Jcl.Expansion) {
+                Jcl.Expansion expansion = (Jcl.Expansion) statement;
+                List<Statement> body = expand(expansion.getStatements());
+                changed |= body != expansion.getStatements();
+                out.add(body == expansion.getStatements() ? expansion : expansion.withStatements(body));
+                continue;
+            }
             if (!(statement instanceof Jcl.JobControlStatement) || !((Jcl.JobControlStatement) statement).isOperation("DD")) {
                 out.add(statement);
                 continue;
@@ -98,7 +117,7 @@ public class ExpandExternalSysinVisitor<P> extends JclIsoVisitor<P> {
             }
         }
 
-        return changed ? cu.withStatements(out) : cu;
+        return changed ? out : statements;
     }
 
     /**
@@ -106,11 +125,9 @@ public class ExpandExternalSysinVisitor<P> extends JclIsoVisitor<P> {
      * {@code null} when the DD does not qualify for expansion.
      */
     private @Nullable ParmMember evaluate(Jcl.JobControlStatement dd, Jcl.KeywordParameter dsnParameter) {
-        // The value keeps its leading = so that printing puts it back; the data set name is what
-        // follows it.
-        String dsn = dsnParameter.getValueText();
+        String dsn = resolved(dsnParameter);
         Jcl.KeywordParameter dispParameter = dd.getParameter("DISP");
-        String disp = dispParameter == null ? null : dispParameter.getValueText();
+        String disp = dispParameter == null ? null : resolved(dispParameter);
         String ddName = dd.getSimpleName();
         if (!isInputDisposition(disp)) {
             return null;
@@ -128,6 +145,16 @@ public class ExpandExternalSysinVisitor<P> extends JclIsoVisitor<P> {
         ParmMember.Status status = parmMembers.containsKey(memberName.toUpperCase(Locale.ROOT)) ?
                 ParmMember.Status.EXPANDED : ParmMember.Status.MISSING;
         return new ParmMember(randomId(), status, ddName, dataSetName, memberName);
+    }
+
+    /**
+     * What a parameter says once its symbols are filled in, which is what it says at all when the
+     * job runs — {@code DSN=&CTLLIB(&MEM)} names no member until then.
+     */
+    private static String resolved(Jcl.KeywordParameter parameter) {
+        return parameter.getMarkers().findFirst(ResolvedText.class)
+                .map(ResolvedText::getText)
+                .orElseGet(parameter::getValueText);
     }
 
     /**

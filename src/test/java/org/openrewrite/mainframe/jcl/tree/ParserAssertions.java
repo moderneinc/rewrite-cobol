@@ -32,6 +32,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -88,8 +89,15 @@ public class ParserAssertions {
 
     public static SourceSpecs jclWithProcedures(@Nullable String before, List<Path> procedureLibrary,
                                                 Consumer<SourceSpec<Jcl.CompilationUnit>> spec) {
+        return jclWithProcedures(before, procedureLibrary, emptyList(), spec);
+    }
+
+    public static SourceSpecs jclWithProcedures(@Nullable String before, List<Path> procedureLibrary,
+                                                List<Path> parmMembers,
+                                                Consumer<SourceSpec<Jcl.CompilationUnit>> spec) {
         SourceSpec<Jcl.CompilationUnit> jcl = new SourceSpec<>(
-                Jcl.CompilationUnit.class, null, JclParser.builder().procedureLibrary(procedureLibrary),
+                Jcl.CompilationUnit.class, null,
+                JclParser.builder().procedureLibrary(procedureLibrary).parmMembers(parmMembers),
                 before, SourceSpec.ValidateSource.noop,
                 ParserAssertions::customizeExecutionContext);
         acceptSpec(spec, jcl);
