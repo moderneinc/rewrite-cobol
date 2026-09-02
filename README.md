@@ -28,7 +28,7 @@ Three words recur in the documentation and are not interchangeable. The *shop* i
 ### Language Support
 
 - **COBOL** — Full parsing of COBOL-85 (IBM ANSI 85 and HP Tandem dialects), including preprocessor directives (COPY, REPLACE) and copybook resolution; programs by `.cbl`, `.cob` and `.cobol`, copybooks by `.cpy`, `.copy` and `.dcl`
-- **JCL** — Job Control Language parsing (`.jcl`, `.prc` and `.proc` files, a `.txt` or extensionless PDS member whose first card is JCL, and the `.j2` Jinja templates an installation ships its jobs as), and the resolution a job's cards leave to other members: the procedures and INCLUDE members a step runs through, the DD overrides merged in, and the symbols a data set name is written with, which is what a step's real program and real data sets are read from
+- **JCL** — Job Control Language parsing (`.jcl`, `.prc` and `.proc` files, a `.txt` or extensionless PDS member whose first card is JCL, and the `.j2` Jinja templates an installation ships its jobs as), and the resolution a job's cards leave to other members: the procedures and INCLUDE members a step runs through, the DD overrides merged in, and the symbols a data set name is written with, which is what a step's real program and real data sets are read from. Whether all of that resolved is an answer of its own: a step says whether every name it is written with was followed, and lists the ones that were not, since a job whose procedure was never supplied is one no transformation may touch
 - **BMS** — CICS Basic Mapping Support map sets (`.bms`): the `DFHMSD`/`DFHMDI`/`DFHMDF` macros, and the symbolic map names they generate, which is what joins a screen field to the COBOL data item a program reads it from
 - **DB2 DDL** — DB2 for z/OS DDL (`.ddl`, `.sql`, and the `SYSIN` streams of the jobs that create a schema): every statement the SQL reference documents is modelled, so a statement that cannot be read is a syntax error rather than a node that says nothing
 - **Bind cards** — DSN command decks (`.bnd`, and an extensionless CARDLIB member whose first subcommand binds): `BIND PLAN`, `BIND PACKAGE` and `REBIND` with their keyword operands, read from a member of their own or from the in-stream `SYSTSIN` of the job that runs them
@@ -315,7 +315,7 @@ not text the parser can read.
 | Zowe install packaging | `v3.x/staging` 20977c3 | EPL-2.0 |
 | MainframeJCL | `main` 598744a | MIT |
 | zorow | `master` 9f1fdf0 | Apache-2.0 |
-| CLAIMS fixture | `main` 15cb43b | Apache-2.0 |
+| CLAIMS fixture | `main` b2952a3 | Apache-2.0 |
 
 `CorpusCoverageTest` reports how much of each application parses rather than requiring all of it to:
 what the parser cannot yet read is the point of the measurement. It asserts that every program it
@@ -373,9 +373,9 @@ parmlib are written down. It runs under `JCL_CORPUS`: a utility deck is reached 
 that runs it.
 
 `SourcePositionsCorpusTest` reads every JCL position back out of the source, since a position landing
-anywhere but on the word it names is worse than no position at all. Over the 547 members it reads
-200,565 words back and compares each to the text at the offset reported for it, and requires every one
-of the 100,877 statements to be placed: 78,903 in the member they were written in, and the 21,974 a
+anywhere but on the word it names is worse than no position at all. Over the 553 members it reads
+202,383 words back and compares each to the text at the offset reported for it, and requires every one
+of the 102,005 statements to be placed: 79,648 in the member they were written in, and the 22,357 a
 procedure or INCLUDE member wrote against the `EXEC` or `INCLUDE` card that brought them in.
 
 ## Contributing
