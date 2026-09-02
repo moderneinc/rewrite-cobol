@@ -123,11 +123,23 @@ public class DataDefinition implements Trait<Jcl.JobControlStatement> {
             return false;
         }
         for (DataDefinition override : caller.getDataDefinitions()) {
-            if (!override.getInStreamData().isEmpty() && getName().equalsIgnoreCase(override.getName())) {
+            if (!override.getInStreamData().isEmpty() && getName().equalsIgnoreCase(override.getName()) &&
+                overrides(override, step)) {
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * Whether an override was written for this step. {@code //SORT.SYSIN} replaces the SYSIN of the
+     * procedure's {@code SORT} step and leaves every other step's alone; a procedure of one step may
+     * be overridden without naming it.
+     */
+    private static boolean overrides(DataDefinition override, Step step) {
+        String name = override.getTree().getName().getText();
+        int dot = name.indexOf('.');
+        return dot < 0 || name.substring(name.startsWith("//") ? 2 : 0, dot).equalsIgnoreCase(step.getName());
     }
 
     /**

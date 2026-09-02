@@ -159,4 +159,40 @@ class InStreamCardsTest implements RewriteTest {
           )
         );
     }
+
+    /**
+     * An override names the procedure step whose DD it replaces, so a job that writes over one
+     * step's SYSIN leaves the cards of the other step where they were.
+     */
+    @Test
+    void overridingOneStepsDeckLeavesTheOthers() {
+        rewriteRun(
+          jclWithProcedures(
+            """
+              //CLMJ050  JOB (CLM),'SORT AND PRINT CLAIMS',CLASS=P
+              //STEP1    EXEC CLMBOTH
+              //SORT.SYSIN  DD *
+                SORT FIELDS=(1,4,CH,D)
+              /*
+              """,
+            List.of(procedureMember("CLMBOTH",
+              """
+                //CLMBOTH  PROC
+                //SORT     EXEC PGM=SORT
+                //SYSIN    DD *
+                  SORT FIELDS=(1,8,CH,A)
+                /*
+                //PRINT    EXEC PGM=IDCAMS
+                //SYSIN    DD *
+                  PRINT INFILE(SORTOUT) CHARACTER
+                /*
+                //         PEND
+                """)),
+            spec -> spec.afterRecipe(cu ->
+              assertThat(InStreamCards.of(cu)).extracting(InStreamCards::getText)
+                .containsExactlyInAnyOrder("  SORT FIELDS=(1,4,CH,D)",
+                  "  PRINT INFILE(SORTOUT) CHARACTER"))
+          )
+        );
+    }
 }
