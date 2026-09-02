@@ -27,7 +27,9 @@ import java.util.WeakHashMap;
 import static java.util.Collections.synchronizedMap;
 
 /**
- * Utility control card white space.
+ * What separates one word of a utility deck from the next: white space, and the comment cards
+ * written among the statements, which say nothing to the utility but have to print back where they
+ * were.
  */
 @EqualsAndHashCode
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@ref")
@@ -96,37 +98,9 @@ public class Space {
         return this == EMPTY;
     }
 
-    private static final String[] spaces = {
-            "·₁", "·₂", "·₃", "·₄", "·₅", "·₆", "·₇", "·₈", "·₉", "·₊"
-    };
-
-    private static final String[] tabs = {
-            "-₁", "-₂", "-₃", "-₄", "-₅", "-₆", "-₇", "-₈", "-₉", "-₊"
-    };
-
     @Override
     public String toString() {
-        StringBuilder printedWs = new StringBuilder();
-        int lastNewline = 0;
-        if (whitespace != null) {
-            char[] charArray = whitespace.toCharArray();
-            for (int i = 0; i < charArray.length; i++) {
-                char c = charArray[i];
-                if (c == '\n') {
-                    printedWs.append("\\n");
-                    lastNewline = i + 1;
-                } else if (c == '\r') {
-                    printedWs.append("\\r");
-                    lastNewline = i + 1;
-                } else if (c == ' ') {
-                    printedWs.append(spaces[(i - lastNewline) % 10]);
-                } else if (c == '\t') {
-                    printedWs.append(tabs[(i - lastNewline) % 10]);
-                }
-            }
-        }
-
-        return "Space(whitespace='" + printedWs + "')";
+        return "Space(whitespace='" + getWhitespace().replace("\n", "\\n").replace("\r", "\\r") + "')";
     }
 
     public enum Location {
