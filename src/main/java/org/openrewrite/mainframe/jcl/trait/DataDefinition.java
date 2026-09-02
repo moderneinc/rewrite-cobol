@@ -112,6 +112,25 @@ public class DataDefinition implements Trait<Jcl.JobControlStatement> {
     }
 
     /**
+     * Whether the data under this DD was written by the step that called the procedure it is in.
+     * An override that supplies a DD's data is resolved into the procedure's step and also stands
+     * where the caller wrote it, so the same cards are in the job twice and are one deck.
+     */
+    public boolean isDataOverridden() {
+        Step step = getStep();
+        Step caller = step == null ? null : step.getCallingStep();
+        if (caller == null) {
+            return false;
+        }
+        for (DataDefinition override : caller.getDataDefinitions()) {
+            if (!override.getInStreamData().isEmpty() && getName().equalsIgnoreCase(override.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * The in-stream data this DD carries, if any.
      */
     public List<Jcl.DataDefinitionStream> getInStreamData() {

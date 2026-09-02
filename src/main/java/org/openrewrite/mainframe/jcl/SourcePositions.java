@@ -100,9 +100,13 @@ public class SourcePositions {
      */
     public @Nullable Range card(@Nullable Jcl tree) {
         Range range = get(tree);
-        if (range == null) {
-            return null;
-        }
+        return range == null ? null : card(range);
+    }
+
+    /**
+     * The whole cards a range was written on.
+     */
+    public Range card(Range range) {
         int end = source.indexOf('\n', range.getEnd().getOffset());
         end = end < 0 ? source.length() : end;
         if (end > 0 && source.charAt(end - 1) == '\r') {
@@ -146,20 +150,31 @@ public class SourcePositions {
         String memberName;
 
         /**
-         * The member's cards as they were brought in, which {@link #getRange()} is a position into.
-         * A procedure's body begins after its {@code PROC} card, and a DD the caller overrode is
+         * The member measured on its own, which {@link #getRange()} is a position into. A
+         * procedure's body begins after its {@code PROC} card, and a DD the caller overrode is
          * written afresh on one line, so this is the member as the job runs it rather than the file
          * byte for byte.
          */
-        String memberSource;
+        SourcePositions member;
 
         /**
          * Where the node sits in {@link #getMemberSource()}.
          */
         Range range;
 
+        public String getMemberSource() {
+            return member.getSource();
+        }
+
+        /**
+         * The whole cards the node was written on in the member.
+         */
+        public Range getCard() {
+            return member.card(range);
+        }
+
         public String getText() {
-            return memberSource.substring(range.getStart().getOffset(), range.getEnd().getOffset());
+            return member.textOf(range);
         }
     }
 
@@ -179,7 +194,7 @@ public class SourcePositions {
                 for (UUID id : member.spans.keySet()) {
                     Range range = member.get(id);
                     if (range != null) {
-                        expanded.put(id, new Expanded(at, expansion.getMemberName(), member.source, range));
+                        expanded.put(id, new Expanded(at, expansion.getMemberName(), member, range));
                     }
                 }
             }

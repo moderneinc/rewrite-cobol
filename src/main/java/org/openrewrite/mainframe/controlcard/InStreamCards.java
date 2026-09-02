@@ -16,9 +16,10 @@
 package org.openrewrite.mainframe.controlcard;
 
 import lombok.Value;
+import org.jspecify.annotations.Nullable;
 import org.openrewrite.mainframe.jcl.SourcePositions;
+import org.openrewrite.mainframe.jcl.trait.DataDefinition;
 import org.openrewrite.mainframe.jcl.tree.Jcl;
-import org.openrewrite.mainframe.jcl.tree.Statement;
 import org.openrewrite.marker.Range;
 
 import java.util.ArrayList;
@@ -46,7 +47,8 @@ public class InStreamCards {
     String ddName;
 
     /**
-     * The one-based line of the job the first card is written on.
+     * The one-based line of the job the deck is reached at: the first card for one written in the
+     * job, and the {@code EXEC} that called the procedure for one written in a procedure.
      */
     int line;
 
@@ -54,35 +56,57 @@ public class InStreamCards {
 
     public static List<InStreamCards> of(Jcl.CompilationUnit cu) {
         SourcePositions positions = SourcePositions.of(cu);
-        List<Statement> statements = cu.getStatements();
         List<InStreamCards> decks = new ArrayList<>();
-        for (int i = 0; i < statements.size(); i++) {
-            if (!(statements.get(i) instanceof Jcl.JobControlStatement) ||
-                !((Jcl.JobControlStatement) statements.get(i)).isOperation("DD")) {
+        // Every DD the job runs, not only the ones written among its own cards: a SYSIN written in a
+        // cataloged procedure is a deck this job runs.
+        new DataDefinition.Matcher().lower(cu).forEach(dd -> {
+            InStreamCards cards = read(dd, positions);
+            if (cards != null) {
+                decks.add(cards);
+            }
+        });
+        return decks;
+    }
+
+    private static @Nullable InStreamCards read(DataDefinition dd, SourcePositions positions) {
+        if (dd.isDataOverridden()) {
+            return null;
+        }
+        int start = -1;
+        int end = -1;
+        int line = 0;
+        for (Jcl.DataDefinitionStream data : dd.getInStreamData()) {
+            Range card = cardOf(data, positions);
+            if (card == null) {
                 continue;
             }
-            int start = -1;
-            int end = -1;
-            int line = 0;
-            for (int j = i + 1; j < statements.size() &&
-                                !(statements.get(j) instanceof Jcl.JobControlStatement); j++) {
-                // Whole cards rather than words: a control card means something different in another
-                // column. Content grafted in from an external member is not the job's own and has none.
-                Range card = statements.get(j) instanceof Jcl.DataDefinitionStream ?
-                        positions.card(statements.get(j)) : null;
-                if (card != null) {
-                    if (start < 0) {
-                        start = card.getStart().getOffset();
-                        line = card.getStart().getLine();
-                    }
-                    end = card.getEnd().getOffset();
-                }
+            if (start < 0) {
+                start = card.getStart().getOffset();
+                line = card.getStart().getLine();
             }
-            if (start >= 0) {
-                decks.add(new InStreamCards(((Jcl.JobControlStatement) statements.get(i)).getSimpleName(),
-                        line, positions.getSource().substring(start, end)));
-            }
+            end = card.getEnd().getOffset();
         }
-        return decks;
+        if (start < 0) {
+            return null;
+        }
+        SourcePositions.Expanded at = positions.expanded(dd.getTree());
+        String source = at == null ? positions.getSource() : at.getMemberSource();
+        return new InStreamCards(dd.getName(),
+                at == null ? line : at.getBroughtInAt().getStart().getLine(),
+                source.substring(start, end));
+    }
+
+    /**
+     * Whole cards rather than words: a control card means something different in another column. A
+     * card written in a procedure is placed in that member; content grafted in from an external
+     * member is written nowhere and has no card at all.
+     */
+    private static @Nullable Range cardOf(Jcl.DataDefinitionStream data, SourcePositions positions) {
+        Range card = positions.card(data);
+        if (card != null) {
+            return card;
+        }
+        SourcePositions.Expanded at = positions.expanded(data);
+        return at == null ? null : at.getCard();
     }
 }
