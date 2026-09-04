@@ -239,7 +239,7 @@ class UnloadCorpusTest {
 
         UnloadCommand defaults = unloadOf(ctlcard.resolve("UNLCLM04.ctl"));
         assertThat(defaults.getInheritedKeywords())
-                .contains("FORMAT", "DB2", "LOCK", "QUIESCE");
+                .containsExactly("FORMAT", "DB2", "QUIESCE", "LOCK");
         assertThat(defaults.getOutputDdNames()).containsExactly("POLDFT");
 
         // The base utility deck is already the target, and its defaults are published rather than
@@ -250,16 +250,18 @@ class UnloadCorpusTest {
         assertThat(base.getTables()).containsExactly("CLM.POLICY");
         assertThat(base.getInheritedKeywords()).isEmpty();
 
-        // The image copy unload codes neither LOCK nor QUIESCE because a copy is neither.
+        // The image copy unload codes neither LOCK nor QUIESCE because a copy is neither, and it
+        // reads the copy natively, so neither is asked of it.
         UnloadCommand copy = unloadOf(ctlcard.resolve("UNLCLM03.ctl"));
         assertThat(copy.getCopyDdName()).isEqualTo("HSTCOPY");
         assertThat(copy.getLock()).isNull();
         assertThat(copy.getQuiesce()).isNull();
+        assertThat(copy.getInheritedKeywords()).isEmpty();
 
         UnloadCommand history = unloadOf(ctlcard.resolve("UNLCLM01.ctl"));
         assertThat(history.getTableSpace()).isEqualTo("CLMDB01.CLMTSHST");
         assertThat(history.getFormats()).containsExactly("VARIABLE ALL");
-        assertThat(history.getInheritedKeywords()).doesNotContain("FORMAT", "DB2", "LOCK", "QUIESCE");
+        assertThat(history.getInheritedKeywords()).isEmpty();
     }
 
     private static UnloadCommand unloadOf(Path member) throws IOException {

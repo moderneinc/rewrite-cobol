@@ -154,7 +154,6 @@ class UnloadCommandTest implements RewriteTest {
                   SELECT * FROM CLM.POLICY
                   OUTDDN (POLUNL)
                   FORMAT DSNTIAUL
-                  OPTIONS NULLPOS AFTER DATE DATE_DB2 TIME TIME_DB2 TIMESTAMP TIMESTAMP_B HIDDEN NO
               """,
             spec -> spec.afterRecipe(cu -> {
                 UnloadCommand unload = new UnloadCommand.Matcher().lower(cu).findFirst().orElseThrow();
@@ -217,6 +216,34 @@ class UnloadCommandTest implements RewriteTest {
                 // Neither is left to the site either: the product rejects both here, so the deck
                 // is saying so rather than saying nothing.
                 assertThat(unload.getInheritedKeywords()).isEmpty();
+            })
+          )
+        );
+    }
+
+    /**
+     * The same deck asking for the rows through Db2 instead. COPYDDN_STRICT in the site parmlib
+     * decides whether that is rejected or the copy is dropped and the live table unloaded, so which
+     * data set is read is a site setting, and a live table is locked and quiesced by one too.
+     */
+    @Test
+    void unloadOfAnImageCopyAskedForThroughDb2() {
+        rewriteRun(
+          utilityCard(
+            """
+                UNLOAD TABLESPACE CLMDB01.CLMTSHST
+                       DB2 FORCE
+                       COPYDDN HSTCOPY
+                  SELECT *
+                    FROM CLM.CLAIM_HIST
+                  OUTDDN (HSTIMG)
+                  FORMAT DSNTIAUL
+              """,
+            spec -> spec.afterRecipe(cu -> {
+                UnloadCommand unload = new UnloadCommand.Matcher().lower(cu).findFirst().orElseThrow();
+                assertThat(unload.getCopyDdName()).isEqualTo("HSTCOPY");
+                assertThat(unload.getDb2()).isEqualTo("FORCE");
+                assertThat(unload.getInheritedKeywords()).containsExactly("QUIESCE", "LOCK");
             })
           )
         );

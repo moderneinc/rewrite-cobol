@@ -213,16 +213,16 @@ public class UnloadCommand implements Trait<Utility.Block> {
      * lists them. An empty list for a base utility unload, whose defaults are published and the same
      * everywhere.
      * <p>
-     * {@code LOCK} and {@code QUIESCE} are not asked of an unload of an image copy: a copy is
-     * neither locked nor quiesced and the product rejects both keywords there, so leaving them out
-     * is the deck saying so rather than the deck saying nothing.
+     * {@code LOCK} and {@code QUIESCE} are not asked of an unload that reads an image copy: a copy
+     * is neither locked nor quiesced and the product rejects both keywords there, so leaving them
+     * out is the deck saying so rather than the deck saying nothing.
      */
     public List<String> getInheritedKeywords() {
         List<String> inherited = new ArrayList<>();
         if (getDialect() != Dialect.Kind.HIGH_PERFORMANCE_UNLOAD) {
             return inherited;
         }
-        boolean copy = getCopyDdName() != null;
+        boolean copy = readsCopy();
         for (String keyword : Keywords.inherited()) {
             if (copy && ("LOCK".equals(keyword) || "QUIESCE".equals(keyword))) {
                 continue;
@@ -232,6 +232,20 @@ public class UnloadCommand implements Trait<Utility.Block> {
             }
         }
         return inherited;
+    }
+
+    /**
+     * Whether the rows come from the image copy the deck names. A {@code COPYDDN} asked for through
+     * Db2 is the product's one silent conflict: {@code COPYDDN_STRICT} in the site parmlib decides
+     * whether the deck is rejected or the copy is dropped and the live table unloaded instead, and a
+     * live table is locked and quiesced by whatever that same parmlib says.
+     */
+    private boolean readsCopy() {
+        if (getCopyDdName() == null) {
+            return false;
+        }
+        String db2 = getDb2();
+        return db2 == null || "NO".equalsIgnoreCase(db2.trim());
     }
 
     /**

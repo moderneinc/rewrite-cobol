@@ -219,15 +219,24 @@ public final class Keywords {
     }
 
     /**
-     * The keywords that decide what an unload writes and how it reads, which the site parmlib
-     * answers when a deck leaves them out. Each is a documented {@code VUUnnn} parameter of the
-     * {@code INZUTIL} member the {@code INFPLIB} DD points at: {@code VUU045/ULFORMAT},
-     * {@code VUU011/ULSEDB2}, {@code VUU013/ULQSCE} and {@code VUU012/ULLOCK}.
+     * The keywords whose answer decides what an unload writes and how it reads, and which nothing in
+     * an application library answers when the deck leaves them out. Each is a documented
+     * {@code VUUnnn} parameter of the {@code INZUTIL} member the {@code INFPLIB} DD points at:
+     * {@code FORMAT} is {@code VUU045/ULFORMAT} and settles the record layout end to end,
+     * {@code DB2} is {@code VUU011/ULSEDB2} and settles the access mode, whose three values do not
+     * write the same bytes, and {@code QUIESCE} and {@code LOCK} are {@code VUU013/ULQSCE} and
+     * {@code VUU012/ULLOCK} and settle the consistency the rows are read at, which the base utility
+     * spells as its one {@code SHRLEVEL}.
      * <p>
-     * The parmlib answers more than these — date and null formats, {@code HIDDEN},
-     * {@code PARALLELISM}, {@code MAXERR} — and they are not here, because they are per-format
-     * defaults and tuning rather than what the unload does, and a list that holds them says every
-     * deck ever written leaves something to the site, which is an answer nobody can act on.
+     * The parmlib answers more keywords than these and the rest are deliberately not here.
+     * {@code HIDDEN} ({@code VUU042/ULHIDDEN}) decides whether a {@code SELECT *} unloads a table's
+     * implicitly hidden columns, so it changes the record only where the table has one, and whether
+     * it does is written in that table's DDL, which an estate holds and a reader can go and look at.
+     * {@code NULLPOS} and the date and time formats ({@code VUU022}, {@code VUU015} to
+     * {@code VUU017}) are defaults per output format, so a deck that codes {@code FORMAT} has
+     * settled them and a deck that codes none is already being asked for {@code FORMAT} here.
+     * {@code PARALLELISM} and {@code MAXERR} decide how fast the unload runs and how many errors it
+     * tolerates, not what it writes.
      */
     private static final List<String> INHERITED =
             Collections.unmodifiableList(asList("FORMAT", "DB2", "QUIESCE", "LOCK"));

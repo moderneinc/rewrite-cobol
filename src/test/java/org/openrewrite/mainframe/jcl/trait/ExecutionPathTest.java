@@ -100,7 +100,7 @@ class ExecutionPathTest implements RewriteTest {
                 assertThat(path.getGaps()).extracting(Gap::getKind)
                   .containsOnly(Gap.Kind.KEYWORD_INHERITED);
                 assertThat(path.getGaps()).extracting(Gap::getName)
-                  .contains("FORMAT", "DB2", "LOCK", "QUIESCE");
+                  .containsExactly("FORMAT", "DB2", "QUIESCE", "LOCK");
                 assertThat(path.getGaps()).extracting(Gap::getDdName).containsOnly("SYSIN");
                 assertThat(path.getGaps()).extracting(Gap::getStep).containsOnly("UNLPOL");
             })
@@ -173,8 +173,7 @@ class ExecutionPathTest implements RewriteTest {
             LIBRARY,
             spec -> spec.afterRecipe(cu -> {
                 ExecutionPath path = path(cu);
-                assertThat(path.getGaps()).extracting(Gap::getKind)
-                  .doesNotContain(Gap.Kind.SYMBOL_UNDEFINED);
+                assertThat(path.getGaps()).isEmpty();
                 assertThat(path.getVerdict()).isEqualTo(ExecutionPath.Verdict.RESOLVED);
             })
           )
@@ -329,7 +328,7 @@ class ExecutionPathTest implements RewriteTest {
                 assertThat(path.getGaps()).extracting(Gap::getKind)
                   .containsOnly(Gap.Kind.KEYWORD_INHERITED);
                 assertThat(path.getGaps()).extracting(Gap::getName)
-                  .contains("FORMAT", "DB2", "LOCK", "QUIESCE");
+                  .containsExactly("FORMAT", "DB2", "QUIESCE", "LOCK");
                 assertThat(path.getGaps()).extracting(Gap::getStep).containsOnly("UNLPOL.UNL");
             })
           )
