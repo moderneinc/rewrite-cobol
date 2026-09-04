@@ -109,9 +109,9 @@ class ExecutionPathTest implements RewriteTest {
     }
 
     /**
-     * A deck that codes the four keywords leaves the rest of them to the site all the same, which is
-     * the finding: every job that runs the unload product carries a parmlib the migration has to
-     * account for.
+     * A deck that codes what it writes and how it reads leaves nothing to the site, and a step whose
+     * names all resolve too is one a transformation may be applied to. This is the deck that says so
+     * and the one above is the deck that does not, and the difference between them is four keywords.
      */
     @Test
     void aCodedKeywordIsNotInherited() {
@@ -135,10 +135,8 @@ class ExecutionPathTest implements RewriteTest {
               """,
             spec -> spec.afterRecipe(cu -> {
                 ExecutionPath path = path(cu);
-                assertThat(path.getVerdict()).isEqualTo(ExecutionPath.Verdict.INHERITED);
-                assertThat(path.getGaps()).extracting(Gap::getName)
-                  .doesNotContain("FORMAT", "DB2", "LOCK", "QUIESCE")
-                  .contains("NULLPOS", "DATE");
+                assertThat(path.getVerdict()).isEqualTo(ExecutionPath.Verdict.RESOLVED);
+                assertThat(path.getGaps()).isEmpty();
             })
           )
         );
@@ -176,8 +174,8 @@ class ExecutionPathTest implements RewriteTest {
             spec -> spec.afterRecipe(cu -> {
                 ExecutionPath path = path(cu);
                 assertThat(path.getGaps()).extracting(Gap::getKind)
-                  .containsOnly(Gap.Kind.KEYWORD_INHERITED);
-                assertThat(path.getVerdict()).isEqualTo(ExecutionPath.Verdict.INHERITED);
+                  .doesNotContain(Gap.Kind.SYMBOL_UNDEFINED);
+                assertThat(path.getVerdict()).isEqualTo(ExecutionPath.Verdict.RESOLVED);
             })
           )
         );

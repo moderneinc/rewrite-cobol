@@ -219,13 +219,18 @@ public final class Keywords {
     }
 
     /**
-     * The keywords the site parmlib answers when a deck leaves them out, so that what the deck says
-     * and what the job does are not the same question. Each one is a documented {@code VUUnnn}
-     * parameter of the {@code INZUTIL} member the {@code INFPLIB} DD points at.
+     * The keywords that decide what an unload writes and how it reads, which the site parmlib
+     * answers when a deck leaves them out. Each is a documented {@code VUUnnn} parameter of the
+     * {@code INZUTIL} member the {@code INFPLIB} DD points at: {@code VUU045/ULFORMAT},
+     * {@code VUU011/ULSEDB2}, {@code VUU013/ULQSCE} and {@code VUU012/ULLOCK}.
+     * <p>
+     * The parmlib answers more than these — date and null formats, {@code HIDDEN},
+     * {@code PARALLELISM}, {@code MAXERR} — and they are not here, because they are per-format
+     * defaults and tuning rather than what the unload does, and a list that holds them says every
+     * deck ever written leaves something to the site, which is an answer nobody can act on.
      */
-    private static final List<String> INHERITED = Collections.unmodifiableList(asList(
-            "FORMAT", "DB2", "QUIESCE", "LOCK", "NULLPOS", "DATE", "TIME", "TIMESTAMP", "HIDDEN",
-            "PARALLELISM", "MAXERR"));
+    private static final List<String> INHERITED =
+            Collections.unmodifiableList(asList("FORMAT", "DB2", "QUIESCE", "LOCK"));
 
     private static void block(String verb, List<String> blocks, List<String> operands) {
         BLOCKS.put(verb, upper(blocks));

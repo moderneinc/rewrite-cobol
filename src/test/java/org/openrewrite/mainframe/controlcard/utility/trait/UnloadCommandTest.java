@@ -140,8 +140,7 @@ class UnloadCommandTest implements RewriteTest {
                 assertThat(unload.isCoded("FORMAT")).isFalse();
                 assertThat(unload.isCoded("DB2")).isFalse();
                 assertThat(unload.getInheritedKeywords())
-                  .containsExactly("FORMAT", "DB2", "QUIESCE", "LOCK", "NULLPOS", "DATE", "TIME",
-                    "TIMESTAMP", "HIDDEN", "PARALLELISM", "MAXERR");
+                  .containsExactly("FORMAT", "DB2", "QUIESCE", "LOCK");
             })
           )
         );
@@ -162,9 +161,8 @@ class UnloadCommandTest implements RewriteTest {
                 // DB2 is written once, in the GLOBAL block, and governs every unload after it.
                 assertThat(unload.isCoded("DB2")).isTrue();
                 assertThat(unload.getDb2()).isEqualTo("NO");
-                // Only the two that decide how fast it runs and how many errors it tolerates are
-                // left to the site; nothing that decides what the file holds.
-                assertThat(unload.getInheritedKeywords()).containsExactly("PARALLELISM", "MAXERR");
+                // Nothing that decides what the file holds is left to the site.
+                assertThat(unload.getInheritedKeywords()).isEmpty();
             })
           )
         );
@@ -216,6 +214,9 @@ class UnloadCommandTest implements RewriteTest {
                 assertThat(unload.getCopyDdName()).isEqualTo("HSTCOPY");
                 assertThat(unload.getLock()).isNull();
                 assertThat(unload.getQuiesce()).isNull();
+                // Neither is left to the site either: the product rejects both here, so the deck
+                // is saying so rather than saying nothing.
+                assertThat(unload.getInheritedKeywords()).isEmpty();
             })
           )
         );

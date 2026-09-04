@@ -212,13 +212,21 @@ public class UnloadCommand implements Trait<Utility.Block> {
      * The keywords this unload leaves to the site parmlib, in the order the product's documentation
      * lists them. An empty list for a base utility unload, whose defaults are published and the same
      * everywhere.
+     * <p>
+     * {@code LOCK} and {@code QUIESCE} are not asked of an unload of an image copy: a copy is
+     * neither locked nor quiesced and the product rejects both keywords there, so leaving them out
+     * is the deck saying so rather than the deck saying nothing.
      */
     public List<String> getInheritedKeywords() {
-        if (getDialect() != Dialect.Kind.HIGH_PERFORMANCE_UNLOAD) {
-            return new ArrayList<>();
-        }
         List<String> inherited = new ArrayList<>();
+        if (getDialect() != Dialect.Kind.HIGH_PERFORMANCE_UNLOAD) {
+            return inherited;
+        }
+        boolean copy = getCopyDdName() != null;
         for (String keyword : Keywords.inherited()) {
+            if (copy && ("LOCK".equals(keyword) || "QUIESCE".equals(keyword))) {
+                continue;
+            }
             if (!isCoded(keyword)) {
                 inherited.add(keyword);
             }
