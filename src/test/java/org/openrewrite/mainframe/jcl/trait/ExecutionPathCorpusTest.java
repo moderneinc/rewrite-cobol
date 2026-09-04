@@ -79,30 +79,32 @@ class ExecutionPathCorpusTest {
         assertThat(verdicts(unloads.get("CLMUNLB")))
                 .containsExactly(ExecutionPath.Verdict.RESOLVED);
 
-        // The other four run the unload product, whose parmlib member on INFPLIB answers every
-        // keyword a deck leaves out. Every name in them resolves and none of them is safe to
-        // translate without knowing what that parmlib says today.
+        // The other four run the unload product, whose parmlib member on INFPLIB answers the four
+        // keywords that decide what an unload writes and how it reads. Three of them code all four
+        // and read as clean as the base utility job; ctlcard/UNLCLM04 codes none of them, and
+        // jcl/CLMUNLD is the one job here nobody may translate without asking the shop.
         assertThat(verdicts(unloads.get("CLMUNLP")))
-                .containsExactly(ExecutionPath.Verdict.INHERITED);
+                .containsExactly(ExecutionPath.Verdict.RESOLVED);
         assertThat(verdicts(unloads.get("CLMUNLH")))
-                .containsExactly(ExecutionPath.Verdict.INHERITED);
+                .containsExactly(ExecutionPath.Verdict.RESOLVED);
         assertThat(verdicts(unloads.get("CLMUNLD")))
                 .containsExactly(ExecutionPath.Verdict.INHERITED);
-        // Two steps: the fan out reads the table space, the second step an image copy of it.
+        // Two steps: the fan out reads the table space, the second step an image copy of it, which
+        // may code neither LOCK nor QUIESCE and is not asked for either.
         assertThat(verdicts(unloads.get("CLMUNLF")))
-                .containsExactly(ExecutionPath.Verdict.INHERITED, ExecutionPath.Verdict.INHERITED);
+                .containsExactly(ExecutionPath.Verdict.RESOLVED, ExecutionPath.Verdict.RESOLVED);
 
-        // No line of CLMUNLH says which table it unloads: the member is the value of DECK=, the
+        // No line of CLMUNLD says which table it unloads: the member is the value of DECK=, the
         // SYSIN that reads it is written in proc CLMUNL, and the gap is reported against that step.
-        assertThat(unloads.get("CLMUNLH").get(0).getGaps())
-                .allSatisfy(gap -> assertThat(gap.getStep()).isEqualTo("UNLHST.UNL"));
+        assertThat(unloads.get("CLMUNLD").get(0).getGaps())
+                .isNotEmpty()
+                .allSatisfy(gap -> assertThat(gap.getStep()).isEqualTo("UNLPOL.UNL"));
 
         // CLMUNLD is the one whose four load bearing keywords are all uncoded, which is what the
         // fixture wrote it for; CLMUNLP codes them and leaves only the rest to the site.
         assertThat(names(unloads.get("CLMUNLD").get(0)))
                 .contains("FORMAT", "DB2", "LOCK", "QUIESCE");
-        assertThat(names(unloads.get("CLMUNLP").get(0)))
-                .doesNotContain("FORMAT", "DB2", "LOCK", "QUIESCE");
+        assertThat(names(unloads.get("CLMUNLP").get(0))).isEmpty();
     }
 
     private static List<ExecutionPath.Verdict> verdicts(List<ExecutionPath> paths) {
